@@ -16,7 +16,7 @@
 
     protected function get($url, $timeout) {
       $http_context = array(
-        'header' => 'Accept-Encoding: gzip\r\n',
+        'header' => "Accept-Encoding: gzip\r\n",
         'method' => 'GET'
       );
 
@@ -24,8 +24,9 @@
     }
 
     protected function post($url, $data, $timeout) {
+      $content_length = strlen($data);
       $http_context = array(
-        'header' => 'Accept-Encoding: gzip\r\n',
+        'header' => "Accept-Encoding: gzip\r\nContent-type: application/x-www-form-urlencoded\r\nContent-Length: $content_length",
         'method' => 'POST',
         'content' => $data
       );

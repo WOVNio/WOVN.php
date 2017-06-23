@@ -45,8 +45,8 @@
 
     private function defaultSettings() {
       return array(
-        'project_token' => '',
-        'url_pattern_name' => 'path',
+        'project_token' => 'VM0g6M',
+        'url_pattern_name' => 'query',
         'url_pattern_reg' => '\/(?P<lang>[^\/.]+)(\/|\?|$)',
         'query' => array(),
         'api_url' => 'http://api.dev-wovn.io:3000/v0/',

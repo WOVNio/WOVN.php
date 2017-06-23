@@ -17,11 +17,12 @@
       $api_url = self::url($store, self::ACTION_TRANSLATE);
       $timeout = $store->settings['api_timeout'];
       $data = array(
-        'url' => $headers->url,
+        'url' => 'http://' . $headers->url,
         'token' => $store->settings['project_token'],
-        'lang_code' => $headers->lang(),
+        // TODO
+        'lang_code' => 'fr',
         'url_pattern' => $store->settings['url_pattern_name'],
-        'body' => $original_content
+        'body' => urlencode($original_content)
       );
 
       try {

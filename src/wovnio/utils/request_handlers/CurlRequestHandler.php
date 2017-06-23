@@ -18,7 +18,7 @@
 
     protected function get($url, $timeout) {
       $options = array(
-        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_TIMEOUT => $timeout,
         CURLOPT_ENCODING => 'gzip'
       );
@@ -27,12 +27,20 @@
     }
 
     protected function post($url, $data, $timeout) {
+      $content_length = strlen($data);
+      $context = array(
+        "Content-Type: application/x-www-form-urlencoded",
+        "Content-Length: $content_length"
+      );
+
       $options = array(
-        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_RETURNTRANSFER => TRUE,
         CURLOPT_TIMEOUT => $timeout,
         CURLOPT_ENCODING => 'gzip',
-        CURLOPT_POST => 1,
-        CURLOPT_POSTFIELDS => $data
+        CURLOPT_POST => TRUE,
+        CURLOPT_POSTFIELDS => $data,
+        CURLOPT_HEADER => TRUE,
+        CURLOPT_HTTPHEADER => $context
       );
 
       return $this->curlExec($url, $options);

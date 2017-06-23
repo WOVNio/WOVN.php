@@ -8,17 +8,7 @@
 
     public function sendRequest($method, $url, $data, $timeout = 1.0) {
       $response = NULL;
-      $query = '';
-
-      foreach ($data as $attr => $val) {
-        $kv = $attr . '=' . $val;
-
-        if (empty($query)) {
-          $query = $kv;
-        } else {
-          $query = $query . '&' . $kv;
-        }
-      }
+      $query = http_build_query($data);
 
       try {
         switch ($method) {
