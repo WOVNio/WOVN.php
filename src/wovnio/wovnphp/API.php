@@ -17,10 +17,9 @@
       $api_url = self::url($store, self::ACTION_TRANSLATE);
       $timeout = $store->settings['api_timeout'];
       $data = array(
-        'url' => 'http://' . $headers->url,
+        'url' => $headers->url,
         'token' => $store->settings['project_token'],
-        // TODO
-        'lang_code' => 'fr',
+        'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
         'body' => urlencode($original_content)
       );

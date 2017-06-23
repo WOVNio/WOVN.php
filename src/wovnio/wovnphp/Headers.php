@@ -61,7 +61,7 @@
       $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
       $urlQuery = $this->removeLang($this->query, $this->lang());
       $urlQuery = strlen($urlQuery) > 0 ? '?' . $urlQuery : '';
-      $this->url = $this->host . $this->pathname . $urlQuery;
+      $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
       if (count($store->settings['query']) > 0) {
         $queryVals = array();
         foreach ($store->settings['query'] as $qv) {
