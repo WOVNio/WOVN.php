@@ -1,7 +1,7 @@
 <?php
   namespace Wovnio\Wovnphp;
 
-  require_once 'src/utils/request_handlers/RequestHandlerFactory.php';
+  require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
 
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
@@ -25,8 +25,8 @@
       );
 
       try {
-        $translation_response = RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout);
-        $translated_content = json_decode($translation_response, true)['body'];
+        $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);
+        $translated_content = $translation_response['body'];
       } catch (\Exception $e) {
         error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
       }

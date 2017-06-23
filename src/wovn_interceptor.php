@@ -1,9 +1,9 @@
 <?php
-  require_once 'src/wovnio/wovnphp/Headers.php';
-  require_once 'src/wovnio/wovnphp/Lang.php';
-  require_once 'src/wovnio/wovnphp/Store.php';
-  require_once 'src/wovnio/wovnphp/Utils.php';
-  require_once 'src/wovnio/wovnphp/API.php';
+  require_once 'wovnio/wovnphp/Headers.php';
+  require_once 'wovnio/wovnphp/Lang.php';
+  require_once 'wovnio/wovnphp/Store.php';
+  require_once 'wovnio/wovnphp/Utils.php';
+  require_once 'wovnio/wovnphp/API.php';
 
   use Wovnio\Wovnphp\Utils;
   use Wovnio\Wovnphp\API;

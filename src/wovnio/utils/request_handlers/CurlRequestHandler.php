@@ -1,12 +1,12 @@
 <?php
   namespace Wovnio\Utils\RequestHandlers;
 
-  require_once 'src/utils/request_handlers/AbstractRequestHandler.php';
+  require_once 'AbstractRequestHandler.php';
 
   use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
 
   class CurlRequestHandler extends AbstractRequestHandler {
-    private static function buildSession($url, $options) {
+    private function buildSession($url, $options) {
       $curl_session = curl_init($url);
 
       foreach ($options as $opt => $val) {
@@ -16,14 +16,6 @@
       return $curl_session;
     }
 
-    private static function curlExec($url, $options) {
-      $curl_session = self::buildSession($url, $options);
-      $response = curl_exec($curl_session);
-
-      curl_close($curl_session);
-      return $response;
-    }
-
     protected function get($url, $timeout) {
       $options = array(
         CURLOPT_RETURNTRANSFER => true,
@@ -31,7 +23,7 @@
         CURLOPT_ENCODING => 'gzip'
       );
 
-      return self::curlExec($url, $options);
+      return $this->curlExec($url, $options);
     }
 
     protected function post($url, $data, $timeout) {
@@ -43,6 +35,14 @@
         CURLOPT_POSTFIELDS => $data
       );
 
-      return self::curlExec($url, $options);
+      return $this->curlExec($url, $options);
+    }
+
+    public function curlExec($url, $options) {
+      $curl_session = $this->buildSession($url, $options);
+      $response = curl_exec($curl_session);
+
+      curl_close($curl_session);
+      return $response;
     }
   }

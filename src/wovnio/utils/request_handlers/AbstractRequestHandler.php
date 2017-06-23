@@ -11,7 +11,13 @@
       $query = '';
 
       foreach ($data as $attr => $val) {
-        $query = $query . '&' . $attr . '=' . $val;
+        $kv = $attr . '=' . $val;
+
+        if (empty($query)) {
+          $query = $kv;
+        } else {
+          $query = $query . '&' . $kv;
+        }
       }
 
       try {

@@ -1,30 +1,17 @@
 <?php
   namespace Wovnio\Utils\RequestHandlers;
 
-  require_once 'src/utils/request_handlers/AbstractRequestHandler.php';
+  require_once 'AbstractRequestHandler.php';
 
   use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
 
   class FileGetContentsRequestHandler extends AbstractRequestHandler {
-    private static function buildContext($http_context) {
+    private function buildContext($http_context) {
       $context = stream_context_create(array(
         'http' => $http_context
       ));
 
       return $context;
-    }
-
-    private static function fileGetContents($url, $http_context) {
-      $context = self::buildContext($http_context);
-      $response = file_get_contents($url, false, $context);
-
-      foreach ($http_response_header as $c => $h) {
-        if (stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
-          $response = gzinflate(substr($response,10,-8));
-        }
-      }
-
-      return $response;
     }
 
     protected function get($url, $timeout) {
@@ -33,7 +20,7 @@
         'method' => 'GET'
       );
 
-      return self::fileGetContents($url, $http_context);
+      return $this->fileGetContents($url, $http_context);
     }
 
     protected function post($url, $data, $timeout) {
@@ -43,6 +30,19 @@
         'content' => $data
       );
 
-      return self::fileGetContents($url, $http_context);
+      return $this->fileGetContents($url, $http_context);
+    }
+
+    public function fileGetContents($url, $http_context) {
+      $context = $this->buildContext($http_context);
+      $response = file_get_contents($url, false, $context);
+
+      foreach ($http_response_header as $c => $h) {
+        if (stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
+          $response = gzinflate(substr($response,10,-8));
+        }
+      }
+
+      return $response;
     }
   }

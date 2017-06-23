@@ -49,7 +49,7 @@
         'url_pattern_name' => 'path',
         'url_pattern_reg' => '\/(?P<lang>[^\/.]+)(\/|\?|$)',
         'query' => array(),
-        'api_url' => 'https://api.wovn.io/v0/',
+        'api_url' => 'http://api.dev-wovn.io:3000/v0/',
         'api_error_host' => 'api.wovn.io',
         'api_error_port' => 443,
         'api_error_path' => '/v0/errors',
