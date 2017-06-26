@@ -20,7 +20,6 @@
   ob_start(function($buffer) use ($headers, $store, $includeDir, $includePath) {
     if(!empty($buffer) && $buffer != strip_tags($buffer)) {
       $translated_buffer = API::translate($store, $headers, $buffer);
-      return $translated_buffer;
 
       if ($translated_buffer !== NULL && !empty($translated_buffer)) {
         Utils::changeHeaders($translated_buffer, $store);
