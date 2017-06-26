@@ -80,6 +80,7 @@
       }
       $this->query = $this->removeLang($this->query, $this->lang());
       $this->pathname = preg_replace('/\/$/', '', $this->pathname);
+      $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
       if (isset($store->settings['query']) && !empty($store->settings['query'])) {
         $this->redisUrl = $this->host . $this->pathname . $this->matchQuery($urlQuery, $store->settings['query']);
       } else {
@@ -154,24 +155,24 @@
      * @return {String} The path lang
      */
   public function pathLang() {
+    if ($this->_pathLang === null) {
+      if ($this->store->settings['use_proxy'] && isset($this->_env['HTTP_X_FORWARDED_HOST'])) {
+        $server_name = $this->_env['HTTP_X_FORWARDED_HOST'];
+      } else {
+        $server_name = $this->_env['SERVER_NAME'];
+      }
+      // get the lang in the path
+      $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
+      preg_match($rp, $server_name . $this->_env['REQUEST_URI'], $match);
+      if (isset($match['lang'])) {
+        $lang_code = Lang::formatLangCode($match['lang']);
+        if (!is_null($lang_code)) {
+          $this->_pathLang = $lang_code;
+        }
+      }
       if ($this->_pathLang === null) {
-        if ($this->store->settings['use_proxy'] && isset($this->_env['HTTP_X_FORWARDED_HOST'])) {
-          $server_name = $this->_env['HTTP_X_FORWARDED_HOST'];
-        } else {
-          $server_name = $this->_env['SERVER_NAME'];
-        }
-        // get the lang in the path 
-        $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
-        preg_match($rp, $server_name . $this->_env['REQUEST_URI'], $match);
-        if (isset($match['lang'])) {
-          $lang_code = Lang::formatLangCode($match['lang']);
-          if (!is_null($lang_code)) {
-            $this->_pathLang = $lang_code;
-          }
-        }
-        if ($this->_pathLang === null) {
-          $this->_pathLang = '';
-        }
+        $this->_pathLang = '';
+      }
     }
     return $this->_pathLang;
   }
