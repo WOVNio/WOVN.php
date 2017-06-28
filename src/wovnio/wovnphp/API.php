@@ -21,7 +21,7 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
-        'body' => urlencode($original_content)
+        'body' => $original_content
       );
 
       try {
