@@ -10,7 +10,7 @@ These are the three main settings for your project
 
 Please copy the sample file from the library `wovn.ini.sample`, rename it as `wovn.ini` and paste it on your framework root directory (same level as wovnphp directory)
 ### 3. Require the wovn_interceptor.php file in your application
- `require_once('/path/to/wovnphp/src/wovn_interceptor');`
+ `require_once('/path/to/WOVN.php/src/wovn_interceptor.php');`
 <!--
 ## Composer install
 ### 1. Require the package in your composer.json file
