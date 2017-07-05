@@ -50,7 +50,9 @@
       if(!isset($env['REQUEST_URI'])) {
         $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
       }
-      $this->unmaskedPathname = $env['REDIRECT_URL'];
+      if(isset($env['REDIRECT_URL'])) {
+          $this->unmaskedPathname = $env['REDIRECT_URL'];
+      }
       if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
         $this->unmaskedPathname .= '/';
       }
