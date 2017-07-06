@@ -6,8 +6,6 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   class API {
-    const ACTION_TRANSLATE = 'translation';
-
     public static function url($store, $headers, $original_content) {
       $token = $store->settings['project_token'];
       $path = $headers->pathname;
