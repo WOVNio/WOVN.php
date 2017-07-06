@@ -13,11 +13,8 @@
 
   $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 
-  // HEADERS REQUEST OUT
-  $headers->requestOut($includePath);
-
   // use the callback of ob_start to modify the content and return
-  ob_start(function($buffer) use ($headers, $store, $includeDir, $includePath) {
+  ob_start(function($buffer) use ($headers, $store) {
     if(!empty($buffer) && $buffer != strip_tags($buffer)) {
       $translated_buffer = API::translate($store, $headers, $buffer);
 
