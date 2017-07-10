@@ -24,7 +24,7 @@
       $timeout = $store->settings['api_timeout'];
       $data = array(
         'url' => $headers->url,
-        'token' => $store->settings['project_token'],
+        'token' => $token,
         'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
         'body' => $original_content
