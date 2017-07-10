@@ -14,7 +14,13 @@
 
     public static function translate($store, $headers, $original_content) {
       $translated_content = NULL;
-      $api_url = self::url($store, self::ACTION_TRANSLATE);
+      $token = $store->settings['project_token'];
+      $settings_digest = md5(serialize(asort($store->settings)));
+      $content_digest = md5($original_content);
+      $api_url = self::url($store, self::ACTION_TRANSLATE)
+                 . '?token=' . $token
+                 . '&settings_digest=' . $settings_digest
+                 . '&content_digest=' . $content_digest;
       $timeout = $store->settings['api_timeout'];
       $data = array(
         'url' => $headers->url,
