@@ -53,7 +53,6 @@
       $this->assertTrue(API::url($store, API::ACTION_TRANSLATE) === $expected_api_url);
     }
 
-    /* TODO should work
     public function testTranslate() {
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
@@ -61,13 +60,13 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $store->settings['api_url'] . 'translation'
         . '?token=' . $store->settings['project_token']
-        . '&setting_digest=' . md5(serialize(asort($store->settings)))
+        . '&settings_digest=' . md5(serialize(asort($store->settings)))
         . '&content_digest=' . md5($html);
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
-        'url_pattern' => 'path',
+        'url_pattern' => 'query',
         'body' => $html
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
@@ -95,13 +94,13 @@
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $store->settings['api_url'] . 'translation'
         . '?token=' . $store->settings['project_token']
-        . '&setting_digest=' . md5(serialize(asort($store->settings)))
+        . '&settings_digest=' . md5(serialize(asort($store->settings)))
         . '&content_digest=' . md5($html);
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
-        'url_pattern' => 'path',
+        'url_pattern' => 'query',
         'body' => $html
       );
 
@@ -120,5 +119,4 @@
       $result = API::translate($store, $headers, $html);
       $this->assertTrue($result === NULL);
     }
-    */
   }
