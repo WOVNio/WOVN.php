@@ -17,7 +17,7 @@ root_directory/WOVN.php/wovn.ini.sample
 ```
 
 ### 3. Require the wovn_interceptor.php file in your application
- `require_once('/path/to/WOVN.php/src/wovn_interceptor');`
+ `require_once('/path/to/WOVN.php/src/wovn_interceptor.phP');`
 <!--
 ## Composer install
 ### 1. Require the package in your composer.json file
