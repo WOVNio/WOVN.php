@@ -931,4 +931,60 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     return $env;
   }
 
+  public function testRequestOutSubdomainPatternWithHTTP_REFERER () {
+    $includePath = '/dummy';
+
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'subdomain';
+    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+
+    $env = $this->getEnv();
+    $env['HTTP_REFERER'] = 'ja.minimaltech.co';
+    $env['REQUEST_URI'] = $includePath;
+    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
+
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('ja', $headers->pathLang());
+    $headers->requestOut($includePath);
+    $this->assertEquals('minimaltech.co', $env['HTTP_REFERER']);
+  }
+
+  public function testRequestOutPathPatternWithHTTP_REFERER () {
+    $includePath = '/ja/dummy';
+
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'path';
+    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+
+    $env = $this->getEnv();
+    $env['HTTP_REFERER'] = 'minimaltech.co/ja';
+    $env['REQUEST_URI'] = $includePath;
+    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
+
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('ja', $headers->pathLang());
+    $headers->requestOut($includePath);
+    $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
+  }
+
+  public function testRequestOutQueryPatternWithHTTP_REFERER () {
+    $includePath = '/dummy?wovn=ja';
+
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'query';
+    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+
+    $env = $this->getEnv();
+    $env['HTTP_REFERER'] = 'minimaltech.co/?wovn=ja';
+    $env['REQUEST_URI'] = $includePath;
+    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
+
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('ja', $headers->pathLang());
+    $headers->requestOut($includePath);
+    $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
+  }
 }
