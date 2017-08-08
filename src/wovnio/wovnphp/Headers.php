@@ -262,6 +262,8 @@
     public function requestOut($includePath, $defLang=null) {
       if ($defLang === null)
         $defLang = $this->store->settings['default_lang'];
+      if (isset($this->_env['HTTP_REFERER']))
+        $this->_env['HTTP_REFERER'] = $this->removeLang($this->_env['HTTP_REFERER']);
       switch ($this->store->settings['url_pattern_name']){
         case 'query':
           if (isset($this->_env['REQUEST_URI'])) {
@@ -278,8 +280,6 @@
           }
           $this->_env['HTTP_HOST'] = $this->removeLang($this->_env['HTTP_HOST']);
           $this->_env['SERVER_NAME'] = $this->removeLang($this->_env['SERVER_NAME']);
-          if (isset($this->_env['HTTP_REFERER']))
-            $this->_env['HTTP_REFERER'] = $this->removeLang($this->_env['HTTP_REFERER']);
           break;
         case 'path':
         default:
