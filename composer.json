@@ -1,12 +1,13 @@
 {
-    "name": "WOVNio/WOVN.php",
-    "type": "Library",
-    "description": "PHP server library for WOVNio",
-    "homepage": "https://wovn.io",
-    "require": {
-        "php": ">=5.4"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "4.3.*"
-    }
+  "name": "WOVNio/WOVN.php",
+  "type": "Library",
+  "description": "PHP server library for WOVNio",
+  "homepage": "https://wovn.io",
+  "require": {
+    "php": ">=5.4"
+  },
+  "require-dev": {
+    "vectorface/dunit": "^2.1",
+    "phpunit/phpunit": "4.3.*"
+  }
 }

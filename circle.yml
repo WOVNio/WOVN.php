@@ -8,5 +8,5 @@ machine:
 
 test:
   override:
-    - phpunit
+    - vendor/bin/phpunit
     - vendor/bin/dunit
