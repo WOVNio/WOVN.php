@@ -4,7 +4,7 @@
   "description": "PHP server library for WOVNio",
   "homepage": "https://wovn.io",
   "require": {
-    "php": ">=5.4"
+    "php": ">=5.3"
   },
   "require-dev": {
     "vectorface/dunit": "^2.1",
