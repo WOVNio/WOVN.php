@@ -16,7 +16,7 @@
 
     public static function get() {
       if (self::$instance === NULL) {
-        if (false && function_exists('curl_version')) {
+        if (function_exists('curl_version')) {
           self::$instance = new CurlRequestHandler();
         } else {
           self::$instance = new FileGetContentsRequestHandler();
