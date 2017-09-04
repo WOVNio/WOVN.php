@@ -4,6 +4,7 @@
   require_once 'wovnio/wovnphp/Store.php';
   require_once 'wovnio/wovnphp/Utils.php';
   require_once 'wovnio/wovnphp/API.php';
+  require_once 'wovnio/wovnphp/Url.php';
   require_once 'wovnio/utils/request_handlers/RequestHandlerFactory.php';
   require_once 'wovnio/utils/request_handlers/FileGetContentsRequestHandler.php';
 
@@ -24,6 +25,8 @@
 
   // use the callback of ob_start to modify the content and return
   ob_start(function($buffer) use ($headers, $store) {
+    $headers->responseOut();
+
     if(!empty($buffer) && $buffer != strip_tags($buffer)) {
       $translated_buffer = API::translate($store, $headers, $buffer);
 

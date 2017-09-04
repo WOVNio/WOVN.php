@@ -262,6 +262,8 @@
     public function requestOut($includePath, $defLang=null) {
       if ($defLang === null)
         $defLang = $this->store->settings['default_lang'];
+      if (isset($this->_env['HTTP_REFERER']))
+        $this->_env['HTTP_REFERER'] = $this->removeLang($this->_env['HTTP_REFERER']);
       switch ($this->store->settings['url_pattern_name']){
         case 'query':
           if (isset($this->_env['REQUEST_URI'])) {
@@ -278,8 +280,6 @@
           }
           $this->_env['HTTP_HOST'] = $this->removeLang($this->_env['HTTP_HOST']);
           $this->_env['SERVER_NAME'] = $this->removeLang($this->_env['SERVER_NAME']);
-          if (isset($this->_env['HTTP_REFERER']))
-            $this->_env['HTTP_REFERER'] = $this->removeLang($this->_env['HTTP_REFERER']);
           break;
         case 'path':
         default:
@@ -312,6 +312,30 @@
     }
 
     /**
+     * Changes the Location header to add the target lang code to the
+     * redirection.
+     */
+    public function responseOut() {
+      $lang = $this->pathLang();
+
+      if ($lang && strlen($lang) > 0) {
+        if (function_exists('apache_response_headers') && !headers_sent()) {
+          $locationHeaders = array('location', 'Location');
+          $responseHeaders = apache_response_headers();
+
+          foreach ($locationHeaders as $locationHeader) {
+            if (array_key_exists($locationHeader, $responseHeaders)) {
+              $redirectLocation = $responseHeaders[$locationHeader];
+              $newLocation = Url::addLangCode($redirectLocation, $this->store->settings['url_pattern_name'], $lang, $this);
+
+              header($locationHeader . ': ' . $newLocation);
+            }
+          }
+        }
+      }
+    }
+
+    /**
      * Public function removing the lang of the url 
      *
      * @param {String} $uri The url with the lang
@@ -319,23 +343,11 @@
      * @return {Array} The url without the lang
      */
     public function removeLang($uri, $lang=null) {
-      if ($lang === null)
+      if ($lang === null) {
         $lang = $this->pathLang();
-
-      switch ($this->store->settings['url_pattern_name']) {
-        case 'query':
-          return preg_replace('/(\?|&)$/', '', preg_replace('/(^|\?|&)wovn=' . $lang . '(&|$)/i', '\1', $uri));
-        break;
-        case 'subdomain':
-          # limit to one replacement
-          return preg_replace('/(\/\/|^)' . $lang . '\./i', '\1', $uri, 1);
-        break;
-        case 'path':
-        default:
-          # limit to one replacement
-          return preg_replace('/\/' . $lang . '(\/|$)/i', '/', $uri, 1);
-        break;
       }
+
+      return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang);
     }
 
     /**
