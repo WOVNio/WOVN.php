@@ -6,15 +6,19 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   class API {
-    const ACTION_TRANSLATE = 'translation';
-
-    public static function url($store, $action) {
-      return $store->settings['api_url'] . 'translation';
+    public static function url($store, $headers, $original_content) {
+      $token = $store->settings['project_token'];
+      $path = $headers->pathname;
+      $lang = $headers->lang();
+      $body_hash = md5($original_content);
+      $settings_hash = md5(serialize(asort($store->settings)));
+      $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
+      return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
     public static function translate($store, $headers, $original_content) {
       $translated_content = NULL;
-      $api_url = self::url($store, self::ACTION_TRANSLATE);
+      $api_url = self::url($store, $headers, $original_content);
       $timeout = $store->settings['api_timeout'];
       $data = array(
         'url' => $headers->url,
