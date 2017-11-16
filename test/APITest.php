@@ -3,8 +3,14 @@
   require_once 'src/wovnio/wovnphp/Utils.php';
   require_once 'src/wovnio/wovnphp/Store.php';
   require_once 'src/wovnio/wovnphp/Headers.php';
+  require_once 'src/wovnio/wovnphp/Lang.php';
+  require_once 'src/wovnio/wovnphp/Url.php';
+  require_once 'src/wovnio/html/HtmlConverter.php';
+  require_once 'src/wovnio/html/HtmlReplaceMarker.php';
   require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
   require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
+
+  require_once 'src/vendor_download/simple_html_dom.php';
 
   use Wovnio\Wovnphp\API;
   use Wovnio\Wovnphp\Utils;
@@ -71,12 +77,14 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
-        'body' => $html
+        'body' => $expected_html
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
 
@@ -102,12 +110,14 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
-        'body' => $html
+        'body' => $expected_html
       );
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
