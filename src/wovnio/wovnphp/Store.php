@@ -47,7 +47,7 @@
         'url_pattern_name' => 'query',
         'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
         'query' => array(),
-        'api_url' => 'https://api.wovn.io/v0/',
+        'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
         'api_error_host' => 'api.wovn.io',
         'api_error_port' => 443,
         'api_error_path' => '/v0/errors',
