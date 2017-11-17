@@ -81,7 +81,7 @@ class HtmlConverter {
   private function removeWovnIgnore($dom, $marker) {
     foreach ($dom->find('[wovn-ignore]') as $element)
     {
-      $this->putReplaceMaker($element, $marker);
+      $this->putReplaceMarker($element, $marker);
     }
   }
 
@@ -94,11 +94,11 @@ class HtmlConverter {
   private function removeForm($dom, $marker) {
     foreach ($dom->find('form') as $element)
     {
-      $this->putReplaceMaker($element, $marker);
+      $this->putReplaceMarker($element, $marker);
     }
     foreach ($dom->find('input[type=hidden]') as $element)
     {
-      $this->putReplaceMaker($element, $marker);
+      $this->putReplaceMarker($element, $marker);
     }
   }
 
@@ -112,7 +112,7 @@ class HtmlConverter {
   private function removeScript($dom, $marker) {
     foreach ($dom->find('script') as $element)
     {
-      $this->putReplaceMaker($element, $marker);
+      $this->putReplaceMarker($element, $marker);
     }
   }
 
@@ -143,7 +143,7 @@ class HtmlConverter {
    * @param $element
    * @param HtmlReplaceMarker $marker
    */
-  private function putReplaceMaker($element, $marker) {
+  private function putReplaceMarker($element, $marker) {
     $originalText = $element->outertext;
     if (strpos($originalText, HtmlReplaceMarker::$key_prefix) !== false) {
       return;
