@@ -109,7 +109,13 @@ class HtmlConverter {
     }
     foreach ($dom->find('input[type=hidden]') as $element)
     {
-      $this->putReplaceMarker($element, $marker);
+      $originalText = $element->value;
+      if (strpos($originalText, HtmlReplaceMarker::$key_prefix) !== false) {
+        return;
+      }
+
+      $key = $marker->addValue($originalText);
+      $element->value = $key;
     }
   }
 
@@ -138,11 +144,11 @@ class HtmlConverter {
     $ignoreMark = 'backend-wovn-ignore';
 
     return preg_replace_callback(
-      "/<!--\s*$ignoreMark\s*-->.+?<!--\s*\/$ignoreMark\s*-->/s",
+      "/(<!--\s*$ignoreMark\s*-->)(.+?)(<!--\s*\/$ignoreMark\s*-->)/s",
       function ($matches) use (&$marker) {
-        $comment = $matches[0];
-        $key = $marker->addValue($comment);
-        return $key;
+        $comment = $matches[2];
+        $key = $marker->addCommentValue($comment);
+        return $matches[1].$key.$matches[3];
       },
       $html
     );
@@ -155,12 +161,12 @@ class HtmlConverter {
    * @param HtmlReplaceMarker $marker
    */
   private function putReplaceMarker($element, $marker) {
-    $originalText = $element->outertext;
+    $originalText = $element->innertext;
     if (strpos($originalText, HtmlReplaceMarker::$key_prefix) !== false) {
       return;
     }
 
-    $key = $marker->addValue($originalText);
-    $element->outertext = $key;
+    $key = $marker->addCommentValue($originalText);
+    $element->innertext = $key;
   }
 }

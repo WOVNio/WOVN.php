@@ -31,6 +31,18 @@ class HtmlReplaceMarker {
   }
 
   /**
+   * Add argument's value to mapping information with comment style key
+   *
+   * @param string $value value to swap
+   * @return string correspond key to the value
+   */
+  function addCommentValue($value) {
+    $key = '<!-- '.$this->generateKey().' -->';
+    array_push($this->mappedValues, array($key, $value));
+    return $key;
+  }
+
+  /**
    * Revert to original content
    *
    * @param string $markedHtml html which contains keys
@@ -63,11 +75,11 @@ class HtmlReplaceMarker {
   }
 
   /**
-   * Generate unique key (comment style to convert html easily)
+   * Generate unique key
    * @return string
    */
   private function generateKey() {
-    $new_key = '<!-- '.self::$key_prefix . $this->currentKeyNumber . ' -->';
+    $new_key = self::$key_prefix . $this->currentKeyNumber;
 
     $this->currentKeyNumber++;
     return $new_key;

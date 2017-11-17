@@ -108,10 +108,10 @@
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
-      $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
+      $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003ch1 wovn-ignore\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003e\u003c\u002fh1\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><!-- __wovn-backend-ignored-key-0 -->hello</body></html>";
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],

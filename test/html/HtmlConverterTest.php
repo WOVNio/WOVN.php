@@ -171,7 +171,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body>$keys[0]</body></html>", $translated_html);
+    $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleWovnIgnore() {
@@ -181,7 +181,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
-    $this->assertEquals("<html><body>$keys[0]ignore$keys[1]</body></html>", $translated_html);
+    $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a>ignore<div wovn-ignore>$keys[1]</div></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithForm() {
@@ -191,7 +191,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body>$keys[0]world</body></html>", $translated_html);
+    $this->assertEquals("<html><body><form>$keys[0]</form>world</body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleForm() {
@@ -201,7 +201,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
-    $this->assertEquals("<html><body>$keys[0]world$keys[1]</body></html>", $translated_html);
+    $this->assertEquals("<html><body><form>$keys[0]</form>world<form>$keys[1]</form></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithFormAndWovnIgnore() {
@@ -211,7 +211,27 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body>$keys[0]world</body></html>", $translated_html);
+    $this->assertEquals("<html><body><form wovn-ignore>$keys[0]</form>world</body></html>", $translated_html);
+  }
+
+  public function testConvertToAppropriateForApiBodyWithHiddenInput() {
+    $html = '<html><body><input type="hidden" value="aaaaa">world</body></html>';
+    $converter = new HtmlConverter($html, 'UTF-8', 'toK3n');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    $keys = $marker->keys();
+
+    $this->assertEquals(1, count($keys));
+    $this->assertEquals("<html><body><input type=\"hidden\" value=\"$keys[0]\">world</body></html>", $translated_html);
+  }
+
+  public function testConvertToAppropriateForApiBodyWithHiddenInputMultipleTimes() {
+    $html = '<html><body><input type="hidden" value="aaaaa">world<input type="hidden" value="aaaaa"></body></html>';
+    $converter = new HtmlConverter($html, 'UTF-8', 'toK3n');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    $keys = $marker->keys();
+
+    $this->assertEquals(2, count($keys));
+    $this->assertEquals("<html><body><input type=\"hidden\" value=\"$keys[0]\">world<input type=\"hidden\" value=\"$keys[1]\"></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithScript() {
@@ -221,7 +241,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body>$keys[0]world</body></html>", $translated_html);
+    $this->assertEquals("<html><body><script>$keys[0]</script>world</body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleScript() {
@@ -231,7 +251,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
-    $this->assertEquals("<html><head>$keys[0]</head><body>world$keys[1]</body></html>", $translated_html);
+    $this->assertEquals("<html><head><script>$keys[0]</script></head><body>world<script>$keys[1]</script></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithComment() {
@@ -241,7 +261,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body>hello$keys[0]  world</body></html>", $translated_html);
+    $this->assertEquals("<html><body>hello<!-- backend-wovn-ignore    -->$keys[0]<!--/backend-wovn-ignore-->  world</body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleComment() {
@@ -260,9 +280,9 @@ bye
 
     $this->assertEquals(2, count($keys));
 
-    $expected_html = "<html><body>hello$keys[0]  world
+    $expected_html = "<html><body>hello<!-- backend-wovn-ignore    -->$keys[0]<!--/backend-wovn-ignore-->  world
 line break
-$keys[1]
+<!-- backend-wovn-ignore    -->$keys[1]<!--/backend-wovn-ignore-->
 bye
 </body></html>";
     $this->assertEquals($expected_html, $translated_html);
