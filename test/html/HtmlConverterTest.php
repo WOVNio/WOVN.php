@@ -102,7 +102,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(0, count($keys));
 
-    $expected_html = "<html><body><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -115,7 +115,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(0, count($keys));
 
-    $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
+    $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -128,7 +128,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(0, count($keys));
 
-    $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script>hello<a>world</a></html>";
+    $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>hello<a>world</a></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -142,7 +142,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(0, count($keys));
 
-    $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script>こんにちは</html>";
+    $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
     $expected_html = mb_convert_encoding($expected_html, 'SJIS');
     $this->assertEquals($expected_html, $translated_html);
   }
@@ -158,7 +158,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
       $this->assertEquals(0, count($keys));
 
-      $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script>こんにちは</html>";
+      $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
       $expected_html = mb_convert_encoding($expected_html, $encoding);
       $this->assertEquals($expected_html, $translated_html);
     }

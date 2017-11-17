@@ -78,7 +78,7 @@ class HtmlConverter {
       $parents = $dom->find($tag_name);
       if (count($parents) > 0) {
         $parent = $parents[0];
-        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token' async></script>" . $parent->innertext;
+        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>" . $parent->innertext;
         return;
       }
     }

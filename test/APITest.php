@@ -78,7 +78,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -111,7 +111,7 @@
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
