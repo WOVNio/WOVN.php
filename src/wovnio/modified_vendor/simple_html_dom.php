@@ -1,5 +1,9 @@
 <?php
 /**
+ * Modified from simplehtmldom
+ */
+
+/**
  * Website: http://sourceforge.net/projects/simplehtmldom/
  * Additional projects that may be used: http://sourceforge.net/projects/debugobject/
  * Acknowledge: Jose Solorzano (https://sourceforge.net/projects/php-html/)
@@ -39,6 +43,8 @@
  * @subpackage simple_html_dom
  */
 
+namespace Wovnio\ModifiedVendor;
+
 /**
  * All of the Defines for the classes below.
  * @author S.C. Chen <me578022@gmail.com>
@@ -64,46 +70,6 @@ define('DEFAULT_TARGET_CHARSET', 'UTF-8');
 define('DEFAULT_BR_TEXT', "\r\n");
 define('DEFAULT_SPAN_TEXT', " ");
 define('MAX_FILE_SIZE', 600000);
-// helper functions
-// -----------------------------------------------------------------------------
-// get html dom from file
-// $maxlen is defined in the code as PHP_STREAM_COPY_ALL which is defined as -1.
-function file_get_html($url, $use_include_path = false, $context=null, $offset = -1, $maxLen=-1, $lowercase = true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
-{
-	// We DO force the tags to be terminated.
-	$dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
-	// For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
-	$contents = file_get_contents($url, $use_include_path, $context, $offset);
-	// Paperg - use our own mechanism for getting the contents as we want to control the timeout.
-	//$contents = retrieve_url_contents($url);
-	if (empty($contents) || strlen($contents) > MAX_FILE_SIZE)
-	{
-		return false;
-	}
-	// The second parameter can force the selectors to all be lowercase.
-	$dom->load($contents, $lowercase, $stripRN);
-	return $dom;
-}
-
-// get html dom from string
-function str_get_html($str, $lowercase=true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
-{
-	$dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
-	if (empty($str) || strlen($str) > MAX_FILE_SIZE)
-	{
-		$dom->clear();
-		return false;
-	}
-	$dom->load($str, $lowercase, $stripRN);
-	return $dom;
-}
-
-// dump html dom tree
-function dump_html_tree($node, $show_attr=true, $deep=0)
-{
-	$node->dump($node);
-}
-
 
 /**
  * simple html dom node
@@ -1028,7 +994,45 @@ class simple_html_dom
 		'option'=>array('option'=>1),
 	);
 
-	function __construct($str=null, $lowercase=true, $forceTagsClosed=true, $target_charset=DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+  // get html dom from file
+  // $maxlen is defined in the code as PHP_STREAM_COPY_ALL which is defined as -1.
+  public static function file_get_html($url, $charset, $use_include_path = false, $context=null, $offset = -1, $maxLen=-1, $lowercase = true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+  {
+    // We DO force the tags to be terminated.
+    $dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
+    // For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
+    $contents = file_get_contents($url, $use_include_path, $context, $offset);
+    // Paperg - use our own mechanism for getting the contents as we want to control the timeout.
+    //$contents = retrieve_url_contents($url);
+    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE)
+    {
+      return false;
+    }
+    // The second parameter can force the selectors to all be lowercase.
+    $dom->load($contents, $lowercase, $stripRN);
+    return $dom;
+  }
+
+  // get html dom from string
+  public static function str_get_html($str, $charset, $lowercase=true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+  {
+    $dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
+    if (empty($str) || strlen($str) > MAX_FILE_SIZE)
+    {
+      $dom->clear();
+      return false;
+    }
+    $dom->load($str, $charset, $lowercase, $stripRN);
+    return $dom;
+  }
+
+  // dump html dom tree
+  public static function dump_html_tree($node, $show_attr=true, $deep=0)
+  {
+    $node->dump($node);
+  }
+
+	function __construct($str=null, $charset=null, $lowercase=true, $forceTagsClosed=true, $target_charset=DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
 	{
 		if ($str)
 		{
@@ -1038,7 +1042,7 @@ class simple_html_dom
 			}
 			else
 			{
-				$this->load($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
+				$this->load($str, $charset, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
 			}
 		}
 		// Forcing tags to be closed implies that we don't trust the html, but it can lead to parsing errors if we SHOULD trust the html.
@@ -1054,7 +1058,7 @@ class simple_html_dom
 	}
 
 	// load html from string
-	function load($str, $lowercase=true, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+	function load($str, $charset, $lowercase=true, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
 	{
 		global $debug_object;
 
@@ -1083,7 +1087,11 @@ class simple_html_dom
 		while ($this->parse());
 		// end
 		$this->root->_[HDOM_INFO_END] = $this->cursor;
-		$this->parse_charset();
+		if ($charset) {
+      $this->_charset = $charset;
+    } else {
+      $this->parse_charset();
+    }
 
 		// make load function chainable
 		return $this;

@@ -21,8 +21,9 @@
       $translated_content = NULL;
       $api_url = self::url($store, $headers, $original_content);
 
+      $encoding = $store->settings['encoding'];
       $token = $store->settings['project_token'];
-      $converter = new HtmlConverter($original_content, $token);
+      $converter = new HtmlConverter($original_content, $encoding, $token);
       list($converted_html, $marker) = $converter->convertToAppropriateForApiBody();
       $timeout = $store->settings['api_timeout'];
       $data = array(

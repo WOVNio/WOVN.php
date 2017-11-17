@@ -1,22 +1,28 @@
 <?php
 namespace Wovnio\Html;
 
+use Wovnio\ModifiedVendor\simple_html_dom;
 /**
  * Convert html via Simple HTML DOM Parser
  *
  * @see http://simplehtmldom.sourceforge.net/manual.htm
  */
 class HtmlConverter {
+  public static $supported_encodings = array('UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII');
+
   private $html;
+  private $encoding;
   private $token;
 
   /**
    * HtmlConverter constructor.
    * @param String $html
+   * @param String $encoding
    * @param String $token project_token
    */
-  public function __construct($html, $token) {
+  public function __construct($html, $encoding, $token) {
     $this->html = $html;
+    $this->encoding = $encoding;
     $this->token = $token;
   }
 
@@ -27,9 +33,14 @@ class HtmlConverter {
    * @return array converted html and HtmlReplaceMarker
    */
   public function convertToAppropriateForApiBody() {
-    // encoding detection uses 30% of execution time for this method, should we make encoding as setting?
-    $encoding = mb_detect_encoding($this->html, array('UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII'));
-    $dom = str_get_html($this->html, false, false, $encoding, false);
+    if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
+      $encoding = $this->encoding;
+    } else {
+      // Encoding detection uses 30% of execution time for this method.
+      $encoding = mb_detect_encoding($this->html, self::$supported_encodings);
+    }
+
+    $dom = simple_html_dom::str_get_html($this->html, $encoding, false, false, $encoding, false);
     $marker = new HtmlReplaceMarker();
     $this->insertSnippet($dom);
     $this->removeWovnIgnore($dom, $marker);
