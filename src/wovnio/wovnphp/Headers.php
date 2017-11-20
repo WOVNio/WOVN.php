@@ -167,7 +167,7 @@
       $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
       preg_match($rp, $server_name . $this->_env['REQUEST_URI'], $match);
       if (isset($match['lang'])) {
-        $lang_code = Lang::formatLangCode($match['lang']);
+        $lang_code = Lang::formatLangCode($match['lang'], $this->store);
         if (!is_null($lang_code)) {
           $this->_pathLang = $lang_code;
         }
@@ -213,7 +213,7 @@
               break;
             }
           }
-        } 
+        }
       }
       return $this->_browserLang;
     }
@@ -326,7 +326,7 @@
           foreach ($locationHeaders as $locationHeader) {
             if (array_key_exists($locationHeader, $responseHeaders)) {
               $redirectLocation = $responseHeaders[$locationHeader];
-              $newLocation = Url::addLangCode($redirectLocation, $this->store->settings['url_pattern_name'], $lang, $this);
+              $newLocation = Url::addLangCode($redirectLocation, $this->store, $lang, $this);
 
               header($locationHeader . ': ' . $newLocation);
             }
@@ -347,7 +347,8 @@
         $lang = $this->pathLang();
       }
 
-      return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang);
+      $lang_code = $this->store->convertToCustomLangCode($lang);
+      return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
     }
 
     /**
