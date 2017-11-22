@@ -69,8 +69,8 @@
   /**
      * Updates the current settings of the user in the class \n
      *
-     * @param {Array} $vals The vals to update in the settings
-     * @return {Array} The new settings of the user
+     * @param array $vals The vals to update in the settings
+     * @return array The new settings of the user
      */
     public function updateSettings($vals=array()) {
       // GETTING THE LANGUAGE AND SETTING IT AS CODE

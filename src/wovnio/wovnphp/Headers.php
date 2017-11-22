@@ -26,8 +26,8 @@
     /**
      * Constructor of the Headers class
      *
-     * @param {Array} &$env Contains the _SERVER env variable
-     * @param {Store} &$store The store containing user settings
+     * @param array &$env Contains the _SERVER env variable
+     * @param Store &$store The store containing user settings
      * @return void
      */
     public function __construct(&$env, &$store) {
@@ -97,7 +97,7 @@
      *  - Will remove query params not include in the settings
      *  - Will sort the query params in order and deliver a valid string
      *
-     * @return {String} A valid query params string with '?' and separators '&'
+     * @return String A valid query params string with '?' and separators '&'
      */
     public function matchQuery($urlQuery, $querySettings) {
       if (empty($urlQuery) || empty($querySettings)) return '';
@@ -123,7 +123,7 @@
     /**
      * Public function returning the _env variable
      *
-     * @return {Array} The environment
+     * @return array The environment
      */
     public function env() {
       return $this->_env;
@@ -132,7 +132,7 @@
     /**
      * Public function returning an url array with protocol, host, pathname
      *
-     * @return {Array} The url array
+     * @return array The url array
      */
     public function getUrlArray() {
       $url = array();
@@ -145,7 +145,7 @@
     /**
      * Public function returns the pathLang if exists or the default lang in the store
      *
-     * @return {String} The lang
+     * @return String The lang
      */
     public function lang() {
       return ($this->pathLang() && strlen($this->pathLang()) > 0) ? $this->pathLang() : $this->store->settings['default_lang'];
@@ -154,7 +154,7 @@
     /**
      * Public function returning the pathLang 
      *
-     * @return {String} The path lang
+     * @return String The path lang
      */
   public function pathLang() {
     if ($this->_pathLang === null) {
@@ -182,7 +182,7 @@
     /**
      * Public function returning the lang of the user's browser
      *
-     * @return {String} The browser lang
+     * @return String The browser lang
      */
     public function browserLang() {
       if ($this->_browserLang === null) {
@@ -221,8 +221,8 @@
     /**
      * Public function returning the location of the redirection
      *
-     * @param {String} $lang The lang to display, can be null or empty 
-     * @return {String} The url of the redirections location
+     * @param String $lang The lang to display, can be null or empty 
+     * @return String The url of the redirections location
      */
     public function redirectLocation($lang=null) {
       if ($lang === null)
@@ -256,8 +256,8 @@
      * Public function returning the _env environement for the request out 
      * The _env must be the same as if the user visited the page without the interceptor
      *
-     * @param {String} $defLang The default lang of the page
-     * @return {Array} The environment
+     * @param String $defLang The default lang of the page
+     * @return array The environment
      */
     public function requestOut($includePath, $defLang=null) {
       if ($defLang === null)
@@ -338,9 +338,9 @@
     /**
      * Public function removing the lang of the url 
      *
-     * @param {String} $uri The url with the lang
-     * @param {String} $lang The lang to remove 
-     * @return {Array} The url without the lang
+     * @param String $uri The url with the lang
+     * @param String $lang The lang to remove 
+     * @return array The url without the lang
      */
     public function removeLang($uri, $lang=null) {
       if ($lang === null) {
@@ -355,8 +355,8 @@
      * Public function setting the query param of the page in the _env
      * Query and param should look like this: param=value
      *
-     * @param {String} $param The query param (param=)
-     * @param {String} $val The value of the query param (=value)
+     * @param String $param The query param (param=)
+     * @param String $val The value of the query param (=value)
      * @return void
      */
     public function setQueryParam($param, $val) {
@@ -407,7 +407,7 @@
     /**
      * Set all query params in the passed-in array
      *
-     * @param {Array} $queryArray The array of query=val Strings to set
+     * @param array $queryArray The array of query=val Strings to set
      * @return void
      */
     public function setQueryParams($queryArray) {
@@ -446,7 +446,7 @@
     * Make a redirection with a 301 code to a specified location
     * and dies
     * 
-    * @param {String} $location The location where to make the redirection 
+    * @param String $location The location where to make the redirection 
     */ 
     public function redirectTo($location) {
       header('Location: ' . $location, TRUE, 301);die();

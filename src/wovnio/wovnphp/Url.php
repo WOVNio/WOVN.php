@@ -5,9 +5,9 @@ class Url {
   /**
    * Escapes a text to be used inside of a regular expression.
    *
-   * @param {String} text The text to escape.
+   * @param String $text The text to escape.
    *
-   * @return {String} The text escaped to be used inside a regular expression.
+   * @return String The text escaped to be used inside a regular expression.
    */
   private static function formatForRegExp($text) {
     return str_replace('$', '\$', str_replace("\\", "\\\\", $text));
@@ -16,12 +16,12 @@ class Url {
   /**
    * Adds a language code to a uri.
    *
-   * @param {String}  uri     The uri to modify.
-   * @param {Store} store
-   * @param {String}  lang    The language code to add to the uri.
-   * @param {Headers} headers The headers.
+   * @param String  $uri     The uri to modify.
+   * @param Store $store
+   * @param String  $lang    The language code to add to the uri.
+   * @param Headers $headers The headers.
    *
-   * @return {String} The new uri containing the language code.
+   * @return String The new uri containing the language code.
    */
   public static function addLangCode($uri, $store, $lang, $headers) {
     if (!$lang || strlen($lang) == 0) {
@@ -123,10 +123,10 @@ class Url {
   /**
    * Adds a language code to a uri using query pattern.
    *
-   * @param {String}  uri     The uri to modify.
-   * @param {String}  lang_code    The language code to add to the uri.
+   * @param String  $uri     The uri to modify.
+   * @param String  $lang_code    The language code to add to the uri.
    *
-   * @return {String} The new uri containing the language code.
+   * @return String The new uri containing the language code.
    */
   private static function addQueryLangCode($uri, $lang_code) {
     $sep = '?';
@@ -139,10 +139,10 @@ class Url {
   /**
    * Public function removing the lang of the url
    *
-   * @param {String} $uri The url with the lang
-   * @param {String} $pattern
-   * @param {String} $lang_code The lang to remove
-   * @return {Array} The url without the lang
+   * @param String $uri The url with the lang
+   * @param String $pattern
+   * @param String $lang_code The lang to remove
+   * @return array The url without the lang
    */
   public static function removeLangCode($uri, $pattern, $lang_code) {
     if (!$lang_code || strlen($lang_code) == 0) {
