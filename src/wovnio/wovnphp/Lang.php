@@ -43,13 +43,16 @@ class Lang {
      * Get a formatted code from a given one. Formatting provides propper
      * capitalization as expected by Lang component.
      *
-     * @param {String} $lang_code Code to format.
-     * @return {String} The format code.
+     * @param String $lang_code Code to format.
+     * @param Store $store
+     * @return String The format code.
      */
-    public static function formatLangCode($lang_code=null) {
+    public static function formatLangCode($lang_code, $store) {
       if ($lang_code === null) {
         return null;
       }
+
+      $lang_code = $store->convertToOriginalCode($lang_code);
 
       if (isset(Lang::$lang[$lang_code])) {
         return $lang_code;
@@ -67,8 +70,8 @@ class Lang {
     /**
      * Get the code of the lang given either a code, an original name or an English name\n
      *
-     * @param {String} $lang_name Code, Original Name or English name of the lang
-     * @return {String} The code of the lang
+     * @param String $lang_name Code, Original Name or English name of the lang
+     * @return String The code of the lang
      */
     public static function getCode($lang_name=null) {
       if ($lang_name === null) {
@@ -88,7 +91,7 @@ class Lang {
     /**
      * Get the English names supported by WOVN++\n
      *
-     * @return {Array} The English names
+     * @return array The English names
      */
     public static function getEnglishNamesArray() {
       $englishNamesArray = array();
@@ -102,9 +105,9 @@ class Lang {
      * Provides the ISO639-1 code for a given lang code.
      * Source: https://support.google.com/webmasters/answer/189077?hl=en
      *
-     * @param {String} $lang_code Code of the language.
+     * @param String $lang_code Code of the language.
      *
-     * @return {String} The ISO639-1 code of the language.
+     * @return String The ISO639-1 code of the language.
      */
     public static function iso639_1Normalization($lang_code) {
       return str_replace('zh-CHT', 'zh-Hant', str_replace('zh-CHS', 'zh-Hans', $lang_code));

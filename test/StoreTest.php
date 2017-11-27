@@ -135,7 +135,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     file_put_contents($file_config, $data);
     $store = new Store($file_config);
     unlink($file_config);
-    $this->assertEquals('https://api.wovn.io/v0/', $store->settings['api_url']);
+    $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
     $this->assertArrayHasKey('use_proxy', $store->settings);
     $this->assertEquals(1, $store->settings['use_proxy']);
   }
@@ -209,7 +209,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     file_put_contents($file_config, $data);
     $store = new Store($file_config);
     unlink($file_config);
-    $this->assertEquals('https://api.wovn.io/v0/', $store->settings['api_url']);
+    $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
   }
 
   public function testCustomApiUrlSettingNotChangedWithWovnDevModeOn() {

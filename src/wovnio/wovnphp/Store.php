@@ -24,7 +24,7 @@
       }
       $defaultSettings = $this->defaultSettings();
       if (file_exists($settingsFile)) {
-        $userSettings = $this->updateSettings(parse_ini_file($settingsFile));
+        $userSettings = $this->updateSettings(parse_ini_file($settingsFile, true));
       }
       else {
         $userSettings = array();
@@ -48,7 +48,7 @@
         'url_pattern_name' => 'query',
         'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
         'query' => array(),
-        'api_url' => 'https://api.wovn.io/v0/',
+        'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
         'api_error_host' => 'api.wovn.io',
         'api_error_port' => 443,
         'api_error_path' => '/v0/errors',
@@ -56,6 +56,7 @@
         'default_lang' => 'en',
         'encoding' => null,
         'supported_langs' => array('en'),
+        'custom_lang_aliases' => array(),
         'test_mode' => false,
         'test_url' => '',
         'use_proxy' => false,
@@ -70,8 +71,8 @@
   /**
      * Updates the current settings of the user in the class \n
      *
-     * @param {Array} $vals The vals to update in the settings
-     * @return {Array} The new settings of the user
+     * @param array $vals The vals to update in the settings
+     * @return array The new settings of the user
      */
     public function updateSettings($vals=array()) {
       // GETTING THE LANGUAGE AND SETTING IT AS CODE
@@ -104,6 +105,10 @@
         $vals['encoding'] = null;
       }
 
+      if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
+        $vals['custom_lang_aliases'] = array();
+      }
+
       // update settings if wovn dev mode is activated
       $defaultSettings = $this->defaultSettings();
       if ($this->isWovnDevModeActivated($vals) && (!array_key_exists('api_url', $vals) || $vals['api_url'] === $defaultSettings['api_url'])) {
@@ -130,5 +135,23 @@
       if ($settings === null) $settings = $this->settings;
 
       return ($this->isWovnDevModeActivated($settings)) ? 'dev-wovn.io:3000' : 'wovn.io';
+    }
+
+    public function convertToCustomLangCode($lang_code) {
+      if (isset($this->settings['custom_lang_aliases'][$lang_code])) {
+        return $this->settings['custom_lang_aliases'][$lang_code];
+      }
+
+      return $lang_code;
+    }
+
+    public function convertToOriginalCode($lang_code) {
+      foreach($this->settings['custom_lang_aliases'] as $lang => $custom_lang) {
+        if ($lang_code == $custom_lang) {
+          return $lang;
+        }
+      }
+
+      return $lang_code;
     }
   }
