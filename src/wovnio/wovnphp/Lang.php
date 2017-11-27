@@ -44,12 +44,15 @@ class Lang {
      * capitalization as expected by Lang component.
      *
      * @param String $lang_code Code to format.
+     * @param Store $store
      * @return String The format code.
      */
-    public static function formatLangCode($lang_code=null) {
+    public static function formatLangCode($lang_code, $store) {
       if ($lang_code === null) {
         return null;
       }
+
+      $lang_code = $store->convertToOriginalCode($lang_code);
 
       if (isset(Lang::$lang[$lang_code])) {
         return $lang_code;

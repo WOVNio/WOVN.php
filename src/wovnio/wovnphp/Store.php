@@ -23,7 +23,7 @@
       }
       $defaultSettings = $this->defaultSettings();
       if (file_exists($settingsFile)) {
-        $userSettings = $this->updateSettings(parse_ini_file($settingsFile));
+        $userSettings = $this->updateSettings(parse_ini_file($settingsFile, true));
       }
       else {
         $userSettings = array();
@@ -54,6 +54,7 @@
         'api_timeout' => 1.0,
         'default_lang' => 'en',
         'supported_langs' => array('en'),
+        'custom_lang_aliases' => array(),
         'test_mode' => false,
         'test_url' => '',
         'use_proxy' => false,
@@ -68,8 +69,8 @@
   /**
      * Updates the current settings of the user in the class \n
      *
-     * @param {Array} $vals The vals to update in the settings
-     * @return {Array} The new settings of the user
+     * @param array $vals The vals to update in the settings
+     * @return array The new settings of the user
      */
     public function updateSettings($vals=array()) {
       // GETTING THE LANGUAGE AND SETTING IT AS CODE
@@ -95,6 +96,10 @@
       else {
         $vals['url_pattern_name'] = 'path';
         $vals['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+      }
+
+      if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
+        $vals['custom_lang_aliases'] = array();
       }
 
       // update settings if wovn dev mode is activated
@@ -123,5 +128,23 @@
       if ($settings === null) $settings = $this->settings;
 
       return ($this->isWovnDevModeActivated($settings)) ? 'dev-wovn.io:3000' : 'wovn.io';
+    }
+
+    public function convertToCustomLangCode($lang_code) {
+      if (isset($this->settings['custom_lang_aliases'][$lang_code])) {
+        return $this->settings['custom_lang_aliases'][$lang_code];
+      }
+
+      return $lang_code;
+    }
+
+    public function convertToOriginalCode($lang_code) {
+      foreach($this->settings['custom_lang_aliases'] as $lang => $custom_lang) {
+        if ($lang_code == $custom_lang) {
+          return $lang;
+        }
+      }
+
+      return $lang_code;
     }
   }

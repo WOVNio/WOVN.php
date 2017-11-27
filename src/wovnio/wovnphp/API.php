@@ -11,7 +11,8 @@
       $path = $headers->pathname;
       $lang = $headers->lang();
       $body_hash = md5($original_content);
-      $settings_hash = md5(serialize(asort($store->settings)));
+      ksort($store->settings);
+      $settings_hash = md5(serialize($store->settings));
       $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
       return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
@@ -27,6 +28,10 @@
         'url_pattern' => $store->settings['url_pattern_name'],
         'body' => $original_content
       );
+
+      if (count($store->settings['custom_lang_aliases']) > 0) {
+        $data['custom_lang_aliases'] = json_encode($store->settings['custom_lang_aliases']);
+      }
 
       try {
         $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);

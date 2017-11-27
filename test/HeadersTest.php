@@ -731,6 +731,21 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://wovn.io', $simplified);
   }
 
+  public function testRemoveLangWithCustomLang () {
+    $store = $this->createStore();
+    $store->settings['custom_lang_aliases'] = array('ja' => 'ja-test');
+
+    $this->assertEquals('path', $store->settings['url_pattern_name']);
+    $env = $this->getEnv();
+    $headers = new Headers($env, $store);
+
+    $without_scheme = $headers->removeLang('wovn.io/ja-test', 'ja');
+    $this->assertEquals('wovn.io/', $without_scheme);
+
+    $with_scheme = $headers->removeLang('https://wovn.io/en/', 'en');
+    $this->assertEquals('https://wovn.io/', $with_scheme);
+  }
+
   public function testPathLangWithPathPattern () {
     $store = $this->createStore();
     $this->assertEquals('path', $store->settings['url_pattern_name']);
@@ -996,7 +1011,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
   }
 
-public function testResponseOutWithDefaultLangAndSubdomainPattern() {
+  public function testResponseOutWithDefaultLangAndSubdomainPattern() {
     Wovnio\Wovnphp\mock_headers_sent(false);
     Wovnio\Wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
@@ -1150,6 +1165,30 @@ public function testResponseOutWithDefaultLangAndSubdomainPattern() {
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://google.com/index.php', $receivedHeaders[0]);
+  }
+
+  public function testResponseOutWithNotDefaultAlreadyInRedirectLocationCustomLangAndSubdomainPattern() {
+    Wovnio\Wovnphp\mock_headers_sent(false);
+    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+      'Location' => 'http://fr-test.localhost/index.php'
+    ));
+    Wovnio\Wovnphp\mock_header();
+
+    $env = $this->getEnv();
+    $env['HTTP_HOST'] = 'fr-test.localhost';
+    $env['SERVER_NAME'] = 'fr-test.localhost';
+    $env['REQUEST_URI'] = 'http://fr-test.localhost/test';
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'subdomain';
+    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
+    $store->settings['custom_lang_aliases'] = array('fr' => 'fr-test');
+    $headers = new Headers($env, $store);
+
+    $headers->responseOut();
+    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+
+    $this->assertEquals(1, count($receivedHeaders));
+    $this->assertEquals('Location: http://fr-test.localhost/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithDefaultLangAndPathPattern() {
