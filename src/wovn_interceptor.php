@@ -28,7 +28,12 @@
     $headers->responseOut();
 
     if(!empty($buffer) && $buffer != strip_tags($buffer)) {
-      $translated_buffer = API::translate($store, $headers, $buffer);
+      if ($store->settings['disable_api_on_default_lang'] && $headers->lang() == $store->settings['default_lang']) {
+        $translated_buffer = $buffer;
+      }
+      else {
+        $translated_buffer = API::translate($store, $headers, $buffer);
+      }
 
       if ($translated_buffer !== NULL && !empty($translated_buffer)) {
         Utils::changeHeaders($translated_buffer, $store);
