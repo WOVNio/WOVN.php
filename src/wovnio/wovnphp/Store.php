@@ -63,7 +63,8 @@
         'include_dir' => '',
         'directory_index' => '',
         'wovn_dev_mode' => false,
-        'use_server_error_settings' => false
+        'use_server_error_settings' => false,
+        'disable_api_on_default_lang' => false
       );
     }
   /**
