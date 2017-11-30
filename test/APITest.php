@@ -19,7 +19,7 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   class APITest extends PHPUnit_Framework_TestCase {
-    private function getEnv($num="") {
+    private function getEnv($num = "") {
       $env = array();
       $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
       $env = $file['env'];
@@ -204,5 +204,61 @@
 
       $result = API::translate($store, $headers, $html);
       $this->assertTrue($result === NULL);
+    }
+
+    public function testTranslateWithoutMakingAPICallBySetting() {
+      $env = $this->getEnv('_path');
+      list($store, $headers) = Utils::getStoreAndHeaders($env);
+      $store->settings['disable_api_request_for_default_lang'] = true;
+      $store->settings['default_lang'] = 'en';
+
+      $html = '<html><head></head><body><h1>en</h1></body></html>';
+      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src=\'//j.wovn.io/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async></script></head><body><h1>en</h1></body></html>';
+
+      $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
+      $mock->expects($this->never())->method('sendRequest');
+      RequestHandlerFactory::set_instance($mock);
+
+      $result = API::translate($store, $headers, $html);
+      $this->assertTrue($result === $expected_result);
+    }
+
+    public function testTranslateWhenDefaultLangAndSettingIsOff() {
+      $env = $this->getEnv('_path');
+      list($store, $headers) = Utils::getStoreAndHeaders($env);
+      $store->settings['disable_api_request_for_default_lang'] = false;
+      $store->settings['default_lang'] = 'en';
+      $store->settings['url_pattern_name'] = 'path';
+
+      $html = '<html><head></head><body><h1>en</h1></body></html>';
+
+      $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/en/ja/t.php\"><script src='//j.wovn.io/1' data-wovnio='key=' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $response = '{"body":"<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http:\/\/localhost.com\/ja\/t.php?wovn=en\"><script src=\'\/\/j.wovn.io\/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async><\/script><\/head><body><h1>fr<\/h1><\/body><\/html>"}';
+
+      $expected_data = array(
+        'url' => $headers->url,
+        'token' => $store->settings['project_token'],
+        'lang_code' => $headers->lang(),
+        'url_pattern' => 'path',
+        'body' => $expected_html
+      );
+
+      $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
+      $mock->expects($this->once())
+        ->method('sendRequest')
+        ->with(
+          $this->equalTo('POST'),
+          $this->equalTo($expected_url),
+          $this->equalTo($expected_data),
+          $this->equalTo(1.0)
+        )
+        ->willReturn($response);
+      RequestHandlerFactory::set_instance($mock);
+
+      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src=\'//j.wovn.io/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async></script></head><body><h1>fr</h1></body></html>';
+
+      $result = API::translate($store, $headers, $html);
+      $this->assertTrue($result === $expected_result);
     }
   }
