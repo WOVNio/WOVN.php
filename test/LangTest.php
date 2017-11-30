@@ -49,9 +49,6 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(is_array($array));
   }
 
-  /**
-   * @group test
-   */
   public function testISO639_1Normalization () {
     $this->assertEquals('ar',       Lang::iso639_1Normalization('ar'));
     $this->assertEquals('bg',       Lang::iso639_1Normalization('bg'));

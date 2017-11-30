@@ -48,7 +48,7 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody($removeParts=true)
+  public function convertToAppropriateForApiBody($removeParts = true)
   {
     if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
       $encoding = $this->encoding;
@@ -65,7 +65,6 @@ class HtmlConverter
 
     $marker = new HtmlReplaceMarker();
     if ($removeParts) {
-      echo 'doing it here';
       $this->removeWovnIgnore($dom, $marker);
       $this->removeForm($dom, $marker);
       $this->removeScript($dom, $marker);
@@ -79,7 +78,6 @@ class HtmlConverter
     unset($dom);
 
     if ($removeParts) {
-      echo 'doing it';
       $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
     }
     return array($converted_html, $marker);

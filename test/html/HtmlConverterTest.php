@@ -298,9 +298,6 @@ bye
     $this->assertEquals($expected_html, $translated_html);
   }
 
-  /**
-   * @group test
-   */
   public function testInsertHreflang() {
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang.html');
@@ -314,16 +311,13 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
 
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
-  /**
-   * @group test
-   */
   public function testInsertHreflangWithCustomLangAliasAndChinese() {
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/basic_html/insert_hreflang.html');

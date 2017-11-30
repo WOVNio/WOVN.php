@@ -242,9 +242,6 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://test-api.io', $store->settings['api_url']);
   }
 
-  /**
-   * @group test
-   */
   public function testConvertToCustomLangCode() {
     $file_config = dirname(__FILE__) . '/test_config.ini';
     if (file_exists($file_config)) {
