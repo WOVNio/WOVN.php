@@ -140,7 +140,7 @@
       $result = API::translate($store, $headers, $html);
       $this->assertEquals($expected_result, $result);
     }
-/*
+
     public function testTranslateWithWovnIgnore() {
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
@@ -205,5 +205,4 @@
       $result = API::translate($store, $headers, $html);
       $this->assertTrue($result === NULL);
     }
-*/
   }
