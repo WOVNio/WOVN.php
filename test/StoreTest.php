@@ -241,4 +241,22 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     unlink($file_config);
     $this->assertEquals('https://test-api.io', $store->settings['api_url']);
   }
+
+  /**
+   * @group test
+   */
+  public function testConvertToCustomLangCode() {
+    $file_config = dirname(__FILE__) . '/test_config.ini';
+    if (file_exists($file_config)) {
+      unlink($file_config);
+    }
+    $data = 'project_token = "T0k3N"' . "\n" .
+            'default_lang = "English"' . "\n" .
+            'custom_lang_aliases["ja"] = "ja-test"' . "\n" .
+            'wovn_dev_mode = 0' . "\n";
+    file_put_contents($file_config, $data);
+    $store = new Store($file_config);
+    unlink($file_config);
+    $this->assertEquals('ja-test', $store->convertToCustomLangCode('ja'));
+  }
 }
