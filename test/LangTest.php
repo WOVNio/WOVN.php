@@ -80,6 +80,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('tr',       Lang::iso639_1Normalization('tr'));
     $this->assertEquals('uk',       Lang::iso639_1Normalization('uk'));
     $this->assertEquals('vi',       Lang::iso639_1Normalization('vi'));
+    $this->assertEquals(null,       Lang::iso639_1Normalization('fake'));
   }
 
 }

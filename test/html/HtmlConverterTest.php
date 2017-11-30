@@ -1,14 +1,24 @@
 <?php
 require_once 'src/wovnio/html/HtmlConverter.php';
 require_once 'src/wovnio/html/HtmlReplaceMarker.php';
-
+require_once 'src/wovnio/wovnphp/Utils.php';
+require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
 
 use Wovnio\Html\HtmlConverter;
+use Wovnio\Wovnphp\Url;
+use Wovnio\Wovnphp\Utils;
 use Wovnio\Html\HtmlReplaceMarker;
 use Wovnio\ModifiedVendor\simple_html_dom;
 
 class HtmlConverterTest extends PHPUnit_Framework_TestCase {
+  private function getEnv($num="") {
+    $env = array();
+    $file = parse_ini_file(dirname(__FILE__) . '/../mock_env' . $num . '.ini');
+    $env = $file['env'];
+    return $env;
+  }
+
   public function testConvertAndRevertAtStackOverflow() {
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/stack_overflow.html');
@@ -286,6 +296,46 @@ line break
 bye
 </body></html>";
     $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testInsertHreflang() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangWithCustomLangAliasAndChinese() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi', 'zh-CHT', 'zh-CHS');
+    $store->settings['custom_lang_aliases'] = array('en' => 'custom_en', 'zh-CHS' => 'custom_simple');
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
   }
 
   private function executeConvert($converter, $html, $charset, $name) {
