@@ -3,6 +3,7 @@
 
   require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
 
+  use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   class API {
@@ -20,13 +21,18 @@
     public static function translate($store, $headers, $original_content) {
       $translated_content = NULL;
       $api_url = self::url($store, $headers, $original_content);
+
+      $encoding = $store->settings['encoding'];
+      $token = $store->settings['project_token'];
+      $converter = new HtmlConverter($original_content, $encoding, $token);
+      list($converted_html, $marker) = $converter->convertToAppropriateForApiBody();
       $timeout = $store->settings['api_timeout'];
       $data = array(
         'url' => $headers->url,
-        'token' => $store->settings['project_token'],
+        'token' => $token,
         'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
-        'body' => $original_content
+        'body' => $converted_html
       );
 
       if (count($store->settings['custom_lang_aliases']) > 0) {
@@ -35,7 +41,7 @@
 
       try {
         $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);
-        $translated_content = $translation_response['body'];
+        $translated_content = $marker->revert($translation_response['body']);
       } catch (\Exception $e) {
         error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
       }

@@ -1,3 +1,4 @@
 project_token = YOUR_PROJECT_TOKEN
 url_pattern_name = query
 default_lang = ja
+encoding = UTF-8

@@ -47,6 +47,8 @@ These are the two main settings for your project
  - project_token: your WOVNio's project token
  - url_pattern: query, path or subdomain (default is query)
  - default_lang: the code of the default language of your website, ex: ja (for Japanese)
+ - encoding: encoding of html. If not specified, detect automatically.
+     Supported encoding: 'UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII'
 
 Please copy the sample file from the library `wovn.ini.sample`, rename it as `wovn.ini` and paste it on your framework root directory (same level as WOVN.php directory)
 -->

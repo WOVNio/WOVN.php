@@ -5,8 +5,14 @@
   require_once 'src/wovnio/wovnphp/Url.php';
   require_once 'src/wovnio/wovnphp/Store.php';
   require_once 'src/wovnio/wovnphp/Headers.php';
+  require_once 'src/wovnio/wovnphp/Lang.php';
+  require_once 'src/wovnio/wovnphp/Url.php';
+  require_once 'src/wovnio/html/HtmlConverter.php';
+  require_once 'src/wovnio/html/HtmlReplaceMarker.php';
   require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
   require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
+
+  require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
 
   use Wovnio\Wovnphp\API;
   use Wovnio\Wovnphp\Utils;
@@ -71,12 +77,14 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
-        'body' => $html
+        'body' => $expected_html
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
 
@@ -100,16 +108,19 @@
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $store->settings['custom_lang_aliases'] = array('ja' => 'ja-test');
+      $token = $store->settings['project_token'];
 
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
+
+      $expected_body = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
-        'body' => $html,
+        'body' => $expected_body,
         'custom_lang_aliases' => '{"ja":"ja-test"}'
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
@@ -130,18 +141,53 @@
       $this->assertEquals($expected_result, $result);
     }
 
+    public function testTranslateWithWovnIgnore() {
+      $env = $this->getEnv('_path');
+      list($store, $headers) = Utils::getStoreAndHeaders($env);
+      $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
+      $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003ch1 wovn-ignore\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003e\u003c\u002fh1\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
+      $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
+      $expected_data = array(
+        'url' => $headers->url,
+        'token' => $store->settings['project_token'],
+        'lang_code' => $headers->lang(),
+        'url_pattern' => 'query',
+        'body' => $expected_html
+      );
+
+      $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
+      $mock->expects($this->once())
+        ->method('sendRequest')
+        ->with(
+          $this->equalTo('POST'),
+          $this->equalTo($expected_url),
+          $this->equalTo($expected_data),
+          $this->equalTo(1.0)
+        )
+        ->willReturn($response);
+      RequestHandlerFactory::set_instance($mock);
+      $expected_result = '<html><head></head><body><h1 wovn-ignore>en</h1>Bonjour</body></html>';
+
+      $result = API::translate($store, $headers, $html);
+      $this->assertEquals($expected_result, $result);
+    }
+
     public function testTranslateWithErrorHandled() {
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
-        'body' => $html
+        'body' => $expected_html
       );
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));

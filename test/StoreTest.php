@@ -3,8 +3,11 @@ ini_set('error_log', null);
 // WARNING all the tests making calls to redis server are commented until we found a way to mock calls 
 // this waste ressources
 
+require_once 'src/wovnio/wovnphp/Lang.php';
+require_once 'src/wovnio/wovnphp/Store.php';
+require_once 'src/wovnio/html/HtmlConverter.php';
+
 use Wovnio\Wovnphp\Store;
-use Wovnio\Wovnphp\Lang;
 
 class StoreTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
@@ -78,6 +81,47 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     $store = new Store($file_config);
     unlink($file_config);
     $this->assertEquals(array('a=', 'b='), $store->settings['query']);
+  }
+
+  public function testEncodingSetting() {
+    $file_config = dirname(__FILE__) . '/test_config.ini';
+    if (file_exists($file_config)) {
+      unlink($file_config);
+    }
+    $data = 'project_token = "T0k3N"' . "\n" .
+      'default_lang = "English"' . "\n" .
+      'encoding = UTF-8' . "\n";
+    file_put_contents($file_config, $data);
+    $store = new Store($file_config);
+    unlink($file_config);
+    $this->assertEquals('UTF-8', $store->settings['encoding']);
+  }
+
+  public function testEncodingSettingWithInvalidEncoding() {
+    $file_config = dirname(__FILE__) . '/test_config.ini';
+    if (file_exists($file_config)) {
+      unlink($file_config);
+    }
+    $data = 'project_token = "T0k3N"' . "\n" .
+      'default_lang = "English"' . "\n" .
+      'encoding = INVALID_ENCODING' . "\n";
+    file_put_contents($file_config, $data);
+    $store = new Store($file_config);
+    unlink($file_config);
+    $this->assertEquals(null, $store->settings['encoding']);
+  }
+
+  public function testEncodingSettingWithoutEncoding() {
+    $file_config = dirname(__FILE__) . '/test_config.ini';
+    if (file_exists($file_config)) {
+      unlink($file_config);
+    }
+    $data = 'project_token = "T0k3N"' . "\n" .
+      'default_lang = "English"' . "\n";
+    file_put_contents($file_config, $data);
+    $store = new Store($file_config);
+    unlink($file_config);
+    $this->assertEquals(null, $store->settings['encoding']);
   }
 
   public function testUseProxySetting() {

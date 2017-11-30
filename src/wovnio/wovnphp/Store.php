@@ -1,5 +1,6 @@
 <?php
   namespace Wovnio\Wovnphp;
+  use Wovnio\Html\HtmlConverter;
 
   /**
    * The Store class contains the user settings 
@@ -53,6 +54,7 @@
         'api_error_path' => '/v0/errors',
         'api_timeout' => 1.0,
         'default_lang' => 'en',
+        'encoding' => null,
         'supported_langs' => array('en'),
         'custom_lang_aliases' => array(),
         'test_mode' => false,
@@ -96,6 +98,11 @@
       else {
         $vals['url_pattern_name'] = 'path';
         $vals['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+      }
+
+      if (isset($vals['encoding']) && in_array($vals['encoding'], HtmlConverter::$supported_encodings) == false) {
+        error_log('****** WOVN++ LOGGER :: Invalid encoding setting: ' . $vals['encoding'] . ' ******');
+        $vals['encoding'] = null;
       }
 
       if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
