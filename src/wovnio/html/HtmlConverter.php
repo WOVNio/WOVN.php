@@ -48,7 +48,7 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody()
+  public function convertToAppropriateForApiBody($removeParts=true)
   {
     if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
       $encoding = $this->encoding;
@@ -58,14 +58,18 @@ class HtmlConverter
     }
 
     $dom = simple_html_dom::str_get_html($this->html, $encoding, false, false, $encoding, false);
-    $marker = new HtmlReplaceMarker();
     $this->insertSnippet($dom);
     if (isset($this->store) && isset($this->headers)) {
       $this->insertHreflangTags($dom);
     }
-    $this->removeWovnIgnore($dom, $marker);
-    $this->removeForm($dom, $marker);
-    $this->removeScript($dom, $marker);
+
+    $marker = new HtmlReplaceMarker();
+    if ($removeParts) {
+      echo 'doing it here';
+      $this->removeWovnIgnore($dom, $marker);
+      $this->removeForm($dom, $marker);
+      $this->removeScript($dom, $marker);
+    }
 
     $converted_html = $dom->save();
 
@@ -74,7 +78,10 @@ class HtmlConverter
     $dom->clear();
     unset($dom);
 
-    $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
+    if ($removeParts) {
+      echo 'doing it';
+      $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
+    }
     return array($converted_html, $marker);
   }
 
@@ -110,7 +117,7 @@ class HtmlConverter
    *
    * @param simple_html_dom_node $dom
    */
-  public function insertHreflangTags($dom)
+  private function insertHreflangTags($dom)
   {
     $lang_codes = $this->store->settings['supported_langs'];
     foreach ($dom->find('link') as $node) {
