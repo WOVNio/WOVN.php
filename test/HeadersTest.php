@@ -18,7 +18,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   private function getEnv($num="") {
-    $env = array();
     $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
     $env = $file['env'];
     return $env;
@@ -45,7 +44,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersMatchQuery() {
     $store = $this->createStore();
     $store->settings['query'] = array('page=');
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/?page=1';
     $headers = new Headers($env, $store);
@@ -57,7 +55,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersMatchQueryEmptyQueryString() {
     $store = $this->createStore();
     $store->settings['query'] = array('page=');
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/';
     $headers = new Headers($env, $store);
@@ -69,7 +66,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersMatchQueryEmptyQuerySettings() {
     $store = $this->createStore();
     $store->settings['query'] = array();
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/?top=hey';
     $headers = new Headers($env, $store);
@@ -147,7 +143,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamRequestUri() {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/';
     $env['SERVER_PROTOCOL'] = 'http';
@@ -160,7 +156,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamRequestUriAdd () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/?a=b';
     $env['QUERY_STRING'] = 'a=b';
@@ -174,7 +169,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamRedirectQueryString() {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REDIRECT_QUERY_STRING'] = '';
     $env['SERVER_PROTOCOL'] = 'http';
@@ -187,7 +181,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryString() {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -199,7 +192,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamUnsetQueryString() {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/';
     $headers = new Headers($env, $store);
@@ -211,7 +203,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringOverwrite () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param=what';
     $headers = new Headers($env, $store);
@@ -223,7 +214,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringAdd () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param1=what';
     $headers = new Headers($env, $store);
@@ -235,7 +225,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringNoVal () {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param';
     $headers = new Headers($env, $store);
@@ -247,7 +237,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringMulti () {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'p=v&a=b';
     $headers = new Headers($env, $store);
@@ -259,7 +249,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiBegin () {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param=what&p=v';
     $headers = new Headers($env, $store);
@@ -271,7 +261,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiMiddle () {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'a=b&param=what&p=v';
     $headers = new Headers($env, $store);
@@ -283,7 +273,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiEnd () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'a=b&param=what';
     $headers = new Headers($env, $store);
@@ -295,7 +284,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringAddMulti () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param1=what';
     $headers = new Headers($env, $store);
@@ -307,7 +295,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamQueryStringNoValMulti () {
     $store = $this->createStore();
-    $env = array();
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param';
     $headers = new Headers($env, $store);
@@ -350,7 +337,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersSetQueryParamGET () {
     global $_GET;
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/';
     $_GET = array();
@@ -364,7 +351,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersSetQueryParamOverwriteGET () {
     global $_GET;
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/';
     $_GET = array();
@@ -379,7 +366,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersSetQueryParamRequest() {
     global $_REQUEST;
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/';
     $_REQUEST = array();
@@ -393,7 +380,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsRequestUri() {
     $store = $this->createStore();
-    $env = array();
+
     $env = $this->getEnv('_2');
     $env['REQUEST_URI'] = '/';
     $headers = new Headers($env, $store);
@@ -408,7 +395,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsQueryString () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv('_2');
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -423,7 +410,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsQueryStringMulti () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -439,7 +426,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsQueryStringEmpty () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -453,7 +440,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsQueryStringMultiReplace () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param2=what&param1=oh';
     $headers = new Headers($env, $store);
@@ -469,7 +456,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testSetQueryParamsQueryStringMultiPartialReplace () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'param2=what&oh=yeah&param1=oh';
     $headers = new Headers($env, $store);
@@ -485,7 +472,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsRequestUri () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/?hey=yeah';
     $headers = new Headers($env, $store);
@@ -497,7 +484,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsEmptyRequestUri () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/';
     $headers = new Headers($env, $store);
@@ -509,7 +496,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsEmptyRequestUriHangingHatena () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/?';
     $headers = new Headers($env, $store);
@@ -521,7 +508,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsQueryString () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'heythere';
     $headers = new Headers($env, $store);
@@ -533,7 +520,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsQueryStringEmpty () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -545,7 +532,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsQueryStringMulti () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'hey=there&oh=ok';
     $headers = new Headers($env, $store);
@@ -558,7 +545,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersClearQueryParamsGET () {
     global $_GET;
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = 'hey=there';
     $_GET = array();
@@ -573,7 +560,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testHeadersClearQueryParamsEmptyGET () {
     global $_GET;
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $_GET = array();
@@ -586,7 +573,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersRedirectLocationWithQueryPatternAndNoQuery () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '';
     $headers = new Headers($env, $store);
@@ -600,7 +587,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersRedirectLocationWithQueryPatternAndExistingQuery () {
     $store = $this->createStore();
-    $env = array();
+    
     $env = $this->getEnv();
     $env['QUERY_STRING'] = '?page=1';
     $headers = new Headers($env, $store);
@@ -869,9 +856,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
-    $includePath = 'dummy';
-    $headers->requestOut($includePath);
+    $headers->requestOut();
     $this->assertEquals('minimaltech.co', $env['HTTP_X_FORWARDED_HOST']);
+    $this->assertEquals('ja.localhost', $env['SERVER_NAME']);
   }
 
   public function testRequestOutWithUseProxyFalse () {
@@ -885,9 +872,37 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
-    $includePath = 'dummy';
-    $headers->requestOut($includePath);
+    $headers->requestOut();
     $this->assertEquals('en.minimaltech.co', $env['HTTP_X_FORWARDED_HOST']);
+  }
+
+  public function testRequestOutUrlPatternPath () {
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'path';
+    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+
+    $env = $this->getEnv('_path');
+    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
+
+    $headers = new Headers($env, $store);
+    $headers->requestOut();
+    $this->assertEquals('/t.php?', $env['REQUEST_URI']);
+    $this->assertEquals('/t.php', $env['REDIRECT_URL']);
+  }
+
+  public function testRequestOutUrlPatternQuery()
+  {
+    $store = $this->createStore();
+    $store->settings['url_pattern_name'] = 'query';
+    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+
+    $env = $this->getEnv('_query');
+    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
+
+    $headers = new Headers($env, $store);
+    $headers->requestOut();
+    $this->assertEquals('', $env['QUERY_STRING']);
+    $this->assertEquals('/t.php?wovn=ja', $env['REQUEST_URI']);
   }
 
   public function testHttpsProtocolOn () {
@@ -955,59 +970,53 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRequestOutSubdomainPatternWithHTTP_REFERER () {
-    $includePath = '/dummy';
-
     $store = $this->createStore();
     $store->settings['url_pattern_name'] = 'subdomain';
     $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
 
     $env = $this->getEnv();
     $env['HTTP_REFERER'] = 'ja.minimaltech.co';
-    $env['REQUEST_URI'] = $includePath;
+    $env['REQUEST_URI'] = '/dummy';;
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
 
     $this->assertEquals('ja', $headers->pathLang());
-    $headers->requestOut($includePath);
+    $headers->requestOut();
     $this->assertEquals('minimaltech.co', $env['HTTP_REFERER']);
   }
 
   public function testRequestOutPathPatternWithHTTP_REFERER () {
-    $includePath = '/ja/dummy';
-
     $store = $this->createStore();
     $store->settings['url_pattern_name'] = 'path';
     $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
 
     $env = $this->getEnv();
     $env['HTTP_REFERER'] = 'minimaltech.co/ja';
-    $env['REQUEST_URI'] = $includePath;
+    $env['REQUEST_URI'] = '/ja/dummy';
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
 
     $this->assertEquals('ja', $headers->pathLang());
-    $headers->requestOut($includePath);
+    $headers->requestOut();
     $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
   }
 
   public function testRequestOutQueryPatternWithHTTP_REFERER () {
-    $includePath = '/dummy?wovn=ja';
-
     $store = $this->createStore();
     $store->settings['url_pattern_name'] = 'query';
     $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
 
     $env = $this->getEnv();
     $env['HTTP_REFERER'] = 'minimaltech.co/?wovn=ja';
-    $env['REQUEST_URI'] = $includePath;
+    $env['REQUEST_URI'] = '/dummy?wovn=ja';
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
 
     $this->assertEquals('ja', $headers->pathLang());
-    $headers->requestOut($includePath);
+    $headers->requestOut();
     $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
   }
 

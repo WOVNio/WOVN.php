@@ -16,7 +16,7 @@
     public $redisUrl;
     // PHP ONLY
     public $maskedRequestURI;
-    
+
     private $_env;
     private $store;
     private $_pathLang;
@@ -119,7 +119,7 @@
         return '?' . implode('&', $queryArray);
       }
     }
-    
+
     /**
      * Public function returning the _env variable
      *
@@ -152,7 +152,7 @@
     }
 
     /**
-     * Public function returning the pathLang 
+     * Public function returning the pathLang
      *
      * @return String The path lang
      */
@@ -221,7 +221,7 @@
     /**
      * Public function returning the location of the redirection
      *
-     * @param String $lang The lang to display, can be null or empty 
+     * @param String $lang The lang to display, can be null or empty
      * @return String The url of the redirections location
      */
     public function redirectLocation($lang=null) {
@@ -253,17 +253,16 @@
 
 
     /**
-     * Public function returning the _env environement for the request out 
+     * Public function returning the _env environment for the request out
      * The _env must be the same as if the user visited the page without the interceptor
      *
-     * @param String $defLang The default lang of the page
      * @return array The environment
      */
-    public function requestOut($includePath, $defLang=null) {
-      if ($defLang === null)
-        $defLang = $this->store->settings['default_lang'];
-      if (isset($this->_env['HTTP_REFERER']))
+    public function requestOut() {
+      if (isset($this->_env['HTTP_REFERER'])) {
         $this->_env['HTTP_REFERER'] = $this->removeLang($this->_env['HTTP_REFERER']);
+      }
+
       switch ($this->store->settings['url_pattern_name']){
         case 'query':
           if (isset($this->_env['REQUEST_URI'])) {
@@ -274,6 +273,7 @@
           if (isset($this->_env['ORIGINAL_FULLPATH']))
             $this->_env['ORIGINAL_FULLPATH'] = $this->removeLang($this->_env['ORIGINAL_FULLPATH']);
           break;
+
         case 'subdomain':
           if ($this->store->settings['use_proxy'] && isset($this->_env['HTTP_X_FORWARDED_HOST'])) {
             $this->_env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->_env['HTTP_X_FORWARDED_HOST']);
@@ -281,33 +281,17 @@
           $this->_env['HTTP_HOST'] = $this->removeLang($this->_env['HTTP_HOST']);
           $this->_env['SERVER_NAME'] = $this->removeLang($this->_env['SERVER_NAME']);
           break;
+
         case 'path':
         default:
           if (isset($this->_env['REQUEST_URI'])) {
             $this->_env['REQUEST_URI'] = $this->removeLang($this->_env['REQUEST_URI']);
           }
-          if (isset($this->_env['REDIRECT_URL']))
+          if (isset($this->_env['REDIRECT_URL'])) {
             $this->_env['REDIRECT_URL'] = $this->removeLang($this->_env['REDIRECT_URL']);
+          }
       }
-      if (isset($this->_env['REQUEST_URI'])) {
-        preg_match('/(?P<file>[^\/]*)$/', $_SERVER['REQUEST_URI'], $match);
-      }
-    // if it matches and it's a filename (has a dot), then use it, else use index.php
-      if (isset($match['file']) && strlen($match['file']) > 0 && preg_match('/.+\..+/', $match['file'])) {
-        $filename = $match['file'];
-      }
-      else {
-        $filename = 'index.php';
-      }
-     //$this->_env['SCRIPT_FILENAME'] = preg_replace('/wovnphp\/wovn_interceptor\.php/', $filename, $this->_env['SCRIPT_FILENAME']);
-     // $this->_env['SCRIPT_NAME'] = preg_replace('/wovnphp\/wovn_interceptor\.php/', $filename, $this->_env['SCRIPT_NAME']);
-     // $this->_env['PHP_SELF'] = preg_replace('/wovnphp\/wovn_interceptor\.php/', $filename, $this->_env['PHP_SELF']);
-      $this->_env['SCRIPT_FILENAME'] = $includePath;
-      $this->_env['SCRIPT_NAME'] = $includePath;
-      $this->_env['SCRIPT_NAME'] = str_replace($this->_env['DOCUMENT_ROOT'], '', $this->_env['SCRIPT_NAME']);
-      if ($this->_env['SCRIPT_NAME'][0] !== '/') $this->_env['SCRIPT_NAME'] = '/' . $this->_env['SCRIPT_NAME'];
-      $this->_env['PHP_SELF'] = $includePath;
-      $this->_env['PHP_SELF'] = str_replace($this->_env['DOCUMENT_ROOT'], '', $this->_env['PHP_SELF']);
+
       return $this->_env;
     }
 
@@ -336,10 +320,10 @@
     }
 
     /**
-     * Public function removing the lang of the url 
+     * Public function removing the lang of the url
      *
      * @param String $uri The url with the lang
-     * @param String $lang The lang to remove 
+     * @param String $lang The lang to remove
      * @return array The url without the lang
      */
     public function removeLang($uri, $lang=null) {
@@ -445,9 +429,9 @@
    /**
     * Make a redirection with a 301 code to a specified location
     * and dies
-    * 
-    * @param String $location The location where to make the redirection 
-    */ 
+    *
+    * @param String $location The location where to make the redirection
+    */
     public function redirectTo($location) {
       header('Location: ' . $location, TRUE, 301);die();
     }
