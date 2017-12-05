@@ -885,7 +885,13 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
+
+    $this->assertEquals('/ja/t.php?', $env['REQUEST_URI']);
+    $this->assertEquals('/t.php', $env['REDIRECT_URL']);
+    $this->assertEquals('/ja/index.php', $env['HTTP_REFERER']);
+
     $headers->requestOut();
+
     $this->assertEquals('/t.php?', $env['REQUEST_URI']);
     $this->assertEquals('/t.php', $env['REDIRECT_URL']);
     $this->assertEquals('/index.php', $env['HTTP_REFERER']);
@@ -901,7 +907,13 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
 
     $headers = new Headers($env, $store);
+
+    $this->assertEquals('?wovn=ja', $env['QUERY_STRING']);
+    $this->assertEquals('/t.php?wovn=ja', $env['REQUEST_URI']);
+    $this->assertEquals('/index.php?page=1&wovn=ja', $env['HTTP_REFERER']);
+
     $headers->requestOut();
+
     $this->assertEquals('', $env['QUERY_STRING']);
     $this->assertEquals('/t.php?wovn=ja', $env['REQUEST_URI']);
     $this->assertEquals('/index.php?page=1', $env['HTTP_REFERER']);
