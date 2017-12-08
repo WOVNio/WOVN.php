@@ -99,12 +99,15 @@ class HtmlConverter
     }
 
     $token = $this->token;
+    $current_lang = $this->headers->lang();
+    $default_lang = $this->store->settings['default_lang'];
+    $path_pattern = $this->store->settings['url_pattern_name'];
     $insert_tags = array('head', 'body', 'html');
     foreach ($insert_tags as $tag_name) {
       $parents = $dom->find($tag_name);
       if (count($parents) > 0) {
         $parent = $parents[0];
-        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>" . $parent->innertext;
+        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$path_pattern&langCodeAliases={}&version=WOVN.php' data-wovnio-type='backend_without_api' async></script>" . $parent->innertext;
         return;
       }
     }
