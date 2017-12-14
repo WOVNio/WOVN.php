@@ -2,9 +2,6 @@
 
 namespace Wovnio\Html;
 
-require_once 'src/wovnio/wovnphp/Url.php';
-require_once 'src/wovnio/wovnphp/Lang.php';
-
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
 use Wovnio\ModifiedVendor\simple_html_dom;
@@ -133,7 +130,7 @@ class HtmlConverter
         $hreflangTags = array();
 
         foreach ($lang_codes as $lang_code) {
-          $href = Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers);
+          $href = htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
           array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
         }
         $parent->innertext = implode('', $hreflangTags) . $parent->innertext;

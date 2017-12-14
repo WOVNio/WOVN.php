@@ -4,6 +4,8 @@ require_once 'src/wovnio/html/HtmlReplaceMarker.php';
 require_once 'src/wovnio/wovnphp/Utils.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
+require_once 'src/wovnio/wovnphp/Url.php';
+require_once 'src/wovnio/wovnphp/Lang.php';
 
 use Wovnio\Html\HtmlConverter;
 use Wovnio\Wovnphp\Url;
@@ -314,6 +316,26 @@ bye
     list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangHtmlEntities() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv('html_entities');
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_html_entities_expected.html');
 
     $this->assertEquals($expected_html_text, $translated_html);
   }
