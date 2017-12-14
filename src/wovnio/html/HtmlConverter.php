@@ -2,9 +2,6 @@
 
 namespace Wovnio\Html;
 
-require_once 'src/wovnio/wovnphp/Url.php';
-require_once 'src/wovnio/wovnphp/Lang.php';
-
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
 use Wovnio\ModifiedVendor\simple_html_dom;
