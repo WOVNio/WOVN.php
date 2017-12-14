@@ -142,6 +142,7 @@
     }
 
     public function testTranslateWithWovnIgnore() {
+      $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';

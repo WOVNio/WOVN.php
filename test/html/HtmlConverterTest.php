@@ -22,6 +22,8 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConvertAndRevertAtStackOverflow() {
+    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
+
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/stack_overflow.html');
     $token = 'toK3n';
@@ -43,6 +45,8 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConvertAndRevertAtYoutube() {
+    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
+
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/youtube.html');
     $token = 'toK3n';
@@ -64,6 +68,8 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConvertAndRevertAtYelp() {
+    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
+
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/yelp.html');
     $token = 'toK3n';
@@ -85,6 +91,8 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConvertAndRevertAtYahooJp() {
+    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
+
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/yahoo_jp.html');
     $token = 'toK3n';
@@ -109,10 +117,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
-    $keys = $marker->keys();
-
-    $this->assertEquals(0, count($keys));
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html = "<html><body><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -122,10 +127,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
-    $keys = $marker->keys();
-
-    $this->assertEquals(0, count($keys));
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -135,10 +137,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
-    $keys = $marker->keys();
-
-    $this->assertEquals(0, count($keys));
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>hello<a>world</a></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -149,13 +148,11 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $token = 'toK3n';
     $converter = new HtmlConverter($html, null, $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
-    $keys = $marker->keys();
-
-    $this->assertEquals(0, count($keys));
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
     $expected_html = mb_convert_encoding($expected_html, 'SJIS');
+
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -165,10 +162,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
       $token = 'toK3n';
       $converter = new HtmlConverter($html, $encoding, $token);
-      list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
-      $keys = $marker->keys();
-
-      $this->assertEquals(0, count($keys));
+      list($translated_html) = $converter->convertToAppropriateForApiBody();
 
       $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
       $expected_html = mb_convert_encoding($expected_html, $encoding);
@@ -177,13 +171,12 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testConvertToAppropriateForApiBodyWithWovnIgnore() {
+    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
     $html = '<html><body><a wovn-ignore>hello</a></body></html>';
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n');
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeWovnIgnore');
-    $keys = $marker->keys();
+    list($translated_html) = $this->executeConvert($converter, $html, 'UTF-8', 'removeWovnIgnore');
 
-    $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
+    $this->assertEquals("<html><body><a wovn-ignore></a></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleWovnIgnore() {
@@ -313,7 +306,7 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
+    list($translated_html) = $converter->convertToAppropriateForApiBody(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
 
@@ -353,7 +346,7 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
 

@@ -4,7 +4,6 @@ namespace Wovnio\Html;
 
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
-use Wovnio\ModifiedVendor\simple_html_dom;
 
 /**
  * Convert html via Simple HTML DOM Parser
@@ -45,64 +44,39 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody($removeParts = true)
+  public function convertToAppropriateForApiBody()
   {
-    if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
-      $encoding = $this->encoding;
-    } else {
-      // Encoding detection uses 30% of execution time for this method.
-      $encoding = mb_detect_encoding($this->html, self::$supported_encodings);
-    }
+    $this->html = $this->insertSnippet($this->html);
+    $this->html = $this->insertHreflangTags($this->html);
 
-    $dom = simple_html_dom::str_get_html($this->html, $encoding, false, false, $encoding, false);
-    $this->insertSnippet($dom);
-    if (isset($this->store) && isset($this->headers)) {
-      $this->insertHreflangTags($dom);
-    }
-
-    $marker = new HtmlReplaceMarker();
-    if ($removeParts) {
-      $this->removeWovnIgnore($dom, $marker);
-      $this->removeForm($dom, $marker);
-      $this->removeScript($dom, $marker);
-    }
-
-    $converted_html = $dom->save();
-
-    // Without clear(), Segmentation fault will be raised.
-    // @see https://sourceforge.net/p/simplehtmldom/bugs/103/
-    $dom->clear();
-    unset($dom);
-
-    if ($removeParts) {
-      $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
-    }
-    return array($converted_html, $marker);
+    return array($this->html);
   }
 
   /**
    * Insert wovn's snippet to ensure snippet is always inserted.
    * When snippet is always inserted, do nothing
    *
-   * @param simple_html_dom_node $dom
+   * @param simple_html_dom_node $html
    */
-  private function insertSnippet($dom)
+  private function insertSnippet($html)
   {
-    foreach ($dom->find('script') as $node) {
-      if (strpos($node->getAttribute('src'), '//j.wovn.io/') !== false ||
-        strpos($node->getAttribute('src'), '//j.dev-wovn.io:3000/') !== false) {
-        return;
-      }
+    $snippet_regex = "<script(.*)src='(j.wovn.io|j.dev-wovn.io)'(.*)><\/script>";
+    if (preg_match("/$snippet_regex/i", $html)) {
+      return;
     }
 
     $token = $this->token;
-    $insert_tags = array('head', 'body', 'html');
-    foreach ($insert_tags as $tag_name) {
-      $parents = $dom->find($tag_name);
-      if (count($parents) > 0) {
-        $parent = $parents[0];
-        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>" . $parent->innertext;
-        return;
+    $snippet_code = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>";
+    $parent_tags = array('<head>', '<body>', '<html>');
+
+    return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+  }
+
+  private function insertAfterTag($tag_names, $html, $insert_str)
+  {
+    foreach ($tag_names as $tag_name) {
+      if (preg_match($tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
+        return substr_replace($html, $insert_str, $matches[0][1] + strlen($tag_name) - 1, 0);
       }
     }
   }
@@ -112,31 +86,48 @@ class HtmlConverter
    *
    * @param simple_html_dom_node $dom
    */
-  private function insertHreflangTags($dom)
+  private function insertHreflangTags($html)
   {
-    $lang_codes = $this->store->settings['supported_langs'];
-    foreach ($dom->find('link') as $node) {
-      $hreflangValue = $node->getAttribute('hreflang');
-      if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
-        $node->outertext = ''; // remove node
-      }
+//    $lang_codes = $this->store->settings['supported_langs'];
+//    foreach ($dom->find('link') as $node) {
+//      $hreflangValue = $node->getAttribute('hreflang');
+//      if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
+//        $node->outertext = ''; // remove node
+//      }
+//    }
+//
+//    $insert_tags = array('head', 'body', 'html');
+//    foreach ($insert_tags as $tag_name) {
+//      $parents = $dom->find($tag_name);
+//      if (count($parents) > 0) {
+//        $parent = $parents[0];
+//        $hreflangTags = array();
+//
+//        foreach ($lang_codes as $lang_code) {
+//          $href = Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers);
+//          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
+//        }
+//        $parent->innertext = implode('', $hreflangTags) . $parent->innertext;
+//        return;
+//      }
+//    }
+
+    if (isset($this->store->settings['supported_langs'])) {
+      $lang_codes = $this->store->settings['supported_langs'];
+    } else {
+      $lang_codes = array();
     }
 
-    $insert_tags = array('head', 'body', 'html');
-    foreach ($insert_tags as $tag_name) {
-      $parents = $dom->find($tag_name);
-      if (count($parents) > 0) {
-        $parent = $parents[0];
-        $hreflangTags = array();
+    $hreflangTags = array();
 
-        foreach ($lang_codes as $lang_code) {
-          $href = htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
-          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
-        }
-        $parent->innertext = implode('', $hreflangTags) . $parent->innertext;
-        return;
-      }
+    foreach ($lang_codes as $lang_code) {
+      $href = htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
+      array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
     }
+
+    $parent_tags = array('<head>', '<body>', '<html>');
+
+    return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
   }
 
   /**
