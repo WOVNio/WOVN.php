@@ -44,7 +44,7 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody()
+  public function insertSnippetAndHreflangTags()
   {
     $this->html = $this->insertSnippet($this->html);
     $this->html = $this->insertHreflangTags($this->html);
@@ -60,7 +60,7 @@ class HtmlConverter
    */
   private function insertSnippet($html)
   {
-    $snippet_regex = "<script(.*)src='(j.wovn.io|j.dev-wovn.io)'(.*)><\/script>";
+    $snippet_regex = "<\<script(.*)src='(j.wovn.io|j.dev-wovn.io)'(.*)><\/script>";
     if (preg_match("/$snippet_regex/i", $html)) {
       return;
     }
@@ -88,34 +88,23 @@ class HtmlConverter
    */
   private function insertHreflangTags($html)
   {
-//    $lang_codes = $this->store->settings['supported_langs'];
-//    foreach ($dom->find('link') as $node) {
-//      $hreflangValue = $node->getAttribute('hreflang');
-//      if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
-//        $node->outertext = ''; // remove node
-//      }
-//    }
-//
-//    $insert_tags = array('head', 'body', 'html');
-//    foreach ($insert_tags as $tag_name) {
-//      $parents = $dom->find($tag_name);
-//      if (count($parents) > 0) {
-//        $parent = $parents[0];
-//        $hreflangTags = array();
-//
-//        foreach ($lang_codes as $lang_code) {
-//          $href = Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers);
-//          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
-//        }
-//        $parent->innertext = implode('', $hreflangTags) . $parent->innertext;
-//        return;
-//      }
-//    }
-
     if (isset($this->store->settings['supported_langs'])) {
-      $lang_codes = $this->store->settings['supported_langs'];
+      if (is_array($this->store->settings['supported_langs'])) {
+        $lang_codes = $this->store->settings['supported_langs'];
+      } else {
+        $lang_codes = array($this->store->settings['supported_langs']);
+      }
     } else {
       $lang_codes = array();
+    }
+
+    $lang_codes_with_pipe = implode('|', $lang_codes);
+    $hreflang_regex = "<\<link.*hreflang=['\"]($lang_codes_with_pipe)['\"].*>";
+
+    if (preg_match_all($hreflang_regex, $html, $matches, PREG_OFFSET_CAPTURE)) {
+      foreach ($matches as $match) {
+        $html = substr_replace($html, '', $match[0][1], strlen($match[0][0]));
+      }
     }
 
     $hreflangTags = array();

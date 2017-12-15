@@ -78,7 +78,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -113,7 +113,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
 
-      $expected_body = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_body = $html;
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $expected_data = array(
         'url' => $headers->url,
@@ -181,8 +181,8 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
-      $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+
+      $expected_html = $html;
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -234,7 +234,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
 
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/en/ja/t.php\"><script src='//j.wovn.io/1' data-wovnio='key=' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = $html;
       $response = '{"body":"<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http:\/\/localhost.com\/ja\/t.php?wovn=en\"><script src=\'\/\/j.wovn.io\/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async><\/script><\/head><body><h1>fr<\/h1><\/body><\/html>"}';
 
       $expected_data = array(

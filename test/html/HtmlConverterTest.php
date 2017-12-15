@@ -29,7 +29,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $token = 'toK3n';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_expected.html');
     $doc = new DOMDocument( "1.0", "ISO-8859-15" );
@@ -52,7 +52,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $token = 'toK3n';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/youtube_expected.html');
     $doc = new DOMDocument( "1.0", "ISO-8859-15" );
@@ -75,7 +75,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $token = 'toK3n';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yelp_expected.html');
     $doc = new DOMDocument( "1.0", "ISO-8859-15" );
@@ -98,7 +98,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $token = 'toK3n';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody();
+    list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yahoo_jp_expected.html');
     $doc = new DOMDocument( "1.0", "ISO-8859-15" );
@@ -117,7 +117,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html = "<html><body><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -127,7 +127,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html = "<html><head><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -137,7 +137,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $converter = new HtmlConverter($html, 'UTF-8', $token);
-    list($translated_html) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>hello<a>world</a></html>";
     $this->assertEquals($expected_html, $translated_html);
@@ -148,7 +148,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
     $token = 'toK3n';
     $converter = new HtmlConverter($html, null, $token);
-    list($translated_html) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
     $expected_html = mb_convert_encoding($expected_html, 'SJIS');
@@ -162,7 +162,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase {
 
       $token = 'toK3n';
       $converter = new HtmlConverter($html, $encoding, $token);
-      list($translated_html) = $converter->convertToAppropriateForApiBody();
+      list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
       $expected_html = "<html><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>こんにちは</html>";
       $expected_html = mb_convert_encoding($expected_html, $encoding);
@@ -306,10 +306,29 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html) = $converter->convertToAppropriateForApiBody(false);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
 
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangShouldRemoveExistHreflangTags() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_with_exist_hreflang.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi', 'zh-CHT', 'zh-CHS');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_with_exist_hreflang_expected.html');
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
@@ -326,7 +345,7 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html, $marker) = $converter->convertToAppropriateForApiBody(false);
+    list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_html_entities_expected.html');
 
@@ -346,7 +365,7 @@ bye
     $store->settings['url_pattern_name'] = 'path';
 
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
-    list($translated_html) = $converter->convertToAppropriateForApiBody();
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
 
