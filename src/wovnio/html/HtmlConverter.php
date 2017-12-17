@@ -67,7 +67,7 @@ class HtmlConverter
 
     $token = $this->token;
     $snippet_code = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>";
-    $parent_tags = array('<head>', '<body>', '<html>');
+    $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
     return $this->insertAfterTag($parent_tags, $html, $snippet_code);
   }
@@ -76,7 +76,7 @@ class HtmlConverter
   {
     foreach ($tag_names as $tag_name) {
       if (preg_match($tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
-        return substr_replace($html, $insert_str, $matches[0][1] + strlen($tag_name) - 1, 0);
+        return substr_replace($html, $insert_str, $matches[0][1] + strlen($matches[0][0]), 0);
       }
     }
   }
@@ -114,7 +114,7 @@ class HtmlConverter
       array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
     }
 
-    $parent_tags = array('<head>', '<body>', '<html>');
+    $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
     return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
   }

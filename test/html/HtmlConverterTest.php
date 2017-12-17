@@ -313,6 +313,69 @@ bye
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
+  /**
+   * @group test
+   */
+  public function testInsertHreflangIntoHeadWithStyle() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_head_style.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_head_style_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangIntoBodyTag() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_body.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_body_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangIntoHtmlTag() {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_html.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_html_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
   public function testInsertHreflangShouldRemoveExistHreflangTags() {
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/basic_html/insert_with_exist_hreflang.html');
@@ -352,6 +415,9 @@ bye
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
+  /**
+   * @group test
+   */
   public function testInsertHreflangWithCustomLangAliasAndChinese() {
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/basic_html/insert_hreflang.html');

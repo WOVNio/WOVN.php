@@ -69,7 +69,6 @@ class UrlTest extends PHPUnit_Framework_TestCase {
       'REQUEST_URI' => $req_uri
     ));
 
-    echo Url::addLangCode($req_uri, $store, $lang, $headers);
     $this->assertEquals($expected_uri, Url::addLangCode($req_uri, $store, $lang, $headers));
   }
 
