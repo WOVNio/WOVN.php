@@ -77,7 +77,7 @@ class Url {
             break;
           default:
             //path
-            $new_uri = preg_replace('/([^\.]*\.[^\/]*)(\/|$)/', '${1}/' . self::formatForRegExp($lang_code) . '/', $no_lang_uri, 1);
+            $new_uri = preg_replace('/([^\.]*\.[^?\/]*)(\?|\/|$)/', '${1}/' . self::formatForRegExp($lang_code) . '${2}', $no_lang_uri, 1);
         }
       }
     } else {
@@ -117,6 +117,7 @@ class Url {
         }
       }
     }
+
     return $new_uri;
   }
 

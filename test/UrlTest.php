@@ -58,6 +58,20 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
+  public function testAddLangCodeAbsoluteUrWithPathPattern()
+  {
+    $req_uri = "http://localhost.com?lang=zh-CHS";
+    $expected_uri = 'http://localhost.com/en?lang=zh-CHS';
+    $lang = 'en';
+    $pattern = 'path';
+
+    list($store, $env, $headers) = $this->getStarted($pattern, array(
+      'REQUEST_URI' => $req_uri
+    ));
+
+    $this->assertEquals($expected_uri, Url::addLangCode($req_uri, $store, $lang, $headers));
+  }
+
   public function testAddLangCodeRelativePathWithQueryPattern () {
     $uri = '/index.php';
     $lang = 'fr';
