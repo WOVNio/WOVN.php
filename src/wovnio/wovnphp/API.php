@@ -24,9 +24,8 @@
 
       $encoding = $store->settings['encoding'];
       $token = $store->settings['project_token'];
-      $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
+
       if (self::makeAPICall($store, $headers)) {
-//        list($converted_html) = $converter->convertToAppropriateForApiBody();
         $converted_html = $original_content;
         $timeout = $store->settings['api_timeout'];
         $data = array(
@@ -49,6 +48,7 @@
         }
       }
       else {
+        $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
         list($converted_html) = $converter->insertSnippetAndHreflangTags();
         $translated_content = $converted_html;
       }

@@ -29,7 +29,7 @@ class HtmlConverter
    * @param Store $store
    * @param Headers $headers
    */
-  public function __construct($html, $encoding, $token, $store = null, $headers = null)
+  public function __construct($html, $encoding, $token, $store, $headers)
   {
     $this->html = $html;
     $this->encoding = $encoding;
@@ -56,7 +56,7 @@ class HtmlConverter
    * Insert wovn's snippet to ensure snippet is always inserted.
    * When snippet is always inserted, do nothing
    *
-   * @param simple_html_dom_node $html
+   * @param string $html
    */
   private function insertSnippet($html)
   {
@@ -65,8 +65,7 @@ class HtmlConverter
       return;
     }
 
-    $token = $this->token;
-    $snippet_code = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>";
+    $snippet_code = $this->buildSnippetCode();
     $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
     return $this->insertAfterTag($parent_tags, $html, $snippet_code);
@@ -81,10 +80,21 @@ class HtmlConverter
     }
   }
 
+  private function buildSnippetCode()
+  {
+    $token = $this->token;
+    $current_lang = $this->headers->lang();
+    $default_lang = $this->store->settings['default_lang'];
+    $url_pattern = $this->store->settings['url_pattern_name'];
+    $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
+//    $snippet_code = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>";
+    return "<script src='//j.wovn.io/1' data-wovnio='key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php' data-wovnio-type='backend_without_api' async></script>";
+  }
+
   /**
    * Insert hreflang tags for all supported_langs
    *
-   * @param simple_html_dom_node $dom
+   * @param string $html
    */
   private function insertHreflangTags($html)
   {
