@@ -445,6 +445,27 @@ bye
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
+  public function testInsertSnippetForHtmlWithSnippetCode()
+  {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_snippet_when_already_exist.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['default_lang'] = 'ja';
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $store->settings['disable_api_request_for_default_lang'] = true;
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_snippet_when_already_exist_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
   public function testInsertHreflangIntoHtmlTag()
   {
     libxml_use_internal_errors(true);

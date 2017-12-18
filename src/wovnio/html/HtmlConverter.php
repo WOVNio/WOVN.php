@@ -60,10 +60,8 @@ class HtmlConverter
    */
   private function insertSnippet($html)
   {
-    $snippet_regex = "<\<script(.*)src='(j.wovn.io|j.dev-wovn.io)'(.*)><\/script>";
-    if (preg_match("/$snippet_regex/i", $html)) {
-      return;
-    }
+    $snippet_regex = "/<script[^<]*src=[^<]*j\.[^<]*wovn\.io[^<]*><\/script>/iU";
+    $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
 
     $snippet_code = $this->buildSnippetCode();
     $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
@@ -80,6 +78,20 @@ class HtmlConverter
     }
   }
 
+  private function removeTagFromHtmlByRegex($html, $regex)
+  {
+    $result = $html;
+
+    if (preg_match_all($regex, $result, $matches, PREG_OFFSET_CAPTURE)) {
+      for ($i = count($matches[0]) - 1; $i >= 0; --$i) {
+        $match = $matches[0][$i];
+        $result = substr_replace($result, '', $match[1], strlen($match[0]));
+      }
+    }
+
+    return $result;
+  }
+
   private function buildSnippetCode()
   {
     $token = $this->token;
@@ -87,7 +99,7 @@ class HtmlConverter
     $default_lang = $this->store->settings['default_lang'];
     $url_pattern = $this->store->settings['url_pattern_name'];
     $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
-//    $snippet_code = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>";
+
     return "<script src='//j.wovn.io/1' data-wovnio='key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php' data-wovnio-type='backend_without_api' async></script>";
   }
 
@@ -109,16 +121,10 @@ class HtmlConverter
     }
 
     $lang_codes_with_pipe = implode('|', $lang_codes);
-    $hreflang_regex = "<\<link.*hreflang=['\"]($lang_codes_with_pipe)['\"].*>";
-
-    if (preg_match_all($hreflang_regex, $html, $matches, PREG_OFFSET_CAPTURE)) {
-      foreach ($matches as $match) {
-        $html = substr_replace($html, '', $match[0][1], strlen($match[0][0]));
-      }
-    }
+    $hreflang_regex = "/<link[^>]*hreflang=[^>]*($lang_codes_with_pipe)[^>]*\>/iU";
+    $html = $this->removeTagFromHtmlByRegex($html, $hreflang_regex);
 
     $hreflangTags = array();
-
     foreach ($lang_codes as $lang_code) {
       $href = htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
       array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
