@@ -99,8 +99,9 @@ class HtmlConverter
     $default_lang = $this->store->settings['default_lang'];
     $url_pattern = $this->store->settings['url_pattern_name'];
     $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
+    $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php");
 
-    return "<script src='//j.wovn.io/1' data-wovnio='key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php' data-wovnio-type='backend_without_api' async></script>";
+    return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"backend_without_api\" async></script>";
   }
 
   /**

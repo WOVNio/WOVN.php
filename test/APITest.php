@@ -214,7 +214,7 @@
       $store->settings['default_lang'] = 'en';
 
       $html = '<html><head></head><body><h1>en</h1></body></html>';
-      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src=\'//j.wovn.io/1\' data-wovnio=\'key=&backend=true&currentLang=en&defaultLang=en&urlPattern=query&langCodeAliases=[]&version=WOVN.php\' data-wovnio-type=\'backend_without_api\' async></script></head><body><h1>en</h1></body></html>';
+      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key=&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="backend_without_api" async></script></head><body><h1>en</h1></body></html>';
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
       $mock->expects($this->never())->method('sendRequest');
