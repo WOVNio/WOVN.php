@@ -60,7 +60,7 @@ class HtmlConverter
    */
   private function insertSnippet($html)
   {
-    $snippet_regex = "/<script[^<]*src=[^<]*j\.[^<]*wovn\.io[^<]*><\/script>/iU";
+    $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
     $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
 
     $snippet_code = $this->buildSnippetCode();
