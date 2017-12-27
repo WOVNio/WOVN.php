@@ -220,7 +220,7 @@
       RequestHandlerFactory::set_instance($mock);
 
       $result = API::translate($store, $headers, $html);
-      $this->assertTrue($result === $expected_result);
+      $this->assertTrue($expected_result, $result);
     }
 
     public function testTranslateWhenDefaultLangAndSettingIsOff() {
