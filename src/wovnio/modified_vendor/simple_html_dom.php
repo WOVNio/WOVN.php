@@ -620,7 +620,6 @@ class simple_html_dom
 	public $original_size;
 	public $size;
 	protected $pos;
-	protected $doc;
 	protected $char;
 	protected $cursor;
 	protected $parent;
@@ -714,29 +713,35 @@ class simple_html_dom
 	// load html from string
 	function load($str, $charset, $lowercase=true, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
 	{
+    //before use the doc...  strip out the \r \n's if we are told to.
+    if ($stripRN) {
+      $str = str_replace("\r", " ", $str);
+      $str = str_replace("\n", " ", $str);
+    }
+
 		// prepare
 		$this->prepare($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
 		// strip out cdata
-		$this->remove_noise("'<!\[CDATA\[(.*?)\]\]>'is", true);
+		$this->remove_noise($str, "'<!\[CDATA\[(.*?)\]\]>'is", true);
 		// strip out comments
-		$this->remove_noise("'<!--(.*?)-->'is");
+		$this->remove_noise($str, "'<!--(.*?)-->'is");
 		// Per sourceforge http://sourceforge.net/tracker/?func=detail&aid=2949097&group_id=218559&atid=1044037
 		// Script tags removal now preceeds style tag removal.
 		// strip out <script> tags
-		$this->remove_noise("'<\s*script[^>]*[^/]>(.*?)<\s*/\s*script\s*>'is");
-		$this->remove_noise("'<\s*script\s*>(.*?)<\s*/\s*script\s*>'is");
+		$this->remove_noise($str, "'<\s*script[^>]*[^/]>(.*?)<\s*/\s*script\s*>'is");
+		$this->remove_noise($str, "'<\s*script\s*>(.*?)<\s*/\s*script\s*>'is");
 		// strip out <style> tags
-		$this->remove_noise("'<\s*style[^>]*[^/]>(.*?)<\s*/\s*style\s*>'is");
-		$this->remove_noise("'<\s*style\s*>(.*?)<\s*/\s*style\s*>'is");
+		$this->remove_noise($str, "'<\s*style[^>]*[^/]>(.*?)<\s*/\s*style\s*>'is");
+		$this->remove_noise($str, "'<\s*style\s*>(.*?)<\s*/\s*style\s*>'is");
 		// strip out preformatted tags
-		$this->remove_noise("'<\s*(?:code)[^>]*>(.*?)<\s*/\s*(?:code)\s*>'is");
+		$this->remove_noise($str, "'<\s*(?:code)[^>]*>(.*?)<\s*/\s*(?:code)\s*>'is");
 		// strip out server side scripts
-		$this->remove_noise("'(<\?)(.*?)(\?>)'s", true);
+		$this->remove_noise($str, "'(<\?)(.*?)(\?>)'s", true);
 		// strip smarty scripts
-		$this->remove_noise("'(\{\w)(.*?)(\})'s", true);
+		$this->remove_noise($str, "'(\{\w)(.*?)(\})'s", true);
 
 		// parsing
-		while ($this->parse());
+		while ($this->parse($str));
 		// end
 		$this->root->info_end = $this->cursor;
 		if ($charset) {
@@ -800,7 +805,6 @@ class simple_html_dom
 		// This add next line is documented in the sourceforge repository. 2977248 as a fix for ongoing memory leaks that occur even with the use of clear.
 		if (isset($this->parent)) {$this->parent->clear(); unset($this->parent);}
 		if (isset($this->root)) {$this->root->clear(); unset($this->root);}
-		unset($this->doc);
 		unset($this->noise);
 	}
 
@@ -814,16 +818,6 @@ class simple_html_dom
 		// Save the original size of the html that we got in.  It might be useful to someone.
 		$this->original_size = $this->size;
 
-		//before we save the string as the doc...  strip out the \r \n's if we are told to.
-		if ($stripRN) {
-			$str = str_replace("\r", " ", $str);
-			$str = str_replace("\n", " ", $str);
-
-			// set the length of content since we have changed it.
-			$this->size = strlen($str);
-		}
-
-		$this->doc = $str;
 		$this->pos = 0;
 		$this->cursor = 1;
 		$this->noise = array();
@@ -836,15 +830,15 @@ class simple_html_dom
 		$this->root->info_begin = -1;
 		$this->root->nodetype = HDOM_TYPE_ROOT;
 		$this->parent = $this->root;
-		if ($this->size>0) $this->char = $this->doc[0];
+		if ($this->size>0) $this->char = $str[0];
 	}
 
 	// parse html content
-	protected function parse()
+	protected function parse($doc)
 	{
-		if (($s = $this->copy_until_char('<'))==='')
+		if (($s = $this->copy_until_char($doc, '<'))==='')
 		{
-			return $this->read_tag();
+			return $this->read_tag($doc);
 		}
 
 		// text
@@ -923,7 +917,7 @@ class simple_html_dom
 	}
 
 	// read tag info
-	protected function read_tag()
+	protected function read_tag($doc)
 	{
 		if ($this->char!=='<')
 		{
@@ -931,16 +925,16 @@ class simple_html_dom
 			return false;
 		}
 		$begin_tag_pos = $this->pos;
-		$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+		$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 
 		// end tag
 		if ($this->char==='/')
 		{
-			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+			$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 			// This represents the change in the simple_html_dom trunk from revision 180 to 181.
 			// $this->skip($this->token_blank_t);
-			$this->skip($this->token_blank);
-			$tag = $this->copy_until_char('>');
+			$this->skip($doc, $this->token_blank);
+			$tag = $this->copy_until_char($doc, '>');
 
 			// skip attributes in end tag
 			if (($pos = strpos($tag, ' '))!==false)
@@ -963,7 +957,7 @@ class simple_html_dom
 						$this->parent = $org_parent; // restore origonal parent
 						if ($this->parent->parent) $this->parent = $this->parent->parent;
 						$this->parent->info_end = $this->cursor;
-						return $this->as_text_node($tag);
+						return $this->as_text_node($doc, $tag);
 					}
 				}
 				else if (($this->parent->parent) && isset($this->block_tags[$tag_lower]))
@@ -978,7 +972,7 @@ class simple_html_dom
 					{
 						$this->parent = $org_parent; // restore origonal parent
 						$this->parent->info_end = $this->cursor;
-						return $this->as_text_node($tag);
+						return $this->as_text_node($doc, $tag);
 					}
 				}
 				else if (($this->parent->parent) && strtolower($this->parent->parent->tag)===$tag_lower)
@@ -987,25 +981,25 @@ class simple_html_dom
 					$this->parent = $this->parent->parent;
 				}
 				else
-					return $this->as_text_node($tag);
+					return $this->as_text_node($doc, $tag);
 			}
 
 			$this->parent->info_end = $this->cursor;
 			if ($this->parent->parent) $this->parent = $this->parent->parent;
 
-			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+			$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 			return true;
 		}
 
 		$node = new simple_html_dom_node($this);
 		$node->info_begin = $this->cursor;
 		++$this->cursor;
-		$tag = $this->copy_until($this->token_slash);
+		$tag = $this->copy_until($doc, $this->token_slash);
 		// $node->tag_start = $begin_tag_pos;
 
 		// doctype, cdata & comments...
 		if (isset($tag[0]) && $tag[0]==='!') {
-			$node->info_text = '<' . $tag . $this->copy_until_char('>');
+			$node->info_text = '<' . $tag . $this->copy_until_char($doc, '>');
 
 			if (isset($tag[2]) && $tag[1]==='-' && $tag[2]==='-') {
 				$node->nodetype = HDOM_TYPE_COMMENT;
@@ -1016,7 +1010,7 @@ class simple_html_dom
 			}
 			if ($this->char==='>') $node->info_text.='>';
 			$this->link_nodes($node, true);
-			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+			$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 			return true;
 		}
 
@@ -1025,12 +1019,12 @@ class simple_html_dom
 			$tag = '<' . substr($tag, 0, -1);
 			$node->info_text = $tag;
 			$this->link_nodes($node, false);
-			$this->char = $this->doc[--$this->pos]; // prev
+			$this->char = $doc[--$this->pos]; // prev
 			return true;
 		}
 
 		if (!preg_match("/^[\w-:]+$/", $tag)) {
-			$node->info_text = '<' . $tag . $this->copy_until('<>');
+			$node->info_text = '<' . $tag . $this->copy_until($doc, '<>');
 			if ($this->char==='<') {
 				$this->link_nodes($node, false);
 				return true;
@@ -1038,7 +1032,7 @@ class simple_html_dom
 
 			if ($this->char==='>') $node->info_text.='>';
 			$this->link_nodes($node, false);
-			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+			$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 			return true;
 		}
 
@@ -1060,7 +1054,7 @@ class simple_html_dom
 
 		$start_pos = $this->pos;
 		$guard = 0; // prevent infinity loop
-		$space = array($this->copy_skip($this->token_blank), '', '');
+		$space = array($this->copy_skip($doc, $this->token_blank), '', '');
 
 		// attributes
 		do
@@ -1069,10 +1063,10 @@ class simple_html_dom
 			{
 				break;
 			}
-			$name = $this->copy_until($this->token_equal);
+			$name = $this->copy_until($doc, $this->token_equal);
 			if ($guard===$this->pos)
 			{
-				$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+				$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 				continue;
 			}
 			$guard = $this->pos;
@@ -1088,31 +1082,31 @@ class simple_html_dom
 			}
 
 			// handle mismatch '<'
-			if ($this->doc[$this->pos-1]=='<') {
+			if ($doc[$this->pos-1]=='<') {
 				$node->nodetype = HDOM_TYPE_TEXT;
 				$node->tag = 'text';
 				$node->attribute = '';
 				$node->info_end = 0;
-				$node->info_text = substr($this->doc, $begin_tag_pos, $this->pos-$begin_tag_pos-1);
+				$node->info_text = substr($doc, $begin_tag_pos, $this->pos-$begin_tag_pos-1);
 				$this->pos -= 2;
-				$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+				$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 				$this->link_nodes($node, false);
 				return true;
 			}
 
 			if ($name!=='/' && $name!=='') {
-				$space[1] = $this->copy_skip($this->token_blank);
+				$space[1] = $this->copy_skip($doc, $this->token_blank);
 				$name = $this->restore_noise($name);
 				if ($this->lowercase) $name = strtolower($name);
 				if ($this->char==='=') {
-					$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+					$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 					// $this->parse_attr($node, $name, $space);
 				}
 				else {
 					//no value attr: nowrap, checked selected...
-					if ($this->char!='>') $this->char = $this->doc[--$this->pos]; // prev
+					if ($this->char!='>') $this->char = $doc[--$this->pos]; // prev
 				}
-				$space = array($this->copy_skip($this->token_blank), '', '');
+				$space = array($this->copy_skip($doc, $this->token_blank), '', '');
 			}
 			else
 				break;
@@ -1123,7 +1117,7 @@ class simple_html_dom
 
 		$tag_closing_diff = strlen($node->info_end_space) + 1;
 		// check self closing
-		if ($this->copy_until_char_escape('>')==='/')
+		if ($this->copy_until_char_escape($doc, '>')==='/')
 		{
 			$node->info_end_space .= '/';
 			$node->info_end = 0;
@@ -1134,8 +1128,8 @@ class simple_html_dom
 			// reset parent
 			if (!isset($this->self_closing_tags[strtolower($node->tag)])) $this->parent = $node;
 		}
-		$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
-		$node->attribute = substr($this->doc, $start_pos, $this->pos - $start_pos - $tag_closing_diff);
+		$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
+		$node->attribute = substr($doc, $start_pos, $this->pos - $start_pos - $tag_closing_diff);
 
 		// If it's a BR tag, we need to set it's text to the default text.
 		// This way when we see it in plaintext, we can generate formatting that the user wants.
@@ -1160,47 +1154,47 @@ class simple_html_dom
 	}
 
 	// as a text node
-	protected function as_text_node($tag)
+	protected function as_text_node($doc, $tag)
 	{
 		$node = new simple_html_dom_node($this);
 		++$this->cursor;
         $node->info_text = '</' . $tag . '>';
 		$this->link_nodes($node, false);
-		$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+		$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 		return true;
 	}
 
-	protected function skip($chars)
+	protected function skip($doc, $chars)
 	{
-		$this->pos += strspn($this->doc, $chars, $this->pos);
-		$this->char = ($this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+		$this->pos += strspn($doc, $chars, $this->pos);
+		$this->char = ($this->pos<$this->size) ? $doc[$this->pos] : null; // next
 	}
 
-	protected function copy_skip($chars)
+	protected function copy_skip($doc, $chars)
 	{
 		$pos = $this->pos;
-		$len = strspn($this->doc, $chars, $pos);
+		$len = strspn($doc, $chars, $pos);
 		$this->pos += $len;
-		$this->char = ($this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
+		$this->char = ($this->pos<$this->size) ? $doc[$this->pos] : null; // next
 		if ($len===0) return '';
-		return substr($this->doc, $pos, $len);
+		return substr($doc, $pos, $len);
 	}
 
-	protected function copy_until($chars)
+	protected function copy_until($doc, $chars)
 	{
 		$pos = $this->pos;
-		$len = strcspn($this->doc, $chars, $pos);
+		$len = strcspn($doc, $chars, $pos);
 		$this->pos += $len;
-		$this->char = ($this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
-		return substr($this->doc, $pos, $len);
+		$this->char = ($this->pos<$this->size) ? $doc[$this->pos] : null; // next
+		return substr($doc, $pos, $len);
 	}
 
-	protected function copy_until_char($char)
+	protected function copy_until_char($doc, $char)
 	{
 		if ($this->char===null) return '';
 
-		if (($pos = strpos($this->doc, $char, $this->pos))===false) {
-			$ret = substr($this->doc, $this->pos, $this->size-$this->pos);
+		if (($pos = strpos($doc, $char, $this->pos))===false) {
+			$ret = substr($doc, $this->pos, $this->size-$this->pos);
 			$this->char = null;
 			$this->pos = $this->size;
 			return $ret;
@@ -1208,21 +1202,21 @@ class simple_html_dom
 
 		if ($pos===$this->pos) return '';
 		$pos_old = $this->pos;
-		$this->char = $this->doc[$pos];
+		$this->char = $doc[$pos];
 		$this->pos = $pos;
-		return substr($this->doc, $pos_old, $pos-$pos_old);
+		return substr($doc, $pos_old, $pos-$pos_old);
 	}
 
-	protected function copy_until_char_escape($char)
+	protected function copy_until_char_escape($doc, $char)
 	{
 		if ($this->char===null) return '';
 
 		$start = $this->pos;
 		while (1)
 		{
-			if (($pos = strpos($this->doc, $char, $start))===false)
+			if (($pos = strpos($doc, $char, $start))===false)
 			{
-				$ret = substr($this->doc, $this->pos, $this->size-$this->pos);
+				$ret = substr($doc, $this->pos, $this->size-$this->pos);
 				$this->char = null;
 				$this->pos = $this->size;
 				return $ret;
@@ -1230,37 +1224,37 @@ class simple_html_dom
 
 			if ($pos===$this->pos) return '';
 
-			if ($this->doc[$pos-1]==='\\') {
+			if ($doc[$pos-1]==='\\') {
 				$start = $pos+1;
 				continue;
 			}
 
 			$pos_old = $this->pos;
-			$this->char = $this->doc[$pos];
+			$this->char = $doc[$pos];
 			$this->pos = $pos;
-			return substr($this->doc, $pos_old, $pos-$pos_old);
+			return substr($doc, $pos_old, $pos-$pos_old);
 		}
 	}
 
 	// remove noise from html content
 	// save the noise in the $this->noise array.
-	protected function remove_noise($pattern, $remove_tag=false)
+	protected function remove_noise(&$str, $pattern, $remove_tag=false)
 	{
-		$count = preg_match_all($pattern, $this->doc, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
+		$count = preg_match_all($pattern, $str, $matches, PREG_SET_ORDER|PREG_OFFSET_CAPTURE);
 
 		for ($i=$count-1; $i>-1; --$i)
 		{
 			$key = '___noise___'.sprintf('% 5d', count($this->noise)+1000);
 			$idx = ($remove_tag) ? 0 : 1;
 			$this->noise[$key] = $matches[$i][$idx][0];
-			$this->doc = substr_replace($this->doc, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
+      $str = substr_replace($str, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
 		}
 
 		// reset the length of content
-		$this->size = strlen($this->doc);
+		$this->size = strlen($str);
 		if ($this->size>0)
 		{
-			$this->char = $this->doc[0];
+			$this->char = $str[0];
 		}
 	}
 
