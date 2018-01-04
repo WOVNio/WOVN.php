@@ -24,9 +24,9 @@
 
       $encoding = $store->settings['encoding'];
       $token = $store->settings['project_token'];
-      $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
+
       if (self::makeAPICall($store, $headers)) {
-        list($converted_html, $marker) = $converter->convertToAppropriateForApiBody();
+        $converted_html = $original_content;
         $timeout = $store->settings['api_timeout'];
         $data = array(
           'url' => $headers->url,
@@ -43,8 +43,8 @@
 				$translated_content = $converted_html;
         // $translated_content = $marker->revert($converted_html);
         try {
-          // error_log("Call API!!!");
-          // $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);
+          $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);
+          $translated_content = $translation_response['body'];
           // $translated_content = $marker->revert($translation_response['body']);
           // error_log(memory_get_usage() / 1024);
         } catch (\Exception $e) {
@@ -52,7 +52,8 @@
         }
       }
       else {
-        list($converted_html, $marker) = $converter->convertToAppropriateForApiBody(false);
+        $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
+        list($converted_html) = $converter->insertSnippetAndHreflangTags();
         $translated_content = $converted_html;
       }
 

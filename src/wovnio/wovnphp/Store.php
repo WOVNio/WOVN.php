@@ -120,6 +120,7 @@
 
       return $vals;
     }
+
     private function isWovnDevModeActivated($settings=null) {
       if ($settings === null) $settings = $this->settings;
 

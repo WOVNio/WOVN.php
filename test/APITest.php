@@ -78,7 +78,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -113,7 +113,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
 
-      $expected_body = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_body = $html;
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $expected_data = array(
         'url' => $headers->url,
@@ -142,6 +142,7 @@
     }
 
     public function testTranslateWithWovnIgnore() {
+      $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
@@ -180,8 +181,8 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
-      $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+
+      $expected_html = $html;
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -213,7 +214,7 @@
       $store->settings['default_lang'] = 'en';
 
       $html = '<html><head></head><body><h1>en</h1></body></html>';
-      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src=\'//j.wovn.io/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async></script></head><body><h1>en</h1></body></html>';
+      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key=&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="backend_without_api" async></script></head><body><h1>en</h1></body></html>';
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
       $mock->expects($this->never())->method('sendRequest');
@@ -233,7 +234,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
 
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/en/ja/t.php\"><script src='//j.wovn.io/1' data-wovnio='key=' data-wovnio-type='backend_without_api' async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = $html;
       $response = '{"body":"<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http:\/\/localhost.com\/ja\/t.php?wovn=en\"><script src=\'\/\/j.wovn.io\/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async><\/script><\/head><body><h1>fr<\/h1><\/body><\/html>"}';
 
       $expected_data = array(

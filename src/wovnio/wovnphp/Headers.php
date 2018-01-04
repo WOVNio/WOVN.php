@@ -347,7 +347,6 @@
       global $_GET, $_REQUEST;
 
       // get old query string
-      $oldQueryString = '';
       if (isset($this->_env['QUERY_STRING'])) {
         $oldQueryString = $this->_env['QUERY_STRING'];
       }

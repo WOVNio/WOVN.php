@@ -4,7 +4,6 @@ namespace Wovnio\Html;
 
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
-use Wovnio\ModifiedVendor\simple_html_dom;
 
 /**
  * Convert html via Simple HTML DOM Parser
@@ -30,7 +29,7 @@ class HtmlConverter
    * @param Store $store
    * @param Headers $headers
    */
-  public function __construct($html, $encoding, $token, $store = null, $headers = null)
+  public function __construct($html, $encoding, $token, $store, $headers)
   {
     $this->html = $html;
     $this->encoding = $encoding;
@@ -45,8 +44,14 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody($removeParts = true)
+  public function insertSnippetAndHreflangTags()
   {
+    $this->html = $this->insertSnippet($this->html);
+    $this->html = $this->insertHreflangTags($this->html);
+
+    return array($this->html);
+
+    // revert after memory optimization is finished
     if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
       $encoding = $this->encoding;
     } else {
@@ -150,27 +155,52 @@ class HtmlConverter
    * Insert wovn's snippet to ensure snippet is always inserted.
    * When snippet is always inserted, do nothing
    *
-   * @param simple_html_dom_node $dom
+   * @param string $html
    */
-  private function insertSnippet($dom)
+  private function insertSnippet($html)
   {
-    foreach ($dom->find('script') as $node) {
-      if (strpos($node->getAttribute('src'), '//j.wovn.io/') !== false ||
-        strpos($node->getAttribute('src'), '//j.dev-wovn.io:3000/') !== false) {
-        return;
+    $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
+    $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
+
+    $snippet_code = $this->buildSnippetCode();
+    $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
+
+    return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+  }
+
+  private function insertAfterTag($tag_names, $html, $insert_str)
+  {
+    foreach ($tag_names as $tag_name) {
+      if (preg_match($tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
+        return substr_replace($html, $insert_str, $matches[0][1] + strlen($matches[0][0]), 0);
+      }
+    }
+  }
+
+  private function removeTagFromHtmlByRegex($html, $regex)
+  {
+    $result = $html;
+
+    if (preg_match_all($regex, $result, $matches, PREG_OFFSET_CAPTURE)) {
+      for ($i = count($matches[0]) - 1; $i >= 0; --$i) {
+        $match = $matches[0][$i];
+        $result = substr_replace($result, '', $match[1], strlen($match[0]));
       }
     }
 
+    return $result;
+  }
+
+  private function buildSnippetCode()
+  {
     $token = $this->token;
-    $insert_tags = array('head', 'body', 'html');
-    foreach ($insert_tags as $tag_name) {
-      $parents = $dom->find($tag_name);
-      if (count($parents) > 0) {
-        $parent = $parents[0];
-        $parent->innertext = "<script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script>" . $parent->innertext;
-        return;
-      }
-    }
+    $current_lang = $this->headers->lang();
+    $default_lang = $this->store->settings['default_lang'];
+    $url_pattern = $this->store->settings['url_pattern_name'];
+    $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
+    $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php");
+
+    return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"backend_without_api\" async></script>";
   }
 
   /**
@@ -192,33 +222,33 @@ class HtmlConverter
   /**
    * Insert hreflang tags for all supported_langs
    *
-   * @param simple_html_dom_node $dom
+   * @param string $html
    */
-  private function insertHreflangTags($dom)
+  private function insertHreflangTags($html)
   {
-    $lang_codes = $this->store->settings['supported_langs'];
-    foreach ($dom->find('link') as $node) {
-      $hreflangValue = $node->getAttribute('hreflang');
-      if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
-        $node->outertext = ''; // remove node
+    if (isset($this->store->settings['supported_langs'])) {
+      if (is_array($this->store->settings['supported_langs'])) {
+        $lang_codes = $this->store->settings['supported_langs'];
+      } else {
+        $lang_codes = array($this->store->settings['supported_langs']);
       }
+    } else {
+      $lang_codes = array();
     }
 
-    $insert_tags = array('head', 'body', 'html');
-    foreach ($insert_tags as $tag_name) {
-      $parents = $dom->find($tag_name);
-      if (count($parents) > 0) {
-        $parent = $parents[0];
-        $hreflangTags = array();
+    $lang_codes_with_pipe = implode('|', $lang_codes);
+    $hreflang_regex = "/<link[^>]*hreflang=[^>]*($lang_codes_with_pipe)[^>]*\>/iU";
+    $html = $this->removeTagFromHtmlByRegex($html, $hreflang_regex);
 
-        foreach ($lang_codes as $lang_code) {
-          $href = Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers);
-          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
-        }
-        $parent->innertext = implode('', $hreflangTags) . $parent->innertext;
-        return;
-      }
+    $hreflangTags = array();
+    foreach ($lang_codes as $lang_code) {
+      $href = htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
+      array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
     }
+
+    $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
+
+    return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
   }
 
   private function removeHreflang($node) {
