@@ -77,7 +77,9 @@ class simple_html_dom_node
 	public $nodetype = HDOM_TYPE_TEXT;
 	public $tag = 'text';
 	public $attribute = '';
-	public $nodes = array();
+	public $next_sibling = null;
+	public $children_list_head = null;
+	public $children_list_tail = null;
 	public $parent = null;
 	// The "info" array - see HDOM_INFO_... for what each element contains.
 	private $dom = null;
@@ -109,9 +111,17 @@ class simple_html_dom_node
 	function clear()
 	{
 		$this->dom = null;
-		$this->nodes = null;
 		$this->parent = null;
-		// $this->children = null;
+	}
+
+	public function addChild($node) {
+		if (is_null($this->children_list_head)) {
+			$this->children_list_head = $node;
+			$this->children_list_tail = $node;
+		} else {
+			$this->children_list_tail->next_sibling = $node;
+      $this->children_list_tail = $node;
+		}
 	}
 
 	// returns the parent of node
@@ -123,84 +133,10 @@ class simple_html_dom_node
 		if ($parent !== null)
 		{
 			$this->parent = $parent;
-			$this->parent->nodes[] = $this;
-			// $this->parent->children[] = $this;
+			$this->parent->addChild($this);
 		}
 
 		return $this->parent;
-	}
-
-	// verify that node has children
-	function has_child()
-	{
-		return !empty($this->children);
-	}
-
-	// returns children of node
-	function children($idx=-1)
-	{
-		if ($idx===-1)
-		{
-			return $this->children;
-		}
-		if (isset($this->children[$idx]))
-		{
-			return $this->children[$idx];
-		}
-		return null;
-	}
-
-	// returns the first child of node
-	function first_child()
-	{
-		if (count($this->children)>0)
-		{
-			return $this->children[0];
-		}
-		return null;
-	}
-
-	// returns the last child of node
-	function last_child()
-	{
-		if (($count=count($this->children))>0)
-		{
-			return $this->children[$count-1];
-		}
-		return null;
-	}
-
-	// returns the next sibling of node
-	function next_sibling()
-	{
-		if ($this->parent===null)
-		{
-			return null;
-		}
-
-		$idx = 0;
-		$count = count($this->parent->children);
-		while ($idx<$count && $this!==$this->parent->children[$idx])
-		{
-			++$idx;
-		}
-		if (++$idx>=$count)
-		{
-			return null;
-		}
-		return $this->parent->children[$idx];
-	}
-
-	// returns the previous sibling of node
-	function prev_sibling()
-	{
-		if ($this->parent===null) return null;
-		$idx = 0;
-		$count = count($this->parent->children);
-		while ($idx<$count && $this!==$this->parent->children[$idx])
-			++$idx;
-		if (--$idx<0) return null;
-		return $this->parent->children[$idx];
 	}
 
 	// function to locate a specific ancestor tag in the path to the root.
@@ -227,8 +163,12 @@ class simple_html_dom_node
 		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		$ret = '';
-		foreach ($this->nodes as $n)
-			$ret .= $n->outertext();
+
+		$current_node = $this->children_list_head;
+		while($current_node) {
+            $ret .= $current_node->outertext();
+			$current_node = $current_node->next_sibling;
+		}
 		return $ret;
 	}
 
@@ -263,11 +203,12 @@ class simple_html_dom_node
 				$ret .= $this->info_inner;
 			}
 		} else {
-			if ($this->nodes)
+			if ($this->children_list_head)
 			{
-				foreach ($this->nodes as $n)
-				{
-					$ret .= $this->convert_text($n->outertext());
+				$current_node = $this->children_list_head;
+				while($current_node) {
+                    $ret .= $this->convert_text($current_node->outertext());
+                    $current_node = $current_node->next_sibling;
 				}
 			}
 		}
@@ -295,11 +236,12 @@ class simple_html_dom_node
 		// In rare cases, (always node type 1 or HDOM_TYPE_ELEMENT - observed for some span tags, and some p tags) $this->nodes is set to NULL.
 		// NOTE: This indicates that there is a problem where it's set to NULL without a clear happening.
 		// WHY is this happening?
-		if (!is_null($this->nodes))
+		if (!is_null($this->children_list_head))
 		{
-			foreach ($this->nodes as $n)
-			{
-				$ret .= $this->convert_text($n->text());
+			$current_node = $this->children_list_head;
+			while($current_node) {
+                $ret .= $this->convert_text($current_node ->text());
+				$current_node = $current_node->next_sibling;
 			}
 
 			// If this node is a span... add a space at the end of it so multiple spans don't run into each other.  This is plaintext after all.
@@ -655,12 +597,6 @@ class simple_html_dom_node
 	function getElementByTagName($name) {return $this->find($name, 0);}
 	function getElementsByTagName($name, $idx=null) {return $this->find($name, $idx);}
 	function parentNode() {return $this->parent();}
-	function childNodes($idx=-1) {return $this->children($idx);}
-	function firstChild() {return $this->first_child();}
-	function lastChild() {return $this->last_child();}
-	function nextSibling() {return $this->next_sibling();}
-	function previousSibling() {return $this->prev_sibling();}
-	function hasChildNodes() {return $this->has_child();}
 	function nodeName() {return $this->tag;}
 	function appendChild($node) {$node->parent($this); return $node;}
 
@@ -862,7 +798,6 @@ class simple_html_dom
 	{
 		foreach ($this->nodes as $n) {$n->clear(); $n = null;}
 		// This add next line is documented in the sourceforge repository. 2977248 as a fix for ongoing memory leaks that occur even with the use of clear.
-		if (isset($this->children)) foreach ($this->children as $n) {$n->clear(); $n = null;}
 		if (isset($this->parent)) {$this->parent->clear(); unset($this->parent);}
 		if (isset($this->root)) {$this->root->clear(); unset($this->root);}
 		unset($this->doc);
@@ -1217,7 +1152,7 @@ class simple_html_dom
 	protected function link_nodes(&$node, $is_child)
 	{
 		$node->parent = $this->parent;
-		$this->parent->nodes[] = $node;
+		$this->parent->addChild($node);
 		if ($is_child)
 		{
 			// $this->parent->children[] = $node;
@@ -1391,10 +1326,6 @@ class simple_html_dom
 	}
 
 	// camel naming conventions
-	function childNodes($idx=-1) {return $this->root->childNodes($idx);}
-	function firstChild() {return $this->root->first_child();}
-	function lastChild() {return $this->root->last_child();}
-	function createElement($name, $value=null) {return @str_get_html("<$name>$value</$name>")->first_child();}
 	function createTextNode($value) {return @end(str_get_html($value)->nodes);}
 	function getElementById($id) {return $this->find("#$id", 0);}
 	function getElementsById($id, $idx=null) {return $this->find("#$id", $idx);}
