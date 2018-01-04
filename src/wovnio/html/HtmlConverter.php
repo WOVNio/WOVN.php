@@ -105,10 +105,6 @@ class HtmlConverter
     $body = null;
 
     $dom->iterateAll(function ($node) use ($self, $marker, $removeParts, $adds_hreflang, &$html, &$head, &$body) {
-      if (isset($node->_[5]) && isset($node->_[6])) {
-        error_log($node->tag);
-      }
-
       if (strtolower($node->tag) == "html") {
         $html = $node;
       } else if (strtolower($node->tag) == "head") {
