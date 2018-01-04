@@ -62,9 +62,6 @@ define('HDOM_INFO_BEGIN',   0);
 define('HDOM_INFO_END',	 1);
 // define('HDOM_INFO_QUOTE',   2);
 // define('HDOM_INFO_SPACE',   3);
-define('HDOM_INFO_TEXT',	4);
-define('HDOM_INFO_INNER',   5);
-define('HDOM_INFO_OUTER',   6);
 define('HDOM_INFO_ENDSPACE',7);
 define('DEFAULT_TARGET_CHARSET', 'UTF-8');
 define('DEFAULT_BR_TEXT', "\r\n");
@@ -88,6 +85,10 @@ class simple_html_dom_node
 	// The "info" array - see HDOM_INFO_... for what each element contains.
 	public $_ = array();
 	private $dom = null;
+
+	public $info_text = null;
+	public $info_inner = null;
+	public $info_outer = null;
 
 	function __construct($dom)
 	{
@@ -223,8 +224,8 @@ class simple_html_dom_node
 	// get dom node's inner html
 	function innertext()
 	{
-		if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
-		if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+		if (!is_null($this->info_inner)) return $this->info_inner;
+		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		$ret = '';
 		foreach ($this->nodes as $n)
@@ -243,8 +244,8 @@ class simple_html_dom_node
 			call_user_func_array($this->dom->callback, array($this));
 		}
 
-		if (isset($this->_[HDOM_INFO_OUTER])) return $this->_[HDOM_INFO_OUTER];
-		if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+		if (!is_null($this->info_outer)) return $this->info_outer;
+		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		// render begin tag
 		if ($this->dom && $this->dom->nodes[$this->_[HDOM_INFO_BEGIN]])
@@ -255,12 +256,12 @@ class simple_html_dom_node
 		}
 
 		// render inner text
-		if (isset($this->_[HDOM_INFO_INNER]))
+		if (!is_null($this->info_inner))
 		{
 			// If it's a br tag...  don't return the HDOM_INNER_INFO that we may or may not have added.
 			if ($this->tag != "br")
 			{
-				$ret .= $this->_[HDOM_INFO_INNER];
+				$ret .= $this->info_inner;
 			}
 		} else {
 			if ($this->nodes)
@@ -281,10 +282,10 @@ class simple_html_dom_node
 	// get dom node's plain text
 	function text()
 	{
-		if (isset($this->_[HDOM_INFO_INNER])) return $this->_[HDOM_INFO_INNER];
+		if (!is_null($this->info_inner)) return $this->info_inner;
 		switch ($this->nodetype)
 		{
-			case HDOM_TYPE_TEXT: return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+			case HDOM_TYPE_TEXT: return $this->dom->restore_noise($this->info_text);
 			case HDOM_TYPE_COMMENT: return '';
 			case HDOM_TYPE_UNKNOWN: return '';
 		}
@@ -325,7 +326,7 @@ class simple_html_dom_node
 	function makeup()
 	{
 		// text, comment, unknown
-		if (isset($this->_[HDOM_INFO_TEXT])) return $this->dom->restore_noise($this->_[HDOM_INFO_TEXT]);
+		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		$ret = '<'.$this->tag;
     $ret .= $this->attribute;
@@ -480,14 +481,14 @@ class simple_html_dom_node
 		switch ($name)
 		{
 			case 'outertext':
-				$this->_[HDOM_INFO_OUTER] = $value;
+				$this->info_outer = $value;
         break;
 			case 'innertext':
-				if (isset($this->_[HDOM_INFO_TEXT])) {
-					$this->_[HDOM_INFO_TEXT] = $value;
+				if (!is_null($this->info_text)) {
+                    $this->info_text = $value;
 					return;
         }
-				$this->_[HDOM_INFO_INNER] = $value;
+				$this->info_inner = $value;
 				break;
 			default:
         $this->replaceAttributeValue($name, $value);
@@ -915,7 +916,7 @@ class simple_html_dom
 		// text
 		$node = new simple_html_dom_node($this);
 		++$this->cursor;
-		$node->_[HDOM_INFO_TEXT] = $s;
+		$node->info_text = $s;
 		$this->link_nodes($node, false);
 		return true;
 	}
@@ -1070,7 +1071,7 @@ class simple_html_dom
 
 		// doctype, cdata & comments...
 		if (isset($tag[0]) && $tag[0]==='!') {
-			$node->_[HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until_char('>');
+			$node->info_text = '<' . $tag . $this->copy_until_char('>');
 
 			if (isset($tag[2]) && $tag[1]==='-' && $tag[2]==='-') {
 				$node->nodetype = HDOM_TYPE_COMMENT;
@@ -1079,7 +1080,7 @@ class simple_html_dom
 				$node->nodetype = HDOM_TYPE_UNKNOWN;
 				$node->tag = 'unknown';
 			}
-			if ($this->char==='>') $node->_[HDOM_INFO_TEXT].='>';
+			if ($this->char==='>') $node->info_text.='>';
 			$this->link_nodes($node, true);
 			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
 			return true;
@@ -1088,20 +1089,20 @@ class simple_html_dom
 		// text
 		if ($pos=strpos($tag, '<')!==false) {
 			$tag = '<' . substr($tag, 0, -1);
-			$node->_[HDOM_INFO_TEXT] = $tag;
+			$node->info_text = $tag;
 			$this->link_nodes($node, false);
 			$this->char = $this->doc[--$this->pos]; // prev
 			return true;
 		}
 
 		if (!preg_match("/^[\w-:]+$/", $tag)) {
-			$node->_[HDOM_INFO_TEXT] = '<' . $tag . $this->copy_until('<>');
+			$node->info_text = '<' . $tag . $this->copy_until('<>');
 			if ($this->char==='<') {
 				$this->link_nodes($node, false);
 				return true;
 			}
 
-			if ($this->char==='>') $node->_[HDOM_INFO_TEXT].='>';
+			if ($this->char==='>') $node->info_text.='>';
 			$this->link_nodes($node, false);
 			$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
 			return true;
@@ -1123,7 +1124,7 @@ class simple_html_dom
 			$node->parent = $this->parent;
 		}
 
-    $start_pos = $this->pos;
+		$start_pos = $this->pos;
 		$guard = 0; // prevent infinity loop
 		$space = array($this->copy_skip($this->token_blank), '', '');
 
@@ -1146,7 +1147,7 @@ class simple_html_dom
 			if ($this->pos>=$this->size-1 && $this->char!=='>') {
 				$node->nodetype = HDOM_TYPE_TEXT;
 				$node->_[HDOM_INFO_END] = 0;
-				$node->_[HDOM_INFO_TEXT] = '<'.$tag . $space[0] . $name;
+				$node->info_text = '<'.$tag . $space[0] . $name;
 				$node->tag = 'text';
 				$this->link_nodes($node, false);
 				return true;
@@ -1158,7 +1159,7 @@ class simple_html_dom
 				$node->tag = 'text';
         $node->attribute = '';
 				$node->_[HDOM_INFO_END] = 0;
-				$node->_[HDOM_INFO_TEXT] = substr($this->doc, $begin_tag_pos, $this->pos-$begin_tag_pos-1);
+				$node->info_text = substr($this->doc, $begin_tag_pos, $this->pos-$begin_tag_pos-1);
 				$this->pos -= 2;
 				$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
 				$this->link_nodes($node, false);
@@ -1192,7 +1193,7 @@ class simple_html_dom
 		{
 			$node->_[HDOM_INFO_ENDSPACE] .= '/';
 			$node->_[HDOM_INFO_END] = 0;
-      $tag_closing_diff += 1;
+			$tag_closing_diff += 1;
 		}
 		else
 		{
@@ -1200,14 +1201,14 @@ class simple_html_dom
 			if (!isset($this->self_closing_tags[strtolower($node->tag)])) $this->parent = $node;
 		}
 		$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
-    $node->attribute = substr($this->doc, $start_pos, $this->pos - $start_pos - $tag_closing_diff);
+		$node->attribute = substr($this->doc, $start_pos, $this->pos - $start_pos - $tag_closing_diff);
 
 		// If it's a BR tag, we need to set it's text to the default text.
 		// This way when we see it in plaintext, we can generate formatting that the user wants.
 		// since a br tag never has sub nodes, this works well.
 		if ($node->tag == "br")
 		{
-			$node->_[HDOM_INFO_INNER] = $this->default_br_text;
+			$node->info_inner = $this->default_br_text;
 		}
 
 		return true;
@@ -1229,7 +1230,7 @@ class simple_html_dom
 	{
 		$node = new simple_html_dom_node($this);
 		++$this->cursor;
-		$node->_[HDOM_INFO_TEXT] = '</' . $tag . '>';
+        $node->info_text = '</' . $tag . '>';
 		$this->link_nodes($node, false);
 		$this->char = (++$this->pos<$this->size) ? $this->doc[$this->pos] : null; // next
 		return true;
