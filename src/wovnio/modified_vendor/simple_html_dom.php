@@ -80,10 +80,14 @@ class simple_html_dom_node
 	public $next_sibling = null;
 	public $children_list_head = null;
 	public $children_list_tail = null;
+
+  public $dom_flat_list_next = null;
+
 	public $parent = null;
 	// The "info" array - see HDOM_INFO_... for what each element contains.
 	private $dom = null;
 
+	public $node_begin = null;
 	public $info_begin = null;
 	public $info_end = null;
 	public $info_end_space = null;
@@ -94,7 +98,12 @@ class simple_html_dom_node
 	function __construct($dom)
 	{
 		$this->dom = $dom;
-		$dom->nodes[] = $this;
+		if (is_null($dom->dom_flat_node_list_tail)) {
+      $dom->dom_flat_node_list_tail = $this;
+		} else {
+      $dom->dom_flat_node_list_tail->dom_flat_list_next = $this;
+      $dom->dom_flat_node_list_tail = $this;
+		}
 	}
 
 	function __destruct()
@@ -187,9 +196,9 @@ class simple_html_dom_node
 		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		// render begin tag
-		if ($this->dom && $this->dom->nodes[$this->info_begin])
+		if (!is_null($this->node_begin))
 		{
-			$ret = $this->dom->nodes[$this->info_begin]->makeup();
+			$ret = $this->makeup();
 		} else {
 			$ret = "";
 		}
@@ -273,23 +282,6 @@ class simple_html_dom_node
     $ret .= $this->attribute;
 		$ret = $this->dom->restore_noise($ret);
 		return $ret . $this->info_end_space . '>';
-	}
-
-	public function iterateAll($callback) {
-		$end = (!empty($this->info_end)) ? $this->info_end : 0;
-		if ($end==0) {
-			$parent = $this->parent;
-			while (!isset($parent->info_end) && $parent!==null) {
-				$end -= 1;
-				$parent = $parent->parent;
-			}
-			$end += $parent->info_end;
-		}
-
-		for ($i=$this->info_begin+1; $i<$end; ++$i) {
-			$node = $this->dom->nodes[$i];
-			$callback($node);
-		}
 	}
 
 	protected function match($exp, $pattern, $value) {
@@ -613,7 +605,6 @@ class simple_html_dom_node
 class simple_html_dom
 {
 	public $root = null;
-	public $nodes = array();
 	public $callback = null;
 	public $lowercase = false;
 	// Used to keep track of how large the text was when we started.
@@ -624,6 +615,8 @@ class simple_html_dom
 	protected $cursor;
 	protected $parent;
 	protected $noise = array();
+	public $dom_flat_node_list_tail = null;
+
 	protected $token_blank = " \t\r\n";
 	protected $token_equal = ' =/>';
 	protected $token_slash = " />\r\n\t";
@@ -795,13 +788,24 @@ class simple_html_dom
 	}
 
 	function iterateAll($callback) {
-  	$this->root->iterateAll($callback);
+		$current_node = $this->root->dom_flat_list_next;
+		while($current_node) {
+      $callback($current_node);
+      $current_node = $current_node->dom_flat_list_next;
+		}
 	}
 
 	// clean up memory due to php5 circular references memory leak...
 	function clear()
 	{
-		foreach ($this->nodes as $n) {$n->clear(); $n = null;}
+		if (!is_null($this->root)) {
+      $current_node = $this->root->dom_flat_list_next;
+      while($current_node) {
+        $current_node->clear();
+        $current_node = $current_node->dom_flat_list_next;
+      }
+		}
+
 		// This add next line is documented in the sourceforge repository. 2977248 as a fix for ongoing memory leaks that occur even with the use of clear.
 		if (isset($this->parent)) {$this->parent->clear(); unset($this->parent);}
 		if (isset($this->root)) {$this->root->clear(); unset($this->root);}
@@ -821,7 +825,6 @@ class simple_html_dom
 		$this->pos = 0;
 		$this->cursor = 1;
 		$this->noise = array();
-		$this->nodes = array();
 		$this->lowercase = $lowercase;
 		$this->default_br_text = $defaultBRText;
 		$this->default_span_text = $defaultSpanText;
@@ -993,6 +996,7 @@ class simple_html_dom
 
 		$node = new simple_html_dom_node($this);
 		$node->info_begin = $this->cursor;
+		$node->node_begin = $node;
 		++$this->cursor;
 		$tag = $this->copy_until($doc, $this->token_slash);
 		// $node->tag_start = $begin_tag_pos;
@@ -1320,7 +1324,6 @@ class simple_html_dom
 	}
 
 	// camel naming conventions
-	function createTextNode($value) {return @end(str_get_html($value)->nodes);}
 	function getElementById($id) {return $this->find("#$id", 0);}
 	function getElementsById($id, $idx=null) {return $this->find("#$id", $idx);}
 	function getElementByTagName($name) {return $this->find($name, 0);}
