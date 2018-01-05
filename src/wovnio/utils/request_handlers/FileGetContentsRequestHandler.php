@@ -28,6 +28,7 @@
       $http_context = array(
         'header' => "Accept-Encoding: gzip\r\nContent-type: application/x-www-form-urlencoded\r\nContent-Length: $content_length",
         'method' => 'POST',
+        'timeout' => $timeout,
         'content' => $data
       );
 
@@ -36,7 +37,11 @@
 
     public function fileGetContents($url, $http_context) {
       $context = $this->buildContext($http_context);
-      $response = file_get_contents($url, false, $context);
+      $response = @file_get_contents($url, false, $context);
+
+      if ($response === false) {
+        return null;
+      }
 
       foreach ($http_response_header as $c => $h) {
         if (stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
