@@ -27,13 +27,13 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertAndRevertAtStackOverflow()
   {
-    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
-
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/stack_overflow.html');
     $token = 'toK3n';
 
-    $converter = new HtmlConverter($html, 'UTF-8', $token);
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_expected.html');
@@ -51,13 +51,13 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertAndRevertAtYoutube()
   {
-    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
-
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/youtube.html');
     $token = 'toK3n';
 
-    $converter = new HtmlConverter($html, 'UTF-8', $token);
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/youtube_expected.html');
@@ -75,13 +75,13 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertAndRevertAtYelp()
   {
-    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
-
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/yelp.html');
     $token = 'toK3n';
 
-    $converter = new HtmlConverter($html, 'UTF-8', $token);
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yelp_expected.html');
@@ -99,13 +99,13 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertAndRevertAtYahooJp()
   {
-    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
-
     libxml_use_internal_errors(true);
     $html = file_get_contents('test/fixtures/real_html/yahoo_jp.html');
     $token = 'toK3n';
 
-    $converter = new HtmlConverter($html, 'UTF-8', $token);
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags();
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yahoo_jp_expected.html');
@@ -121,7 +121,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $actual_html);
   }
 
-  public function testConvertToAppropriateForApiBody()
+  public function testInsertSnippetAndHreflangTags()
   {
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
@@ -135,7 +135,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
-  public function testConvertToAppropriateForApiBodyWithEmptySupportedLangs()
+  public function testInsertSnippetAndHreflangTagsWithEmptySupportedLangs()
   {
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
@@ -148,7 +148,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
-  public function testConvertToAppropriateForApiBodyWithHead()
+  public function testInsertSnippetAndHreflangTagsWithHead()
   {
     $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
     $token = 'toK3n';
@@ -161,7 +161,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
-  public function testConvertToAppropriateForApiBodyWithoutBody()
+  public function testInsertSnippetAndHreflangTagsWithoutBody()
   {
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
@@ -175,6 +175,60 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
+  public function testConvertToAppropriateForApiBody()
+  {
+    $html = '<html><body><a>hello</a></body></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
+
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script><a>hello</a></body></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testConvertToAppropriateForApiBodyWithEmptySupportedLangs()
+  {
+    $html = '<html><body><a>hello</a></body></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
+
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script><a>hello</a></body></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testConvertToAppropriateForApiBodyWithHead()
+  {
+    $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
+
+    $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testConvertToAppropriateForApiBodyWithoutBody()
+  {
+    $html = '<html>hello<a>world</a></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['supported_langs'] = array();
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
+
+    $expected_html = "<html><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script>hello<a>world</a></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
   public function testConvertToAppropriateForApiBodyWithoutEncoding()
   {
     $html = mb_convert_encoding('<html>こんにちは</html>', 'SJIS');
@@ -183,7 +237,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, null, $token, $store, $headers);
-    list($translated_html) = $converter->insertSnippetAndHreflangTags();
+    list($translated_html) = $converter->convertToAppropriateForApiBody();
 
     $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script>こんにちは</html>";
     $expected_html = mb_convert_encoding($expected_html, 'SJIS');
@@ -200,7 +254,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
       $env = $this->getEnv();
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $converter = new HtmlConverter($html, $encoding, $token, $store, $headers);
-      list($translated_html) = $converter->insertSnippetAndHreflangTags();
+      list($translated_html) = $converter->convertToAppropriateForApiBody();
 
       $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script>こんにちは</html>";
       $expected_html = mb_convert_encoding($expected_html, $encoding);
@@ -210,12 +264,16 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertToAppropriateForApiBodyWithWovnIgnore()
   {
-    $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
     $html = '<html><body><a wovn-ignore>hello</a></body></html>';
-    $converter = new HtmlConverter($html, 'UTF-8', 'toK3n');
-    list($translated_html) = $this->executeConvert($converter, $html, 'UTF-8', 'removeWovnIgnore');
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $converter = new HtmlConverter($html, null, $token, $store, $headers);
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
+    $keys = $marker->keys();
 
-    $this->assertEquals("<html><body><a wovn-ignore></a></body></html>", $translated_html);
+    $this->assertEquals(1, count($keys));
+    $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateForApiBodyWithMultipleWovnIgnore()
@@ -224,7 +282,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeWovnIgnore');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
@@ -237,7 +295,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
@@ -250,7 +308,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
@@ -263,7 +321,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
@@ -276,7 +334,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
@@ -289,7 +347,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
@@ -302,7 +360,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeScript');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
@@ -315,7 +373,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $env = $this->getEnv();
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
-    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeScript');
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
     $keys = $marker->keys();
 
     $this->assertEquals(2, count($keys));
@@ -558,7 +616,10 @@ bye
 
     $method = new ReflectionMethod($converter, $name);
     $method->setAccessible(true);
-    $method->invoke($converter, $dom, $marker);
+
+    $dom->iterateAll(function ($node) use ($method, $converter, $marker) {
+      $method->invoke($converter, $node, $marker);
+    });
 
     $converted_html = $dom->save();
     $dom->clear();

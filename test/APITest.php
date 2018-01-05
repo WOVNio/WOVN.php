@@ -78,7 +78,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -101,7 +101,7 @@
       RequestHandlerFactory::set_instance($mock);
 
       $result = API::translate($store, $headers, $html);
-      $this->assertTrue($result === $expected_result);
+      $this->assertEquals( $expected_result, $result);
     }
 
     public function testTranslateWithCustomLangAliases() {
@@ -113,7 +113,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
 
-      $expected_body = $html;
+      $expected_body = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key=' . $token . '&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;ja&quot;:&quot;ja-test&quot;}&amp;version=WOVN.php" data-wovnio-type="backend_without_api" async></script></head><body><h1>en</h1></body></html>';;
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $expected_data = array(
         'url' => $headers->url,
@@ -142,14 +142,13 @@
     }
 
     public function testTranslateWithWovnIgnore() {
-      $this->markTestSkipped("Skip this test because we don't support wovn-ignore for now");
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
       $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
       $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003ch1 wovn-ignore\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003e\u003c\u002fh1\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src='//j.wovn.io/1' data-wovnio='key=$token' data-wovnio-type='backend_without_api' async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -182,7 +181,8 @@
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
 
-      $expected_html = $html;
+      $token = $store->settings['project_token'];
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="backend_without_api" async></script></head><body><h1>en</h1></body></html>';;
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -204,7 +204,7 @@
       RequestHandlerFactory::set_instance($mock);
 
       $result = API::translate($store, $headers, $html);
-      $this->assertTrue($result === NULL);
+      $this->assertEquals($expected_html, $result);
     }
 
     public function testTranslateWithoutMakingAPICallBySetting() {
@@ -221,7 +221,7 @@
       RequestHandlerFactory::set_instance($mock);
 
       $result = API::translate($store, $headers, $html);
-      $this->assertTrue($expected_result, $result);
+      $this->assertEquals($expected_result, $result);
     }
 
     public function testTranslateWhenDefaultLangAndSettingIsOff() {
@@ -234,7 +234,8 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
 
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
-      $expected_html = $html;
+      $token = $store->settings['project_token'];
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/en/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="backend_without_api" async></script></head><body><h1>en</h1></body></html>';;
       $response = '{"body":"<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http:\/\/localhost.com\/ja\/t.php?wovn=en\"><script src=\'\/\/j.wovn.io\/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async><\/script><\/head><body><h1>fr<\/h1><\/body><\/html>"}';
 
       $expected_data = array(
@@ -260,6 +261,41 @@
       $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src=\'//j.wovn.io/1\' data-wovnio=\'key=\' data-wovnio-type=\'backend_without_api\' async></script></head><body><h1>fr</h1></body></html>';
 
       $result = API::translate($store, $headers, $html);
-      $this->assertTrue($result === $expected_result);
+      $this->assertEquals($expected_result, $result);
+    }
+
+    public function testTranslateWithSaveMemoryBySendingWovnIgnoreContent() {
+      $env = $this->getEnv('_path');
+      list($store, $headers) = Utils::getStoreAndHeaders($env);
+      $store->settings['save_memory_by_sending_wovn_ignore_content'] = true;
+
+      $html = '<html><head></head><body><h1 wovn-ignore>ignore content</h1></body></html>';
+      $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
+      $expected_url = $this->getExpectedUrl($store, $headers, $html);
+      $token = $store->settings['project_token'];
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"backend_without_api\" async></script></head><body><h1 wovn-ignore>ignore content</h1></body></html>";
+      $expected_data = array(
+        'url' => $headers->url,
+        'token' => $store->settings['project_token'],
+        'lang_code' => $headers->lang(),
+        'url_pattern' => 'query',
+        'body' => $expected_html
+      );
+      $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
+
+      $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
+      $mock->expects($this->once())
+        ->method('sendRequest')
+        ->with(
+          $this->equalTo('POST'),
+          $this->equalTo($expected_url),
+          $this->equalTo($expected_data),
+          $this->equalTo(1.0)
+        )
+        ->willReturn($response);
+      RequestHandlerFactory::set_instance($mock);
+
+      $result = API::translate($store, $headers, $html);
+      $this->assertEquals( $expected_result, $result);
     }
   }

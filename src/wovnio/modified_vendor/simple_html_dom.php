@@ -391,10 +391,10 @@ class simple_html_dom_node
         break;
       case '\'':
         $val_end_pos = strpos($attr_text, '\'', $val_start_pos + 1);
-        $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos, $val_end_pos));
+        $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1));
         break;
       default:
-        $len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos + 1);
+        $len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos);
         $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos, $len));
     }
 
@@ -469,7 +469,7 @@ class simple_html_dom_node
         break;
       default:
         $len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos + 1);
-        $this->attribute = substr_replace($attr_text, $value, $val_start_pos + 1, $len);
+        $this->attribute = substr_replace($attr_text, $value, $val_start_pos, $len + 1);
     }
 	}
 
@@ -617,7 +617,7 @@ class simple_html_dom
 	protected $noise = array();
 	public $dom_flat_node_list_tail = null;
 
-	protected $token_blank = " \t\r\n";
+	public $token_blank = " \t\r\n";
 	protected $token_equal = ' =/>';
 	protected $token_slash = " />\r\n\t";
 	protected $token_attr = ' >';

@@ -16,8 +16,6 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
   use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
 
-error_log("start-------");
-
   // FIXME should not force the factory, it should use cURL when possible but
   // some of us currently have problem with cURL
   $request_handler = new FileGetContentsRequestHandler();
@@ -39,11 +37,6 @@ error_log("start-------");
 
       if ($translated_buffer !== NULL && !empty($translated_buffer)) {
         Utils::changeHeaders($translated_buffer, $store);
-        $version = phpversion();
-        error_log("VERSION: $version");
-        error_log('memory_get_usage: '.(memory_get_usage() / 1024).'kb');
-        error_log("memory_get_peak_usage: ".memory_get_peak_usage() / 1024);
-        error_log("REAL: memory_get_peak_usage: ".memory_get_peak_usage(true) / 1024);
         return $translated_buffer;
       }
     }
