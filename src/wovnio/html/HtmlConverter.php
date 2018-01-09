@@ -39,8 +39,8 @@ class HtmlConverter
     $this->headers = $headers;
   }
 
-  public function insertSnippetAndHreflangTags() {
-    $this->html = $this->insertSnippet($this->html);
+  public function insertSnippetAndHreflangTags($adds_backend_error_mark) {
+    $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
     $this->html = $this->insertHreflangTags($this->html);
     $marker = new HtmlReplaceMarker();
     return array($this->html, $marker);
@@ -52,7 +52,7 @@ class HtmlConverter
    *
    * @return array converted html and HtmlReplaceMarker
    */
-  public function convertToAppropriateForApiBody()
+  public function convertToAppropriateBodyForApi()
   {
     if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
       $encoding = $this->encoding;
@@ -117,7 +117,7 @@ class HtmlConverter
         }
       }
 
-      $snippet = $this->buildSnippetCode();
+      $snippet = $this->buildSnippetCode(true);
       $insert_tag->innertext = implode('', $hreflangTags) . $snippet . $insert_tag->innertext;
       break;
     }
@@ -128,13 +128,14 @@ class HtmlConverter
    * When snippet is always inserted, do nothing
    *
    * @param string $html
+   * @param bool $adds_backend_error_mark
    */
-  private function insertSnippet($html)
+  private function insertSnippet($html, $adds_backend_error_mark)
   {
     $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
     $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
 
-    $snippet_code = $this->buildSnippetCode();
+    $snippet_code = $this->buildSnippetCode($adds_backend_error_mark);
     $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
     return $this->insertAfterTag($parent_tags, $html, $snippet_code);
@@ -163,7 +164,7 @@ class HtmlConverter
     return $result;
   }
 
-  private function buildSnippetCode()
+  private function buildSnippetCode($adds_backend_error_mark)
   {
     $token = $this->token;
     $current_lang = $this->headers->lang();
@@ -172,7 +173,11 @@ class HtmlConverter
     $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
     $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php");
 
-    return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"backend_without_api\" async></script>";
+    if ($adds_backend_error_mark) {
+      return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"backend_without_api\" async></script>";
+    } else {
+      return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" async></script>";
+    }
   }
 
   /**

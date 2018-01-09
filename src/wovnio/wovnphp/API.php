@@ -27,9 +27,9 @@
       if (self::makeAPICall($store, $headers)) {
         $saves_memory = $store->settings['save_memory_by_sending_wovn_ignore_content'];
         if ($saves_memory) {
-          list($converted_html, $marker) = $converter->insertSnippetAndHreflangTags();
+          list($converted_html, $marker) = $converter->insertSnippetAndHreflangTags(true);
         } else {
-          list($converted_html, $marker) = $converter->convertToAppropriateForApiBody();
+          list($converted_html, $marker) = $converter->convertToAppropriateBodyForApi();
         }
 
         $timeout = $store->settings['api_timeout'];
@@ -54,7 +54,7 @@
         }
       }
       else {
-        list($translated_content, $marker) = $converter->insertSnippetAndHreflangTags();
+        list($translated_content, $marker) = $converter->insertSnippetAndHreflangTags(false);
       }
 
       return $translated_content;
