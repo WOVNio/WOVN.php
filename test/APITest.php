@@ -58,6 +58,10 @@
       return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
+    public function testAA() {
+      $this->assertEqual(1, 2);
+    }
+
     public function testAPIExists() {
       $this->assertTrue(class_exists('Wovnio\Wovnphp\API'));
     }
