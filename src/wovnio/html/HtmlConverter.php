@@ -174,7 +174,7 @@ class HtmlConverter
     $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php");
 
     if ($adds_backend_error_mark) {
-      return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"backend_without_api\" async></script>";
+      return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"fallback_snippet\" async></script>";
     } else {
       return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" async></script>";
     }
