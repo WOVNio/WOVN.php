@@ -8,21 +8,16 @@ machine:
 
 test:
   override:
-    # - vendor/bin/phpunit
-    - vendor/bin/dunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.3 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.3 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.4 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.4 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.5 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.5 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.6 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:5.6 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/hhvm /bin/bash -c /opt/source/vendor/bin/phpunit
+    - vendor/bin/phpunit
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.3 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.3 /bin/bash -c /opt/source/vendor/bin/phpunit
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.4 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.4 /bin/bash -c /opt/source/vendor/bin/phpunit
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.5 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.5 /bin/bash -c /opt/source/vendor/bin/phpunit
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.6 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php5.6 /bin/bash -c /opt/source/vendor/bin/phpunit
     - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/hhvm /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.0 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.0 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.1 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.1 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.2 /bin/bash -c /opt/source/vendor/bin/phpunit
-    - docker run -t -v $(pwd):/opt/source -w /opt/source php:7.2 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/hhvm /bin/bash -c /opt/source/vendor/bin/phpunit
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php7.0 /bin/bash -c 'a=$(find /opt/source -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    - docker run -t -v $(pwd):/opt/source -w /opt/source vectorface/php7.0 /bin/bash -c /opt/source/vendor/bin/phpunit
