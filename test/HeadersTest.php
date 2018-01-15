@@ -915,7 +915,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $headers->requestOut();
 
     $this->assertEquals('', $env['QUERY_STRING']);
-    $this->assertEquals('/t.php?wovn=ja', $env['REQUEST_URI']);
+    $this->assertEquals('/t.php', $env['REQUEST_URI']);
     $this->assertEquals('/index.php?page=1', $env['HTTP_REFERER']);
   }
 
