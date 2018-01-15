@@ -13,22 +13,30 @@
     private $values = null;
 
     /**
-     *  Constructor of the Store class
-     *  
-     *  @param string $settingsFile A settings file name 
-     *  @return void
+     * @param string $settingFileName
+     * @return Store
      */
-    public function __construct($settingsFile='') {
-      if ($settingsFile==='') {
-        $settingsFile = DIRNAME(__FILE__) . '/../../../../wovn.ini';
-      }
-      $defaultSettings = $this->defaultSettings();
-      if (file_exists($settingsFile)) {
-        $userSettings = $this->updateSettings(parse_ini_file($settingsFile, true));
+    public static function createFromFile($settingFileName) {
+      if (file_exists($settingFileName)) {
+        $userSettings = parse_ini_file($settingFileName, true);
       }
       else {
-        $userSettings = array();
+        $userSettings = null;
       }
+
+      return new Store($userSettings);
+    }
+
+    /**
+     *  Constructor of the Store class
+     *  
+     *  @param array $userSettings
+     *  @return void
+     */
+    public function __construct($userSettings) {
+      $defaultSettings = $this->defaultSettings();
+      $userSettings = $this->updateSettings($userSettings);
+
       $this->settings = array_merge($defaultSettings, $userSettings);
 
       // Use default api_url property when user api_url property is empty.
@@ -79,6 +87,10 @@
      * @return array The new settings of the user
      */
     public function updateSettings($vals=array()) {
+      if (isset($vals['default_lang']) === false) {
+        return array();
+      }
+
       // GETTING THE LANGUAGE AND SETTING IT AS CODE
       $vals['default_lang'] = Lang::getCode($vals['default_lang']);
 

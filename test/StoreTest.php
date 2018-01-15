@@ -44,7 +44,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'backend_port = "6379"' . "\n" . 
             'default_lang = "English"' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals(array('a='), $store->settings['query']);
   }
@@ -61,7 +61,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'backend_port = "6379"' . "\n" . 
             'default_lang = "English"' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals(array('a=', 'b='), $store->settings['query']);
   }
@@ -78,7 +78,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'backend_port = "6379"' . "\n" . 
             'default_lang = "English"' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals(array('a=', 'b='), $store->settings['query']);
   }
@@ -92,7 +92,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
       'default_lang = "English"' . "\n" .
       'encoding = UTF-8' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('UTF-8', $store->settings['encoding']);
   }
@@ -106,7 +106,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
       'default_lang = "English"' . "\n" .
       'encoding = INVALID_ENCODING' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals(null, $store->settings['encoding']);
   }
@@ -119,7 +119,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     $data = 'project_token = "T0k3N"' . "\n" .
       'default_lang = "English"' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals(null, $store->settings['encoding']);
   }
@@ -133,7 +133,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'default_lang = "English"' . "\n" .
             'use_proxy = 1' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
     $this->assertArrayHasKey('use_proxy', $store->settings);
@@ -149,7 +149,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'default_lang = "English"' . "\n" .
             'wovn_dev_mode = 1' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertArrayHasKey('wovn_dev_mode', $store->settings);
     $this->assertEquals(1, $store->settings['wovn_dev_mode']);
@@ -164,7 +164,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'default_lang = "English"' . "\n" .
             'wovn_dev_mode = 0' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertArrayHasKey('wovn_dev_mode', $store->settings);
     $this->assertEquals(0, $store->settings['wovn_dev_mode']);
@@ -178,7 +178,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
     $data = 'project_token = "T0k3N"' . "\n" .
             'default_lang = "English"' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertArrayHasKey('wovn_dev_mode', $store->settings);
     $this->assertEquals(0, $store->settings['wovn_dev_mode']);
@@ -193,7 +193,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'default_lang = "English"' . "\n" .
             'wovn_dev_mode = 1' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('http://api.dev-wovn.io:3000/v0/', $store->settings['api_url']);
   }
@@ -207,7 +207,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'default_lang = "English"' . "\n" .
             'wovn_dev_mode = 0' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
   }
@@ -222,7 +222,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'api_url = "https://test-api.io"' . "\n" .
             'wovn_dev_mode = 1' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('https://test-api.io', $store->settings['api_url']);
   }
@@ -237,7 +237,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'api_url = "https://test-api.io"' . "\n" .
             'wovn_dev_mode = 0' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('https://test-api.io', $store->settings['api_url']);
   }
@@ -252,7 +252,7 @@ class StoreTest extends PHPUnit_Framework_TestCase {
             'custom_lang_aliases["ja"] = "ja-test"' . "\n" .
             'wovn_dev_mode = 0' . "\n";
     file_put_contents($file_config, $data);
-    $store = new Store($file_config);
+    $store = Store::createFromFile($file_config);
     unlink($file_config);
     $this->assertEquals('ja-test', $store->convertToCustomLangCode('ja'));
   }
