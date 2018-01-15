@@ -81,7 +81,7 @@ class simple_html_dom_node
 	public $children_list_head = null;
 	public $children_list_tail = null;
 
-  public $dom_flat_list_next = null;
+	public $dom_flat_list_next = null;
 
 	public $parent = null;
 	// The "info" array - see HDOM_INFO_... for what each element contains.
@@ -99,10 +99,10 @@ class simple_html_dom_node
 	{
 		$this->dom = $dom;
 		if (is_null($dom->dom_flat_node_list_tail)) {
-      $dom->dom_flat_node_list_tail = $this;
+			$dom->dom_flat_node_list_tail = $this;
 		} else {
-      $dom->dom_flat_node_list_tail->dom_flat_list_next = $this;
-      $dom->dom_flat_node_list_tail = $this;
+			$dom->dom_flat_node_list_tail->dom_flat_list_next = $this;
+			$dom->dom_flat_node_list_tail = $this;
 		}
 	}
 
@@ -129,7 +129,7 @@ class simple_html_dom_node
 			$this->children_list_tail = $node;
 		} else {
 			$this->children_list_tail->next_sibling = $node;
-      $this->children_list_tail = $node;
+			$this->children_list_tail = $node;
 		}
 	}
 
@@ -175,7 +175,7 @@ class simple_html_dom_node
 
 		$current_node = $this->children_list_head;
 		while($current_node) {
-            $ret .= $current_node->outertext();
+			$ret .= $current_node->outertext();
 			$current_node = $current_node->next_sibling;
 		}
 		return $ret;
@@ -216,8 +216,8 @@ class simple_html_dom_node
 			{
 				$current_node = $this->children_list_head;
 				while($current_node) {
-                    $ret .= $this->convert_text($current_node->outertext());
-                    $current_node = $current_node->next_sibling;
+					$ret .= $this->convert_text($current_node->outertext());
+					$current_node = $current_node->next_sibling;
 				}
 			}
 		}
@@ -249,7 +249,7 @@ class simple_html_dom_node
 		{
 			$current_node = $this->children_list_head;
 			while($current_node) {
-                $ret .= $this->convert_text($current_node ->text());
+				$ret .= $this->convert_text($current_node ->text());
 				$current_node = $current_node->next_sibling;
 			}
 
@@ -279,7 +279,7 @@ class simple_html_dom_node
 		if (!is_null($this->info_text)) return $this->dom->restore_noise($this->info_text);
 
 		$ret = '<'.$this->tag;
-    $ret .= $this->attribute;
+		$ret .= $this->attribute;
 		$ret = $this->dom->restore_noise($ret);
 		return $ret . $this->info_end_space . '>';
 	}
@@ -349,11 +349,11 @@ class simple_html_dom_node
 
 	function __get($name)
 	{
-    $val = $this->get_attr_val($this->attribute, $name);
+		$val = $this->get_attr_val($this->attribute, $name);
 
-    if ($val) {
-      return $this->convert_text($val);
-    }
+		if ($val) {
+			return $this->convert_text($val);
+		}
 
 		switch ($name)
 		{
@@ -366,48 +366,48 @@ class simple_html_dom_node
 		}
 	}
 
-  // parse attributes
-  protected function get_attr_val($attr_text, $name)
-  {
-    $text_len = strlen($attr_text);
-    $name_pos = stripos($attr_text, $name);
-    if ($name_pos === false) return false;
-    if ($name_pos >= $text_len) return true;
+	// parse attributes
+	protected function get_attr_val($attr_text, $name)
+	{
+		$text_len = strlen($attr_text);
+		$name_pos = stripos($attr_text, $name);
+		if ($name_pos === false) return false;
+		if ($name_pos >= $text_len) return true;
 
-    $blank_len = strspn($attr_text, $this->dom->token_blank, $name_pos + strlen($name));
-    $val_start_pos = $name_pos + strlen($name) + $blank_len;
-    if ($val_start_pos >= $text_len) return true;
+		$blank_len = strspn($attr_text, $this->dom->token_blank, $name_pos + strlen($name));
+		$val_start_pos = $name_pos + strlen($name) + $blank_len;
+		if ($val_start_pos >= $text_len) return true;
 
-    if ($attr_text[$val_start_pos] !== '=') return true;
+		if ($attr_text[$val_start_pos] !== '=') return true;
 
-    $val_start_pos += 1;
-    $blank_len = strspn($attr_text, $this->dom->token_blank, $val_start_pos);
-    $val_start_pos = $val_start_pos + $blank_len;
+		$val_start_pos += 1;
+		$blank_len = strspn($attr_text, $this->dom->token_blank, $val_start_pos);
+		$val_start_pos = $val_start_pos + $blank_len;
 
-    switch ($attr_text[$val_start_pos]) {
-      case '"':
-        $val_end_pos = strpos($attr_text, '"', $val_start_pos + 1);
-        $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1));
-        break;
-      case '\'':
-        $val_end_pos = strpos($attr_text, '\'', $val_start_pos + 1);
-        $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1));
-        break;
-      default:
-        $len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos);
-        $val = $this->dom->restore_noise(substr($attr_text, $val_start_pos, $len));
-    }
+		switch ($attr_text[$val_start_pos]) {
+			case '"':
+				$val_end_pos = strpos($attr_text, '"', $val_start_pos + 1);
+				$val = $this->dom->restore_noise(substr($attr_text, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1));
+				break;
+			case '\'':
+				$val_end_pos = strpos($attr_text, '\'', $val_start_pos + 1);
+				$val = $this->dom->restore_noise(substr($attr_text, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1));
+				break;
+			default:
+				$len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos);
+				$val = $this->dom->restore_noise(substr($attr_text, $val_start_pos, $len));
+		}
 
-    // PaperG: Attributes should not have \r or \n in them, that counts as html whitespace.
-    $val = str_replace("\r", "", $val);
-    $val = str_replace("\n", "", $val);
-    // PaperG: If this is a "class" selector, lets get rid of the preceeding and trailing space since some people leave it in the multi class case.
-    if ($name == "class") {
-      $val = trim($val);
-    }
+		// PaperG: Attributes should not have \r or \n in them, that counts as html whitespace.
+		$val = str_replace("\r", "", $val);
+		$val = str_replace("\n", "", $val);
+		// PaperG: If this is a "class" selector, lets get rid of the preceeding and trailing space since some people leave it in the multi class case.
+		if ($name == "class") {
+			$val = trim($val);
+		}
 
-    return $val;
-  }
+		return $val;
+	}
 
 	function __set($name, $value)
 	{
@@ -415,62 +415,62 @@ class simple_html_dom_node
 		{
 			case 'outertext':
 				$this->info_outer = $value;
-        break;
+				break;
 			case 'innertext':
 				if (!is_null($this->info_text)) {
-                    $this->info_text = $value;
+					$this->info_text = $value;
 					return;
-        }
+				}
 				$this->info_inner = $value;
 				break;
 			default:
-        $this->replaceAttributeValue($name, $value);
+				$this->replaceAttributeValue($name, $value);
 		}
 	}
 
 	function replaceAttributeValue($name, $value) {
-    $attr_text = $this->attribute;
-    $text_len = strlen($attr_text);
-    $name_pos = stripos($attr_text, $name);
-    if ($name_pos === false) {
-      $this->attribute .= " $name=\"$value\"";
-      return;
-    }
+		$attr_text = $this->attribute;
+		$text_len = strlen($attr_text);
+		$name_pos = stripos($attr_text, $name);
+		if ($name_pos === false) {
+			$this->attribute .= " $name=\"$value\"";
+			return;
+		}
 
-    if ($name_pos >= $text_len) {
-      $this->attribute .= "=\"$value\"";
-      return;
-    };
+		if ($name_pos >= $text_len) {
+			$this->attribute .= "=\"$value\"";
+			return;
+		};
 
-    $blank_len = strspn($attr_text, $this->dom->token_blank, $name_pos + strlen($name));
-    $val_start_pos = $name_pos + strlen($name) + $blank_len;
-    if ($val_start_pos >= $text_len) {
-      $this->attribute = substr_replace($attr_text, "=\"$value\"", $name_pos + strlen($name), 0);
-      return;
-    }
+		$blank_len = strspn($attr_text, $this->dom->token_blank, $name_pos + strlen($name));
+		$val_start_pos = $name_pos + strlen($name) + $blank_len;
+		if ($val_start_pos >= $text_len) {
+			$this->attribute = substr_replace($attr_text, "=\"$value\"", $name_pos + strlen($name), 0);
+			return;
+		}
 
-    if ($attr_text[$val_start_pos] !== '=') {
-      $this->attribute = substr_replace($attr_text, "=\"$value\"", $name_pos + strlen($name), 0);
-      return;
-    }
+		if ($attr_text[$val_start_pos] !== '=') {
+			$this->attribute = substr_replace($attr_text, "=\"$value\"", $name_pos + strlen($name), 0);
+			return;
+		}
 
-    $val_start_pos += 1;
-    $blank_len = strspn($attr_text, $this->dom->token_blank, $val_start_pos);
-    $val_start_pos = $val_start_pos + $blank_len;
+		$val_start_pos += 1;
+		$blank_len = strspn($attr_text, $this->dom->token_blank, $val_start_pos);
+		$val_start_pos = $val_start_pos + $blank_len;
 
-    switch ($attr_text[$val_start_pos]) {
-      case '"':
-        $val_end_pos = strpos($attr_text, '"', $val_start_pos + 1);
-        $this->attribute = substr_replace($attr_text, $value, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1);
-        break;
-      case '\'':
-        $val_end_pos = strpos($attr_text, '\'', $val_start_pos + 1);
-        $this->attribute = substr_replace($attr_text, $value, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1);
-        break;
-      default:
-        $len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos + 1);
-        $this->attribute = substr_replace($attr_text, $value, $val_start_pos, $len + 1);
-    }
+		switch ($attr_text[$val_start_pos]) {
+			case '"':
+				$val_end_pos = strpos($attr_text, '"', $val_start_pos + 1);
+				$this->attribute = substr_replace($attr_text, $value, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1);
+				break;
+			case '\'':
+				$val_end_pos = strpos($attr_text, '\'', $val_start_pos + 1);
+				$this->attribute = substr_replace($attr_text, $value, $val_start_pos + 1, $val_end_pos - $val_start_pos - 1);
+				break;
+			default:
+				$len = strcspn($attr_text, $this->dom->token_blank, $val_start_pos + 1);
+				$this->attribute = substr_replace($attr_text, $value, $val_start_pos, $len + 1);
+		}
 	}
 
 	function __isset($name)
@@ -646,37 +646,37 @@ class simple_html_dom
 		'option'=>array('option'=>1),
 	);
 
-  // get html dom from file
-  // $maxlen is defined in the code as PHP_STREAM_COPY_ALL which is defined as -1.
-  public static function file_get_html($url, $charset, $use_include_path = false, $context=null, $offset = -1, $maxLen=-1, $lowercase = true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
-  {
-    // We DO force the tags to be terminated.
-    $dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
-    // For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
-    $contents = file_get_contents($url, $use_include_path, $context, $offset);
-    // Paperg - use our own mechanism for getting the contents as we want to control the timeout.
-    //$contents = retrieve_url_contents($url);
-    if (empty($contents) || strlen($contents) > MAX_FILE_SIZE)
-    {
-      return false;
-    }
-    // The second parameter can force the selectors to all be lowercase.
-    $dom->load($contents, $lowercase, $stripRN);
-    return $dom;
-  }
+	// get html dom from file
+	// $maxlen is defined in the code as PHP_STREAM_COPY_ALL which is defined as -1.
+	public static function file_get_html($url, $charset, $use_include_path = false, $context=null, $offset = -1, $maxLen=-1, $lowercase = true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+	{
+		// We DO force the tags to be terminated.
+		$dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
+		// For sourceforge users: uncomment the next line and comment the retreive_url_contents line 2 lines down if it is not already done.
+		$contents = file_get_contents($url, $use_include_path, $context, $offset);
+		// Paperg - use our own mechanism for getting the contents as we want to control the timeout.
+		//$contents = retrieve_url_contents($url);
+		if (empty($contents) || strlen($contents) > MAX_FILE_SIZE)
+		{
+			return false;
+		}
+		// The second parameter can force the selectors to all be lowercase.
+		$dom->load($contents, $lowercase, $stripRN);
+		return $dom;
+	}
 
-  // get html dom from string
-  public static function str_get_html($str, $charset, $lowercase=true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
-  {
-    $dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
-    if (empty($str) || strlen($str) > MAX_FILE_SIZE)
-    {
-      $dom->clear();
-      return false;
-    }
-    $dom->load($str, $charset, $lowercase, $stripRN);
-    return $dom;
-  }
+	// get html dom from string
+	public static function str_get_html($str, $charset, $lowercase=true, $forceTagsClosed=true, $target_charset = DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
+	{
+		$dom = new simple_html_dom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
+		if (empty($str) || strlen($str) > MAX_FILE_SIZE)
+		{
+			$dom->clear();
+			return false;
+		}
+		$dom->load($str, $charset, $lowercase, $stripRN);
+		return $dom;
+	}
 
 	function __construct($str=null, $charset=null, $lowercase=true, $forceTagsClosed=true, $target_charset=DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
 	{
@@ -706,11 +706,11 @@ class simple_html_dom
 	// load html from string
 	function load($str, $charset, $lowercase=true, $stripRN=true, $defaultBRText=DEFAULT_BR_TEXT, $defaultSpanText=DEFAULT_SPAN_TEXT)
 	{
-    //before use the doc...  strip out the \r \n's if we are told to.
-    if ($stripRN) {
-      $str = str_replace("\r", " ", $str);
-      $str = str_replace("\n", " ", $str);
-    }
+		//before use the doc...  strip out the \r \n's if we are told to.
+		if ($stripRN) {
+			$str = str_replace("\r", " ", $str);
+			$str = str_replace("\n", " ", $str);
+		}
 
 		// prepare
 		$this->prepare($str, $lowercase, $stripRN, $defaultBRText, $defaultSpanText);
@@ -738,10 +738,10 @@ class simple_html_dom
 		// end
 		$this->root->info_end = $this->cursor;
 		if ($charset) {
-      $this->_charset = $charset;
-    } else {
-      $this->parse_charset();
-    }
+			$this->_charset = $charset;
+		} else {
+			$this->parse_charset();
+		}
 
 		// make load function chainable
 		return $this;
@@ -790,8 +790,8 @@ class simple_html_dom
 	function iterateAll($callback) {
 		$current_node = $this->root->dom_flat_list_next;
 		while($current_node) {
-      $callback($current_node);
-      $current_node = $current_node->dom_flat_list_next;
+			$callback($current_node);
+			$current_node = $current_node->dom_flat_list_next;
 		}
 	}
 
@@ -799,11 +799,11 @@ class simple_html_dom
 	function clear()
 	{
 		if (!is_null($this->root)) {
-      $current_node = $this->root->dom_flat_list_next;
-      while($current_node) {
-        $current_node->clear();
-        $current_node = $current_node->dom_flat_list_next;
-      }
+			$current_node = $this->root->dom_flat_list_next;
+			while($current_node) {
+				$current_node->clear();
+				$current_node = $current_node->dom_flat_list_next;
+			}
 		}
 
 		// This add next line is documented in the sourceforge repository. 2977248 as a fix for ongoing memory leaks that occur even with the use of clear.
@@ -1162,7 +1162,7 @@ class simple_html_dom
 	{
 		$node = new simple_html_dom_node($this);
 		++$this->cursor;
-        $node->info_text = '</' . $tag . '>';
+		$node->info_text = '</' . $tag . '>';
 		$this->link_nodes($node, false);
 		$this->char = (++$this->pos<$this->size) ? $doc[$this->pos] : null; // next
 		return true;
@@ -1251,7 +1251,7 @@ class simple_html_dom
 			$key = '___noise___'.sprintf('% 5d', count($this->noise)+1000);
 			$idx = ($remove_tag) ? 0 : 1;
 			$this->noise[$key] = $matches[$i][$idx][0];
-      $str = substr_replace($str, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
+			$str = substr_replace($str, $key, $matches[$i][$idx][1], strlen($matches[$i][$idx][0]));
 		}
 
 		// reset the length of content
