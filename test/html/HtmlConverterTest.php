@@ -6,14 +6,14 @@ require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
-require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
+require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'src/wovnio/wovnphp/Url.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 
 use Wovnio\Html\HtmlConverter;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Html\HtmlReplaceMarker;
-use Wovnio\ModifiedVendor\simple_html_dom;
+use Wovnio\ModifiedVendor\SimpleHtmlDom;
 
 class HtmlConverterTest extends PHPUnit_Framework_TestCase
 {
@@ -625,7 +625,7 @@ bye
 
   private function executeConvert($converter, $html, $charset, $name)
   {
-    $dom = simple_html_dom::str_get_html($html, $charset, false, false, $charset, false);
+    $dom = SimpleHtmlDom::str_get_html($html, $charset, false, false, $charset, false);
     $marker = new HtmlReplaceMarker();
 
     $method = new ReflectionMethod($converter, $name);
