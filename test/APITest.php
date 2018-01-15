@@ -207,6 +207,38 @@
       $this->assertEquals($expected_html, $result);
     }
 
+    public function testTranslateWithConnectionErrorHandled() {
+      $env = $this->getEnv('_path');
+      list($store, $headers) = Utils::getStoreAndHeaders($env);
+      $html = '<html><head></head><body><h1>en</h1></body></html>';
+      $expected_url = $this->getExpectedUrl($store, $headers, $html);
+
+      $token = $store->settings['project_token'];
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';;
+      $expected_data = array(
+        'url' => $headers->url,
+        'token' => $store->settings['project_token'],
+        'lang_code' => $headers->lang(),
+        'url_pattern' => 'query',
+        'body' => $expected_html
+      );
+
+      $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
+      $mock->expects($this->once())
+        ->method('sendRequest')
+        ->with(
+          $this->equalTo('POST'),
+          $this->equalTo($expected_url),
+          $this->equalTo($expected_data),
+          $this->equalTo(1.0)
+        )
+        ->willReturn(null);
+      RequestHandlerFactory::set_instance($mock);
+
+      $result = API::translate($store, $headers, $html);
+      $this->assertEquals($expected_html, $result);
+    }
+
     public function testTranslateWithoutMakingAPICallBySetting() {
       $env = $this->getEnv('_path');
       list($store, $headers) = Utils::getStoreAndHeaders($env);
@@ -296,6 +328,6 @@
       RequestHandlerFactory::set_instance($mock);
 
       $result = API::translate($store, $headers, $html);
-      $this->assertEquals( $expected_result, $result);
+      $this->assertEquals($expected_result, $result);
     }
   }

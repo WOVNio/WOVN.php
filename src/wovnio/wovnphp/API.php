@@ -24,40 +24,43 @@
       $token = $store->settings['project_token'];
 
       $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
-      if (self::makeAPICall($store, $headers)) {
-        $saves_memory = $store->settings['save_memory_by_sending_wovn_ignore_content'];
-        if ($saves_memory) {
-          list($converted_html, $marker) = $converter->insertSnippetAndHreflangTags(true);
-        } else {
-          list($converted_html, $marker) = $converter->convertToAppropriateBodyForApi();
-        }
-
-        $timeout = $store->settings['api_timeout'];
-        $data = array(
-          'url' => $headers->url,
-          'token' => $token,
-          'lang_code' => $headers->lang(),
-          'url_pattern' => $store->settings['url_pattern_name'],
-          'body' => $converted_html
-        );
-
-        if (count($store->settings['custom_lang_aliases']) > 0) {
-          $data['custom_lang_aliases'] = json_encode($store->settings['custom_lang_aliases']);
-        }
-
-        try {
-          $translation_response = json_decode(RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout), true);
-          $translated_content = $marker->revert($translation_response['body']);
-        } catch (\Exception $e) {
-          error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
-          $translated_content = $marker->revert($converted_html);
-        }
-      }
-      else {
-        list($translated_content, $marker) = $converter->insertSnippetAndHreflangTags(false);
+      if (self::makeAPICall($store, $headers) === false) {
+        list($translated_content) = $converter->insertSnippetAndHreflangTags(false);
+        return $translated_content;
       }
 
-      return $translated_content;
+      $saves_memory = $store->settings['save_memory_by_sending_wovn_ignore_content'];
+      if ($saves_memory) {
+        list($converted_html, $marker) = $converter->insertSnippetAndHreflangTags(true);
+      } else {
+        list($converted_html, $marker) = $converter->convertToAppropriateBodyForApi();
+      }
+
+      $timeout = $store->settings['api_timeout'];
+      $data = array(
+        'url' => $headers->url,
+        'token' => $token,
+        'lang_code' => $headers->lang(),
+        'url_pattern' => $store->settings['url_pattern_name'],
+        'body' => $converted_html
+      );
+
+      if (count($store->settings['custom_lang_aliases']) > 0) {
+        $data['custom_lang_aliases'] = json_encode($store->settings['custom_lang_aliases']);
+      }
+
+      try {
+        $response = RequestHandlerFactory::get()->sendRequest('POST', $api_url, $data, $timeout);
+        if ($response === null) {
+          return $marker->revert($converted_html);
+        }
+
+        $translation_response = json_decode($response, true);
+        return $marker->revert($translation_response['body']);
+      } catch (\Exception $e) {
+        error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
+        return $marker->revert($converted_html);
+      }
     }
 
     private static function makeAPICall($store, $headers) {
