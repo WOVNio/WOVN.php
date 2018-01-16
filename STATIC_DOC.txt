@@ -1,4 +1,3 @@
 # Support static html pages with WOVN.php
-1- Copy the htaccess_sample file to the website root folder
-2- Rename the htaccess_sample file into .htacces inside website root folder
-3- Copy the wovn_index.php file to the website root folder
+1- Copy the htaccess_sample file to the website root folder and rename it to '.htaccess' OR Copy the content of the htaccess_sample file at the end of your existing '.htaccess' file if you have one.
+2- Copy the wovn_index.php file to the website root folder.
