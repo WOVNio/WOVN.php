@@ -175,7 +175,7 @@ class simple_html_dom_node
 
 		$current_node = $this->children_list_head;
 		while($current_node) {
-						$ret .= $current_node->outertext();
+			$ret .= $current_node->outertext();
 			$current_node = $current_node->next_sibling;
 		}
 		return $ret;
@@ -216,8 +216,8 @@ class simple_html_dom_node
 			{
 				$current_node = $this->children_list_head;
 				while($current_node) {
-										$ret .= $this->convert_text($current_node->outertext());
-										$current_node = $current_node->next_sibling;
+					$ret .= $this->convert_text($current_node->outertext());
+					$current_node = $current_node->next_sibling;
 				}
 			}
 		}
@@ -249,7 +249,7 @@ class simple_html_dom_node
 		{
 			$current_node = $this->children_list_head;
 			while($current_node) {
-								$ret .= $this->convert_text($current_node ->text());
+				$ret .= $this->convert_text($current_node ->text());
 				$current_node = $current_node->next_sibling;
 			}
 
@@ -1263,7 +1263,7 @@ class simple_html_dom
 	}
 
 	// restore noise to html content
-	function restore_noise($text)
+  function restore_noise($text)
 	{
 		while (($pos=strpos($text, '___noise___'))!==false)
 		{

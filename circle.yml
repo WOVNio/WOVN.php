@@ -9,4 +9,9 @@ machine:
 test:
   override:
     - vendor/bin/phpunit
-    - vendor/bin/dunit
+    - ./hack/run_test.sh vectorface/php5.3
+    - ./hack/run_test.sh vectorface/php5.4
+    - ./hack/run_test.sh vectorface/php5.5
+    - ./hack/run_test.sh vectorface/php5.6
+    - ./hack/run_test.sh vectorface/hhvm
+    - ./hack/run_test.sh vectorface/php7.0
