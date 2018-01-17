@@ -1,6 +1,7 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # Intercept only static content: html and htm urls
+  # Warning: do not remove this line or other content could be loaded
   RewriteCond %{REQUEST_URI} \.(html|htm)
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
