@@ -9,7 +9,8 @@
   require_once 'wovnio/html/HtmlReplaceMarker.php';
   require_once 'wovnio/utils/request_handlers/RequestHandlerFactory.php';
   require_once 'wovnio/utils/request_handlers/FileGetContentsRequestHandler.php';
-  require_once 'wovnio/modified_vendor/simple_html_dom.php';
+  require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
+  require_once 'wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
   use Wovnio\Wovnphp\Utils;
   use Wovnio\Wovnphp\API;
