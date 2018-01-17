@@ -26,10 +26,21 @@
       return $this->curlExec($url, $options);
     }
 
+    /**
+     * @param $url
+     * @param $data
+     * @param $timeout
+     * @return string
+     *
+     * TODO: pass gzipped data at argument of $data.
+     * Because `sendRequest` manage query and body, it's confusing to pass gzipped data to `sendRequest`
+     */
     protected function post($url, $data, $timeout) {
+      // reduce networkIO to make request faster.
+      $data = gzencode($data);
       $content_length = strlen($data);
       $context = array(
-        "Content-Type: application/x-www-form-urlencoded",
+        "Content-Type: application/octet-stream",
         "Content-Length: $content_length"
       );
 
