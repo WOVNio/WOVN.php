@@ -66,7 +66,10 @@
         'directory_index' => '',
         'wovn_dev_mode' => false,
         'use_server_error_settings' => false,
-        'disable_api_request_for_default_lang' => false
+        'disable_api_request_for_default_lang' => false,
+
+        // without knowing much about this feature, no one should use this.
+        'save_memory_by_sending_wovn_ignore_content' => false
       );
     }
   /**
