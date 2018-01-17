@@ -49,6 +49,7 @@ class SimpleHtmlDomNode {
   {
     $this->dom = null;
     $this->parent = null;
+    $this->node_begin = null;
   }
 
   public function addChild($node) {
