@@ -33,15 +33,25 @@
      * Because `sendRequest` manage query and body, it's confusing to pass gzipped data to `sendRequest`
      */
     protected function post($url, $data, $timeout) {
-      // reduce networkIO to make request faster.
-      $data = gzencode($data);
-      $content_length = strlen($data);
-      $http_context = array(
-        'header' => "Accept-Encoding: gzip\r\nContent-type: application/octet-stream\r\nContent-Length: $content_length",
-        'method' => 'POST',
-        'timeout' => $timeout,
-        'content' => $data
-      );
+      if (function_exists('gzencode')) {
+        // reduce networkIO to make request faster.
+        $data = gzencode($data);
+        $content_length = strlen($data);
+        $http_context = array(
+          'header' => "Accept-Encoding: gzip\r\nContent-type: application/octet-stream\r\nContent-Length: $content_length",
+          'method' => 'POST',
+          'timeout' => $timeout,
+          'content' => $data
+        );
+      } else {
+        $content_length = strlen($data);
+        $http_context = array(
+          'header' => "Accept-Encoding: gzip\r\nContent-type: application/x-www-form-urlencoded\r\nContent-Length: $content_length",
+          'method' => 'POST',
+          'timeout' => $timeout,
+          'content' => $data
+        );
+      }
 
       return $this->fileGetContents($url, $http_context);
     }

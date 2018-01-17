@@ -17,6 +17,7 @@ class FileGetContentsRequestHandlerTest extends PHPUnit_Framework_TestCase {
     $expected_http_context = array(
       'header' => "Accept-Encoding: gzip\r\nContent-type: application/octet-stream\r\nContent-Length: $expected_content_length",
       'method' => 'POST',
+      'timeout' => 10,
       'content' => $expected_content
     );
     $expected_response = '{"foo": "bar"}';
