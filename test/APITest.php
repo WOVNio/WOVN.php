@@ -12,7 +12,7 @@
   require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
   require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
 
-  require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
+  require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 
   use Wovnio\Wovnphp\API;
   use Wovnio\Wovnphp\Utils;

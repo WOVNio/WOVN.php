@@ -1,13 +1,14 @@
 <?php
-require_once 'src/wovnio/modified_vendor/simple_html_dom.php';
+require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
+require_once 'src/wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
-use Wovnio\ModifiedVendor\simple_html_dom;
+use Wovnio\ModifiedVendor\SimpleHtmlDom;
 
-class simple_html_domTest extends PHPUnit_Framework_TestCase
+class SimpleHtmlDomTest extends PHPUnit_Framework_TestCase
 {
   public function testGetAttribute() {
     $html = '<html><body><div class="hello" data-dummy="dummy"></div></body>';
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -17,7 +18,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testGetAttributeWithSingleQuote() {
     $html = "<html><body><div class='hello' data-dummy='dummy'></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -27,7 +28,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testGetAttributeWithoutQuote() {
     $html = "<html><body><div class=hello  data-dummy=dummy></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -37,7 +38,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testGetAttributeWithoutValue() {
     $html = "<html><body><div wovn-ignore></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -47,7 +48,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testGetAttributeWithMultipleAttribute() {
     $html = "<html><body><div class='hello' style=\"test-style\" data-test=test-data data-dummy1=\"dummy\" data-dummy2='dummy' data-dummy3=dummy></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -59,7 +60,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testSetAttribute() {
     $html = '<html><body><div class="hello" data-dummy="dummy"></div></body>';
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -74,7 +75,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testSetAttributeWithSingleQuote() {
     $html = "<html><body><div class='hello' data-dummy='dummy'></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -89,7 +90,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testSetAttributeWithoutQuote() {
     $html = "<html><body><div class=hello data-dummy=dummy></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -104,7 +105,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testSetAttributeWithoutValue() {
     $html = "<html><body><div wovn-ignore></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {
@@ -119,7 +120,7 @@ class simple_html_domTest extends PHPUnit_Framework_TestCase
 
   public function testSetAttributeWithMultipleAttribute() {
     $html = "<html><body><div class='hello' style=\"test-style\" data-test=test-data data-dummy1=\"dummy\" data-dummy2='dummy' data-dummy3=dummy></div></body>";
-    $dom = simple_html_dom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+    $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
     $nodes = $this->getTagNodes($dom, 'div');
     $this->assertEquals(1, count($nodes));
     foreach ($nodes as $node) {

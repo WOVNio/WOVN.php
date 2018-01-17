@@ -4,7 +4,8 @@ namespace Wovnio\Html;
 
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
-use Wovnio\ModifiedVendor\simple_html_dom;
+use Wovnio\ModifiedVendor\SimpleHtmlDom;
+use Wovnio\ModifiedVendor\SimpleHtmlDomNode;
 
 /**
  * Convert html via Simple HTML DOM Parser
@@ -61,7 +62,7 @@ class HtmlConverter
       $encoding = mb_detect_encoding($this->html, self::$supported_encodings);
     }
 
-    $dom = simple_html_dom::str_get_html($this->html, $encoding, false, false, $encoding, false);
+    $dom = SimpleHtmlDom::str_get_html($this->html, $encoding, false, false, $encoding, false);
 
     $marker = new HtmlReplaceMarker();
     $this->replaceDom($dom, $marker);
@@ -181,7 +182,7 @@ class HtmlConverter
   }
 
   /**
-   * @param simple_html_dom_node $node
+   * @param SimpleHtmlDomNode $node
    */
   function _removeSnippet($node)
   {
@@ -236,7 +237,7 @@ class HtmlConverter
    * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
    * Use `_` prefix to imply `private`
    *
-   * @param simple_html_dom_node $node
+   * @param SimpleHtmlDomNode $node
    */
   function _removeHreflang($node) {
     if (strtolower($node->tag) != 'link') {
@@ -254,7 +255,7 @@ class HtmlConverter
    * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
    * Use `_` prefix to imply `private`
    *
-   * @param simple_html_dom_node $node
+   * @param SimpleHtmlDomNode $node
    * @param HtmlReplaceMarker $marker
    */
   function _removeWovnIgnore($node, $marker) {
@@ -269,7 +270,7 @@ class HtmlConverter
    * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
    * Use `_` prefix to imply `private`
    *
-   * @param simple_html_dom_node $node
+   * @param SimpleHtmlDomNode $node
    * @param HtmlReplaceMarker $marker
    */
   function _removeForm($node, $marker)
@@ -297,7 +298,7 @@ class HtmlConverter
    * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
    * Use `_` prefix to imply `private`
    *
-   * @param simple_html_dom_node $node
+   * @param SimpleHtmlDomNode $node
    * @param HtmlReplaceMarker $marker
    */
   function _removeScript($node, $marker)
