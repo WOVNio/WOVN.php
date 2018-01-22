@@ -56,7 +56,11 @@
         }
 
         $translation_response = json_decode($response, true);
-        return $marker->revert($translation_response['body']);
+        if (array_key_exists('body', $translation_response)) {
+          return $marker->revert($translation_response['body']);
+        } else {
+          return $marker->revert($converted_html);
+        }
       } catch (\Exception $e) {
         error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
         return $marker->revert($converted_html);
