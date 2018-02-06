@@ -8,7 +8,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testLangLength () {
-    $this->assertEquals(30, count(Lang::$lang));
+    $this->assertEquals(34, count(Lang::$lang));
   }
 
   public function testKeysExist () {
@@ -51,6 +51,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
 
   public function testISO639_1Normalization () {
     $this->assertEquals('ar',       Lang::iso639_1Normalization('ar'));
+    $this->assertEquals('bn',       Lang::iso639_1Normalization('bn'));
     $this->assertEquals('bg',       Lang::iso639_1Normalization('bg'));
     $this->assertEquals('zh-Hans',  Lang::iso639_1Normalization('zh-CHS'));
     $this->assertEquals('zh-Hant',  Lang::iso639_1Normalization('zh-CHT'));
@@ -70,15 +71,18 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('my',       Lang::iso639_1Normalization('my'));
     $this->assertEquals('ne',       Lang::iso639_1Normalization('ne'));
     $this->assertEquals('no',       Lang::iso639_1Normalization('no'));
+    $this->assertEquals('fa',       Lang::iso639_1Normalization('fa'));
     $this->assertEquals('pl',       Lang::iso639_1Normalization('pl'));
     $this->assertEquals('pt',       Lang::iso639_1Normalization('pt'));
     $this->assertEquals('ru',       Lang::iso639_1Normalization('ru'));
     $this->assertEquals('es',       Lang::iso639_1Normalization('es'));
+    $this->assertEquals('sw',       Lang::iso639_1Normalization('sw'));
     $this->assertEquals('sv',       Lang::iso639_1Normalization('sv'));
     $this->assertEquals('th',       Lang::iso639_1Normalization('th'));
     $this->assertEquals('hi',       Lang::iso639_1Normalization('hi'));
     $this->assertEquals('tr',       Lang::iso639_1Normalization('tr'));
     $this->assertEquals('uk',       Lang::iso639_1Normalization('uk'));
+    $this->assertEquals('ur',       Lang::iso639_1Normalization('ur'));
     $this->assertEquals('vi',       Lang::iso639_1Normalization('vi'));
     $this->assertEquals(null,       Lang::iso639_1Normalization('fake'));
   }

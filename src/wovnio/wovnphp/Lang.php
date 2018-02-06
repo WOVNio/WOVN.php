@@ -10,6 +10,7 @@ class Lang
 {
   static $lang = array(
     'ar' => array('name' => 'العربية',          'code' => 'ar',     'iso639-1' => 'ar',      'en' => 'Arabic'),
+    'bn' => array('name' => 'العربية',          'code' => 'bn',     'iso639-1' => 'bn',      'en' => 'Bengali'),
     'bg' => array('name' => 'Български',        'code' => 'bg',     'iso639-1' => 'bg',      'en' => 'Bulgarian'),
     'zh-CHS' => array('name' => '简体中文',      'code' => 'zh-CHS', 'iso639-1' => 'zh-Hans', 'en' => 'Simp Chinese'),
     'zh-CHT' => array('name' => '繁體中文',      'code' => 'zh-CHT', 'iso639-1' => 'zh-Hant', 'en' => 'Trad Chinese'),
@@ -29,14 +30,17 @@ class Lang
     'my' => array('name' => 'ဗမာစာ',          'code' => 'my',     'iso639-1' => 'my',      'en' => 'Burmese'),
     'ne' => array('name' => 'नेपाली भाषा',         'code' => 'ne',     'iso639-1' => 'ne',      'en' => 'Nepali'),
     'no' => array('name' => 'Norsk',            'code' => 'no',     'iso639-1' => 'no',      'en' => 'Norwegian'),
+    'no' => array('name' => 'زبان_فارسی',       'code' => 'fa',     'iso639-1' => 'fa',      'en' => 'Persian'),
     'pl' => array('name' => 'Polski',           'code' => 'pl',     'iso639-1' => 'pl',      'en' => 'Polish'),
     'pt' => array('name' => 'Português',        'code' => 'pt',     'iso639-1' => 'pt',      'en' => 'Portuguese'),
     'ru' => array('name' => 'Русский',          'code' => 'ru',     'iso639-1' => 'ru',      'en' => 'Russian'),
     'es' => array('name' => 'Español',          'code' => 'es',     'iso639-1' => 'es',      'en' => 'Spanish'),
+    'es' => array('name' => 'Kiswahili',        'code' => 'sw',     'iso639-1' => 'es',      'en' => 'Swahili'),
     'sv' => array('name' => 'Svensk',           'code' => 'sv',     'iso639-1' => 'sv',      'en' => 'Swedish'),
     'th' => array('name' => 'ภาษาไทย',          'code' => 'th',     'iso639-1' => 'th',      'en' => 'Thai'),
     'hi' => array('name' => 'हिन्दी',              'code' => 'hi',     'iso639-1' => 'hi',      'en' => 'Hindi'),
     'tr' => array('name' => 'Türkçe',           'code' => 'tr',     'iso639-1' => 'tr',      'en' => 'Turkish'),
+    'uk' => array('name' => 'اردو',             'code' => 'ur',     'iso639-1' => 'ur',      'en' => 'Urdu'),
     'uk' => array('name' => 'Українська',       'code' => 'uk',     'iso639-1' => 'uk',      'en' => 'Ukrainian'),
     'vi' => array('name' => 'Tiếng Việt',       'code' => 'vi',     'iso639-1' => 'vi',      'en' => 'Vietnamese'),
   );
