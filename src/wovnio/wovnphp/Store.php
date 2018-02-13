@@ -35,7 +35,11 @@
      */
     public function __construct($userSettings) {
       $defaultSettings = $this->defaultSettings();
-      $userSettings = $this->updateSettings($userSettings);
+      if ($userSettings) {
+        $userSettings = $this->updateSettings($userSettings);
+      } else {
+        $userSettings = array();
+      }
 
       $this->settings = array_merge($defaultSettings, $userSettings);
 
@@ -86,11 +90,7 @@
      * @param array $vals The vals to update in the settings
      * @return array The new settings of the user
      */
-    public function updateSettings($vals=array()) {
-      if (isset($vals['default_lang']) === false) {
-        return array();
-      }
-
+    public function updateSettings($vals) {
       // GETTING THE LANGUAGE AND SETTING IT AS CODE
       $vals['default_lang'] = Lang::getCode($vals['default_lang']);
 
