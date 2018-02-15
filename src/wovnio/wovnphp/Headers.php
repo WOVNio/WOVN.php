@@ -266,8 +266,7 @@
       switch ($this->store->settings['url_pattern_name']){
         case 'query':
           if (isset($this->_env['REQUEST_URI'])) {
-            // removed this in case of redirect the lang is lost
-            //$this->_env['REQUEST_URI'] = $this->removeLang($this->_env['REQUEST_URI']);
+            $this->_env['REQUEST_URI'] = $this->removeLang($this->_env['REQUEST_URI']);
           }
           $this->_env['QUERY_STRING'] = $this->removeLang($this->_env['QUERY_STRING']);
           if (isset($this->_env['ORIGINAL_FULLPATH']))
