@@ -13,7 +13,7 @@ class Lang
     'eu' => array('name' => 'Euskara',          'code' => 'eu',     'iso639-1' => 'eu',      'en' => 'Basque'),
     'bn' => array('name' => 'বাংলা ভাষা',          'code' => 'bn',     'iso639-1' => 'bn',      'en' => 'Bengali'),
     'bg' => array('name' => 'Български',        'code' => 'bg',     'iso639-1' => 'bg',      'en' => 'Bulgarian'),
-    'bg' => array('name' => 'Català',        'code' => 'ca',     'iso639-1' => 'ca',      'en' => 'Catalan'),
+    'ca' => array('name' => 'Català',        'code' => 'ca',     'iso639-1' => 'ca',      'en' => 'Catalan'),
     'zh-CHS' => array('name' => '简体中文',      'code' => 'zh-CHS', 'iso639-1' => 'zh-Hans', 'en' => 'Simp Chinese'),
     'zh-CHT' => array('name' => '繁體中文',      'code' => 'zh-CHT', 'iso639-1' => 'zh-Hant', 'en' => 'Trad Chinese'),
     'da' => array('name' => 'Dansk',            'code' => 'da',     'iso639-1' => 'da',      'en' => 'Danish'),
