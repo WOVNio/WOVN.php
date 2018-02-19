@@ -8,7 +8,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testLangLength () {
-    $this->assertEquals(34, count(Lang::$lang));
+    $this->assertEquals(38, count(Lang::$lang));
   }
 
   public function testKeysExist () {
@@ -51,8 +51,10 @@ class LangTest extends PHPUnit_Framework_TestCase {
 
   public function testISO639_1Normalization () {
     $this->assertEquals('ar',       Lang::iso639_1Normalization('ar'));
+    $this->assertEquals('eu',       Lang::iso639_1Normalization('eu'));
     $this->assertEquals('bn',       Lang::iso639_1Normalization('bn'));
     $this->assertEquals('bg',       Lang::iso639_1Normalization('bg'));
+    $this->assertEquals('ca',       Lang::iso639_1Normalization('ca'));
     $this->assertEquals('zh-Hans',  Lang::iso639_1Normalization('zh-CHS'));
     $this->assertEquals('zh-Hant',  Lang::iso639_1Normalization('zh-CHT'));
     $this->assertEquals('da',       Lang::iso639_1Normalization('da'));
@@ -60,6 +62,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('en',       Lang::iso639_1Normalization('en'));
     $this->assertEquals('fi',       Lang::iso639_1Normalization('fi'));
     $this->assertEquals('fr',       Lang::iso639_1Normalization('fr'));
+    $this->assertEquals('gl',       Lang::iso639_1Normalization('gl'));
     $this->assertEquals('de',       Lang::iso639_1Normalization('de'));
     $this->assertEquals('el',       Lang::iso639_1Normalization('el'));
     $this->assertEquals('he',       Lang::iso639_1Normalization('he'));
@@ -67,6 +70,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('it',       Lang::iso639_1Normalization('it'));
     $this->assertEquals('ja',       Lang::iso639_1Normalization('ja'));
     $this->assertEquals('ko',       Lang::iso639_1Normalization('ko'));
+    $this->assertEquals('lv',       Lang::iso639_1Normalization('lv'));
     $this->assertEquals('ms',       Lang::iso639_1Normalization('ms'));
     $this->assertEquals('my',       Lang::iso639_1Normalization('my'));
     $this->assertEquals('ne',       Lang::iso639_1Normalization('ne'));

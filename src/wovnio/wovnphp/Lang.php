@@ -10,8 +10,10 @@ class Lang
 {
   static $lang = array(
     'ar' => array('name' => 'العربية',          'code' => 'ar',     'iso639-1' => 'ar',      'en' => 'Arabic'),
-    'bn' => array('name' => 'العربية',          'code' => 'bn',     'iso639-1' => 'bn',      'en' => 'Bengali'),
+    'eu' => array('name' => 'Euskara',          'code' => 'eu',     'iso639-1' => 'eu',      'en' => 'Basque'),
+    'bn' => array('name' => 'বাংলা ভাষা',          'code' => 'bn',     'iso639-1' => 'bn',      'en' => 'Bengali'),
     'bg' => array('name' => 'Български',        'code' => 'bg',     'iso639-1' => 'bg',      'en' => 'Bulgarian'),
+    'bg' => array('name' => 'Català',        'code' => 'ca',     'iso639-1' => 'ca',      'en' => 'Catalan'),
     'zh-CHS' => array('name' => '简体中文',      'code' => 'zh-CHS', 'iso639-1' => 'zh-Hans', 'en' => 'Simp Chinese'),
     'zh-CHT' => array('name' => '繁體中文',      'code' => 'zh-CHT', 'iso639-1' => 'zh-Hant', 'en' => 'Trad Chinese'),
     'da' => array('name' => 'Dansk',            'code' => 'da',     'iso639-1' => 'da',      'en' => 'Danish'),
@@ -19,6 +21,7 @@ class Lang
     'en' => array('name' => 'English',          'code' => 'en',     'iso639-1' => 'en',      'en' => 'English'),
     'fi' => array('name' => 'Suomi',            'code' => 'fi',     'iso639-1' => 'fi',      'en' => 'Finnish'),
     'fr' => array('name' => 'Français',         'code' => 'fr',     'iso639-1' => 'fr',      'en' => 'French'),
+    'gl' => array('name' => 'Galego',         'code' => 'gl',     'iso639-1' => 'gl',      'en' => 'Galician'),
     'de' => array('name' => 'Deutsch',          'code' => 'de',     'iso639-1' => 'de',      'en' => 'German'),
     'el' => array('name' => 'Ελληνικά',         'code' => 'el',     'iso639-1' => 'el',      'en' => 'Greek'),
     'he' => array('name' => 'עברית',            'code' => 'he',     'iso639-1' => 'he',      'en' => 'Hebrew'),
@@ -26,6 +29,7 @@ class Lang
     'it' => array('name' => 'Italiano',         'code' => 'it',     'iso639-1' => 'it',      'en' => 'Italian'),
     'ja' => array('name' => '日本語',            'code' => 'ja',     'iso639-1' => 'ja',      'en' => 'Japanese'),
     'ko' => array('name' => '한국어',             'code' => 'ko',     'iso639-1' => 'ko',      'en' => 'Korean'),
+    'lv' => array('name' => 'Latviešu',             'code' => 'lv',     'iso639-1' => 'lv',      'en' => 'Latvian'),
     'ms' => array('name' => 'Bahasa Melayu',    'code' => 'ms',     'iso639-1' => 'ms',      'en' => 'Malay'),
     'my' => array('name' => 'ဗမာစာ',          'code' => 'my',     'iso639-1' => 'my',      'en' => 'Burmese'),
     'ne' => array('name' => 'नेपाली भाषा',         'code' => 'ne',     'iso639-1' => 'ne',      'en' => 'Nepali'),
