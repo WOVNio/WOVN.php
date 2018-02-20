@@ -25,6 +25,7 @@ class Lang
     'de' => array('name' => 'Deutsch',          'code' => 'de',     'iso639-1' => 'de',      'en' => 'German'),
     'el' => array('name' => 'Ελληνικά',         'code' => 'el',     'iso639-1' => 'el',      'en' => 'Greek'),
     'he' => array('name' => 'עברית',            'code' => 'he',     'iso639-1' => 'he',      'en' => 'Hebrew'),
+    'hu' => array('name' => 'Magyar',           'code' => 'hu',     'iso639-1' => 'hu',      'en' => 'Hungarian'),
     'id' => array('name' => 'Bahasa Indonesia', 'code' => 'id',     'iso639-1' => 'id',      'en' => 'Indonesian'),
     'it' => array('name' => 'Italiano',         'code' => 'it',     'iso639-1' => 'it',      'en' => 'Italian'),
     'ja' => array('name' => '日本語',            'code' => 'ja',     'iso639-1' => 'ja',      'en' => 'Japanese'),

@@ -8,7 +8,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testLangLength () {
-    $this->assertEquals(38, count(Lang::$lang));
+    $this->assertEquals(39, count(Lang::$lang));
   }
 
   public function testKeysExist () {
@@ -66,6 +66,7 @@ class LangTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('de',       Lang::iso639_1Normalization('de'));
     $this->assertEquals('el',       Lang::iso639_1Normalization('el'));
     $this->assertEquals('he',       Lang::iso639_1Normalization('he'));
+    $this->assertEquals('hu',       Lang::iso639_1Normalization('hu'));
     $this->assertEquals('id',       Lang::iso639_1Normalization('id'));
     $this->assertEquals('it',       Lang::iso639_1Normalization('it'));
     $this->assertEquals('ja',       Lang::iso639_1Normalization('ja'));
