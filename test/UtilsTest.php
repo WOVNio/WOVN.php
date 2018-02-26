@@ -25,9 +25,6 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('Wovnio\Wovnphp\Headers', get_class($headers));
   }
 
-  /**
-   * @group new
-   */
   public function testisFilePathURI() {
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com'));
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3'));
