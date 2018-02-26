@@ -28,19 +28,22 @@
   $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
   $headers->requestOut();
 
+  if (!Utils::isFilePathURI($headers->getDocumentURI())) {
+    // use the callback of ob_start to modify the content and return
+    ob_start(function($buffer) use ($headers, $store) {
+      $headers->responseOut();
 
-  // use the callback of ob_start to modify the content and return
-  ob_start(function($buffer) use ($headers, $store) {
-    $headers->responseOut();
 
-    if(!empty($buffer) && $buffer != strip_tags($buffer)) {
-      $translated_buffer = API::translate($store, $headers, $buffer);
+      if(!empty($buffer) && $buffer != strip_tags($buffer)) {
+        $translated_buffer = API::translate($store, $headers, $buffer);
 
-      if ($translated_buffer !== NULL && !empty($translated_buffer)) {
-        Utils::changeHeaders($translated_buffer, $store);
-        return $translated_buffer;
+        if ($translated_buffer !== NULL && !empty($translated_buffer)) {
+          Utils::changeHeaders($translated_buffer, $store);
+          return $translated_buffer;
+        }
       }
-    }
 
-    return $buffer;
-  });
+      return $buffer;
+    });
+  }
+

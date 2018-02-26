@@ -1413,4 +1413,58 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
   }
+
+  /**
+   * @group new
+   */
+  public function testIsAllowedMimeType() {
+    $store = $this->createStore();
+    $env = $this->getEnv();
+    $env['Content-Type'] = 'application/pdf';
+    $headers = new Headers($env, $store);
+
+    $he = $headers->env();
+    $this->assertEquals('application/pdf', $he['Content-Type']);
+    $this->assertEquals(true, $headers->notInterceptMimeFileType());
+  }
+
+  /**
+   * @group new
+   */
+  public function testNotAllowedMimeType() {
+    $store = $this->createStore();
+    $env = $this->getEnv();
+    $env['Content-Type'] = 'text/html';
+    $headers = new Headers($env, $store);
+
+    $he = $headers->env();
+    $this->assertEquals('text/html', $he['Content-Type']);
+    $this->assertEquals(false, $headers->notInterceptMimeFileType());
+
+  }
+
+  /**
+   * @group new
+   */
+  public function testGetDocumentURIWithQueryPattern() {
+    $store = $this->createStore('query');
+    $store->settings['query'] = array('page=');
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/en/path?page=1&wovn=vi';
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('/en/path', $headers->getDocumentURI());
+  }
+
+  /**
+   * @group new1
+   */
+  public function testGetDocumentURIWithPathPattern() {
+    $store = $this->createStore();
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/en/path?page=1';
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('/path', $headers->getDocumentURI());
+  }
 }
