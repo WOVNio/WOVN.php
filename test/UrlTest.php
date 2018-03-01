@@ -19,18 +19,21 @@ class UrlTest extends PHPUnit_Framework_TestCase {
   }
 
   private function getStarted ($pattern='path', $additional_env=array()) {
-    $store = new Store();
-    $store->settings['default_lang'] = 'ja';
-    $store->settings['supported_langs'] = array('en');
+    $url_pattern_reg = null;
     if ($pattern === 'query') {
-      $store->settings['url_pattern_reg'] = "((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)";
+      $url_pattern_reg = "((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)";
     }
     if ($pattern === 'subdomain') {
-      $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+      $url_pattern_reg = "^(?P<lang>[^.]+)\.";
     }
-    $store->settings['url_pattern_name'] = $pattern;
 
-    $store->settings['project_token'] = 'KK9kZ';
+    $store = new Store(array (
+      'default_lang' => 'ja',
+      'supported_langs' => array('en'),
+      'url_pattern_reg' => $url_pattern_reg,
+      'url_pattern_name' => $pattern,
+      'project_token' => 'KK9kZ',
+    ));
     $env = array_merge($this->getEnv('_' . $pattern), $additional_env);
     $headers = new Headers($env, $store);
     return array($store, $env, $headers);
