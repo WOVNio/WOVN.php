@@ -24,12 +24,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   function createStore($pattern='path') {
-    $store = new Store('./test/config.ini');
-    $store->settings['default_lang'] = 'en';
-    $store->settings['supported_langs'] = array('en');
-    $store->settings['url_pattern_name'] = $pattern;
-    $store->settings['project_token'] = 'KK9kZ';
-    $store->settings = $store->updateSettings($store->settings);
+    $store = new Store(array(
+      'default_lang' => 'en',
+      'supported_langs' => array('en'),
+      'url_pattern_name' => $pattern,
+      'project_token' => 'KK9kZ'
+    ));
     return $store;
   }
 

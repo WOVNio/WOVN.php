@@ -33,7 +33,6 @@
     ob_start(function($buffer) use ($headers, $store) {
       $headers->responseOut();
 
-
       if(!empty($buffer) && $buffer != strip_tags($buffer)) {
         $translated_buffer = API::translate($store, $headers, $buffer);
 
