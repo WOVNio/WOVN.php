@@ -166,6 +166,38 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
+  public function testConvertToAppropriateBodyForApiDoesNotFailForEmptyContent()
+  {
+    $long_string = '';
+    for ($i = 0; $i < 600000; $i++) {
+      $long_string .= 'a';
+    }
+    $html = '<html><body><p>' . $long_string . '</p></body></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateBodyForApi();
+
+    $expected_html = '<html><body><link rel="alternate" hreflang="en" href="http://ja.localhost/t.php?hey=yo&amp;wovn=en"><link rel="alternate" hreflang="vi" href="http://ja.localhost/t.php?hey=yo&amp;wovn=vi"><script src="//j.wovn.io/1" data-wovnio="key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script><p>' . $long_string . '</p></body></html>';
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testConvertToAppropriateBodyForApiDoesNotFailForContentOverDefaultSimpleHtmlDomMaxSize()
+  {
+    $html = '';
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['supported_langs'] = array('en', 'vi');
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateBodyForApi();
+
+    $expected_html = "";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
   public function testInsertSnippetAndHreflangTagsWithEmptySupportedLangs()
   {
     $html = '<html><body><a>hello</a></body></html>';
