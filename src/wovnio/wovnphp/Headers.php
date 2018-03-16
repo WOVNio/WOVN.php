@@ -434,4 +434,17 @@
       header('Location: ' . $location, TRUE, 301);die();
     }
 
+    public function getDocumentURI() {
+      $url = $this->_env['REQUEST_URI'];
+      $url_arr = parse_url($url);
+
+      if (array_key_exists('query',$url_arr)) {
+        $query = $url_arr['query'];
+        $uri = str_replace(array($query,'?'), '', $url);
+      } else {
+        $uri = $url;
+      }
+
+      return $this->removeLang($uri, $this->lang());
+    }
   }

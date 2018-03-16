@@ -1413,4 +1413,23 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
   }
+
+  public function testGetDocumentURIWithQueryPattern() {
+    $store = $this->createStore('query');
+    $store->settings['query'] = array('page=');
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/en/path?page=1&wovn=vi';
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('/en/path', $headers->getDocumentURI());
+  }
+
+  public function testGetDocumentURIWithPathPattern() {
+    $store = $this->createStore();
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/en/path?page=1';
+    $headers = new Headers($env, $store);
+
+    $this->assertEquals('/path', $headers->getDocumentURI());
+  }
 }
