@@ -14,7 +14,6 @@ class SimpleHtmlDom {
   const DEFAULT_TARGET_CHARSET = 'UTF-8';
   const DEFAULT_BR_TEXT = "\r\n";
   const DEFAULT_SPAN_TEXT = " ";
-  const MAX_FILE_SIZE = 600000;
 
   public $root = null;
   public $callback = null;
@@ -68,7 +67,7 @@ class SimpleHtmlDom {
     $contents = file_get_contents($url, $use_include_path, $context, $offset);
     // Paperg - use our own mechanism for getting the contents as we want to control the timeout.
     //$contents = retrieve_url_contents($url);
-    if (empty($contents) || strlen($contents) > SimpleHtmlDom::MAX_FILE_SIZE)
+    if (empty($contents))
     {
       return false;
     }
@@ -81,7 +80,7 @@ class SimpleHtmlDom {
   public static function str_get_html($str, $charset, $lowercase=true, $forceTagsClosed=true, $target_charset = SimpleHtmlDom::DEFAULT_TARGET_CHARSET, $stripRN=true, $defaultBRText=SimpleHtmlDom::DEFAULT_BR_TEXT, $defaultSpanText=SimpleHtmlDom::DEFAULT_SPAN_TEXT)
   {
     $dom = new SimpleHtmlDom(null, $lowercase, $forceTagsClosed, $target_charset, $stripRN, $defaultBRText, $defaultSpanText);
-    if (empty($str) || strlen($str) > SimpleHtmlDom::MAX_FILE_SIZE)
+    if (empty($str))
     {
       $dom->clear();
       return false;

@@ -61,19 +61,22 @@ class HtmlConverter
       // Encoding detection uses 30% of execution time for this method.
       $encoding = mb_detect_encoding($this->html, self::$supported_encodings);
     }
+    $marker = new HtmlReplaceMarker();
+    $converted_html = $this->html;
 
     $dom = SimpleHtmlDom::str_get_html($this->html, $encoding, false, false, $encoding, false);
+    if ($dom) {
+      $this->replaceDom($dom, $marker);
 
-    $marker = new HtmlReplaceMarker();
-    $this->replaceDom($dom, $marker);
+      $converted_html = $dom->save();
+      $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
 
-    $converted_html = $dom->save();
-    $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
+      // Without clear(), Segmentation fault will be raised.
+      // @see https://sourceforge.net/p/simplehtmldom/bugs/103/
+      $dom->clear();
+      unset($dom);
+    }
 
-    // Without clear(), Segmentation fault will be raised.
-    // @see https://sourceforge.net/p/simplehtmldom/bugs/103/
-    $dom->clear();
-    unset($dom);
     return array($converted_html, $marker);
   }
 
