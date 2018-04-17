@@ -9,7 +9,7 @@ $valid = $local_path && strpos($local_path, dirname(__FILE__)) === 0;
 if ($valid && is_file($local_path)) {
   $detect_paths = array($local_path);
 } else if( $valid && is_dir($local_path)) {
-  $local_dir = substr($local_path, 0, strlen($local_path)) == '/' ? $local_path : $local_path . '/';
+  $local_dir = substr($local_path, 0, strlen($local_path)) === '/' ? $local_path : $local_path . '/';
   $detect_paths = array(
     $local_dir . "index.html",
     $local_dir . "index.shtml",
