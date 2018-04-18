@@ -9,6 +9,7 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
     chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
     copy('../../wovn_index_sample.php', 'wovn_index.php');
+    copy('../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
     $this->paths = array();
     $this->original_dir = getcwd();
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
@@ -49,20 +50,23 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(false, http_response_code());
   }
 
-  /**
-   * @runInSeparateProcess
-   */
-  public function testNotfound () {
-    $this->assertEquals('', $this->runWovnIndex('/'));
-    $this->assertEquals(404, http_response_code());
+  public function testInvalidPath () {
+    $this->touch('index.php');
+    $this->assertEquals('This is index.php', $this->runWovnIndex('/../../index.php'));
   }
 
   /**
    * @runInSeparateProcess
    */
-  public function testInvalidPath () {
-    $this->assertEquals('', $this->runWovnIndex('/../../etc/passwd'));
-    $this->assertEquals(404, http_response_code());
+  public function testNotFoundFile () {
+    $this->assertEquals('Page Not Found', $this->runWovnIndex('/index.html'));
+  }
+
+  /**
+   * @runInSeparateProcess
+   */
+  public function testNotFoundWithDetection () {
+    $this->assertEquals('Page Not Found', $this->runWovnIndex('/'));
   }
 
   private function runWovnIndex($request_uri) {
