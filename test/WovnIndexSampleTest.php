@@ -1,7 +1,6 @@
 <?php
 /*
  * Notes
- * - http_response_code(): FALSE will be returned if response_code is not provided and it is not invoked in a web server environemnt.
  * - @runInSeparateProcess: It's need if test call header() function
  */
 
@@ -34,20 +33,17 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   public function testWithFile () {
     $this->touch('index.html');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/index.html'));
-    $this->assertEquals(false, http_response_code());
   }
 
   public function testDetectIndexPhp () {
     $this->touch('index.php');
     $this->assertEquals('This is index.php', $this->runWovnIndex('/'));
-    $this->assertEquals(false, http_response_code());
   }
 
   public function testDetectMultipleFiles () {
     $this->touch('index.html');
     $this->touch('index.php');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/'));
-    $this->assertEquals(false, http_response_code());
   }
 
   public function testInvalidPath () {
