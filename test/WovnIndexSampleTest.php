@@ -9,7 +9,7 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
     chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
     copy('../../wovn_index_sample.php', 'wovn_index.php');
-    $this->paths = [];
+    $this->paths = array();
     $this->original_dir = getcwd();
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
@@ -18,7 +18,7 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     foreach($this->paths as $path) {
       unlink($path);
     }
-    $this->paths = [];
+    $this->paths = array();
 
     // Normaly, this variable is undefined so revert it
     unset($_SERVER['REQUEST_URI']);
