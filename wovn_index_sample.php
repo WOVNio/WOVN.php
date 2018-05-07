@@ -10,7 +10,8 @@ $files = array(
   "index.htm",
   "index.php",
   "index.php3",
-  "index.phtml"
+  "index.phtml",
+  "app.php"
 );
 $paths = wovn_helper_detect_paths(dirname(__FILE__), $_SERVER["REQUEST_URI"], $files);
 $included = wovn_helper_include_by_paths($paths);
