@@ -81,7 +81,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1>en</h1></body></html>";
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1>en</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -116,7 +116,7 @@
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
 
-      $expected_body = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key=' . $token . '&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;ja&quot;:&quot;ja-test&quot;}&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';;
+      $expected_body = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key=' . $token . '&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;ja&quot;:&quot;ja-test&quot;}&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $expected_data = array(
         'url' => $headers->url,
@@ -151,7 +151,7 @@
       $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003ch1 wovn-ignore\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003e\u003c\u002fh1\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -185,7 +185,7 @@
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
 
       $token = $store->settings['project_token'];
-      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';;
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -217,7 +217,7 @@
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
 
       $token = $store->settings['project_token'];
-      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';;
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
@@ -249,7 +249,7 @@
       $store->settings['default_lang'] = 'en';
 
       $html = '<html><head></head><body><h1>en</h1></body></html>';
-      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php?wovn=en"><script src="//j.wovn.io/1" data-wovnio="key=&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
+      $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key=&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
       $mock->expects($this->never())->method('sendRequest');
@@ -270,7 +270,7 @@
 
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/en/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';;
+      $expected_html = '<html><head><link rel="alternate" hreflang="en" href="http://localhost.com/ja/t.php"><script src="//j.wovn.io/1" data-wovnio="key='.$token.'&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
       $response = '{"body":"<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http:\/\/localhost.com\/ja\/t.php?wovn=en\"><script src=\'\/\/j.wovn.io\/1\' data-wovnio=\'key=\' data-wovnio-type=\'fallback_snippet\' async><\/script><\/head><body><h1>fr<\/h1><\/body><\/html>"}';
 
       $expected_data = array(
@@ -308,7 +308,7 @@
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
       $token = $store->settings['project_token'];
-      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php?wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1 wovn-ignore>ignore content</h1></body></html>";
+      $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost.com/ja/t.php\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script></head><body><h1 wovn-ignore>ignore content</h1></body></html>";
       $expected_data = array(
         'url' => $headers->url,
         'token' => $store->settings['project_token'],
