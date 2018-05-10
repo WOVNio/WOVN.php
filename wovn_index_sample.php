@@ -1,16 +1,23 @@
 <?php
 # Enable WOVN.php library
 require_once("WOVN.php/src/wovn_interceptor.php");
-# Check that the file is secure and
-# Load the static file if it exists
-$path = $_SERVER["REQUEST_URI"];
+require_once("WOVN.php/src/wovn_helper.php");
 
-# Uncomment below when you set "path" as url_pattern_name
-# $path = preg_replace('/^\/(?:ar|bg|zh-CHS|zh-CHT|da|nl|en|fi|fr|de|el|he|id|it|ja|ko|ms|my|ne|no|pl|pt|ru|es|sv|th|hi|tr|uk|vi)($|\/|\?)/', '$1', $path);
+# Try read specific files if request url is end of slash
+$files = array(
+  "index.html",
+  "index.shtml",
+  "index.htm",
+  "index.php",
+  "index.php3",
+  "index.phtml",
+  "app.php"
+);
+$paths = wovn_helper_detect_paths(dirname(__FILE__), $_SERVER["REQUEST_URI"], $files);
+$included = wovn_helper_include_by_paths($paths);
 
-$real_final_path = realpath(dirname(__FILE__) . $path);
-if (strpos($real_final_path, dirname(__FILE__)) !== false &&
-    file_exists($real_final_path)) {
-  include($real_final_path);
+# Set 404 status code if file not included
+if (!$included) {
+  header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
+  echo "Page Not Found";
 }
-?>
