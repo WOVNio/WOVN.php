@@ -233,7 +233,11 @@ class HtmlConverter
   }
 
   private function buildHrefLang($lang_code) {
-    return htmlentities(Url::addLangCode($this->headers->url, $this->store, $lang_code, $this->headers));
+    $url = $this->headers->url;
+    if ($lang_code !== $this->store->settings['default_lang']) {
+      $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
+    }
+    return htmlentities($url);
   }
 
   /**

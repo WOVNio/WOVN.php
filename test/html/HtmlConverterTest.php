@@ -134,7 +134,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
-    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -148,7 +148,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->insertSnippetAndHreflangTags(true);
 
-    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -162,7 +162,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -180,7 +180,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = '<html><body><link rel="alternate" hreflang="en" href="http://ja.localhost/t.php?hey=yo&amp;wovn=en"><link rel="alternate" hreflang="vi" href="http://ja.localhost/t.php?hey=yo&amp;wovn=vi"><script src="//j.wovn.io/1" data-wovnio="key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script><p>' . $long_string . '</p></body></html>';
+    $expected_html = '<html><body><link rel="alternate" hreflang="en" href="http://ja.localhost/t.php?hey=yo"><link rel="alternate" hreflang="vi" href="http://ja.localhost/t.php?hey=yo&amp;wovn=vi"><script src="//j.wovn.io/1" data-wovnio="key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php" data-wovnio-type="fallback_snippet" async></script><p>' . $long_string . '</p></body></html>';
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -207,7 +207,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -220,7 +220,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
+    $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -238,6 +238,57 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals($expected_html, $translated_html);
   }
 
+  public function testInsertSnippetAndHreflangTagsOnDefaultLangWithQuerySupportedLangs()
+  {
+    $html = '<html>hello<a>world</a></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv('_default_lang');
+    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+      'default_lang' => 'en',
+      'supported_langs' => array('en', 'ja', 'vi'),
+      'url_pattern_name' => 'query'
+    ));
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateBodyForApi();
+
+    $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://wovntech.co/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://wovntech.co/t.php?hey=yo&amp;wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://wovntech.co/t.php?hey=yo&amp;wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testInsertSnippetAndHreflangTagsOnDefaultLangWithPathSupportedLangs()
+  {
+    $html = '<html>hello<a>world</a></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv('_default_lang');
+    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+      'default_lang' => 'en',
+      'supported_langs' => array('en', 'ja', 'vi'),
+      'url_pattern_name' => 'path'
+    ));
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateBodyForApi();
+
+    $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://wovntech.co/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://wovntech.co/ja/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://wovntech.co/vi/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
+  public function testInsertSnippetAndHreflangTagsOnDefaultLangWithSubdomainSupportedLangs()
+  {
+    $html = '<html>hello<a>world</a></html>';
+    $token = 'toK3n';
+    $env = $this->getEnv('_default_lang');
+    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+      'default_lang' => 'en',
+      'supported_langs' => array('en', 'ja', 'vi'),
+      'url_pattern_name' => 'subdomain'
+    ));
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->convertToAppropriateBodyForApi();
+
+    $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://wovntech.co/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.wovntech.co/t.php?hey=yo\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://vi.wovntech.co/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
+    $this->assertEquals($expected_html, $translated_html);
+  }
+
   public function testConvertToAppropriateBodyForApiWithEmptySupportedLangs()
   {
     $html = '<html><body><a>hello</a></body></html>';
@@ -247,7 +298,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
+    $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -260,7 +311,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
+    $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
     $this->assertEquals($expected_html, $translated_html);
   }
 
@@ -288,7 +339,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $converter = new HtmlConverter($html, null, $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-    $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
+    $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
     $expected_html = mb_convert_encoding($expected_html, 'SJIS');
 
     $this->assertEquals($expected_html, $translated_html);
@@ -305,7 +356,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
       $converter = new HtmlConverter($html, $encoding, $token, $store, $headers);
       list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
-      $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo&amp;wovn=en\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
+      $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://ja.localhost/t.php?hey=yo\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=toK3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
       $expected_html = mb_convert_encoding($expected_html, $encoding);
       $this->assertEquals($expected_html, $translated_html);
     }
