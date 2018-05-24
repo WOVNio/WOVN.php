@@ -33,29 +33,29 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testIsHtml() {
-	  $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
+    $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
 
-	  $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(true, Utils::isHtml('<p>this is html</p>'));
+    $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isHtml('<p>this is html</p>'));
   }
 
   public function testIsAmp() {
-	  $this->assertEquals(false, Utils::isAmp('<html><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(false, Utils::isAmp('<htmlnop amp><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(false, Utils::isAmp('<html><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(false, Utils::isAmp('<htmlnop amp><head></head><body><p>this is html</p></body></html>'));
 
-	  $this->assertEquals(true, Utils::isAmp('<html amp><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(true, Utils::isAmp('<html amp ><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(true, Utils::isAmp('<html amp=""><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(true, Utils::isAmp("<html\namp><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp('<html lang=en amp><head></head><body><p>this is html</p></body></html>'));
-	  $this->assertEquals(true, Utils::isAmp('<html amp lang=en><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isAmp('<html amp><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isAmp('<html amp ><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isAmp('<html amp=""><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isAmp("<html\namp><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp('<html lang=en amp><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isAmp('<html amp lang=en><head></head><body><p>this is html</p></body></html>'));
 
-	  $this->assertEquals(true, Utils::isAmp("<html ⚡><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp("<html ⚡ ><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp("<html ⚡=\"\"><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp("<html\n⚡><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp("<html lang=en ⚡><head></head><body><p>this is html</p></body></html>"));
-	  $this->assertEquals(true, Utils::isAmp("<html ⚡ lang=en><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html ⚡><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html ⚡ ><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html ⚡=\"\"><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html\n⚡><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html lang=en ⚡><head></head><body><p>this is html</p></body></html>"));
+    $this->assertEquals(true, Utils::isAmp("<html ⚡ lang=en><head></head><body><p>this is html</p></body></html>"));
   }
 
   public function testIsAmpWithCommentedHtmlTag() {
@@ -96,11 +96,11 @@ XML;
   </html>
 XML;
 
-	  $this->assertEquals(false, Utils::isAmp($commented_amp));
-	  $this->assertEquals(false, Utils::isAmp($commented_amp_symbol));
+    $this->assertEquals(false, Utils::isAmp($commented_amp));
+    $this->assertEquals(false, Utils::isAmp($commented_amp_symbol));
 
-	  $this->assertEquals(true, Utils::isAmp($uncommented_amp));
-	  $this->assertEquals(true, Utils::isAmp($uncommented_amp_symbol));
-	  $this->assertEquals(true, Utils::isAmp($uncommented_amp_with_multiline_comment));
+    $this->assertEquals(true, Utils::isAmp($uncommented_amp));
+    $this->assertEquals(true, Utils::isAmp($uncommented_amp_symbol));
+    $this->assertEquals(true, Utils::isAmp($uncommented_amp_with_multiline_comment));
   }
 }
