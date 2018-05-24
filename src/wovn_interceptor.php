@@ -33,12 +33,14 @@
     ob_start(function($buffer) use ($headers, $store) {
       $headers->responseOut();
 
-      if(!empty($buffer) && $buffer != strip_tags($buffer)) {
-        $translated_buffer = API::translate($store, $headers, $buffer);
+      if(!empty($buffer) && Utils::isHtml($buffer)) {
+        if (!$store->settings['check_amp'] || !Utils::isAmp($buffer)) {
+          $translated_buffer = API::translate($store, $headers, $buffer);
 
-        if ($translated_buffer !== NULL && !empty($translated_buffer)) {
-          Utils::changeHeaders($translated_buffer, $store);
-          return $translated_buffer;
+          if ($translated_buffer !== NULL && !empty($translated_buffer)) {
+            Utils::changeHeaders($translated_buffer, $store);
+            return $translated_buffer;
+          }
         }
       }
 

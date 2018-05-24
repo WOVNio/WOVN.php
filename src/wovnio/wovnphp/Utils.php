@@ -34,6 +34,25 @@ class Utils {
     }
   }
 
+  public static function isHtml($buffer) {
+    return $buffer != strip_tags($buffer);
+  }
+
+  public static function isAmp($buffer) {
+    if(preg_match('/<html\s[^>]*(amp|\x{26a1})/siu', $buffer) === 1) {
+      // remove comments to avoid looking at commented html tags (regex must be non-greedy)
+      $uncommentedHtml = preg_replace('/<!--.*?-->/s', '', $buffer);
+      preg_match_all('/<html(?P<args>[^>]*)>/si', $uncommentedHtml, $htmlTags);
+      $htmlMatchCount = count($htmlTags['args']);
+
+      if($htmlMatchCount > 0) {
+        return preg_match('/(^|\s)(amp|\x{26a1})(=|\s|$)/u', $htmlTags['args'][0]) === 1;
+      }
+    }
+
+    return false;
+  }
+
   public static function isFilePathURI($uri) {
     return $uri && (preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
         preg_match(self::AUDIO_FILE_PATTERN, $uri) ||
