@@ -20,6 +20,8 @@ docker run -d -p 80:80 -v $(pwd):/var/www/html/WOVN.php -v $(pwd)/integration_te
 waitServerUp
 
 curl "localhost/index.php?wovn=ja" -o /tmp/result.txt
-
 # diff returns non 0 if there are differences or troubles.
 diff /tmp/result.txt integration_test/index_expected.html
+
+curl "localhost/amp.php" -o /tmp/result.txt
+diff /tmp/result.txt integration_test/amp_expected.html

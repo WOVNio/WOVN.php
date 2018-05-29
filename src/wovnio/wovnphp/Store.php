@@ -80,6 +80,12 @@
         'use_server_error_settings' => false,
         'disable_api_request_for_default_lang' => false,
 
+        // Set to true to check if intercepted file is an AMP file.
+        // Because WOVN.php interception is explicit, in most cases AMP files
+        // are not intercepted, so this option is false by default -- always
+        // checking for AMP takes time we can spare.
+        'check_amp' => false,
+
         // without knowing much about this feature, no one should use this.
         'save_memory_by_sending_wovn_ignore_content' => false
       );
