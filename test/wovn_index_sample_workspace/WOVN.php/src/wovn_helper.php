@@ -1,4 +1,8 @@
 <?php
+require_once(__DIR__ . '/wovn_interceptor.php');
+require_once(__DIR__ . '/wovnio/wovnphp/SSI.php');
+use Wovnio\Wovnphp\SSI;
+
 function wovn_helper_detect_paths($base_dir, $path_of_url, $files) {
   $request_path = $base_dir . $path_of_url;
   $local_path = realpath($request_path);
@@ -22,6 +26,16 @@ function wovn_helper_include_by_paths($paths) {
   foreach ($paths as $path) {
     if (is_file($path)) {
       include($path);
+      return true;
+    }
+  }
+  return false;
+}
+
+function wovn_helper_include_by_paths_with_ssi($paths) {
+  foreach ($paths as $path) {
+    if (is_file($path)) {
+      echo SSI::include($path);
       return true;
     }
   }
