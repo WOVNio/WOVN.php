@@ -35,7 +35,7 @@ function wovn_helper_include_by_paths($paths) {
 function wovn_helper_include_by_paths_with_ssi($paths) {
   foreach ($paths as $path) {
     if (is_file($path)) {
-      echo SSI::include($path);
+      echo SSI::readFile($path);
       return true;
     }
   }
