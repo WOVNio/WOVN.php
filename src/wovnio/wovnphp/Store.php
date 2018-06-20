@@ -177,4 +177,14 @@
 
       return $lang_code;
     }
+
+    public function defaultLangAlias() {
+      $defaultLang = $this->defaultLang();
+      return array_key_exists($defaultLang, $this->settings['custom_lang_aliases']) &&
+        $this->settings['custom_lang_aliases'][$defaultLang];
+    }
+
+    public function defaultLang() {
+        return $this->settings['default_lang'];
+    }
   }

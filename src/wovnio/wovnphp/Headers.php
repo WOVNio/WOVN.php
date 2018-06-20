@@ -320,6 +320,7 @@
 
     /**
      * Public function removing the lang of the url
+     * Notice: if there is default language code in custom language code, keep language code url
      *
      * @param String $uri The url with the lang
      * @param String $lang The lang to remove
@@ -331,7 +332,14 @@
       }
 
       $lang_code = $this->store->convertToCustomLangCode($lang);
-      return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
+      $default_lang = $this->store->settings['default_lang'];
+      $aliases = $this->store->settings['custom_lang_aliases'];
+      if (array_key_exists($default_lang, $aliases)) {
+        $no_lang_uri = Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
+        return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
+      } else {
+        return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
+      }
     }
 
     /**
