@@ -233,7 +233,7 @@ class HtmlConverter
   }
 
   private function buildHrefLang($lang_code) {
-    $url = $this->headers->url;
+    $url = $this->headers->urlKeepTrailingSlash;
 
     $defaultLangAlias = $this->store->defaultLangAlias();
     if ($defaultLangAlias) {

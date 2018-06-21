@@ -751,6 +751,28 @@ bye
     $this->assertEquals($expected_html_text, $translated_html);
   }
 
+  public function testInsertHreflangWithDefaultCustomLangAliasAndTrailingSlash()
+  {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/dir1/dir2/';
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['default_lang'] = 'en';
+    $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
+    $store->settings['custom_lang_aliases'] = array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct');
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias_trailing_slash.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
   private function executeConvert($converter, $html, $charset, $name)
   {
     $dom = SimpleHtmlDom::str_get_html($html, $charset, false, false, $charset, false);

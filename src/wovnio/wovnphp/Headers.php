@@ -81,8 +81,10 @@
         $this->query = '';
       }
       $this->query = $this->removeLang($this->query, $this->lang());
+      $this->pathnameKeepTrailingSlash = $this->pathname;
       $this->pathname = preg_replace('/\/$/', '', $this->pathname);
       $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
+      $this->urlKeepTrailingSlash = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash . $urlQuery;
       if (isset($store->settings['query']) && !empty($store->settings['query'])) {
         $this->redisUrl = $this->host . $this->pathname . $this->matchQuery($urlQuery, $store->settings['query']);
       } else {
