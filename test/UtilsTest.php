@@ -33,10 +33,14 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testIsHtml() {
-    $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
+    $this->assertEquals(false, Utils::isHtml(array(),'this is not html, even tho it contains < and >'));
 
-    $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
-    $this->assertEquals(true, Utils::isHtml('<p>this is html</p>'));
+    $this->assertEquals(true, Utils::isHtml(array(),'<html><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isHtml(array(),'<p>this is html</p>'));
+
+    $this->assertEquals(true, Utils::isHtml(array('Content-Type: text/html'),'<p>this is html</p>'));
+    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/json'),'<p>this is json</p>'));
+    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/pdf'),'<p>this is pdf</p>'));
   }
 
   public function testIsAmp() {
