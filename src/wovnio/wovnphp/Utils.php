@@ -58,8 +58,8 @@ class Utils {
         preg_match(self::AUDIO_FILE_PATTERN, $uri) ||
         preg_match(self::VIDEO_FILE_PATTERN, $uri) ||
         preg_match(self::DOC_FILE_PATTERN, $uri) ||
-        checkIgnorePaths($uri, $store) ||
-        checkIgnoreGlobs($uri, $store));
+        self::checkIgnorePaths($uri, $store) ||
+        self::checkIgnoreGlobs($uri, $store));
   }
 
   private static function checkIgnorePaths($uri, $store = null) {
