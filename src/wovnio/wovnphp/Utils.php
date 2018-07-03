@@ -53,11 +53,33 @@ class Utils {
     return false;
   }
 
-  public static function isFilePathURI($uri) {
+  public static function isFilePathURI($uri, $store) {
     return $uri && (preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
         preg_match(self::AUDIO_FILE_PATTERN, $uri) ||
         preg_match(self::VIDEO_FILE_PATTERN, $uri) ||
-        preg_match(self::DOC_FILE_PATTERN, $uri));
+        preg_match(self::DOC_FILE_PATTERN, $uri) ||
+        checkIgnorePaths($uri, $store) ||
+        checkIgnoreGlobs($uri, $store));
+  }
+
+  private static function checkIgnorePaths($uri, $store = null) {
+    if (null === $store || !isset($store->settings['ignore_paths']) || isset($store->settings['ignore_paths']) && empty($store->settings['ignore_paths'])) return false;
+    foreach($store->settings['ignore_paths'] as $path) {
+      if (strpos($uri, $path) !== false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private static function checkIgnoreGlobs($uri, $store = null) {
+    if (null === $store || !isset($store->settings['ignore_globs']) || isset($store->settings['ignore_globs']) && empty($store->settings['ignore_globs'])) return false;
+    foreach($store->settings['ignore_globs'] as $glob) {
+      if (preg_match($glob, $uri)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static function getEnv($env, $keys) {

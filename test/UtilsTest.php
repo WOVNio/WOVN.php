@@ -32,6 +32,18 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf'));
   }
 
+  public function testIsFilePathURIWithPathsAndGlobs() {
+    $env = $this->getEnv('_path');
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $store->settings['ignore_paths'] = array('/coucou.jpg', 'assets/img/');
+    $store->settings['ignore_globs'] = array("/img\/assets$/i");
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com'));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg'));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop'));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/img/assets'));
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/assets/index.html'));
+  }
+
   public function testIsHtml() {
     $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
 
