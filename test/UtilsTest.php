@@ -26,10 +26,12 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testIsFilePathURI() {
-    $this->assertEquals(false, Utils::isFilePathURI('https://google.com'));
-    $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3'));
-    $this->assertEquals(true, Utils::isFilePathURI('/test.mp3'));
-    $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf'));
+    $env = $this->getEnv('_path');
+    list($store, $headers) = Utils::getStoreAndHeaders($env);
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3', $store));
+    $this->assertEquals(true, Utils::isFilePathURI('/test.mp3', $store));
+    $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf', $store));
   }
 
   public function testIsFilePathURIWithPathsAndGlobs() {
@@ -37,11 +39,11 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $store->settings['ignore_paths'] = array('/coucou.jpg', 'assets/img/');
     $store->settings['ignore_globs'] = array("/img\/assets$/i");
-    $this->assertEquals(false, Utils::isFilePathURI('https://google.com'));
-    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg'));
-    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop'));
-    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/img/assets'));
-    $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/assets/index.html'));
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop', $store));
+    $this->assertEquals(true, Utils::isFilePathURI('https://google.com/img/assets', $store));
+    $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/assets/index.html', $store));
   }
 
   public function testIsHtml() {
