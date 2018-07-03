@@ -34,11 +34,11 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf', $store));
   }
 
-  public function testIsFilePathURIWithPathsAndGlobs() {
+  public function testIsFilePathURIWithPathsAndRegex() {
     $env = $this->getEnv('_path');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $store->settings['ignore_paths'] = array('/coucou.jpg', 'assets/img/');
-    $store->settings['ignore_globs'] = array("/img\/assets$/i");
+    $store->settings['ignore_regex'] = array("/img\/assets$/i");
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
     $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
     $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop', $store));

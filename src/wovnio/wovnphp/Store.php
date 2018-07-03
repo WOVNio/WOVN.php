@@ -80,7 +80,7 @@
         'use_server_error_settings' => false,
         'disable_api_request_for_default_lang' => false,
         'ignore_paths' => array(),
-        'ignore_globs' => array(),
+        'ignore_regex' => array(),
 
         // Set to true to check if intercepted file is an AMP file.
         // Because WOVN.php interception is explicit, in most cases AMP files
@@ -137,8 +137,8 @@
         $vals['ignore_paths'] = array();
       }
 
-      if (isset($vals['ignore_globs']) && !is_array($vals['ignore_globs'])) {
-        $vals['ignore_globs'] = array();
+      if (isset($vals['ignore_regex']) && !is_array($vals['ignore_regex'])) {
+        $vals['ignore_regex'] = array();
       }
 
       // update settings if wovn dev mode is activated

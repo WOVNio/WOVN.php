@@ -59,7 +59,7 @@ class Utils {
         preg_match(self::VIDEO_FILE_PATTERN, $uri) ||
         preg_match(self::DOC_FILE_PATTERN, $uri) ||
         self::checkIgnorePaths($uri, $store) ||
-        self::checkIgnoreGlobs($uri, $store));
+        self::checkIgnoreRegex($uri, $store));
   }
 
   private static function checkIgnorePaths($uri, $store = null) {
@@ -72,9 +72,9 @@ class Utils {
     return false;
   }
 
-  private static function checkIgnoreGlobs($uri, $store = null) {
-    if (null === $store || !isset($store->settings['ignore_globs']) || isset($store->settings['ignore_globs']) && empty($store->settings['ignore_globs'])) return false;
-    foreach($store->settings['ignore_globs'] as $glob) {
+  private static function checkIgnoreRegex($uri, $store = null) {
+    if (null === $store || !isset($store->settings['ignore_regex']) || isset($store->settings['ignore_regex']) && empty($store->settings['ignore_regex'])) return false;
+    foreach($store->settings['ignore_regex'] as $glob) {
       if (preg_match($glob, $uri)) {
         return true;
       }
