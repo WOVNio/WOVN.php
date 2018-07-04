@@ -39,6 +39,7 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, Utils::isHtml(array(),'<p>this is html</p>'));
 
     $this->assertEquals(true, Utils::isHtml(array('Content-Type: text/html'),'<p>this is html</p>'));
+    $this->assertEquals(true, Utils::isHtml(array('Content-Type: application/xhtml+xml'),'<p>this is xhtml</p>'));
     $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/json'),'<p>this is json</p>'));
     $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/pdf'),'<p>this is pdf</p>'));
   }

@@ -43,7 +43,7 @@ class Utils {
         continue;
       }
       if (strtolower(trim($header_data[0])) == 'content-type') {
-        if (!preg_match('/\/html/', $header_data[1])) {
+        if (!preg_match('/html/', $header_data[1])) {
           return false;
         }
       }
