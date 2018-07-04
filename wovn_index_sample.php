@@ -13,7 +13,7 @@ $files = array(
   "index.phtml",
   "app.php"
 );
-$paths = wovn_helper_detect_paths(dirname(__FILE__), $_SERVER["REQUEST_URI"], $files);
+$paths = wovn_helper_detect_paths(dirname(__FILE__), parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), $files);
 $included = wovn_helper_include_by_paths($paths);
 
 # Set 404 status code if file not included
