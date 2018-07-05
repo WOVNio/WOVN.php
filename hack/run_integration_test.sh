@@ -25,3 +25,19 @@ diff /tmp/result.txt integration_test/index_expected.html
 
 curl "localhost/amp.php" -o /tmp/result.txt
 diff /tmp/result.txt integration_test/amp_expected.html
+
+# STATIC CONTENT INTERCEPTION
+
+docker ps | grep -v CONTAINER | cut -d " " -f 1 | xargs docker kill || true
+
+docker run -d -p 80:80 -v $(pwd):/var/www/html/WOVN.php \
+                       -v $(pwd)/htaccess_sample:/var/www/html/.htaccess \
+                       -v $(pwd)/wovn_index_sample.php:/var/www/html/wovn_index.php \
+                       -v $(pwd)/integration_test:/var/www/html \
+                       ${docker_name} \
+                       /bin/bash -c 'a2enmod rewrite; apache2 -D FOREGROUND'
+
+waitServerUp
+
+curl "localhost/static.html?a=b" -o /tmp/result.txt
+diff /tmp/result.txt integration_test/static_expected.html
