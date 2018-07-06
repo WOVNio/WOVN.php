@@ -9,7 +9,7 @@
   class API {
     public static function url($store, $headers, $original_content) {
       $token = $store->settings['project_token'];
-      $path = $headers->pathname;
+      $path = $headers->pathnameKeepTrailingSlash;
       $lang = $headers->lang();
       $body_hash = md5($original_content);
       ksort($store->settings);
@@ -38,7 +38,7 @@
 
       $timeout = $store->settings['api_timeout'];
       $data = array(
-        'url' => $headers->url,
+        'url' => $headers->urlKeepTrailingSlash,
         'token' => $token,
         'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
