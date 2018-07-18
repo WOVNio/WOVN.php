@@ -378,7 +378,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertToAppropriateBodyForApiWithCustomIgnoreClass()
   {
-    $html = '<html><body><a class="ignore   valid custom">hello</a></body></html>';
+    $html = "<html><body><a class=\"random    \n\f\rignore\tvalid custom\">hello</a></body></html>";
     $token = 'toK3n';
     $env = $this->getEnv();
     list($store, $headers) = StoreAndHeaderHelper::create($env);
@@ -388,7 +388,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $keys = $marker->keys();
 
     $this->assertEquals(1, count($keys));
-    $this->assertEquals("<html><body><a class=\"ignore   valid custom\">$keys[0]</a></body></html>", $translated_html);
+    $this->assertEquals("<html><body><a class=\"random    \n\f\rignore\tvalid custom\">$keys[0]</a></body></html>", $translated_html);
   }
 
   public function testConvertToAppropriateBodyForApiWithMultipleWovnIgnore()

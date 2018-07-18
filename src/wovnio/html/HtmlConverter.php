@@ -283,7 +283,7 @@ class HtmlConverter
     $class_attr = $node->getAttribute('class');
     if ($class_attr) {
       $classes_to_ignore = $this->store->settings['ignore_class'];
-      $classes = array_filter(explode(' ', $class_attr));
+      $classes = array_filter(preg_split("/[\s]+/", $class_attr));
       $classes_intersect = array_intersect($classes_to_ignore, $classes);
       if (!empty($classes_intersect)) {
         $this->putReplaceMarker($node, $marker);
