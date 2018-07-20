@@ -101,6 +101,7 @@ class HtmlConverter
         $self->_removeHreflang($node);
       }
       $self->_removeWovnIgnore($node, $marker);
+      $self->_removeCustomIgnoreClass($node, $marker);
       $self->_removeForm($node, $marker);
       // inside <script>, comment("<!--") is invalid
       $self->_removeScript($node, $marker);
@@ -275,6 +276,18 @@ class HtmlConverter
   function _removeWovnIgnore($node, $marker) {
     if ($node->getAttribute('wovn-ignore')) {
       $this->putReplaceMarker($node, $marker);
+    }
+  }
+
+  function _removeCustomIgnoreClass($node, $marker) {
+    $class_attr = $node->getAttribute('class');
+    if ($class_attr) {
+      $classes_to_ignore = $this->store->settings['ignore_class'];
+      $classes = array_filter(preg_split("/[\s]+/", $class_attr));
+      $classes_intersect = array_intersect($classes_to_ignore, $classes);
+      if (!empty($classes_intersect)) {
+        $this->putReplaceMarker($node, $marker);
+      }
     }
   }
 

@@ -376,6 +376,21 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
   }
 
+  public function testConvertToAppropriateBodyForApiWithCustomIgnoreClass()
+  {
+    $html = "<html><body><a class=\"random    \n\f\rignore\tvalid custom\">hello</a></body></html>";
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['ignore_class'] = array('ignore');
+    $converter = new HtmlConverter($html, null, $token, $store, $headers);
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeCustomIgnoreClass');
+    $keys = $marker->keys();
+
+    $this->assertEquals(1, count($keys));
+    $this->assertEquals("<html><body><a class=\"random    \n\f\rignore\tvalid custom\">$keys[0]</a></body></html>", $translated_html);
+  }
+
   public function testConvertToAppropriateBodyForApiWithMultipleWovnIgnore()
   {
     $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
@@ -499,7 +514,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 line break
 <!-- backend-wovn-ignore    -->
 
-ignored2 
+ignored2
 
 <!--/backend-wovn-ignore-->
 bye
