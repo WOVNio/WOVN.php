@@ -9,7 +9,7 @@
     }
 
     public static function readFileRecursive($includePath, $rootDir, &$limit) {
-      $ssi_include_regexp = '/<!--#include virtual="(.+?)" -->/';
+      $ssi_include_regexp = '/<!--#include virtual="(.+?)"\s*-->/';
       $includeDir = dirname($includePath);
       $code = file_get_contents($includePath);
 
