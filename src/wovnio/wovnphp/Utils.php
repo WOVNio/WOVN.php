@@ -34,7 +34,21 @@ class Utils {
     }
   }
 
-  public static function isHtml($buffer) {
+  public static function isHtml($response_headers, $buffer) {
+    // Because Apache sets header automatically when Content-Type is not set,
+    //    check the header only when it exists.
+    foreach($response_headers as $response_header) {
+      $header_data = explode(':', $response_header);
+      if (count($header_data) < 2) {
+        continue;
+      }
+      if (strtolower(trim($header_data[0])) == 'content-type') {
+        if (!preg_match('/html/', $header_data[1])) {
+          return false;
+        }
+      }
+    }
+
     return $buffer != strip_tags($buffer);
   }
 

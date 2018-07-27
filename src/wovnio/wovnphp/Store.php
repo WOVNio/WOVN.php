@@ -3,7 +3,7 @@
   use Wovnio\Html\HtmlConverter;
 
   /**
-   * The Store class contains the user settings 
+   * The Store class contains the user settings
    */
   class Store {
     public $settings;
@@ -29,7 +29,7 @@
 
     /**
      *  Constructor of the Store class
-     *  
+     *
      *  @param array $userSettings
      *  @return void
      */
@@ -79,6 +79,7 @@
         'wovn_dev_mode' => false,
         'use_server_error_settings' => false,
         'disable_api_request_for_default_lang' => false,
+        'ignore_class' => array(),
 
         // Set to true to check if intercepted file is an AMP file.
         // Because WOVN.php interception is explicit, in most cases AMP files
@@ -176,5 +177,15 @@
       }
 
       return $lang_code;
+    }
+
+    public function defaultLangAlias() {
+      $defaultLang = $this->defaultLang();
+      return array_key_exists($defaultLang, $this->settings['custom_lang_aliases']) &&
+        $this->settings['custom_lang_aliases'][$defaultLang];
+    }
+
+    public function defaultLang() {
+        return $this->settings['default_lang'];
     }
   }
