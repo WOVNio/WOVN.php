@@ -1,6 +1,5 @@
 <?php
 # Enable WOVN.php library
-require_once("WOVN.php/src/wovn_interceptor.php");
 require_once("WOVN.php/src/wovn_helper.php");
 
 # Try read specific files if request url is end of slash
@@ -14,7 +13,8 @@ $files = array(
   "app.php"
 );
 $paths = wovn_helper_detect_paths(dirname(__FILE__), parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), $files);
-$included = wovn_helper_include_by_paths($paths);
+#$included = wovn_helper_include_by_paths($paths); # this is faster than`wovn_helper_include_by_paths_with_ssi`
+$included = wovn_helper_include_by_paths_with_ssi($paths);
 
 # Set 404 status code if file not included
 if (!$included) {

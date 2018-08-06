@@ -4,6 +4,8 @@
  * - @runInSeparateProcess: It's need if test call header() function
  */
 
+require_once(__DIR__ . '/../src/wovnio/wovnphp/SSI.php');
+
 class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
     chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
@@ -33,6 +35,13 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   public function testWithFile () {
     $this->touch('index.html');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/index.html'));
+  }
+
+  public function testWithSSI () {
+    $this->touch('ssi.html', 'ssi <!--#include virtual="include.html" -->');
+    $this->touch('include.html', 'include <!--#include virtual="nested.html" -->');
+    $this->touch('nested.html');
+    $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
   }
 
   public function testDetectIndexPhp () {
@@ -72,8 +81,9 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     return ob_get_clean();
   }
 
-  private function touch($file) {
-    file_put_contents($file, 'This is ' . $file);
+  private function touch($file, $content=null) {
+    $content = $content !== null ? $content : 'This is ' . $file;
+    file_put_contents($file, $content);
     array_push($this->paths, $file);
   }
 }
