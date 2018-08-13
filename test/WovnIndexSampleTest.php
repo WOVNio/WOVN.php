@@ -42,7 +42,11 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function tearDownSSI () {
-    unlink('wovn_index.php-e');
+    $wovnIndexSedBackupFilepath = dirname(__FILE__) . '/wovn_index_sample_workspace/wovn_index.php-e';
+
+    if (file_exists($wovnIndexSedBackupFilepath)) {
+      unlink('wovn_index.php-e');
+    }
   }
 
   public function testWithFile () {
