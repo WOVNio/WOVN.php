@@ -32,16 +32,33 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     chdir($this->original_dir);
   }
 
+  protected function setUpSSI () {
+    $indexFile = dirname(__FILE__) . '/wovn_index_sample_workspace/wovn_index.php';
+    $inclusion = '\$included\ =\ wovn_helper_include_by_paths\(\$paths\)\;';
+    $ssiInclusion = '\$included\ =\ wovn_helper_include_by_paths_with_ssi\(\$paths\)\;';
+
+    exec('sed -i -e s/^' . $inclusion .'$/#\ ' . $inclusion . '/ ' . $indexFile);
+    exec('sed -i -e s/^#\ ' . $ssiInclusion . '$/' . $ssiInclusion . '/ ' . $indexFile);
+  }
+
+  protected function tearDownSSI () {
+    unlink('wovn_index.php-e');
+  }
+
   public function testWithFile () {
     $this->touch('index.html');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/index.html'));
   }
 
-  public function testWithSSI () {
-    $this->touch('ssi.html', 'ssi <!--#include virtual="include.html" -->');
+  public function testWithSSIAndPHP () {
+    $this->setUpSSI();
+
+    $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include virtual="include.html" -->');
     $this->touch('include.html', 'include <!--#include virtual="nested.html" -->');
     $this->touch('nested.html');
     $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
+
+    $this->tearDownSSI();
   }
 
   public function testDetectIndexPhp () {
