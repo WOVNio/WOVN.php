@@ -4,10 +4,21 @@
  * - @runInSeparateProcess: It's need if test call header() function
  */
 
-class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
+require_once(__DIR__ . '/../src/wovnio/wovnphp/SSI.php');
+
+class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
+    $indexFile = 'wovn_index.php';
+    $sampleIndexFile = '../../wovn_index_sample.php';
+    $inclusionCode = '\$included\ =\ wovn_helper_include_by_paths\(\$paths\)\;';
+    $ssiInclusionCode = '\$included\ =\ wovn_helper_include_by_paths_with_ssi\(\$paths\)\;';
+
     chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
-    copy('../../wovn_index_sample.php', 'wovn_index.php');
+
+    exec('sed -e s/^' . $inclusionCode .'$/#\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
+    exec('sed -e s/^#\ ' . $ssiInclusionCode . '$/' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
+    unlink($indexFile . '.tmp');
+
     copy('../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
     $this->paths = array();
     $this->original_dir = getcwd();
@@ -30,39 +41,11 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     chdir($this->original_dir);
   }
 
-  public function testWithFile () {
-    $this->touch('index.html');
-    $this->assertEquals('This is index.html', $this->runWovnIndex('/index.html'));
-  }
-
-  public function testDetectIndexPhp () {
-    $this->touch('index.php');
-    $this->assertEquals('This is index.php', $this->runWovnIndex('/'));
-  }
-
-  public function testDetectMultipleFiles () {
-    $this->touch('index.html');
-    $this->touch('index.php');
-    $this->assertEquals('This is index.html', $this->runWovnIndex('/'));
-  }
-
-  public function testInvalidPath () {
-    $this->touch('index.php');
-    $this->assertEquals('This is index.php', $this->runWovnIndex('/../../index.php'));
-  }
-
-  /**
-   * @runInSeparateProcess
-   */
-  public function testNotFoundFile () {
-    $this->assertEquals('Page Not Found', $this->runWovnIndex('/index.html'));
-  }
-
-  /**
-   * @runInSeparateProcess
-   */
-  public function testNotFoundWithDetection () {
-    $this->assertEquals('Page Not Found', $this->runWovnIndex('/'));
+  public function testWithSSIAndPHP () {
+    $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include virtual="include.html" -->');
+    $this->touch('include.html', 'include <!--#include virtual="nested.html" -->');
+    $this->touch('nested.html');
+    $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
   }
 
   private function runWovnIndex($request_uri) {
