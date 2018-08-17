@@ -42,9 +42,7 @@
     private static function get_contents($includePath) {
       ob_start();
       include $includePath;
-      $contents = ob_get_contents();
-      ob_end_clean();
 
-      return $contents;
+      return ob_get_clean();
     }
   }
