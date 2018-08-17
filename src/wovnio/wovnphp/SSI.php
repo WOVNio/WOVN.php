@@ -11,7 +11,7 @@
     public static function readFileRecursive($includePath, $rootDir, &$limit) {
       $ssi_include_regexp = '/<!--#include virtual="(.+?)"\s*-->/';
       $includeDir = dirname($includePath);
-      $code = file_get_contents($includePath);
+      $code = self::get_contents($includePath);
 
       while (preg_match($ssi_include_regexp, $code)) {
         $code = preg_replace_callback($ssi_include_regexp, function($match) use ($rootDir, $includeDir, $limit) {
@@ -37,5 +37,12 @@
       }
 
       return $code;
+    }
+
+    private static function get_contents($includePath) {
+      ob_start();
+      include $includePath;
+
+      return ob_get_clean();
     }
   }

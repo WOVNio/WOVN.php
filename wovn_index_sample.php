@@ -13,8 +13,9 @@ $files = array(
   "app.php"
 );
 $paths = wovn_helper_detect_paths(dirname(__FILE__), parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), $files);
-#$included = wovn_helper_include_by_paths($paths); # this is faster than`wovn_helper_include_by_paths_with_ssi`
-$included = wovn_helper_include_by_paths_with_ssi($paths);
+# SSI USER: please swap comments on the two lines below
+$included = wovn_helper_include_by_paths($paths);
+# $included = wovn_helper_include_by_paths_with_ssi($paths);
 
 # Set 404 status code if file not included
 if (!$included) {
