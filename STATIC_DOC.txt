@@ -6,13 +6,19 @@
 Insert the content below into you nginx configuration file (e.g.
 /etc/nginx/conf.d/site.conf).
 ```
+server {
+  # ...
+
+  # php configuration
   location ~ \.php$ {
-    # put your php configuration here
     # ...
   }
 
-  # WOVN.php interception
   location / {
+    # ...
+
+    # WOVN.php interception ####################################################
+
     # intercept static content with WOVN.php
     if ($uri ~ (/|\.(html|htm))$) {
       rewrite .? /wovn_index.php;
