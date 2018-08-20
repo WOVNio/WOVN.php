@@ -3,7 +3,8 @@
 2- Copy the wovn_index.php file to the website root folder.
 
 # Support static html pages with WOVN.php and nginx
-Insert the content below into you nginx configuration file:
+Insert the content below into you nginx configuration file (e.g.
+/etc/nginx/conf.d/site.conf).
 ```
   location ~ \.php$ {
     # put your php configuration here
