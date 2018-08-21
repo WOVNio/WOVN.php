@@ -1,3 +1,32 @@
-# Support static html pages with WOVN.php
+# Support static html pages with WOVN.php and Apache
 1- Copy the htaccess_sample file to the website root folder and rename it to '.htaccess' OR Copy the content of the htaccess_sample file at the end of your existing '.htaccess' file if you have one.
 2- Copy the wovn_index.php file to the website root folder.
+
+# Support static html pages with WOVN.php and NGINX
+Insert the content below into you nginx configuration file (e.g.
+/etc/nginx/conf.d/site.conf).
+```
+server {
+  # ...
+
+  # php configuration
+  location ~ \.php$ {
+    # ...
+  }
+
+  location / {
+    # ...
+
+    # WOVN.php interception ####################################################
+
+    # intercept static content with WOVN.php
+    if ($uri ~ (/|\.(html|htm))$) {
+      rewrite .? /wovn_index.php;
+    }
+
+    # intercept static content with WOVN.php when `url_pattern_name` is 'path'
+    if ($uri ~ ^/(ar|bg|zh-CHS|zh-CHT|da|nl|en|fi|fr|de|el|he|id|it|ja|ko|ms|no|pl|pt|ru|es|sv|th|hi|tr|uk|vi)$) {
+      rewrite .? /wovn_index.php;
+    }
+  }
+```
