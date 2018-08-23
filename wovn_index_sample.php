@@ -20,5 +20,12 @@ $included = wovn_helper_include_by_paths($paths);
 # Set 404 status code if file not included
 if (!$included) {
   header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
-  echo "Page Not Found";
+
+  # Look for 404.html file in the root directory
+  $paths_404 = [dirname(__FILE__) . "/404.html", ];
+  $included_404 = wovn_helper_include_by_paths_with_ssi($paths_404);
+
+  if (!$included_404) {
+    echo "Page Not Found";
+  }
 }
