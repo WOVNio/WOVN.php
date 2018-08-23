@@ -23,7 +23,7 @@ if (!$included) {
 
   # Look for 404.html file in the root directory
   $paths_404 = [dirname(__FILE__) . "/404.html", ];
-  $included_404 = wovn_helper_include_by_paths_with_ssi($paths_404);
+  $included_404 = wovn_helper_include_by_paths($paths_404);
 
   if (!$included_404) {
     echo "Page Not Found";
