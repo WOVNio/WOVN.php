@@ -22,7 +22,7 @@ if (!$included) {
   header($_SERVER["SERVER_PROTOCOL"] . " 404 Not Found");
 
   # Look for 404.html file in the root directory
-  $paths_404 = [dirname(__FILE__) . "/404.html", ];
+  $paths_404 = array(dirname(__FILE__) . "/404.html");
   $included_404 = wovn_helper_include_by_paths($paths_404);
 
   if (!$included_404) {
