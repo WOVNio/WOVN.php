@@ -40,6 +40,12 @@ class Url {
     $no_lang_uri = self::removeLangCode($uri, $pattern, $lang_code);
     $no_lang_host = self::removeLangCode($headers->host, $pattern, $lang_code);
 
+    if ($store->defaultLangAlias()) {
+        $default_lang = $store->settings['default_lang'];
+        $no_lang_uri = self::removeLangCode($no_lang_uri, $pattern, $default_lang);
+        $no_lang_host = self::removeLangCode($no_lang_host, $pattern, $default_lang);
+    }
+
     // absolute urls
     if (preg_match('/^(https?:)?\/\//i', $no_lang_uri)) {
       // only to use with absolute urls!!

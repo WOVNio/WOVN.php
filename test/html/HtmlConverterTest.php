@@ -376,6 +376,21 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
   }
 
+  public function testConvertToAppropriateBodyForApiWithCustomIgnoreClass()
+  {
+    $html = "<html><body><a class=\"random    \n\f\rignore\tvalid custom\">hello</a></body></html>";
+    $token = 'toK3n';
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['ignore_class'] = array('ignore');
+    $converter = new HtmlConverter($html, null, $token, $store, $headers);
+    list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeCustomIgnoreClass');
+    $keys = $marker->keys();
+
+    $this->assertEquals(1, count($keys));
+    $this->assertEquals("<html><body><a class=\"random    \n\f\rignore\tvalid custom\">$keys[0]</a></body></html>", $translated_html);
+  }
+
   public function testConvertToAppropriateBodyForApiWithMultipleWovnIgnore()
   {
     $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
@@ -499,7 +514,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 line break
 <!-- backend-wovn-ignore    -->
 
-ignored2 
+ignored2
 
 <!--/backend-wovn-ignore-->
 bye
@@ -705,6 +720,70 @@ bye
     list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangWithCustomLangAlias()
+  {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_lang_alias.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['default_lang'] = 'en';
+    $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
+    $store->settings['custom_lang_aliases'] = array('zh-CHS' => 'cs', 'zh-CHT' => 'ct');
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_lang_alias.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangWithDefaultCustomLangAlias()
+  {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['default_lang'] = 'en';
+    $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
+    $store->settings['custom_lang_aliases'] = array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct');
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias.html');
+
+    $this->assertEquals($expected_html_text, $translated_html);
+  }
+
+  public function testInsertHreflangWithDefaultCustomLangAliasAndTrailingSlash()
+  {
+    libxml_use_internal_errors(true);
+    $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+    $token = 'toK3n';
+
+    $env = $this->getEnv();
+    $env['REQUEST_URI'] = '/dir1/dir2/';
+    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    $store->settings['default_lang'] = 'en';
+    $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
+    $store->settings['custom_lang_aliases'] = array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct');
+    $store->settings['url_pattern_name'] = 'path';
+
+    $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
+    list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+    $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias_trailing_slash.html');
 
     $this->assertEquals($expected_html_text, $translated_html);
   }

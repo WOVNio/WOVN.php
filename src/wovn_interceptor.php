@@ -33,7 +33,7 @@
     ob_start(function($buffer) use ($headers, $store) {
       $headers->responseOut();
 
-      if (empty($buffer) || !Utils::isHtml($buffer)) {
+      if (empty($buffer) || !Utils::isHtml(headers_list(), $buffer)) {
         return $buffer;
       }
 
