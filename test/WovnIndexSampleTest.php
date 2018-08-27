@@ -57,9 +57,9 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   /**
    * @runInSeparateProcess
    */
-  public function testTrailingDoubleDotsBad () {
+  public function testTrailingDoubleDotsOk () {
     $this->touch('index.php');
-    $this->assertEquals('Page Not Found', $this->runWovnIndex('/bird/..'));
+    $this->assertEquals('This is index.php', $this->runWovnIndex('/bird/..'));
   }
 
   /**
