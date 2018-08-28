@@ -5,6 +5,8 @@ use Wovnio\Wovnphp\SSI;
 
 function remove_dots_from_path($path) {
   # Removes '/./ in paths and resolves '/../' in paths
+  # From https://tomnomnom.com/posts/realish-paths-without-realpath
+  # See also http://php.net/manual/en/function.realpath.php#84012
   $path = str_replace('//', '/', $path);
 
   $path_parts = explode('/', $path);
