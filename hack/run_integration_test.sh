@@ -1,30 +1,41 @@
 #!/usr/bin/env bash
 set -eux
 docker_name=$1
+dummy_container="dummy_$(date +%s)"
 
 function waitServerUp {
   try_count=0
-  status=`curl localhost -o /dev/null -v 2>&1 | grep 200` || true
+  status=`docker exec $(docker ps -q) curl localhost -o /dev/null -v 2>&1 | grep 200` || true
   while [ ${#status} = 0 ] && [ ${try_count} -lt 30 ]; do
     try_count=$[${try_count}+1];
     echo 'retry curl to equalizer....'
     sleep 1;
-    status=`curl localhost -o /dev/null -v 2>&1 | grep 200` || true
+    status=`docker exec $(docker ps -q) curl localhost -o /dev/null -v 2>&1 | grep 200` || true
   done
 }
 
-docker ps | grep -v CONTAINER | cut -d " " -f 1 | xargs docker kill || true
+# Create a dummy container which will hold a volume with source
+docker create -v /var/www/html --name $dummy_container $docker_name /bin/true
 
-docker run -d -p 80:80 -v $(pwd):/var/www/html/WOVN.php -v $(pwd)/integration_test:/var/www/html ${docker_name}
+# Copy source to dummy container
+docker cp $(pwd)/.  $dummy_container:/var/www/html/WOVN.php
+docker cp $(pwd)/integration_test/. $dummy_container:/var/www/html
+
+# Kill all running containers
+docker kill $(docker ps -q) || true
+
+# Run apache container
+docker run -d --volumes-from $dummy_container $docker_name
 
 waitServerUp
 
-curl "localhost/index.php?wovn=ja" -o /tmp/result.txt
 # diff returns non 0 if there are differences or troubles.
-diff /tmp/result.txt integration_test/index_expected.html
+docker exec $(docker ps -q) curl "localhost/index.php?wovn=ja" -o /tmp/result.txt
+docker exec $(docker ps -q) diff /tmp/result.txt /var/www/html/index_expected.html
 
-curl "localhost/amp.php" -o /tmp/result.txt
-diff /tmp/result.txt integration_test/amp_expected.html
+# diff returns non 0 if there are differences or troubles.
+docker exec $(docker ps -q) curl "localhost/amp.php" -o /tmp/result.txt
+docker exec $(docker ps -q) diff /tmp/result.txt /var/www/html/amp_expected.html
 
 # STATIC CONTENT INTERCEPTION
 
@@ -35,16 +46,15 @@ else
   mod_rewrite_activation="${mod_rewrite_activation}; apache2-foreground"
 fi
 
-docker ps | grep -v CONTAINER | cut -d " " -f 1 | xargs docker kill || true
+# Kill all running containers
+docker kill $(docker ps -q) || true
 
-docker run -d -p 80:80 -v $(pwd):/var/www/html/WOVN.php \
-                       -v $(pwd)/htaccess_sample:/var/www/html/.htaccess \
-                       -v $(pwd)/wovn_index_sample.php:/var/www/html/wovn_index.php \
-                       -v $(pwd)/integration_test:/var/www/html \
-                       ${docker_name} \
-                       /bin/bash -c "${mod_rewrite_activation}"
+docker cp $(pwd)/htaccess_sample  $dummy_container:/var/www/html/.htaccess
+docker cp $(pwd)/wovn_index_sample.php $dummy_container:/var/www/html/wovn_index.php
+
+docker run -d --volumes-from $dummy_container $docker_name /bin/bash -c "${mod_rewrite_activation}"
 
 waitServerUp
 
-curl "localhost/static.html?a=b" -o /tmp/result.txt
-diff /tmp/result.txt integration_test/static_expected.html
+docker exec $(docker ps -q) curl "localhost/static.html?a=b" -o /tmp/result.txt
+docker exec $(docker ps -q) diff /tmp/result.txt /var/www/html/static_expected.html

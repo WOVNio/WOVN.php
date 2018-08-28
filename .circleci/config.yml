@@ -1,0 +1,28 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/php
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "composer.lock" }}
+            - vendor-
+      - run: composer install
+      - save_cache:
+          key: vendor-{{ checksum "composer.lock" }}
+          paths: vendor
+      - run: hack/run_test.sh vectorface/php5.3
+      - run: hack/run_test.sh vectorface/php5.4
+      - run: hack/run_test.sh php:5.5-apache
+      - run: hack/run_test.sh php:5.6-apache
+      - run: hack/run_test.sh vectorface/hhvm
+      - run: hack/run_test.sh php:7.0-apache
+      - run: ./hack/run_integration_test.sh php:5.3-apache
+      - run: ./hack/run_integration_test.sh php:5.4-apache
+      - run: ./hack/run_integration_test.sh php:5.5-apache
+      - run: ./hack/run_integration_test.sh php:5.6-apache
+      - run: ./hack/run_integration_test.sh php:7.0-apache
