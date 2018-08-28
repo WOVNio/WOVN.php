@@ -79,6 +79,8 @@
         'wovn_dev_mode' => false,
         'use_server_error_settings' => false,
         'disable_api_request_for_default_lang' => false,
+        'ignore_paths' => array(),
+        'ignore_regex' => array(),
         'ignore_class' => array(),
 
         // Set to true to check if intercepted file is an AMP file.
@@ -130,6 +132,14 @@
 
       if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
         $vals['custom_lang_aliases'] = array();
+      }
+
+      if (isset($vals['ignore_paths']) && !is_array($vals['ignore_paths'])) {
+        $vals['ignore_paths'] = array();
+      }
+
+      if (isset($vals['ignore_regex']) && !is_array($vals['ignore_regex'])) {
+        $vals['ignore_regex'] = array();
       }
 
       // update settings if wovn dev mode is activated
