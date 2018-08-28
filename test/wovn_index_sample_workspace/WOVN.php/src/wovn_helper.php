@@ -3,11 +3,26 @@ require_once(__DIR__ . '/wovn_interceptor.php');
 require_once(__DIR__ . '/wovnio/wovnphp/SSI.php');
 use Wovnio\Wovnphp\SSI;
 
+function reduce_slashes($path) {
+  # Reduces a sequence of slashes to a single slash
+  # e.g. '///./////.///' -> '/././'
+  $i = 0;
+  while($i + 1 < strlen($path)) {
+    if($path[$i] == '/' && $path[$i + 1] == '/') {
+      $path = substr($path, 0, $i) . substr($path, $i + 1, strlen($path));
+    }
+    else {
+      $i++;
+    }
+  }
+  return $path;
+}
+
 function remove_dots_from_path($path) {
   # Removes '/./ in paths and resolves '/../' in paths
   # From https://tomnomnom.com/posts/realish-paths-without-realpath
   # See also http://php.net/manual/en/function.realpath.php#84012
-  $path = str_replace('//', '/', $path);
+  $path = reduce_slashes($path);
 
   $path_parts = explode('/', $path);
   $tmp_out = array();
