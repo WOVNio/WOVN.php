@@ -43,6 +43,8 @@ function wovn_helper_detect_paths($base_dir, $path_of_url, $files) {
   $request_path = $base_dir . $path_of_url;
   $local_path = remove_dots_from_path($request_path);
   $local_path = realpath($local_path);
+  $inside_base_dir = $local_path && strpos($local_path, $base_dir) === 0;
+  $local_path = $inside_base_dir ? $local_path : false;
 
   if (is_file($local_path)) {
     return array($local_path);
