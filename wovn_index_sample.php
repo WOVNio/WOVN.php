@@ -12,11 +12,20 @@ $files = array(
   "index.phtml",
   "app.php"
 );
-$paths = wovn_helper_detect_paths(dirname(__FILE__), parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), $files);
-# SSI USER: please swap comments on the two lines below
-# (also see the SSI comment below)
-$included = wovn_helper_include_by_paths($paths);
-# $included = wovn_helper_include_by_paths_with_ssi($paths);
+
+$parsed_url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
+if ($parsed_url) {
+  $paths = wovn_helper_detect_paths(dirname(__FILE__), $parsed_url, $files);
+  
+  # SSI USER: please swap comments on the two lines below
+  # (also see the SSI comment in the 404 section below)
+  $included = wovn_helper_include_by_paths($paths);
+  # $included = wovn_helper_include_by_paths_with_ssi($paths);
+}
+else {
+  $included = False;
+}
 
 # Set 404 status code if file not included
 if (!$included) {
