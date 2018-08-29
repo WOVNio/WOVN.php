@@ -15,8 +15,8 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
 
     chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
 
-    exec('sed -e s/^' . $inclusionCode .'$/#\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
-    exec('sed -e s/^#\ ' . $ssiInclusionCode . '$/' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
+    exec('sed -e s/^\ \ ' . $inclusionCode .'$/\ \ #\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
+    exec('sed -e s/^\ \ #\ ' . $ssiInclusionCode . '$/\ \ ' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
     unlink($indexFile . '.tmp');
 
     copy('../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
@@ -42,6 +42,7 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testWithSSIAndPHP () {
+    # If you are getting errors here and you modified wovn_index_sample, check the 'sed' commands above
     $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include virtual="include.html" -->');
     $this->touch('include.html', 'include <!--#include virtual="nested.html" -->');
     $this->touch('nested.html');
