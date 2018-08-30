@@ -46,9 +46,28 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('This is index.html', $this->runWovnIndex('/'));
   }
 
-  public function testInvalidPath () {
+  /**
+   * @runInSeparateProcess
+   */
+  public function testLeadingDoubleDotsBad () {
     $this->touch('index.php');
-    $this->assertEquals('This is index.php', $this->runWovnIndex('/../../index.php'));
+    $this->assertEquals('Page Not Found', $this->runWovnIndex('/../../index.php'));
+  }
+
+  /**
+   * @runInSeparateProcess
+   */
+  public function testTrailingDoubleDotsOk () {
+    $this->touch('index.php');
+    $this->assertEquals('This is index.php', $this->runWovnIndex('/bird/..'));
+  }
+
+  /**
+   * @runInSeparateProcess
+   */
+  public function testSingleDotsOk () {
+    $this->touch('index.php');
+    $this->assertEquals('This is index.php', $this->runWovnIndex('/./././././'));
   }
 
   /**
