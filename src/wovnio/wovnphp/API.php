@@ -6,6 +6,9 @@
   use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
+  define('WOVN_PHP_VERSION', '0.1.7');
+  define('WOVN_PHP_NAME', 'WOVN.php');
+
   class API {
     public static function url($store, $headers, $original_content) {
       $token = $store->settings['project_token'];
@@ -42,6 +45,8 @@
         'token' => $token,
         'lang_code' => $headers->lang(),
         'url_pattern' => $store->settings['url_pattern_name'],
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $converted_html
       );
 
