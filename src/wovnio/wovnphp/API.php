@@ -6,8 +6,8 @@
   use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-  define('WOVN_PHP_VERSION', '0.1.7');
-  define('WOVN_PHP_NAME', 'WOVN.php');
+  if (!defined(WOVN_PHP_VERSION)) { define('WOVN_PHP_VERSION', '0.1.7'); }
+  if (!defined(WOVN_PHP_NAME)) { define('WOVN_PHP_NAME', 'WOVN.php'); }
 
   class API {
     public static function url($store, $headers, $original_content) {
