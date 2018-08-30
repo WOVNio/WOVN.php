@@ -87,6 +87,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
@@ -123,6 +125,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_body,
         'custom_lang_aliases' => '{"ja":"ja-test"}'
       );
@@ -157,6 +161,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
 
@@ -191,6 +197,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
 
@@ -223,6 +231,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
 
@@ -278,6 +288,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'path',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
 
@@ -314,6 +326,8 @@
         'token' => $store->settings['project_token'],
         'lang_code' => $headers->lang(),
         'url_pattern' => 'query',
+        'product' => WOVN_PHP_NAME,
+        'version' => WOVN_PHP_VERSION,
         'body' => $expected_html
       );
       $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
