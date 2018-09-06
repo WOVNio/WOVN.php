@@ -14,6 +14,16 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     chdir($this->workspace);
 
     mkdir('WOVN.php');
+    mkdir('WOVN.php/src');
+    mkdir('WOVN.php/src/wovnio');
+    mkdir('WOVN.php/src/wovnio/wovnphp');
+
+    // do nothing on interception, the goal of the tests are to test content
+    // fetching
+    $this->touch('WOVN.php/src/wovn_interceptor.php', '');
+    copy('../../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
+    copy('../../../src/wovnio/wovnphp/SSI.php', 'WOVN.php/src/wovnio/wovnphp/SSI.php');
+
     exec('cp -r ../../../src WOVN.php/src');
     exec('sed -e s/^\ \ ' . $inclusionCode .'$/\ \ #\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
     exec('sed -e s/^\ \ #\ ' . $ssiInclusionCode . '$/\ \ ' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
