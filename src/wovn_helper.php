@@ -1,5 +1,4 @@
 <?php
-require_once(__DIR__ . '/wovn_interceptor.php');
 require_once(__DIR__ . '/wovnio/wovnphp/SSI.php');
 use Wovnio\Wovnphp\SSI;
 

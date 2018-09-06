@@ -1,5 +1,6 @@
 <?php
 # Enable WOVN.php library
+require_once("WOVN.php/src/wovn_interceptor.php");
 require_once("WOVN.php/src/wovn_helper.php");
 
 $parsed_url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
