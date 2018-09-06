@@ -15,14 +15,14 @@ jobs:
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths: vendor
-      - run: hack/run_php_unit_test.sh vectorface/php5.3
-      - run: hack/run_php_unit_test.sh vectorface/php5.4
-      - run: hack/run_php_unit_test.sh php:5.5-apache
-      - run: hack/run_php_unit_test.sh php:5.6-apache
-      - run: hack/run_php_unit_test.sh vectorface/hhvm
-      - run: hack/run_php_unit_test.sh php:7.0-apache
-      - run: ./hack/run_server_test.sh php:5.3-apache
-      - run: ./hack/run_server_test.sh php:5.4-apache
-      - run: ./hack/run_server_test.sh php:5.5-apache
-      - run: ./hack/run_server_test.sh php:5.6-apache
-      - run: ./hack/run_server_test.sh php:7.0-apache
+      - run: scripts/run_phpunit_test.sh vectorface/php5.3
+      - run: scripts/run_phpunit_test.sh vectorface/php5.4
+      - run: scripts/run_phpunit_test.sh php:5.5-apache
+      - run: scripts/run_phpunit_test.sh php:5.6-apache
+      - run: scripts/run_phpunit_test.sh vectorface/hhvm
+      - run: scripts/run_phpunit_test.sh php:7.0-apache
+      - run: scripts/run_server_test.sh php:5.3-apache
+      - run: scripts/run_server_test.sh php:5.4-apache
+      - run: scripts/run_server_test.sh php:5.5-apache
+      - run: scripts/run_server_test.sh php:5.6-apache
+      - run: scripts/run_server_test.sh php:7.0-apache
