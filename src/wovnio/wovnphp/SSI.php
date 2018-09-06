@@ -32,7 +32,7 @@
         $code = preg_replace_callback($ssiIncludeRegexp, function($match) use ($rootDir, $includeDir, $limit, $fixSSIPath) {
           $pathAndQueryString = explode('?', $match[1]);
           $ssiPath = $pathAndQueryString[0];
-          if (substr($ssi_path, 0, 1) == '/') {
+          if (substr($ssiPath, 0, 1) == '/') {
             $path = $fixSSIPath($ssiPath, $rootDir);
           } else {
             $path = $fixSSIPath($ssiPath, $includeDir);
