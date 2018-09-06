@@ -1,37 +1,36 @@
 <?php
 class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
+    $this->baseDir = getcwd();
+    $this->workspace = dirname(__FILE__) . '/wovn_index_sample_workspace';
+    $this->paths = array();
+
     $indexFile = 'wovn_index.php';
     $sampleIndexFile = '../../../wovn_index_sample.php';
     $inclusionCode = '\$included\ =\ wovn_helper_include_by_paths\(\$paths\)\;';
     $ssiInclusionCode = '\$included\ =\ wovn_helper_include_by_paths_with_ssi\(\$paths\)\;';
 
-    chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
+    mkdir($this->workspace);
+    chdir($this->workspace);
 
+    mkdir('WOVN.php');
+    exec('cp -r ../../../src WOVN.php/src');
     exec('sed -e s/^\ \ ' . $inclusionCode .'$/\ \ #\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
     exec('sed -e s/^\ \ #\ ' . $ssiInclusionCode . '$/\ \ ' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
     unlink($indexFile . '.tmp');
 
-    copy('../../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
-    $this->paths = array();
-    $this->original_dir = getcwd();
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
   protected function tearDown() {
-    foreach($this->paths as $path) {
-      unlink($path);
-    }
-    $this->paths = array();
-
     // Normaly, this variable is undefined so revert it
     unset($_SERVER['REQUEST_URI']);
     unset($_SERVER['SERVER_PROTOCOL']);
 
-    // Avoid both exists wovn_index_sample.php and wovn_index.php for git diff
-    unlink('wovn_index.php');
+    chdir($this->baseDir);
+    exec('rm -rf ' . $this->workspace);
 
-    chdir($this->original_dir);
+    $this->paths = array();
   }
 
   public function testWithSSIAndPHP () {
@@ -43,7 +42,10 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   }
 
   private function runWovnIndex($request_uri) {
+    $_SERVER['HTTP_HOST'] = 'localhost';
+    $_SERVER['SERVER_NAME'] = 'wovn.php';
     $_SERVER['REQUEST_URI'] = $request_uri;
+    $_SERVER['QUERY_STRING'] = '';
     ob_start();
     include('wovn_index.php');
     return ob_get_clean();

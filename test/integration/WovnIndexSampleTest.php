@@ -6,28 +6,32 @@
 
 class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
-    chdir(dirname(__FILE__) . '/wovn_index_sample_workspace');
-    copy('../../../wovn_index_sample.php', 'wovn_index.php');
-    copy('../../../src/wovn_helper.php', 'WOVN.php/src/wovn_helper.php');
+    $this->baseDir = getcwd();
+    $this->workspace = dirname(__FILE__) . '/wovn_index_sample_workspace';
     $this->paths = array();
-    $this->original_dir = getcwd();
+
+    $sampleIndexFile = '../../../wovn_index_sample.php';
+    $indexFile = 'wovn_index.php';
+
+    mkdir($this->workspace);
+    chdir($this->workspace);
+
+    mkdir('WOVN.php');
+    exec('cp -r ../../../src WOVN.php/src');
+    copy($sampleIndexFile, $indexFile);
+
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
   protected function tearDown() {
-    foreach($this->paths as $path) {
-      unlink($path);
-    }
-    $this->paths = array();
-
     // Normaly, this variable is undefined so revert it
     unset($_SERVER['REQUEST_URI']);
     unset($_SERVER['SERVER_PROTOCOL']);
 
-    // Avoid both exists wovn_index_sample.php and wovn_index.php for git diff
-    unlink('wovn_index.php');
+    chdir($this->baseDir);
+    exec('rm -rf ' . $this->workspace);
 
-    chdir($this->original_dir);
+    $this->paths = array();
   }
 
   public function testWithFile () {
@@ -85,7 +89,10 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   }
 
   private function runWovnIndex($request_uri) {
+    $_SERVER['HTTP_HOST'] = 'localhost';
+    $_SERVER['SERVER_NAME'] = 'wovn.php';
     $_SERVER['REQUEST_URI'] = $request_uri;
+    $_SERVER['QUERY_STRING'] = '';
     ob_start();
     include('wovn_index.php');
     return ob_get_clean();

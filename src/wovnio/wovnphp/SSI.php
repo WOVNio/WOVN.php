@@ -14,12 +14,29 @@
       $ssi_include_regexp = '/<!--#include virtual="(.+?)"\s*-->/';
       $includeDir = dirname($includePath);
       $code = self::get_contents($includePath);
+      $fix_ssi_path = function($path, $dir) {
+        if (!is_file($path)) {
+          $candidates = wovn_helper_detect_paths($dir, $path);
+
+          foreach ($candidates as $candidate) {
+            if (is_file($candidate)) {
+              return $candidate;
+            }
+          }
+        }
+
+        return $path;
+      };
 
       while (preg_match($ssi_include_regexp, $code)) {
-        $code = preg_replace_callback($ssi_include_regexp, function($match) use ($rootDir, $includeDir, $limit) {
+        $code = preg_replace_callback($ssi_include_regexp, function($match) use ($rootDir, $includeDir, $limit, $fix_ssi_path) {
           $path_and_query_string = explode('?', $match[1]);
           $ssi_path = $path_and_query_string[0];
-          $path = SSI::fix_ssi_path($ssi_path, $rootDir);
+          if (substr($ssi_path, 0, 1) == '/') {
+            $path = $fix_ssi_path($ssi_path, $rootDir);
+          } else {
+            $path = $fix_ssi_path($ssi_path, $includeDir);
+          }
           --$limit;
           if ($limit <= 0) {
               return '<!-- File does not include by limitation: ' . $path . '-->';
@@ -42,19 +59,5 @@
       include $includePath;
 
       return ob_get_clean();
-    }
-
-    private static function fix_ssi_path($path, $rootDir) {
-      if (!is_file($path)) {
-        $candidates = wovn_helper_detect_paths($rootDir, $path);
-
-        foreach ($candidates as $candidate) {
-          if (is_file($candidate)) {
-            return $candidate;
-          }
-        }
-      }
-
-      return $path;
     }
   }
