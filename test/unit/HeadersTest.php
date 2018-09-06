@@ -3,7 +3,7 @@ require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
-require_once 'test/HeadersMock.php';
+require_once 'test/helpers/HeadersMock.php';
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
