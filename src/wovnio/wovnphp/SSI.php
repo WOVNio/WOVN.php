@@ -11,10 +11,10 @@
     }
 
     public static function readFileRecursive($includePath, $rootDir, &$limit) {
-      $ssi_include_regexp = '/<!--#include virtual="(.+?)"\s*-->/';
+      $ssiIncludeRegexp = '/<!--#include virtual="(.+?)"\s*-->/';
       $includeDir = dirname($includePath);
       $code = self::get_contents($includePath);
-      $fix_ssi_path = function($path, $dir) {
+      $fixSSIPath = function($path, $dir) {
         if (!is_file($path)) {
           $candidates = wovn_helper_detect_paths($dir, $path);
 
@@ -28,14 +28,14 @@
         return $path;
       };
 
-      while (preg_match($ssi_include_regexp, $code)) {
-        $code = preg_replace_callback($ssi_include_regexp, function($match) use ($rootDir, $includeDir, $limit, $fix_ssi_path) {
-          $path_and_query_string = explode('?', $match[1]);
-          $ssi_path = $path_and_query_string[0];
+      while (preg_match($ssiIncludeRegexp, $code)) {
+        $code = preg_replace_callback($ssiIncludeRegexp, function($match) use ($rootDir, $includeDir, $limit, $fixSSIPath) {
+          $pathAndQueryString = explode('?', $match[1]);
+          $ssiPath = $pathAndQueryString[0];
           if (substr($ssi_path, 0, 1) == '/') {
-            $path = $fix_ssi_path($ssi_path, $rootDir);
+            $path = $fixSSIPath($ssiPath, $rootDir);
           } else {
-            $path = $fix_ssi_path($ssi_path, $includeDir);
+            $path = $fixSSIPath($ssiPath, $includeDir);
           }
           --$limit;
           if ($limit <= 0) {
