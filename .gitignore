@@ -3,3 +3,4 @@
 .idea/
 vendor/
 composer.phar
+test/integration/test/integration/wovn_index_sample_workspace
