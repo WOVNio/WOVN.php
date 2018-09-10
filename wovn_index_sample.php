@@ -1,23 +1,13 @@
 <?php
 # Enable WOVN.php library
+require_once("WOVN.php/src/wovn_interceptor.php");
 require_once("WOVN.php/src/wovn_helper.php");
-
-# Try read specific files if request url is end of slash
-$files = array(
-  "index.html",
-  "index.shtml",
-  "index.htm",
-  "index.php",
-  "index.php3",
-  "index.phtml",
-  "app.php"
-);
 
 $parsed_url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
 if ($parsed_url) {
-  $paths = wovn_helper_detect_paths(dirname(__FILE__), $parsed_url, $files);
-  
+  $paths = wovn_helper_detect_paths(dirname(__FILE__), $parsed_url);
+
   # SSI USER: please swap comments on the two lines below
   # (also see the SSI comment in the 404 section below)
   $included = wovn_helper_include_by_paths($paths);

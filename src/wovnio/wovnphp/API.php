@@ -6,7 +6,7 @@
   use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-  if (!defined('WOVN_PHP_VERSION')) { define('WOVN_PHP_VERSION', '0.1.8'); }
+  if (!defined('WOVN_PHP_VERSION')) { define('WOVN_PHP_VERSION', '0.1.9'); }
   if (!defined('WOVN_PHP_NAME')) { define('WOVN_PHP_NAME', 'WOVN.php'); }
 
   class API {

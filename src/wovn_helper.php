@@ -1,5 +1,4 @@
 <?php
-require_once(__DIR__ . '/wovn_interceptor.php');
 require_once(__DIR__ . '/wovnio/wovnphp/SSI.php');
 use Wovnio\Wovnphp\SSI;
 
@@ -39,20 +38,36 @@ function remove_dots_from_path($path) {
   return implode('/', $tmp_out);
 }
 
-function wovn_helper_detect_paths($base_dir, $path_of_url, $files) {
-  $request_path = $base_dir . $path_of_url;
-  $local_path = remove_dots_from_path($request_path);
-  $local_path = realpath($local_path);
+function wovn_helper_default_index_files() {
+  if (defined('WOVNPHP_DEFAULT_INDEX_FILE')) {
+    return array(WOVNPHP_DEFAULT_INDEX_FILE);
+  }
+
+  return array(
+    "index.html",
+    "index.shtml",
+    "index.htm",
+    "index.php",
+    "index.php3",
+    "index.phtml",
+    "app.php"
+  );
+}
+
+function wovn_helper_detect_paths($local_dir, $path_of_url) {
+  $base_dir = realpath(remove_dots_from_path($local_dir));
+  $request_path = $base_dir . '/' . $path_of_url;
+  $local_path = realpath(remove_dots_from_path($request_path));
   $inside_base_dir = $local_path && strpos($local_path, $base_dir) === 0;
   $local_path = $inside_base_dir ? $local_path : false;
 
-  if (is_file($local_path)) {
+  if ($local_path && is_file($local_path)) {
     return array($local_path);
   } else if (is_dir($local_path)) {
     $local_dir = substr($local_path, 0, strlen($local_path)) === '/' ? $local_path : $local_path . '/';
     $detect_paths = array();
-    foreach ($files as $file) {
-      array_push($detect_paths, $local_dir . $file);
+    foreach (wovn_helper_default_index_files() as $index_file) {
+      array_push($detect_paths, $local_dir . $index_file);
     }
     return $detect_paths;
   } else {
