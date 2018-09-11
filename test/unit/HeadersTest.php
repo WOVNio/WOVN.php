@@ -51,9 +51,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersMatchQuery() {
     $settings = array('query' => array('page='));
-    $env = array(
-      'REQUEST_URI' => '/?page=1'
-    );
+    $env = array('REQUEST_URI' => '/?page=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('localhost?page=1', $headers->redisUrl);
@@ -61,9 +59,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersMatchQueryEmptyQuerySettings() {
     $settings = array('query' => array());
-    $env = array(
-      'REQUEST_URI' => '/?page=1'
-    );
+    $env = array('REQUEST_URI' => '/?page=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('localhost', $headers->redisUrl);
@@ -71,75 +67,54 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersMatchQueryWrongQueryParams() {
     $settings = array('query' => array('page='));
-    $env = array(
-      'REQUEST_URI' => '/?top=true'
-    );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+    $env = array('REQUEST_URI' => '/?top=yes');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('localhost', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParams() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('page=', 'top=');
+    $settings = array('query' => array('page=', 'top='));
+    $env = array('REQUEST_URI' => '/?page=1&top=yes');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?page=1&top=yes';
-
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost?page=1&top=yes', $redisUrl);
+    $this->assertEquals('localhost?page=1&top=yes', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParamsSorting() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('a=', 'b=');
+    $settings = array('query' => array('a=', 'b='));
+    $env = array('REQUEST_URI' => '/?b=2&a=1');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?b=2&a=1';
-
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost?a=1&b=2', $redisUrl);
+    $this->assertEquals('localhost?a=1&b=2', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParamsSortingOneWrong() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('a=', 'c=');
+    $settings = array('query' => array('a=', 'c='));
+    $env = array(
+      'REQUEST_URI' => '/?c=3&b=2&a=1'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?c=3&b=2&a=1';
-
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost?a=1&c=3', $redisUrl);
+    $this->assertEquals('localhost?a=1&c=3', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryLongQueryString() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('a=', 'b=', 'c=', 'd=', 'e=', 'f=', 'g=', 'h=');
+    $settings = array('query' => array('a=', 'b=', 'c=', 'd=', 'e=', 'f=', 'g=', 'h='));
+    $env = array('REQUEST_URI' => '/?e=5&d=4&c=3&b=2&a=1&f=6&g=7&h=8&z=10');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?e=5&d=4&c=3&b=2&a=1&f=6&g=7&h=8&z=10';
-
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost?a=1&b=2&c=3&d=4&e=5&f=6&g=7&h=8', $redisUrl);
+    $this->assertEquals('localhost?a=1&b=2&c=3&d=4&e=5&f=6&g=7&h=8', $headers->redisUrl);
   }
 
   // setQueryParam
 
   public function testHeadersSetQueryParamRequestUri() {
-    $store = $this->createStore();
-
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/';
-    $env['SERVER_PROTOCOL'] = 'http';
-    $headers = new Headers($env, $store);
+    $env = array(
+      'REQUEST_URI' => '/',
+      'SERVER_PROTOCOL' => 'http'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -147,12 +122,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamRequestUriAdd () {
-    $store = $this->createStore();
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?a=b';
-    $env['QUERY_STRING'] = 'a=b';
-    $env['SERVER_PROTOCOL'] = 'http';
-    $headers = new Headers($env, $store);
+    $env = array(
+      'REQUEST_URI' => '/?a=b',
+      'QUERY_STRING' => 'a=b',
+      'SERVER_PROTOCOL' => 'http'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -160,11 +135,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamRedirectQueryString() {
-    $store = $this->createStore();
-    $env = $this->getEnv('_2');
-    $env['REDIRECT_QUERY_STRING'] = '';
-    $env['SERVER_PROTOCOL'] = 'http';
-    $headers = new Headers($env, $store);
+    $env = array(
+      'REDIRECT_REQUEST_URI' => '_',
+      'SERVER_PROTOCOL' => 'http'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -172,10 +147,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryString() {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -183,10 +156,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamUnsetQueryString() {
-    $store = $this->createStore();
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/';
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -194,10 +165,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringOverwrite () {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param=what';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param=what');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -205,10 +174,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringAdd () {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param1=what';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param1=what');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -216,11 +183,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringNoVal () {
-    $store = $this->createStore();
-
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -228,11 +192,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringMulti () {
-    $store = $this->createStore();
-
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'p=v&a=b';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'p=v&a=b');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -240,11 +201,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiBegin () {
-    $store = $this->createStore();
-
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param=what&p=v';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param=what&p=v');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -252,11 +210,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiMiddle () {
-    $store = $this->createStore();
-
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'a=b&param=what&p=v';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'a=b&param=what&p=v');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -264,10 +219,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringOverwriteMultiEnd () {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'a=b&param=what';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'a=b&param=what');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -275,10 +228,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringAddMulti () {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param1=what';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param1=what');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -286,10 +237,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamQueryStringNoValMulti () {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -297,12 +246,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamWithPath() {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/path/here?param=val';
-    $env['QUERY_STRING'] = 'param=val';
-    $env['REDIRECT_QUERY_STRING'] = 'param=val';
-    $headers = new Headers($env, $store);
+    $env = array(
+      'REQUEST_URI' => '/path/here?param=val',
+      'QUERY_STRING' => 'param=val',
+      'REDIRECT_QUERY_STRING' => 'param=val'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('hey', 'yo');
     $headersEnv = $headers->env();
@@ -312,12 +261,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersSetQueryParamWithFilePath() {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/path/here.php?param=val';
-    $env['QUERY_STRING'] = 'param=val';
-    $env['REDIRECT_QUERY_STRING'] = 'param=val';
-    $headers = new Headers($env, $store);
+    $env = array(
+      'REQUEST_URI' => '/path/here.php?param=val',
+      'QUERY_STRING' => 'param=val',
+      'REDIRECT_QUERY_STRING' => 'param=val'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('hey', 'yo');
     $headersEnv = $headers->env();
@@ -328,12 +277,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamGET () {
     global $_GET;
-    $store = $this->createStore();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/';
     $_GET = array();
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -342,13 +289,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamOverwriteGET () {
     global $_GET;
-    $store = $this->createStore();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/';
-    $_GET = array();
-    $_GET['param'] = 'there';
-    $headers = new Headers($env, $store);
+    $_GET = array('param' => 'there');
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
     $he = $headers->env();
@@ -357,25 +301,20 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersSetQueryParamRequest() {
     global $_REQUEST;
-    $store = $this->createStore();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/';
     $_REQUEST = array();
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+
     $headers->setQueryParam('param', 'val');
     $this->assertEquals('val', $_REQUEST['param']);
   }
 
-
   // setQueryParams
 
   public function testSetQueryParamsRequestUri() {
-    $store = $this->createStore();
-
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/';
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
     array_push($qa, "param2=val2");
@@ -386,11 +325,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSetQueryParamsQueryString () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv('_2');
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
     array_push($qa, "param2=val2");
@@ -401,11 +337,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSetQueryParamsQueryStringMulti () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
     array_push($qa, "param1=val1");
@@ -417,11 +350,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSetQueryParamsQueryStringEmpty () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
 
@@ -431,11 +361,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSetQueryParamsQueryStringMultiReplace () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param2=what&param1=oh';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param2=what&param1=oh');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
     array_push($qa, "param1=val1");
@@ -447,11 +374,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testSetQueryParamsQueryStringMultiPartialReplace () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'param2=what&oh=yeah&param1=oh';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'param2=what&oh=yeah&param1=oh');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $qa = array();
     array_push($qa, "param1=val1");
@@ -463,11 +387,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsRequestUri () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/?hey=yeah';
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/?hey=yeah');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -475,11 +396,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsEmptyRequestUri () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/';
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -487,11 +405,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsEmptyRequestUriHangingHatena () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/?';
-    $headers = new Headers($env, $store);
+    $env = array('REQUEST_URI' => '/?');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -499,11 +414,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsQueryString () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'heythere';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'heythere');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -511,11 +423,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsQueryStringEmpty () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -523,11 +432,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersClearQueryParamsQueryStringMulti () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'hey=there&oh=ok';
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => 'hey=there&oh=ok');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -536,13 +442,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsGET () {
     global $_GET;
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = 'hey=there';
-    $_GET = array();
-    $_GET['hey'] = 'there';
-    $headers = new Headers($env, $store);
+
+    $_GET = array('hey' => 'there');
+    $env = array('QUERY_STRING' => 'hey=there');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -551,12 +454,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
   public function testHeadersClearQueryParamsEmptyGET () {
     global $_GET;
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
+
     $_GET = array();
-    $headers = new Headers($env, $store);
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
     $he = $headers->env();
@@ -564,12 +465,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersRedirectLocationWithQueryPatternAndNoQuery () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '';
-    $headers = new Headers($env, $store);
-    $store->settings['url_pattern_name'] = 'query';
+    $settings = array('url_pattern_name' => 'query');
+    $env = array('QUERY_STRING' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
     $headers->url = 'google.com/test';
     $lang = 'ja';
     $expected = 'http://google.com/test?wovn=ja';
@@ -578,12 +477,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersRedirectLocationWithQueryPatternAndExistingQuery () {
-    $store = $this->createStore();
-    
-    $env = $this->getEnv();
-    $env['QUERY_STRING'] = '?page=1';
-    $headers = new Headers($env, $store);
-    $store->settings['url_pattern_name'] = 'query';
+    $settings = array('url_pattern_name' => 'query');
+    $env = array('QUERY_STRING' => '?page=1');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
     $headers->protocol = 'http';
     $headers->url = 'google.com/test?page=1';
     $lang = 'ja';
@@ -593,50 +490,44 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testHeadersWithUseProxyTrue () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = 1;
+    $settings = array('use_proxy' => 1);
+    $env = array(
+      'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
+      'HTTP_X_FORWARDED_PROTO' => 'https'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTP_X_FORWARDED_HOST'] = 'ja.wovn.io';
-    $env['HTTP_X_FORWARDED_PROTO'] = 'https';
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('ja.wovn.io', $headers->unmaskedHost);
     $this->assertEquals('ja.wovn.io', $headers->host);
     $this->assertEquals('https', $headers->protocol);
   }
 
   public function testHeadersWithUseProxyFalse () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
+    $settings = array('use_proxy' => false);
+    $env = array(
+      'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
+      'HTTP_X_FORWARDED_PROTO' => 'https'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTP_X_FORWARDED_HOST'] = 'ja.wovn.io';
-    $env['HTTP_X_FORWARDED_PROTO'] = 'https';
-
-    $headers = new Headers($env, $store);
-    $this->assertEquals('ja.localhost', $headers->unmaskedHost);
-    $this->assertEquals('ja.localhost', $headers->host);
+    $this->assertEquals('localhost', $headers->unmaskedHost);
+    $this->assertEquals('localhost', $headers->host);
     $this->assertEquals('http', $headers->protocol);
   }
 
   public function testHeadersWithUseProxyTrueButNoForwardedInfo () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = 1;
+    $settings = array('use_proxy' => 1);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-    $env = $this->getEnv();
-
-    $headers = new Headers($env, $store);
-    $this->assertEquals('ja.localhost', $headers->unmaskedHost);
-    $this->assertEquals('ja.localhost', $headers->host);
+    $this->assertEquals('localhost', $headers->unmaskedHost);
+    $this->assertEquals('localhost', $headers->host);
     $this->assertEquals('http', $headers->protocol);
   }
 
   public function testRemoveLangWithPathPattern () {
-    $store = $this->createStore();
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture();
+
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
 
     $without_scheme = $headers->removeLang('wovn.io/ja', 'ja');
     $this->assertEquals('wovn.io/', $without_scheme);
@@ -646,10 +537,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithPathPatternAndChinese () {
-    $store = $this->createStore();
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture();
+
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
 
     $traditional = $headers->removeLang('wovn.io/zh-cht', 'zh-CHT');
     $this->assertEquals('wovn.io/', $traditional);
@@ -659,10 +549,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithQueryPattern () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $without_scheme = $headers->removeLang('wovn.io/?wovn=ja', 'ja');
     $this->assertEquals('wovn.io/', $without_scheme);
@@ -672,10 +560,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithQueryPatternAndChinese () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $traditional = $headers->removeLang('minimaltech.co/?wovn=zh-CHT', 'zh-CHT');
     $this->assertEquals('minimaltech.co/', $traditional);
@@ -685,10 +571,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithSubdomainPattern () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $without_scheme = $headers->removeLang('ja.minimaltech.co', 'ja');
     $this->assertEquals('minimaltech.co', $without_scheme);
@@ -698,10 +582,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithSubdomainPatternAndChinese () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $traditional = $headers->removeLang('zh-cht.wovn.io', 'zh-CHT');
     $this->assertEquals('wovn.io', $traditional);
@@ -711,12 +593,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithCustomLang () {
-    $store = $this->createStore();
-    $store->settings['custom_lang_aliases'] = array('ja' => 'ja-test');
+    $settings = array('custom_lang_aliases' => array('ja' => 'ja-test'));
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $headers = new Headers($env, $store);
 
     $without_scheme = $headers->removeLang('wovn.io/ja-test', 'ja');
     $this->assertEquals('wovn.io/', $without_scheme);
@@ -726,305 +606,267 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testPathLangWithPathPattern () {
-    $store = $this->createStore();
+    $env = array(
+      'SERVER_NAME' => 'wovn.io',
+      'REQUEST_URI' => '/zh-CHT/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'wovn.io';
-    $env['REQUEST_URI'] = '/zh-CHT/test';
-    $headers = new Headers($env, $store);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('zh-CHT', $pathlang);
   }
 
   public function testPathLangWithPathPatternAndLangCodeNotAtBegining () {
-    $store = $this->createStore();
+    $env = array(
+      'SERVER_NAME' => 'wovn.io',
+      'REQUEST_URI' => '/thi/en/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'wovn.io';
-    $env['REQUEST_URI'] = '/thi/en/test';
-    $headers = new Headers($env, $store);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('', $pathlang);
   }
 
   public function testPathLangWithPathPatternAndLangNameInsteadOfLangCode () {
-    $store = $this->createStore();
+    $env = array(
+      'SERVER_NAME' => 'wovn.io',
+      'REQUEST_URI' => '/thai/en/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+
     $this->assertEquals('path', $store->settings['url_pattern_name']);
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'wovn.io';
-    $env['REQUEST_URI'] = '/thai/test';
-    $headers = new Headers($env, $store);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('', $pathlang);
   }
 
   public function testPathLangWithQueryPattern () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_reg'] = "((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)";
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'wovn.io';
-    $env['REQUEST_URI'] = '/test?wovn=zh-CHS';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array(
+      'SERVER_NAME' => 'wovn.io',
+      'REQUEST_URI' => '/test?wovn=zh-CHS'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('zh-CHS', $pathlang);
   }
 
   public function testPathLangWithSubdomainPattern () {
-    $store = $this->createStore('subdomain');
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'zh-cht.wovn.io';
-    $env['REQUEST_URI'] = '/test';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'SERVER_NAME' => 'zh-cht.wovn.io',
+      'REQUEST_URI' => '/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('zh-CHT', $pathlang);
   }
 
   public function testPathLangWithSubdomainPatternAndLangNameInsteadOfLangCode () {
-    $store = $this->createStore('subdomain');
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'thai.wovn.io';
-    $env['REQUEST_URI'] = '/test';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'SERVER_NAME' => 'thai.wovn.io',
+      'REQUEST_URI' => '/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('', $pathlang);
   }
 
   public function testPathLangWithUseProxyTrue () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
-    $store->settings['use_proxy'] = 1;
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => 1
+    );
+    $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTP_X_FORWARDED_HOST'] = 'en.minimaltech.co';
-
-    $headers = new Headers($env, $store);
     $pathlang = $headers->pathLang();
     $this->assertEquals('en', $pathlang);
   }
 
   public function testPathLangWithUseProxyFalse () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array(
+      'SERVER_NAME' => 'ja.wovn.io',
+      'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['SERVER_NAME'] = 'ja.wovn.io';
-    $env['HTTP_X_FORWARDED_HOST'] = 'en.minimaltech.co';
-
-    $headers = new Headers($env, $store);
     $pathlang = $headers->pathLang();
     $this->assertEquals('ja', $pathlang);
   }
 
   public function testPathLangWithUseProxyTrueButNoForwardedHost () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
-    $store->settings['use_proxy'] = 1;
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => 1
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_server', $settings);
 
-    $env = $this->getEnv();
-
-    $headers = new Headers($env, $store);
     $pathlang = $headers->pathLang();
     $this->assertEquals('ja', $pathlang);
   }
 
   public function testRequestOutWithUseProxyTrue () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
-    $store->settings['use_proxy'] = 1;
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => 1
+    );
+    $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTP_X_FORWARDED_HOST'] = 'en.minimaltech.co';
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co', $env['HTTP_X_FORWARDED_HOST']);
-    $this->assertEquals('ja.localhost', $env['SERVER_NAME']);
+    $this->assertEquals('minimaltech.co', $headers->env()['HTTP_X_FORWARDED_HOST']);
+    $this->assertEquals('localhost', $headers->env()['SERVER_NAME']);
   }
 
   public function testRequestOutWithUseProxyFalse () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTP_X_FORWARDED_HOST'] = 'en.minimaltech.co';
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
     $headers->requestOut();
-    $this->assertEquals('en.minimaltech.co', $env['HTTP_X_FORWARDED_HOST']);
+    $this->assertEquals('en.minimaltech.co', $headers->env()['HTTP_X_FORWARDED_HOST']);
   }
 
   public function testRequestOutUrlPatternPath () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
 
-    $env = $this->getEnv('_path');
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
-
-    $this->assertEquals('/ja/t.php?', $env['REQUEST_URI']);
-    $this->assertEquals('/t.php', $env['REDIRECT_URL']);
-    $this->assertEquals('/ja/index.php', $env['HTTP_REFERER']);
+    $this->assertEquals('/ja/mypage.php', $headers->env()['REQUEST_URI']);
+    $this->assertEquals('/mypage.php', $headers->env()['REDIRECT_URL']);
+    $this->assertEquals('/ja/index.php', $headers->env()['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $this->assertEquals('/t.php?', $env['REQUEST_URI']);
-    $this->assertEquals('/t.php', $env['REDIRECT_URL']);
-    $this->assertEquals('/index.php', $env['HTTP_REFERER']);
+    $this->assertEquals('/mypage.php', $headers->env()['REQUEST_URI']);
+    $this->assertEquals('/mypage.php', $headers->env()['REDIRECT_URL']);
+    $this->assertEquals('/index.php', $headers->env()['HTTP_REFERER']);
   }
 
   public function testRequestOutUrlPatternQuery()
   {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+    $settings = array('url_pattern_name' => 'query');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_query_request', $settings);
 
-    $env = $this->getEnv('_query');
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
-
-    $this->assertEquals('?wovn=ja', $env['QUERY_STRING']);
-    $this->assertEquals('/t.php?wovn=ja', $env['REQUEST_URI']);
-    $this->assertEquals('/index.php?page=1&wovn=ja', $env['HTTP_REFERER']);
+    $this->assertEquals('?wovn=ja', $headers->env()['QUERY_STRING']);
+    $this->assertEquals('/mypage.php?wovn=ja', $headers->env()['REQUEST_URI']);
+    $this->assertEquals('/index.php?login=no&wovn=ja', $headers->env()['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $this->assertEquals('', $env['QUERY_STRING']);
-    $this->assertEquals('/t.php', $env['REQUEST_URI']);
-    $this->assertEquals('/index.php?page=1', $env['HTTP_REFERER']);
+    $this->assertEquals('', $headers->env()['QUERY_STRING']);
+    $this->assertEquals('/mypage.php', $headers->env()['REQUEST_URI']);
+    $this->assertEquals('/index.php?login=no', $headers->env()['HTTP_REFERER']);
   }
 
   public function testHttpsProtocolOn () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array('HTTPS' => 'on');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTPS'] = 'on';
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('https', $headers->protocol);
   }
 
   public function testHttpsProtocol () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array('HTTPS' => 'random');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTPS'] = 'random';
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('https', $headers->protocol);
   }
 
   public function testHttpProtocol () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-    $env = $this->getEnv();
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('http', $headers->protocol);
   }
 
   public function testHttpProtocolEmpty () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array('HTTPS' => '');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTPS'] = '';
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('http', $headers->protocol);
   }
 
   public function testHttpProtocolHttpsOff () {
-    $store = $this->createStore();
-    $store->settings['use_proxy'] = false;
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'use_proxy' => false
+    );
+    $env = array('HTTPS' => 'off');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $env = $this->getEnv();
-    $env['HTTPS'] = 'off';
-
-    $headers = new Headers($env, $store);
     $this->assertEquals('http', $headers->protocol);
   }
 
   public function testRequestOutSubdomainPatternWithHTTP_REFERER () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = "^(?P<lang>[^.]+)\.";
-
-    $env = $this->getEnv();
-    $env['HTTP_REFERER'] = 'ja.minimaltech.co';
-    $env['REQUEST_URI'] = '/dummy';;
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_REFERER' => 'ja.minimaltech.co',
+      'REQUEST_URI' => '/dummy'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_server', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co', $env['HTTP_REFERER']);
+    $this->assertEquals('minimaltech.co', $headers->env()['HTTP_REFERER']);
   }
 
   public function testRequestOutPathPatternWithHTTP_REFERER () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-
-    $env = $this->getEnv();
-    $env['HTTP_REFERER'] = 'minimaltech.co/ja';
-    $env['REQUEST_URI'] = '/ja/dummy';
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array(
+      'HTTP_REFERER' => 'minimaltech.co/ja',
+      'REQUEST_URI' => '/ja/dummy'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
+    $this->assertEquals('minimaltech.co/', $headers->env()['HTTP_REFERER']);
   }
 
   public function testRequestOutQueryPatternWithHTTP_REFERER () {
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-
-    $env = $this->getEnv();
-    $env['HTTP_REFERER'] = 'minimaltech.co/?wovn=ja';
-    $env['REQUEST_URI'] = '/dummy?wovn=ja';
-    $_SERVER['REQUEST_URI'] = $env['REQUEST_URI'];
-
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array(
+      'HTTP_REFERER' => 'minimaltech.co/?wovn=ja',
+      'REQUEST_URI' => '/dummy?wovn=ja'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co/', $env['HTTP_REFERER']);
+    $this->assertEquals('minimaltech.co/', $headers->env()['HTTP_REFERER']);
   }
+
+  // TODO: use StoreAndHeadersFactory::fromFixture above
 
   public function testResponseOutWithDefaultLangAndSubdomainPattern() {
     Wovnio\Wovnphp\mock_headers_sent(false);
