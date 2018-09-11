@@ -14,12 +14,12 @@
 
   require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 
-  require_once 'test/helpers/StoreAndHeaderHelper.php';
+  require_once 'test/helpers/StoreAndHeadersFactory.php';
 
   use Wovnio\Wovnphp\API;
   use Wovnio\Wovnphp\Utils;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
-  use Wovnio\Test\Helpers\StoreAndHeaderHelper;
+  use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
   class APITest extends PHPUnit_Framework_TestCase {
     private function getEnv($num = "") {
@@ -67,7 +67,7 @@
 
     public function testTranslationURL() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $body = '<html></html>';
       $expected_api_url = $this->getExpectedUrl($store, $headers, $body);
 
@@ -76,7 +76,7 @@
 
     public function testTranslate() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
@@ -111,7 +111,7 @@
 
     public function testTranslateWithCustomLangAliases() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $store->settings['custom_lang_aliases'] = array('ja' => 'ja-test');
       $token = $store->settings['project_token'];
 
@@ -150,7 +150,7 @@
 
     public function testTranslateWithWovnIgnore() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
       $response = '{"body":"\u003chtml\u003e\u003chead\u003e\u003c\u002fhead\u003e\u003cbody\u003e\u003ch1 wovn-ignore\u003e\u003c\u0021\u002d\u002d\u0020__wovn\u002dbackend\u002dignored\u002dkey\u002d0\u0020\u002d\u002d\u003e\u003c\u002fh1\u003eBonjour\u003c\u002fbody\u003e\u003c\u002fhtml\u003e"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
@@ -185,7 +185,7 @@
 
     public function testTranslateWithErrorHandled() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $response = '{"missingBodyError":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
@@ -220,7 +220,7 @@
 
     public function testTranslateWithConnectionErrorHandled() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $html = '<html><head></head><body><h1>en</h1></body></html>';
       $expected_url = $this->getExpectedUrl($store, $headers, $html);
 
@@ -254,7 +254,7 @@
 
     public function testTranslateWithoutMakingAPICallBySetting() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $store->settings['disable_api_request_for_default_lang'] = true;
       $store->settings['default_lang'] = 'en';
 
@@ -271,7 +271,7 @@
 
     public function testTranslateWhenDefaultLangAndSettingIsOff() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $store->settings['disable_api_request_for_default_lang'] = false;
       $store->settings['default_lang'] = 'en';
       $store->settings['url_pattern_name'] = 'path';
@@ -313,7 +313,7 @@
 
     public function testTranslateWithSaveMemoryBySendingWovnIgnoreContent() {
       $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $store->settings['save_memory_by_sending_wovn_ignore_content'] = true;
 
       $html = '<html><head></head><body><h1 wovn-ignore>ignore content</h1></body></html>';

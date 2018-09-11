@@ -10,12 +10,12 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'src/wovnio/wovnphp/Url.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 
-require_once 'test/helpers/StoreAndHeaderHelper.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 
 use Wovnio\Html\HtmlConverter;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Html\HtmlReplaceMarker;
-use Wovnio\Test\Helpers\StoreAndHeaderHelper;
+use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use Wovnio\ModifiedVendor\SimpleHtmlDom;
 
 class HtmlConverterTest extends PHPUnit_Framework_TestCase
@@ -35,7 +35,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -59,7 +59,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -83,7 +83,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -107,7 +107,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -129,7 +129,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array('en', 'vi');
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
@@ -143,7 +143,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array('en', 'vi');
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->insertSnippetAndHreflangTags(true);
@@ -157,7 +157,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array('en', 'vi');
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
@@ -175,7 +175,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><p>' . $long_string . '</p></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array('en', 'vi');
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
@@ -189,7 +189,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array('en', 'vi');
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
@@ -203,7 +203,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -216,7 +216,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -229,7 +229,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array();
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
@@ -243,7 +243,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $env = $this->getEnv('_default_lang');
-    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+    list($store, $headers) = StoreAndHeadersFactory::get($env, array(
       'default_lang' => 'en',
       'supported_langs' => array('en', 'ja', 'vi'),
       'url_pattern_name' => 'query'
@@ -260,7 +260,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $env = $this->getEnv('_default_lang');
-    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+    list($store, $headers) = StoreAndHeadersFactory::get($env, array(
       'default_lang' => 'en',
       'supported_langs' => array('en', 'ja', 'vi'),
       'url_pattern_name' => 'path'
@@ -277,7 +277,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $env = $this->getEnv('_default_lang');
-    list($store, $headers) = StoreAndHeaderHelper::create($env, array(
+    list($store, $headers) = StoreAndHeadersFactory::get($env, array(
       'default_lang' => 'en',
       'supported_langs' => array('en', 'ja', 'vi'),
       'url_pattern_name' => 'subdomain'
@@ -294,7 +294,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -307,7 +307,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -320,7 +320,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html>hello<a>world</a></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['supported_langs'] = array();
     $converter = new HtmlConverter($html, 'UTF-8', $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
@@ -335,7 +335,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, null, $token, $store, $headers);
     list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -352,7 +352,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
       $token = 'toK3n';
       $env = $this->getEnv();
-      list($store, $headers) = StoreAndHeaderHelper::create($env);
+      list($store, $headers) = StoreAndHeadersFactory::get($env);
       $converter = new HtmlConverter($html, $encoding, $token, $store, $headers);
       list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -367,7 +367,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = '<html><body><a wovn-ignore>hello</a></body></html>';
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, null, $token, $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
     $keys = $marker->keys();
@@ -381,7 +381,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     $html = "<html><body><a class=\"random    \n\f\rignore\tvalid custom\">hello</a></body></html>";
     $token = 'toK3n';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['ignore_class'] = array('ignore');
     $converter = new HtmlConverter($html, null, $token, $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeCustomIgnoreClass');
@@ -395,7 +395,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
     $keys = $marker->keys();
@@ -408,7 +408,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><form>hello<input type="button" value="click"></form>world</body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
@@ -421,7 +421,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><form>hello<input type="button" value="click"></form>world<form>hello2<input type="button" value="click2"></form></body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
@@ -434,7 +434,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><form wovn-ignore>hello<input type="button" value="click"></form>world</body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
@@ -447,7 +447,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><input type="hidden" value="aaaaa">world</body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
@@ -460,7 +460,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><input type="hidden" value="aaaaa">world<input type="hidden" value="aaaaa"></body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
     $keys = $marker->keys();
@@ -473,7 +473,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body><script>console.log("hello")</script>world</body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
     $keys = $marker->keys();
@@ -486,7 +486,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><head><script>console.log("hello")</script></head><body>world<script>console.log("hello2")</script></body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
     $keys = $marker->keys();
@@ -499,7 +499,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
   {
     $html = '<html><body>hello<!-- backend-wovn-ignore    -->ignored <!--/backend-wovn-ignore-->  world</body></html>';
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeRemoveBackendWovnIgnoreComment($converter, $html);
     $keys = $marker->keys();
@@ -520,7 +520,7 @@ ignored2
 bye
 </body></html>";
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $converter = new HtmlConverter($html, 'UTF-8', 'toK3n', $store, $headers);
     list($translated_html, $marker) = $this->executeRemoveBackendWovnIgnoreComment($converter, $html);
     $keys = $marker->keys();
@@ -542,7 +542,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -563,7 +563,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'en';
     $store->settings['supported_langs'] = array('en', 'vi', 'zh-CHS');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -585,7 +585,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -606,7 +606,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -627,7 +627,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -648,7 +648,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -669,7 +669,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi', 'zh-CHT', 'zh-CHS');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -689,7 +689,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv('html_entities');
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi');
     $store->settings['disable_api_request_for_default_lang'] = true;
@@ -710,7 +710,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'ja';
     $store->settings['supported_langs'] = array('en', 'vi', 'zh-CHT', 'zh-CHS');
     $store->settings['custom_lang_aliases'] = array('en' => 'custom_en', 'zh-CHS' => 'custom_simple');
@@ -731,7 +731,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'en';
     $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
     $store->settings['custom_lang_aliases'] = array('zh-CHS' => 'cs', 'zh-CHT' => 'ct');
@@ -752,7 +752,7 @@ bye
     $token = 'toK3n';
 
     $env = $this->getEnv();
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'en';
     $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
     $store->settings['custom_lang_aliases'] = array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct');
@@ -774,7 +774,7 @@ bye
 
     $env = $this->getEnv();
     $env['REQUEST_URI'] = '/dir1/dir2/';
-    list($store, $headers) = StoreAndHeaderHelper::create($env);
+    list($store, $headers) = StoreAndHeadersFactory::get($env);
     $store->settings['default_lang'] = 'en';
     $store->settings['supported_langs'] = array('en', 'zh-CHT', 'zh-CHS');
     $store->settings['custom_lang_aliases'] = array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct');

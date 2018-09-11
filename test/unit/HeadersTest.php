@@ -3,10 +3,13 @@ require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/HeadersMock.php';
+
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
+use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 class HeadersTest extends PHPUnit_Framework_TestCase {
   protected function tearDown() {
@@ -17,12 +20,14 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     Wovnio\Wovnphp\restore_header();
   }
 
+  // TODO: remove
   private function getEnv($num="") {
     $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
     $env = $file['env'];
     return $env;
   }
 
+  // TODO: remove
   function createStore($pattern='path') {
     $store = new Store(array(
       'default_lang' => 'en',
@@ -37,54 +42,41 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue(class_exists('Wovnio\Wovnphp\Headers'));
   }
 
-  public function testHeadersConstructor() {
-  }
+  public function testHeadersMatchQueryEmptyQueryString() {
+    $settings = array('query' => array('page='));
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
+    $this->assertEquals('localhost', $headers->redisUrl);
+  }
 
   public function testHeadersMatchQuery() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('page=');
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?page=1';
-    $headers = new Headers($env, $store);
+    $settings = array('query' => array('page='));
+    $env = array(
+      'REQUEST_URI' => '/?page=1'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost?page=1', $redisUrl);
-  }
-
-  public function testHeadersMatchQueryEmptyQueryString() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('page=');
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/';
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost', $redisUrl);
+    $this->assertEquals('localhost?page=1', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryEmptyQuerySettings() {
-    $store = $this->createStore();
-    $store->settings['query'] = array();
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?top=hey';
-    $headers = new Headers($env, $store);
+    $settings = array('query' => array());
+    $env = array(
+      'REQUEST_URI' => '/?page=1'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost', $redisUrl);
+    $this->assertEquals('localhost', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryWrongQueryParams() {
-    $store = $this->createStore();
-    $store->settings['query'] = array('page=');
+    $settings = array('query' => array('page='));
+    $env = array(
+      'REQUEST_URI' => '/?top=true'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-    $env = $this->getEnv('_2');
-    $env['REQUEST_URI'] = '/?top=yes';
-
-    $headers = new Headers($env, $store);
-
-    $redisUrl = $headers->redisUrl;
-    $this->assertEquals('ja.localhost', $redisUrl);
+    $this->assertEquals('localhost', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParams() {
