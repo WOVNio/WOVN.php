@@ -727,8 +727,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co', $headers->env()['HTTP_X_FORWARDED_HOST']);
-    $this->assertEquals('localhost', $headers->env()['SERVER_NAME']);
+
+    $he = $headers->env();
+    $this->assertEquals('minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
+    $this->assertEquals('localhost', $he['SERVER_NAME']);
   }
 
   public function testRequestOutWithUseProxyFalse () {
@@ -740,21 +742,25 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->requestOut();
-    $this->assertEquals('en.minimaltech.co', $headers->env()['HTTP_X_FORWARDED_HOST']);
+
+    $he = $headers->env();
+    $this->assertEquals('en.minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
   }
 
   public function testRequestOutUrlPatternPath () {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
 
-    $this->assertEquals('/ja/mypage.php', $headers->env()['REQUEST_URI']);
-    $this->assertEquals('/mypage.php', $headers->env()['REDIRECT_URL']);
-    $this->assertEquals('/ja/index.php', $headers->env()['HTTP_REFERER']);
+    $he = $headers->env();
+    $this->assertEquals('/ja/mypage.php', $he['REQUEST_URI']);
+    $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
+    $this->assertEquals('/ja/index.php', $he['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $this->assertEquals('/mypage.php', $headers->env()['REQUEST_URI']);
-    $this->assertEquals('/mypage.php', $headers->env()['REDIRECT_URL']);
-    $this->assertEquals('/index.php', $headers->env()['HTTP_REFERER']);
+    $he = $headers->env();
+    $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
+    $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
+    $this->assertEquals('/index.php', $he['HTTP_REFERER']);
   }
 
   public function testRequestOutUrlPatternQuery()
@@ -762,15 +768,17 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $settings = array('url_pattern_name' => 'query');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_query_request', $settings);
 
-    $this->assertEquals('?wovn=ja', $headers->env()['QUERY_STRING']);
-    $this->assertEquals('/mypage.php?wovn=ja', $headers->env()['REQUEST_URI']);
-    $this->assertEquals('/index.php?login=no&wovn=ja', $headers->env()['HTTP_REFERER']);
+    $he = $headers->env();
+    $this->assertEquals('?wovn=ja', $he['QUERY_STRING']);
+    $this->assertEquals('/mypage.php?wovn=ja', $he['REQUEST_URI']);
+    $this->assertEquals('/index.php?login=no&wovn=ja', $he['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $this->assertEquals('', $headers->env()['QUERY_STRING']);
-    $this->assertEquals('/mypage.php', $headers->env()['REQUEST_URI']);
-    $this->assertEquals('/index.php?login=no', $headers->env()['HTTP_REFERER']);
+    $he = $headers->env();
+    $this->assertEquals('', $he['QUERY_STRING']);
+    $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
+    $this->assertEquals('/index.php?login=no', $he['HTTP_REFERER']);
   }
 
   public function testHttpsProtocolOn () {
@@ -836,8 +844,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_server', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
+
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co', $headers->env()['HTTP_REFERER']);
+
+    $he = $headers->env();
+    $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
   }
 
   public function testRequestOutPathPatternWithHTTP_REFERER () {
@@ -849,8 +860,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
+
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co/', $headers->env()['HTTP_REFERER']);
+
+    $he = $headers->env();
+    $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
   }
 
   public function testRequestOutQueryPatternWithHTTP_REFERER () {
@@ -862,8 +876,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
+
     $headers->requestOut();
-    $this->assertEquals('minimaltech.co/', $headers->env()['HTTP_REFERER']);
+
+    $he = $headers->env();
+    $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
   }
 
   // TODO: use StoreAndHeadersFactory::fromFixture above
