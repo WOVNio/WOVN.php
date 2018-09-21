@@ -1,41 +1,25 @@
 <?php
+require_once 'test/helpers/StoreAndHeadersFactory.php';
+require_once 'test/helpers/HeadersMock.php';
+
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
-require_once 'test/helpers/StoreAndHeadersFactory.php';
-require_once 'test/helpers/HeadersMock.php';
+
+use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
-use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 class HeadersTest extends PHPUnit_Framework_TestCase {
   protected function tearDown() {
     parent::tearDown();
 
-    Wovnio\Wovnphp\restore_headers_sent();
-    Wovnio\Wovnphp\restore_apache_response_headers();
-    Wovnio\Wovnphp\restore_header();
-  }
-
-  // TODO: remove
-  private function getEnv($num="") {
-    $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
-    $env = $file['env'];
-    return $env;
-  }
-
-  // TODO: remove
-  function createStore($pattern='path') {
-    $store = new Store(array(
-      'default_lang' => 'en',
-      'supported_langs' => array('en'),
-      'url_pattern_name' => $pattern,
-      'project_token' => 'KK9kZ'
-    ));
-    return $store;
+    Wovnio\wovnphp\restore_headers_sent();
+    Wovnio\wovnphp\restore_apache_response_headers();
+    Wovnio\wovnphp\restore_header();
   }
 
   public function testHeadersExists() {
@@ -886,400 +870,363 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   // TODO: use StoreAndHeadersFactory::fromFixture above
 
   public function testResponseOutWithDefaultLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'localhost';
-    $env['SERVER_NAME'] = 'localhost';
-    $env['REQUEST_URI'] = 'http://localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'localhost',
+      'SERVER_NAME' => 'localhost',
+      'REQUEST_URI' => 'http://localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPatternWhenApacheNotUsed() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(false);
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(false);
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPatternWhenHeadersSent() {
-    Wovnio\Wovnphp\mock_headers_sent(true);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(true);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutAbsoluteUrlWithNotDefaultLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => 'http://localhost/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => 'http://fr.localhost/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutOutsideRedirectionWithNotDefaultLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => 'http://google.com/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr.localhost';
-    $env['SERVER_NAME'] = 'fr.localhost';
-    $env['REQUEST_URI'] = 'http://fr.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'subdomain');
+    $env = array(
+      'HTTP_HOST' => 'fr.localhost',
+      'SERVER_NAME' => 'fr.localhost',
+      'REQUEST_URI' => 'http://fr.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://google.com/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationCustomLangAndSubdomainPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => 'http://fr-test.localhost/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['HTTP_HOST'] = 'fr-test.localhost';
-    $env['SERVER_NAME'] = 'fr-test.localhost';
-    $env['REQUEST_URI'] = 'http://fr-test.localhost/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'subdomain';
-    $store->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
-    $store->settings['custom_lang_aliases'] = array('fr' => 'fr-test');
-    $headers = new Headers($env, $store);
+    $settings = array(
+      'url_pattern_name' => 'subdomain',
+      'custom_lang_aliases' => array('fr' => 'fr-test')
+    );
+    $env = array(
+      'HTTP_HOST' => 'fr-test.localhost',
+      'SERVER_NAME' => 'fr-test.localhost',
+      'REQUEST_URI' => 'http://fr-test.localhost/test'
+    );
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr-test.localhost/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithDefaultLangAndPathPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array( 'REQUEST_URI' => '/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPatternWhenApacheNotUsed() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(false);
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(false);
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/fr/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array( 'REQUEST_URI' => '/fr/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPatternWhenHeadersSent() {
-    Wovnio\Wovnphp\mock_headers_sent(true);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(true);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/fr/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array( 'REQUEST_URI' => '/fr/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/fr/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array( 'REQUEST_URI' => '/fr/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /fr/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultLangAlreadyInRedirectLocationAndPathPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/fr/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/fr/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'path';
-    $store->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'path');
+    $env = array( 'REQUEST_URI' => '/fr/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /fr/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithDefaultLangAndQueryPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array( 'REQUEST_URI' => '/test');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPatternWhenApacheNotUsed() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(false);
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(false);
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test?wovn=fr';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array( 'REQUEST_URI' => '/test?wovn=fr');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPatternWhenHeadersSent() {
-    Wovnio\Wovnphp\mock_headers_sent(true);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(true);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test?wovn=fr';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array( 'REQUEST_URI' => '/test?wovn=fr');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test?wovn=fr';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array( 'REQUEST_URI' => '/test?wovn=fr');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultLangAlreadyInRedirectLocationAndQueryPattern() {
-    Wovnio\Wovnphp\mock_headers_sent(false);
-    Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    Wovnio\wovnphp\mock_headers_sent(false);
+    Wovnio\wovnphp\mock_apache_response_headers(true, array(
       'Location' => '/index.php?wovn=fr'
     ));
-    Wovnio\Wovnphp\mock_header();
+    Wovnio\wovnphp\mock_header();
 
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/test?wovn=fr';
-    $store = $this->createStore();
-    $store->settings['url_pattern_name'] = 'query';
-    $store->settings['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
-    $headers = new Headers($env, $store);
+    $settings = array('url_pattern_name' => 'query');
+    $env = array( 'REQUEST_URI' => '/test?wovn=fr');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
   }
 
   public function testGetDocumentURIWithQueryPattern() {
-    $store = $this->createStore('query');
-    $store->settings['query'] = array('page=');
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/en/path?page=1&wovn=vi';
-    $headers = new Headers($env, $store);
+    $settings = array(
+      'url_pattern_name' => 'query',
+      'query' => array('page=')
+    );
+    $env = array( 'REQUEST_URI' => '/en/path?page=1&wovn=vi');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('/en/path', $headers->getDocumentURI());
   }
 
   public function testGetDocumentURIWithPathPattern() {
-    $store = $this->createStore();
-    $env = $this->getEnv();
-    $env['REQUEST_URI'] = '/en/path?page=1';
-    $headers = new Headers($env, $store);
+    $env = array( 'REQUEST_URI' => '/en/path?page=1');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $this->assertEquals('/path', $headers->getDocumentURI());
   }
