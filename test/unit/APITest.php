@@ -1,4 +1,6 @@
 <?php
+  require_once 'test/helpers/StoreAndHeadersFactory.php';
+
   require_once 'src/wovnio/wovnphp/API.php';
   require_once 'src/wovnio/wovnphp/Utils.php';
   require_once 'src/wovnio/wovnphp/Lang.php';
@@ -14,14 +16,14 @@
 
   require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 
-  require_once 'test/helpers/StoreAndHeadersFactory.php';
+  use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
   use Wovnio\Wovnphp\API;
   use Wovnio\Wovnphp\Utils;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
-  use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
   class APITest extends PHPUnit_Framework_TestCase {
+    // TODO: remove
     private function getEnv($num = "") {
       $env = array();
       $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
@@ -66,8 +68,7 @@
     }
 
     public function testTranslationURL() {
-      $env = $this->getEnv('_path');
-      list($store, $headers) = StoreAndHeadersFactory::get($env);
+      list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
       $body = '<html></html>';
       $expected_api_url = $this->getExpectedUrl($store, $headers, $body);
 
