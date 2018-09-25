@@ -268,6 +268,7 @@
 
     public function testTranslateWhenDefaultLangAndSettingIsOff() {
       $settings = array(
+        'url_pattern_name' => 'path',
         'disable_api_request_for_default_lang' => false,
         'default_lang' => 'en'
       );
