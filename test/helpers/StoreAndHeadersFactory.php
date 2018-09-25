@@ -24,7 +24,7 @@ class StoreAndHeadersFactory {
       'default_lang' => 'en',
       'supported_langs' => array('en'),
       'url_pattern_name' => 'path',
-      'project_token' => 'KK9kZ'
+      'project_token' => '123456'
     );
 
     return array_merge($defaultOptions, $options);
