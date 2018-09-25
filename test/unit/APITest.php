@@ -23,14 +23,6 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   class APITest extends PHPUnit_Framework_TestCase {
-    // TODO: remove
-    private function getEnv($num = "") {
-      $env = array();
-      $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
-      $env = $file['env'];
-      return $env;
-    }
-
     private function getMockAndRegister($originalClassName, $methods) {
       $builder = $this->getMockBuilder($originalClassName);
       $builder->setMethods($methods);
