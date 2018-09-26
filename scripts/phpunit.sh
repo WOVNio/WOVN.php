@@ -4,7 +4,7 @@ FILE_DIR=$(dirname $0)
 ROOT_DIR=${FILE_DIR}/..
 PHPUNIT_EXE="${ROOT_DIR}/vendor/bin/phpunit"
 MD5_EXE='md5sum'; hash ${MD5_EXE} 2> /dev/null || { MD5_EXE="md5"; }
-MD5_CMD="tar -cf - --exclude \"*.swp\" ${ROOT_DIR} 2> /dev/null | ${MD5_EXE}"
+MD5_CMD="tar -cf - --exclude \"*.swp\" ${ROOT_DIR}/src ${ROOT_DIR}/test *.php 2> /dev/null | ${MD5_EXE}"
 
 loop=false
 while getopts ":lh" opt
