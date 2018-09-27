@@ -1,13 +1,15 @@
 <?php
 namespace Wovnio\Test\Helpers;
 
+require_once 'test/helpers/EnvFactory.php';
+
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
 
 class StoreAndHeadersFactory {
   public static function fromFixture($fixture = 'default', $settingsOverwrite = array(), $envOverwrite = array()) {
     $storeSettings = self::buildStoreOptions($settingsOverwrite);
-    $env = self::buildEnv($fixture, $envOverwrite);
+    $env = EnvFactory::fromFixture($fixture, $envOverwrite);
 
     return StoreAndHeadersFactory::get($env, $storeSettings);
   }
@@ -28,20 +30,5 @@ class StoreAndHeadersFactory {
     );
 
     return array_merge($defaultOptions, $options);
-  }
-
-  private static function buildEnv($fixture, $envOverwrite) {
-    $iniFilename = self::fixture2Filename($fixture);
-    $iniFile = parse_ini_file(dirname(__FILE__) . '/../fixtures/env/' . $iniFilename);
-
-    return array_merge($iniFile['env'], $envOverwrite);
-  }
-
-  private static function fixture2Filename($fixture) {
-    if ($fixture) {
-      return preg_replace('/(.ini)?$/', '.ini', $fixture);
-    }
-
-    return 'default.ini';
   }
 }
