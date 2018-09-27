@@ -234,7 +234,7 @@
       $location = $this-> url;
       switch ($this->store->settings['url_pattern_name']) {
         case 'query':
-          //if (!preg_match('/\?/', $this->_env['REQUEST_URI'])) {
+          // if (!preg_match('/\?/', $this->_env['REQUEST_URI'])) {
           // as $location is directtly modified it is safe to directly test it
           if (!preg_match('/\?/', $location)) {
             $location = $location . '?wovn=' . $lang;

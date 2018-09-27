@@ -3,8 +3,8 @@
 namespace Wovnio\Wovnphp;
 
 /**
- * The lang class contains the langs supported by wovn in this form: \n
- * code [ name -> Original name, code -> code, en -> English name]\n
+ * The lang class contains the langs supported by wovn in this form:
+ * code [ name -> Original name, code -> code, en -> English name]
  */
 class Lang
 {
@@ -80,7 +80,7 @@ class Lang
   }
 
   /**
-   * Get the code of the lang given either a code, an original name or an English name\n
+   * Get the code of the lang given either a code, an original name or an English name
    *
    * @param String $lang_name Code, Original Name or English name of the lang
    * @return String The code of the lang
@@ -102,7 +102,7 @@ class Lang
   }
 
   /**
-   * Get the English names supported by WOVN++\n
+   * Get the English names supported
    *
    * @return array The English names
    */

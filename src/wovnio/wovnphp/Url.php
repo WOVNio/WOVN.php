@@ -28,7 +28,7 @@ class Url {
       return $uri;
     }
 
-    #anchor links case, do nothing
+    // anchor links case, do nothing
     if (preg_match('/^(#.*)?$/', $uri)) {
       return $uri;
     }
@@ -156,7 +156,7 @@ class Url {
       return $uri;
     }
 
-    #anchor links case, do nothing
+    // anchor links case, do nothing
     if (preg_match('/^(#.*)?$/', $uri)) {
       return $uri;
     }
@@ -166,12 +166,12 @@ class Url {
         return preg_replace('/(\?|&)$/', '', preg_replace('/(^|\?|&)wovn=' . $lang_code . '(&|$)/i', '\1', $uri));
       break;
       case 'subdomain':
-        # limit to one replacement
+        // limit to one replacement
         return preg_replace('/(\/\/|^)' . $lang_code . '\./i', '\1', $uri, 1);
       break;
       case 'path':
       default:
-        # limit to one replacement
+        // limit to one replacement
         return preg_replace('/\/' . $lang_code . '(\/|$)/i', '/', $uri, 1);
       break;
     }
