@@ -1,7 +1,5 @@
 <?php
 ini_set('error_log', null);
-// WARNING all the tests making calls to redis server are commented until we found a way to mock calls 
-// this waste ressources
 
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Store.php';

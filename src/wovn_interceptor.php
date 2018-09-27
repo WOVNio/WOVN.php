@@ -17,7 +17,7 @@
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
   use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
 
-  // FIXME should not force the factory, it should use cURL when possible but
+  // FIXME: should not force the factory, it should use cURL when possible but
   // some of us currently have problem with cURL
   $request_handler = new FileGetContentsRequestHandler();
   RequestHandlerFactory::set_instance($request_handler);

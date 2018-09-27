@@ -1,17 +1,14 @@
 <?php
+require_once 'test/helpers/EnvFactory.php';
+
 require_once 'src/wovnio/wovnphp/Utils.php';
+
+use Wovnio\Test\Helpers\EnvFactory;
 
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Utils;
 
 class UtilsTest extends PHPUnit_Framework_TestCase {
-  private function getEnv($num="") {
-    $env = array();
-    $file = parse_ini_file(dirname(__FILE__) . '/mock_env' . $num . '.ini');
-    $env = $file['env'];
-    return $env;
-  }
-
   public function testFunctionsExists() {
     $this->assertTrue(class_exists('Wovnio\Wovnphp\Utils'));
     $this->assertTrue(method_exists('Wovnio\Wovnphp\Utils', 'getStoreAndHeaders'));
@@ -19,14 +16,14 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetStoreAndHeaders() {
-    $env = $this->getEnv('_path');
+    $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $this->assertEquals('Wovnio\Wovnphp\Store', get_class($store));
     $this->assertEquals('Wovnio\Wovnphp\Headers', get_class($headers));
   }
 
   public function testIsFilePathURI() {
-    $env = $this->getEnv('_path');
+    $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3', $store));
@@ -35,7 +32,7 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testIsFilePathURIWithPathsAndRegex() {
-    $env = $this->getEnv('_path');
+    $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $store->settings['ignore_paths'] = array('/coucou.jpg', 'assets/img/');
     $store->settings['ignore_regex'] = array("/img\/assets$/i");
