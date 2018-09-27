@@ -2,7 +2,7 @@
 namespace Wovnio\Test\Helpers;
 
 class EnvFactory {
-  public static function fromFixture($fixture = 'default', $envOverwrite = array()) {
+  public static function fromFixture($fixture, $envOverwrite = array()) {
     $iniFilename = self::fixture2Filename($fixture);
     $iniFile = parse_ini_file(dirname(__FILE__) . '/../fixtures/env/' . $iniFilename);
 
