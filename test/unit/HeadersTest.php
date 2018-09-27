@@ -867,8 +867,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
   }
 
-  // TODO: use StoreAndHeadersFactory::fromFixture above
-
   public function testResponseOutWithDefaultLangAndSubdomainPattern() {
     Wovnio\wovnphp\mock_headers_sent(false);
     Wovnio\wovnphp\mock_apache_response_headers(true, array(
