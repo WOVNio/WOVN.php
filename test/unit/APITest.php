@@ -43,7 +43,7 @@
       return $mockObject;
     }
 
-    public function mockApiResponse($expected_api_url, $expected_data, $response) {
+    private function mockApiResponse($expected_api_url, $expected_data, $response) {
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
       $mock->expects($this->once())
         ->method('sendRequest')
@@ -57,7 +57,7 @@
       RequestHandlerFactory::set_instance($mock);
     }
 
-    public function getExpectedApiUrl($store, $headers, $content) {
+    private function getExpectedApiUrl($store, $headers, $content) {
       $token = $store->settings['project_token'];
       $path = $headers->pathnameKeepTrailingSlash;
       $lang = $headers->lang();
@@ -69,7 +69,7 @@
       return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
-    public function getExpectedHtmlHeadContent($store, $headers, $lang_code_aliases_string='[]') {
+    private function getExpectedHtmlHeadContent($store, $headers, $lang_code_aliases_string='[]') {
       $url = $headers->urlKeepTrailingSlash;
       $token = $store->settings['project_token'];
       $pattern = $store->settings['url_pattern_name'];
@@ -79,7 +79,7 @@
       return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>";
     }
 
-    public function getExpectedData($store, $headers, $converted_body, $extra=array()) {
+    private function getExpectedData($store, $headers, $converted_body, $extra=array()) {
       $data = array(
         'url' => $headers->urlKeepTrailingSlash,
         'token' => $store->settings['project_token'],
