@@ -1,5 +1,10 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Don't intercept .cgi files, as they won't execute
+  RewriteCond %{THE_REQUEST} \.cgi
+  RewriteRule .? - [L]
+
   # Intercept only static content: html and htm urls
   # Warning: do not remove this line or other content could be loaded
   RewriteCond %{REQUEST_URI} /$ [OR]
