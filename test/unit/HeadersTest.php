@@ -30,7 +30,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $settings = array('query' => array('page='));
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-    $this->assertEquals('localhost', $headers->redisUrl);
+    $this->assertEquals('my-site.com', $headers->redisUrl);
   }
 
   public function testHeadersMatchQuery() {
@@ -38,7 +38,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?page=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost?page=1', $headers->redisUrl);
+    $this->assertEquals('my-site.com?page=1', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryEmptyQuerySettings() {
@@ -46,7 +46,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?page=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost', $headers->redisUrl);
+    $this->assertEquals('my-site.com', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryWrongQueryParams() {
@@ -54,7 +54,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?top=yes');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost', $headers->redisUrl);
+    $this->assertEquals('my-site.com', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParams() {
@@ -62,7 +62,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?page=1&top=yes');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost?page=1&top=yes', $headers->redisUrl);
+    $this->assertEquals('my-site.com?page=1&top=yes', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParamsSorting() {
@@ -70,7 +70,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?b=2&a=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost?a=1&b=2', $headers->redisUrl);
+    $this->assertEquals('my-site.com?a=1&b=2', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryTwoQueryParamsSortingOneWrong() {
@@ -80,7 +80,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost?a=1&c=3', $headers->redisUrl);
+    $this->assertEquals('my-site.com?a=1&c=3', $headers->redisUrl);
   }
 
   public function testHeadersMatchQueryLongQueryString() {
@@ -88,7 +88,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('REQUEST_URI' => '/?e=5&d=4&c=3&b=2&a=1&f=6&g=7&h=8&z=10');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost?a=1&b=2&c=3&d=4&e=5&f=6&g=7&h=8', $headers->redisUrl);
+    $this->assertEquals('my-site.com?a=1&b=2&c=3&d=4&e=5&f=6&g=7&h=8', $headers->redisUrl);
   }
 
   // setQueryParam
@@ -494,8 +494,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('localhost', $headers->unmaskedHost);
-    $this->assertEquals('localhost', $headers->host);
+    $this->assertEquals('my-site.com', $headers->unmaskedHost);
+    $this->assertEquals('my-site.com', $headers->host);
     $this->assertEquals('http', $headers->protocol);
   }
 
@@ -503,8 +503,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $settings = array('use_proxy' => 1);
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-    $this->assertEquals('localhost', $headers->unmaskedHost);
-    $this->assertEquals('localhost', $headers->host);
+    $this->assertEquals('my-site.com', $headers->unmaskedHost);
+    $this->assertEquals('my-site.com', $headers->host);
     $this->assertEquals('http', $headers->protocol);
   }
 
@@ -696,7 +696,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
       'url_pattern_name' => 'subdomain',
       'use_proxy' => 1
     );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_server', $settings);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings);
 
     $pathlang = $headers->pathLang();
     $this->assertEquals('ja', $pathlang);
@@ -714,7 +714,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $he = $headers->env();
     $this->assertEquals('minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
-    $this->assertEquals('localhost', $he['SERVER_NAME']);
+    $this->assertEquals('my-site.com', $he['SERVER_NAME']);
   }
 
   public function testRequestOutWithUseProxyFalse () {
@@ -825,7 +825,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
       'HTTP_REFERER' => 'ja.minimaltech.co',
       'REQUEST_URI' => '/dummy'
     );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_server', $settings, $env);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
     $this->assertEquals('ja', $headers->pathLang());
 
@@ -876,9 +876,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'localhost',
-      'SERVER_NAME' => 'localhost',
-      'REQUEST_URI' => 'http://localhost/test'
+      'HTTP_HOST' => 'my-site.com',
+      'SERVER_NAME' => 'my-site.com',
+      'REQUEST_URI' => 'http://my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -895,9 +895,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -916,9 +916,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -931,15 +931,15 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testResponseOutAbsoluteUrlWithNotDefaultLangAndSubdomainPattern() {
     Wovnio\wovnphp\mock_headers_sent(false);
     Wovnio\wovnphp\mock_apache_response_headers(true, array(
-      'Location' => 'http://localhost/index.php'
+      'Location' => 'http://my-site.com/index.php'
     ));
     Wovnio\wovnphp\mock_header();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -947,7 +947,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
-    $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
+    $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPattern() {
@@ -959,9 +959,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -969,21 +969,21 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
-    $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
+    $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationLangAndSubdomainPattern() {
     Wovnio\wovnphp\mock_headers_sent(false);
     Wovnio\wovnphp\mock_apache_response_headers(true, array(
-      'Location' => 'http://fr.localhost/index.php'
+      'Location' => 'http://fr.my-site.com/index.php'
     ));
     Wovnio\wovnphp\mock_header();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -991,7 +991,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
-    $this->assertEquals('Location: http://fr.localhost/index.php', $receivedHeaders[0]);
+    $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutOutsideRedirectionWithNotDefaultLangAndSubdomainPattern() {
@@ -1003,9 +1003,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
-      'HTTP_HOST' => 'fr.localhost',
-      'SERVER_NAME' => 'fr.localhost',
-      'REQUEST_URI' => 'http://fr.localhost/test'
+      'HTTP_HOST' => 'fr.my-site.com',
+      'SERVER_NAME' => 'fr.my-site.com',
+      'REQUEST_URI' => 'http://fr.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -1019,7 +1019,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationCustomLangAndSubdomainPattern() {
     Wovnio\wovnphp\mock_headers_sent(false);
     Wovnio\wovnphp\mock_apache_response_headers(true, array(
-      'Location' => 'http://fr-test.localhost/index.php'
+      'Location' => 'http://fr-test.my-site.com/index.php'
     ));
     Wovnio\wovnphp\mock_header();
 
@@ -1028,9 +1028,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
       'custom_lang_aliases' => array('fr' => 'fr-test')
     );
     $env = array(
-      'HTTP_HOST' => 'fr-test.localhost',
-      'SERVER_NAME' => 'fr-test.localhost',
-      'REQUEST_URI' => 'http://fr-test.localhost/test'
+      'HTTP_HOST' => 'fr-test.my-site.com',
+      'SERVER_NAME' => 'fr-test.my-site.com',
+      'REQUEST_URI' => 'http://fr-test.my-site.com/test'
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -1038,7 +1038,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $receivedHeaders = Wovnio\wovnphp\get_headers_received_by_header_mock();
 
     $this->assertEquals(1, count($receivedHeaders));
-    $this->assertEquals('Location: http://fr-test.localhost/index.php', $receivedHeaders[0]);
+    $this->assertEquals('Location: http://fr-test.my-site.com/index.php', $receivedHeaders[0]);
   }
 
   public function testResponseOutWithDefaultLangAndPathPattern() {
