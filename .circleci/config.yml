@@ -15,6 +15,7 @@ jobs:
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
           paths: vendor
+      - run: ./vendor/bin/phpcs
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
