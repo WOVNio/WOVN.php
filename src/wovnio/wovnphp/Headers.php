@@ -57,7 +57,10 @@
         $this->unmaskedPathname .= '/';
       }
       $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
-      $this->host = $this->removeLang($this->unmaskedHost, $this->lang());
+      $this->host = $this->unmaskedHost;
+      if ($store->settings['url_pattern_name'] === 'subdomain') {
+        $this->host = $this->removeLang($this->host, $this->lang());
+      }
       $exploded = explode('?', $env['REQUEST_URI']);
       $this->pathname = $this->removeLang($exploded[0], $this->lang());
       $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
