@@ -195,7 +195,7 @@
       $settings = array(
         'disable_api_request_for_default_lang' => true,
         'default_lang' => 'en',
-        url_pattern_name => 'en'
+        'url_pattern_name' => 'en'
       );
       list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 

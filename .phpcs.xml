@@ -43,6 +43,10 @@
   <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
   <exclude-pattern>./wovn_index_sample.php</exclude-pattern>
 
+  <rule ref="Internal.Tokenizer.Exception">
+    <type>error</type>
+  </rule>
+
   <!-- https://www.php-fig.org/psr/psr-2/ -->
   <rule ref="PSR2"></rule>
 </ruleset>
