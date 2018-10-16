@@ -208,7 +208,7 @@ class HtmlConverter
     /**
      * @param SimpleHtmlDomNode $node
      */
-    private function _removeSnippet($node)
+    function _removeSnippet($node)
     {
         if (strtolower($node->tag) !== 'script') {
             return;
