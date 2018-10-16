@@ -24,11 +24,11 @@
 
   class APITest extends PHPUnit_Framework_TestCase {
     protected function setUp() {
-      RequestHandlerFactory::set_instance(NULL);
+      RequestHandlerFactory::setInstance(NULL);
     }
 
     protected function tearDown() {
-      RequestHandlerFactory::set_instance(NULL);
+      RequestHandlerFactory::setInstance(NULL);
     }
 
     private function getMockAndRegister($originalClassName, $methods) {
@@ -54,7 +54,7 @@
           $this->equalTo(1.0)
         )
         ->willReturn($response);
-      RequestHandlerFactory::set_instance($mock);
+      RequestHandlerFactory::setInstance($mock);
     }
 
     private function getExpectedApiUrl($store, $headers, $content) {
@@ -203,7 +203,7 @@
 
       $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
       $mock->expects($this->never())->method('sendRequest');
-      RequestHandlerFactory::set_instance($mock);
+      RequestHandlerFactory::setInstance($mock);
 
       $result = API::translate($store, $headers, $html);
       $this->assertEquals($expected_result, $result);
