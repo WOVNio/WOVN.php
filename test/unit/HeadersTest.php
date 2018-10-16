@@ -509,7 +509,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithPathPattern () {
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture();
+    $settings = array('url_pattern_name' => 'path');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
@@ -521,7 +522,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithPathPatternAndChinese () {
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture();
+    $settings = array('url_pattern_name' => 'path');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
@@ -577,7 +579,10 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRemoveLangWithCustomLang () {
-    $settings = array('custom_lang_aliases' => array('ja' => 'ja-test'));
+    $settings = array(
+      'custom_lang_aliases' => array('ja' => 'ja-test'),
+      'url_pattern_name' => 'path'
+    );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
@@ -590,11 +595,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testPathLangWithPathPattern () {
+    $settings = array('url_pattern_name' => 'path');
     $env = array(
       'SERVER_NAME' => 'wovn.io',
       'REQUEST_URI' => '/zh-CHT/test'
     );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
@@ -603,11 +609,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testPathLangWithPathPatternAndLangCodeNotAtBegining () {
+    $settings = array('url_pattern_name' => 'path');
     $env = array(
       'SERVER_NAME' => 'wovn.io',
       'REQUEST_URI' => '/thi/en/test'
     );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
@@ -616,11 +623,12 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testPathLangWithPathPatternAndLangNameInsteadOfLangCode () {
+    $settings = array('url_pattern_name' => 'path');
     $env = array(
       'SERVER_NAME' => 'wovn.io',
       'REQUEST_URI' => '/thai/en/test'
     );
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
@@ -732,7 +740,8 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testRequestOutUrlPatternPath () {
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
+    $settings = array('url_pattern_name' => 'path');
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings);
 
     $he = $headers->env();
     $this->assertEquals('/ja/mypage.php', $he['REQUEST_URI']);
@@ -1223,8 +1232,9 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetDocumentURIWithPathPattern() {
+    $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/en/path?page=1');
-    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+    list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $this->assertEquals('/path', $headers->getDocumentURI());
   }

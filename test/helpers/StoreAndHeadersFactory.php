@@ -25,7 +25,7 @@ class StoreAndHeadersFactory {
     $defaultOptions = array(
       'default_lang' => 'en',
       'supported_langs' => array('en'),
-      'url_pattern_name' => 'path',
+      'url_pattern_name' => 'query',
       'project_token' => '123456'
     );
 
