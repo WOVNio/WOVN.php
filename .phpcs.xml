@@ -34,7 +34,7 @@
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
-  <!-- needs indent fixed to sole last errors -->
+  <!-- needs indent fixed to solve last errors -->
   <exclude-pattern>./src/wovnio/utils/request_handlers/AbstractRequestHandler.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
