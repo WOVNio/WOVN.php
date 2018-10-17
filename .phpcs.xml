@@ -48,5 +48,16 @@
   </rule>
 
   <!-- https://www.php-fig.org/psr/psr-2/ -->
-  <rule ref="PSR2"></rule>
+  <rule ref="PSR2">
+    <!-- PHP 5.3 doesn't allow calling private method inside anonymous
+         functions, so we use '_' for implicit visibility in some classes -->
+    <exclude name="Squiz.Scope.MethodScope.Missing" />
+    <!-- TODO: Fix and remove once other rules are fixed -->
+    <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
+    <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+  </rule>
+
+  <!-- use camelCase everywhere (PSR2 forces it for class members only) -->
+  <rule ref="Generic.NamingConventions.CamelCapsFunctionName" />
+  <rule ref="Zend.NamingConventions.ValidVariableName" />
 </ruleset>
