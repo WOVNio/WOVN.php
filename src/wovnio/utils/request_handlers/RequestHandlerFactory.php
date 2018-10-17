@@ -7,15 +7,18 @@
   use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
   use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
 
-  class RequestHandlerFactory {
-    static $instance = NULL;
+  class RequestHandlerFactory
+  {
+    private static $instance = null;
 
-    public static function set_instance($instance) {
+    public static function setInstance($instance)
+    {
       self::$instance = $instance;
     }
 
-    public static function get() {
-      if (self::$instance === NULL) {
+    public static function get()
+    {
+      if (self::$instance === null) {
         if (function_exists('curl_version')) {
           self::$instance = new CurlRequestHandler();
         } else {

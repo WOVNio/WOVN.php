@@ -19,8 +19,8 @@
 
   // FIXME: should not force the factory, it should use cURL when possible but
   // some of us currently have problem with cURL
-  $request_handler = new FileGetContentsRequestHandler();
-  RequestHandlerFactory::set_instance($request_handler);
+  $requestHandler = new FileGetContentsRequestHandler();
+  RequestHandlerFactory::setInstance($requestHandler);
 
   // GET STORE AND HEADERS
   list($store, $headers) = Utils::getStoreAndHeaders($_SERVER);
@@ -28,9 +28,9 @@
   $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
   $headers->requestOut();
 
-  if (!Utils::isFilePathURI($headers->getDocumentURI(), $store)) {
+  if (!Utils::isFilePathUri($headers->getDocumentURI(), $store)) {
     // use the callback of ob_start to modify the content and return
-    ob_start(function($buffer) use ($headers, $store) {
+    ob_start(function ($buffer) use ($headers, $store) {
       $headers->responseOut();
 
       if (empty($buffer) || !Utils::isHtml(headers_list(), $buffer)) {
@@ -41,13 +41,12 @@
         return $buffer;
       }
 
-      $translated_buffer = API::translate($store, $headers, $buffer);
-      if ($translated_buffer !== NULL && !empty($translated_buffer)) {
-        Utils::changeHeaders($translated_buffer, $store);
-        return $translated_buffer;
+      $translatedBuffer = API::translate($store, $headers, $buffer);
+      if ($translatedBuffer !== null && !empty($translatedBuffer)) {
+        Utils::changeHeaders($translatedBuffer, $store);
+        return $translatedBuffer;
       }
 
       return $buffer;
     });
   }
-
