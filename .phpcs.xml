@@ -12,7 +12,6 @@
   <exclude-pattern>./src/wovnio/html/HtmlReplaceMarker.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDom.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDomNode.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/Headers.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/SSI.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
@@ -34,8 +33,6 @@
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
-  <!-- needs indent fixed to solve last errors -->
-  <exclude-pattern>./src/wovnio/utils/request_handlers/AbstractRequestHandler.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>
@@ -49,6 +46,9 @@
     <!-- TODO: Fix and remove once other rules are fixed -->
     <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
     <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+    <!-- TODO: Fix indentation before, because this error detection seems too
+               dependent to the indentation size -->
+    <exclude name="PSR2.ControlStructures.SwitchDeclaration.BreakIndent" />
     <!-- TODO: Fix indentation before fixing lines too long warnings -->
     <exclude name="Generic.Files.LineLength.TooLong" />
     <!-- TODO: Fix at last (probably fixed after autoloading setup) -->
