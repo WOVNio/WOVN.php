@@ -12,9 +12,8 @@ if ($parsed_url) {
   # (also see the SSI comment in the 404 section below)
   $included = wovn_helper_include_by_paths($paths);
   # $included = wovn_helper_include_by_paths_with_ssi($paths);
-}
-else {
-  $included = False;
+} else {
+  $included = false;
 }
 
 # Set 404 status code if file not included

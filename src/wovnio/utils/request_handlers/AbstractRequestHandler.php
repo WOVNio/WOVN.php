@@ -1,13 +1,15 @@
 <?php
   namespace Wovnio\Utils\RequestHandlers;
 
-  abstract class AbstractRequestHandler {
+  abstract class AbstractRequestHandler
+  {
 
     abstract protected function get($url, $timeout);
     abstract protected function post($url, $data, $timeout);
 
-    public function sendRequest($method, $url, $data, $timeout = 1.0) {
-      $response = NULL;
+    public function sendRequest($method, $url, $data, $timeout = 1.0)
+    {
+      $response = null;
       $query = http_build_query($data);
 
       try {

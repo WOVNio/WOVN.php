@@ -8,22 +8,15 @@
   <exclude-pattern>./vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
   <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
-  <exclude-pattern>./src/wovn_interceptor.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/html/HtmlConverter.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/html/HtmlReplaceMarker.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDom.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDomNode.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/utils/request_handlers/AbstractRequestHandler.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/utils/request_handlers/CurlRequestHandler.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/utils/request_handlers/FileGetContentsRequestHandler.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/utils/request_handlers/RequestHandlerFactory.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/API.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Headers.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/SSI.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Url.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/Utils.php</exclude-pattern>
   <exclude-pattern>./test/helpers/EnvFactory.php</exclude-pattern>
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
   <exclude-pattern>./test/helpers/StoreAndHeadersFactory.php</exclude-pattern>
@@ -41,7 +34,8 @@
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
-  <exclude-pattern>./wovn_index_sample.php</exclude-pattern>
+  <!-- needs indent fixed to solve last errors -->
+  <exclude-pattern>./src/wovnio/utils/request_handlers/AbstractRequestHandler.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>
@@ -55,9 +49,13 @@
     <!-- TODO: Fix and remove once other rules are fixed -->
     <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
     <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
+    <!-- TODO: Fix indentation before fixing lines too long warnings -->
+    <exclude name="Generic.Files.LineLength.TooLong" />
+    <!-- TODO: Fix at last (probably fixed after autoloading setup) -->
+    <exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />
   </rule>
 
   <!-- use camelCase everywhere (PSR2 forces it for class members only) -->
   <rule ref="Generic.NamingConventions.CamelCapsFunctionName" />
-  <rule ref="Zend.NamingConventions.ValidVariableName" />
+  <rule ref="Zend.NamingConventions.ValidVariableName.MemberVarNotCamelCaps" />
 </ruleset>

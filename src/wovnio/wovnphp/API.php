@@ -6,11 +6,17 @@
   use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-  if (!defined('WOVN_PHP_VERSION')) { define('WOVN_PHP_VERSION', '0.1.10'); }
-  if (!defined('WOVN_PHP_NAME')) { define('WOVN_PHP_NAME', 'WOVN.php'); }
+  if (!defined('WOVN_PHP_VERSION')) {
+    define('WOVN_PHP_VERSION', '0.1.10');
+  }
+  if (!defined('WOVN_PHP_NAME')) {
+    define('WOVN_PHP_NAME', 'WOVN.php');
+  }
 
-  class API {
-    public static function url($store, $headers, $original_content) {
+  class API
+  {
+    public static function url($store, $headers, $original_content)
+    {
       $token = $store->settings['project_token'];
       $path = $headers->pathnameKeepTrailingSlash;
       $lang = $headers->lang();
@@ -21,13 +27,14 @@
       return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
-    public static function translate($store, $headers, $original_content) {
+    public static function translate($store, $headers, $original_content)
+    {
       $api_url = self::url($store, $headers, $original_content);
       $encoding = $store->settings['encoding'];
       $token = $store->settings['project_token'];
 
       $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
-      if (self::makeAPICall($store, $headers) === false) {
+      if (self::makeApiCall($store, $headers) === false) {
         list($translated_content) = $converter->insertSnippetAndHreflangTags(false);
         return $translated_content;
       }
@@ -72,8 +79,8 @@
       }
     }
 
-    private static function makeAPICall($store, $headers) {
+    private static function makeApiCall($store, $headers)
+    {
       return $headers->lang() != $store->settings['default_lang'] || !$store->settings['disable_api_request_for_default_lang'];
     }
   }
-
