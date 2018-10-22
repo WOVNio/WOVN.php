@@ -16,9 +16,7 @@
   <exclude-pattern>./src/wovnio/wovnphp/SSI.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Url.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/EnvFactory.php</exclude-pattern>
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/StoreAndHeadersFactory.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
