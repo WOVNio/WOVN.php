@@ -200,7 +200,7 @@
      *
      * @return String The browser lang
      */
-    public function computerBrowserLang()
+    public function computeBrowserLang()
     {
       if ($this->browserLang === null) {
         // cookie lang
