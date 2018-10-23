@@ -22,7 +22,6 @@
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/HeadersTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlConverterTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlReplaceMakerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/LangTest.php</exclude-pattern>
