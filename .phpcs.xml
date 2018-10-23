@@ -56,8 +56,7 @@
   </rule>
 
   <!-- use camelCase everywhere (PSR2 forces it for class members only) -->
-  <rule ref="Generic.NamingConventions.CamelCapsFunctionName" />
-  <!-- FIXME: Squiz.NamingConventions.ValidVariableName.NotCamelCaps more
-              exhaustive -->
+  <rule ref="Squiz.NamingConventions.ValidFunctionName.NotCamelCaps" />
+  <!-- FIXME: Squiz.NamingConventions.ValidVariableName.NotCamelCaps too -->
   <rule ref="Zend.NamingConventions.ValidVariableName.MemberVarNotCamelCaps" />
 </ruleset>

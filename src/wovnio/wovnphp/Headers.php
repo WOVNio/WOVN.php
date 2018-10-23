@@ -465,7 +465,7 @@
       die();
     }
 
-    public function getDocumentUri()
+    public function getDocumentURI()
     {
       $url = $this->env['REQUEST_URI'];
       $url_arr = parse_url($url);

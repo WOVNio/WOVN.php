@@ -1228,7 +1228,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array( 'REQUEST_URI' => '/en/path?page=1&wovn=vi');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('/en/path', $headers->getDocumentUri());
+    $this->assertEquals('/en/path', $headers->getDocumentURI());
   }
 
   public function testGetDocumentURIWithPathPattern() {
@@ -1236,6 +1236,6 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array( 'REQUEST_URI' => '/en/path?page=1');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('/path', $headers->getDocumentUri());
+    $this->assertEquals('/path', $headers->getDocumentURI());
   }
 }
