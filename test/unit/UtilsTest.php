@@ -1,4 +1,6 @@
 <?php
+namespace \Wovnio\Wovnphp\Tests\Unit;
+
 require_once 'test/helpers/EnvFactory.php';
 
 require_once 'src/wovnio/wovnphp/Utils.php';
@@ -8,21 +10,25 @@ use Wovnio\Test\Helpers\EnvFactory;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Utils;
 
-class UtilsTest extends PHPUnit_Framework_TestCase {
-  public function testFunctionsExists() {
+class UtilsTest extends PHPUnit_Framework_TestCase
+{
+  public function testFunctionsExists()
+  {
     $this->assertTrue(class_exists('Wovnio\Wovnphp\Utils'));
     $this->assertTrue(method_exists('Wovnio\Wovnphp\Utils', 'getStoreAndHeaders'));
     $this->assertFalse(method_exists('Wovnio\Wovnphp\Utils', 'dispatchRequest'));
   }
 
-  public function testGetStoreAndHeaders() {
+  public function testGetStoreAndHeaders()
+  {
     $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $this->assertEquals('Wovnio\Wovnphp\Store', get_class($store));
     $this->assertEquals('Wovnio\Wovnphp\Headers', get_class($headers));
   }
 
-  public function testIsFilePathURI() {
+  public function testIsFilePathURI()
+  {
     $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
@@ -31,7 +37,8 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf', $store));
   }
 
-  public function testIsFilePathURIWithPathsAndRegex() {
+  public function testIsFilePathURIWithPathsAndRegex()
+  {
     $env = EnvFactory::fromFixture('default');
     list($store, $headers) = Utils::getStoreAndHeaders($env);
     $store->settings['ignore_paths'] = array('/coucou.jpg', 'assets/img/');
@@ -43,19 +50,21 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/assets/index.html', $store));
   }
 
-  public function testIsHtml() {
-    $this->assertEquals(false, Utils::isHtml(array(),'this is not html, even tho it contains < and >'));
+  public function testIsHtml()
+  {
+    $this->assertEquals(false, Utils::isHtml(array(), 'this is not html, even tho it contains < and >'));
 
-    $this->assertEquals(true, Utils::isHtml(array(),'<html><head></head><body><p>this is html</p></body></html>'));
-    $this->assertEquals(true, Utils::isHtml(array(),'<p>this is html</p>'));
+    $this->assertEquals(true, Utils::isHtml(array(), '<html><head></head><body><p>this is html</p></body></html>'));
+    $this->assertEquals(true, Utils::isHtml(array(), '<p>this is html</p>'));
 
-    $this->assertEquals(true, Utils::isHtml(array('Content-Type: text/html'),'<p>this is html</p>'));
-    $this->assertEquals(true, Utils::isHtml(array('Content-Type: application/xhtml+xml'),'<p>this is xhtml</p>'));
-    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/json'),'<p>this is json</p>'));
-    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/pdf'),'<p>this is pdf</p>'));
+    $this->assertEquals(true, Utils::isHtml(array('Content-Type: text/html'), '<p>this is html</p>'));
+    $this->assertEquals(true, Utils::isHtml(array('Content-Type: application/xhtml+xml'), '<p>this is xhtml</p>'));
+    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/json'), '<p>this is json</p>'));
+    $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/pdf'), '<p>this is pdf</p>'));
   }
 
-  public function testIsAmp() {
+  public function testIsAmp()
+  {
     $this->assertEquals(false, Utils::isAmp('<html><head></head><body><p>this is html</p></body></html>'));
     $this->assertEquals(false, Utils::isAmp('<htmlnop amp><head></head><body><p>this is html</p></body></html>'));
 
@@ -74,7 +83,8 @@ class UtilsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(true, Utils::isAmp("<html ⚡ lang=en><head></head><body><p>this is html</p></body></html>"));
   }
 
-  public function testIsAmpWithCommentedHtmlTag() {
+  public function testIsAmpWithCommentedHtmlTag()
+  {
     $commented_amp = <<<XML
   <!-- <html amp> -->
   <html>

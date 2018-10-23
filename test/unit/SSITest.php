@@ -1,9 +1,13 @@
 <?php
-  require_once 'src/wovnio/wovnphp/SSI.php';
-  use Wovnio\Wovnphp\SSI;
+namespace \Wovnio\Wovnphp\Tests\Unit;
 
-class SSITest extends PHPUnit_Framework_TestCase {
-  public function testSSI() {
+require_once 'src/wovnio/wovnphp/SSI.php';
+use Wovnio\Wovnphp\SSI;
+
+class SSITest extends PHPUnit_Framework_TestCase
+{
+  public function testSSI()
+  {
     $original = getcwd();
     $dir = __DIR__ . '/ssi_test';
     $exception = null;
