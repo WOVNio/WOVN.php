@@ -1,5 +1,5 @@
 <?php
-namespace \Wovnio\Wovnphp\Tests\Unit;
+namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/EnvFactory.php';
 
@@ -10,7 +10,7 @@ use Wovnio\Test\Helpers\EnvFactory;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Utils;
 
-class UtilsTest extends PHPUnit_Framework_TestCase
+class UtilsTest extends \PHPUnit_Framework_TestCase
 {
   public function testFunctionsExists()
   {

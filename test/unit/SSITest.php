@@ -1,10 +1,10 @@
 <?php
-namespace \Wovnio\Wovnphp\Tests\Unit;
+namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'src/wovnio/wovnphp/SSI.php';
 use Wovnio\Wovnphp\SSI;
 
-class SSITest extends PHPUnit_Framework_TestCase
+class SSITest extends \PHPUnit_Framework_TestCase
 {
   public function testSSI()
   {
