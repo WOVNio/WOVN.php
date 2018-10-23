@@ -101,7 +101,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/?param=val', $he['REQUEST_URI']);
   }
 
@@ -114,7 +114,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/?a=b&param=val', $he['REQUEST_URI']);
   }
 
@@ -126,7 +126,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['REDIRECT_QUERY_STRING']);
   }
 
@@ -135,7 +135,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['QUERY_STRING']);
   }
 
@@ -144,7 +144,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['QUERY_STRING']);
   }
 
@@ -153,7 +153,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['QUERY_STRING']);
   }
 
@@ -162,7 +162,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param1=what&param=val', $he['QUERY_STRING']);
   }
 
@@ -171,7 +171,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['QUERY_STRING']);
   }
 
@@ -180,7 +180,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('p=v&a=b&param=val', $he['QUERY_STRING']);
   }
 
@@ -189,7 +189,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val&p=v', $he['QUERY_STRING']);
   }
 
@@ -198,7 +198,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('a=b&param=val&p=v', $he['QUERY_STRING']);
   }
 
@@ -207,7 +207,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('a=b&param=val', $he['QUERY_STRING']);
   }
 
@@ -216,7 +216,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param1=what&param=val', $he['QUERY_STRING']);
   }
 
@@ -225,7 +225,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param=val', $he['QUERY_STRING']);
   }
 
@@ -238,7 +238,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('hey', 'yo');
-    $headersEnv = $headers->env();
+    $headersEnv = $headers->getEnv();
     $this->assertEquals('/path/here?param=val&hey=yo', $headersEnv['REQUEST_URI']);
     $this->assertEquals('param=val&hey=yo', $headersEnv['QUERY_STRING']);
     $this->assertEquals('param=val&hey=yo', $headersEnv['REDIRECT_QUERY_STRING']);
@@ -253,7 +253,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('hey', 'yo');
-    $headersEnv = $headers->env();
+    $headersEnv = $headers->getEnv();
     $this->assertEquals('/path/here.php?param=val&hey=yo', $headersEnv['REQUEST_URI']);
     $this->assertEquals('param=val&hey=yo', $headersEnv['QUERY_STRING']);
     $this->assertEquals('param=val&hey=yo', $headersEnv['REDIRECT_QUERY_STRING']);
@@ -267,7 +267,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('val', $_GET['param']);
   }
 
@@ -279,7 +279,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->setQueryParam('param', 'val');
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('val', $_GET['param']);
   }
 
@@ -304,7 +304,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     array_push($qa, "param2=val2");
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/?param2=val2', $he['REQUEST_URI']);
   }
 
@@ -316,7 +316,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     array_push($qa, "param2=val2");
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param2=val2', $he['QUERY_STRING']);
   }
 
@@ -329,7 +329,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     array_push($qa, "param2=val2");
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param1=val1&param2=val2', $he['QUERY_STRING']);
   }
 
@@ -340,7 +340,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $qa = array();
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('', $he['QUERY_STRING']);
   }
 
@@ -353,7 +353,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     array_push($qa, "param2=val2");
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param2=val2&param1=val1', $he['QUERY_STRING']);
   }
 
@@ -366,7 +366,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     array_push($qa, "param2=val2");
 
     $headers->setQueryParams($qa);
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('param2=val2&oh=yeah&param1=val1', $he['QUERY_STRING']);
   }
 
@@ -375,7 +375,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/', $he['REQUEST_URI']);
   }
 
@@ -384,7 +384,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/', $he['REQUEST_URI']);
   }
 
@@ -393,7 +393,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/', $he['REQUEST_URI']);
   }
 
@@ -402,7 +402,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('', $he['QUERY_STRING']);
   }
 
@@ -411,7 +411,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('', $he['QUERY_STRING']);
   }
 
@@ -420,7 +420,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('', $he['QUERY_STRING']);
   }
 
@@ -432,7 +432,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals(0, count($_GET));
   }
 
@@ -444,7 +444,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
 
     $headers->clearQueryParams();
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals(0, count($_GET));
   }
 
@@ -604,7 +604,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('zh-CHT', $pathlang);
   }
 
@@ -618,7 +618,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('', $pathlang);
   }
 
@@ -632,7 +632,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals('path', $store->settings['url_pattern_name']);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('', $pathlang);
   }
 
@@ -644,7 +644,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('zh-CHS', $pathlang);
   }
 
@@ -656,7 +656,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('zh-CHT', $pathlang);
   }
 
@@ -668,7 +668,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('', $pathlang);
   }
 
@@ -680,7 +680,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('en', $pathlang);
   }
 
@@ -695,7 +695,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('ja', $pathlang);
   }
 
@@ -706,7 +706,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings);
 
-    $pathlang = $headers->pathLang();
+    $pathlang = $headers->computePathLang();
     $this->assertEquals('ja', $pathlang);
   }
 
@@ -720,7 +720,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
     $this->assertEquals('my-site.com', $he['SERVER_NAME']);
   }
@@ -735,7 +735,7 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('en.minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
   }
 
@@ -743,14 +743,14 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $settings = array('url_pattern_name' => 'path');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings);
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/ja/mypage.php', $he['REQUEST_URI']);
     $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
     $this->assertEquals('/ja/index.php', $he['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
     $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
     $this->assertEquals('/index.php', $he['HTTP_REFERER']);
@@ -761,14 +761,14 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     $settings = array('url_pattern_name' => 'query');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_query_request', $settings);
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('?wovn=ja', $he['QUERY_STRING']);
     $this->assertEquals('/mypage.php?wovn=ja', $he['REQUEST_URI']);
     $this->assertEquals('/index.php?login=no&wovn=ja', $he['HTTP_REFERER']);
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('', $he['QUERY_STRING']);
     $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
     $this->assertEquals('/index.php?login=no', $he['HTTP_REFERER']);
@@ -836,11 +836,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
-    $this->assertEquals('ja', $headers->pathLang());
+    $this->assertEquals('ja', $headers->computePathLang());
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
   }
 
@@ -852,11 +852,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('ja', $headers->pathLang());
+    $this->assertEquals('ja', $headers->computePathLang());
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
   }
 
@@ -868,11 +868,11 @@ class HeadersTest extends PHPUnit_Framework_TestCase {
     );
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-    $this->assertEquals('ja', $headers->pathLang());
+    $this->assertEquals('ja', $headers->computePathLang());
 
     $headers->requestOut();
 
-    $he = $headers->env();
+    $he = $headers->getEnv();
     $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
   }
 

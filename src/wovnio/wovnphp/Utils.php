@@ -73,7 +73,7 @@ class Utils
     return false;
   }
 
-  public static function isFilePathUri($uri, $store)
+  public static function isFilePathURI($uri, $store)
   {
     return $uri && (preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
         preg_match(self::AUDIO_FILE_PATTERN, $uri) ||

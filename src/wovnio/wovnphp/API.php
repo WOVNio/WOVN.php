@@ -34,7 +34,7 @@
       $token = $store->settings['project_token'];
 
       $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
-      if (self::makeApiCall($store, $headers) === false) {
+      if (self::makeAPICall($store, $headers) === false) {
         list($translated_content) = $converter->insertSnippetAndHreflangTags(false);
         return $translated_content;
       }
@@ -79,7 +79,7 @@
       }
     }
 
-    private static function makeApiCall($store, $headers)
+    private static function makeAPICall($store, $headers)
     {
       return $headers->lang() != $store->settings['default_lang'] || !$store->settings['disable_api_request_for_default_lang'];
     }

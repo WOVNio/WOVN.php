@@ -28,7 +28,7 @@
   $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
   $headers->requestOut();
 
-  if (!Utils::isFilePathUri($headers->getDocumentURI(), $store)) {
+  if (!Utils::isFilePathURI($headers->getDocumentURI(), $store)) {
     // use the callback of ob_start to modify the content and return
     ob_start(function ($buffer) use ($headers, $store) {
       $headers->responseOut();
