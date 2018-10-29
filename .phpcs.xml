@@ -13,7 +13,6 @@
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDom.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDomNode.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/SSI.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Url.php</exclude-pattern>
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
