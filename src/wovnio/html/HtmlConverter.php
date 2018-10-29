@@ -14,7 +14,7 @@ use Wovnio\ModifiedVendor\SimpleHtmlDomNode;
  */
 class HtmlConverter
 {
-  public static $supported_encodings = array('UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII');
+  public static $supportedEncodings = array('UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII');
 
   private $html;
   private $encoding;
@@ -40,7 +40,8 @@ class HtmlConverter
     $this->headers = $headers;
   }
 
-  public function insertSnippetAndHreflangTags($adds_backend_error_mark) {
+  public function insertSnippetAndHreflangTags($adds_backend_error_mark)
+  {
     $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
     $this->html = $this->insertHreflangTags($this->html);
     $marker = new HtmlReplaceMarker();
@@ -55,11 +56,11 @@ class HtmlConverter
    */
   public function convertToAppropriateBodyForApi()
   {
-    if ($this->encoding && in_array($this->encoding, self::$supported_encodings)) {
+    if ($this->encoding && in_array($this->encoding, self::$supportedEncodings)) {
       $encoding = $this->encoding;
     } else {
       // Encoding detection uses 30% of execution time for this method.
-      $encoding = mb_detect_encoding($this->html, self::$supported_encodings);
+      $encoding = mb_detect_encoding($this->html, self::$supportedEncodings);
     }
     $marker = new HtmlReplaceMarker();
     $converted_html = $this->html;
@@ -80,7 +81,8 @@ class HtmlConverter
     return array($converted_html, $marker);
   }
 
-  private function replaceDom($dom, &$marker) {
+  private function replaceDom($dom, &$marker)
+  {
     $self = $this;
     $adds_hreflang = isset($this->store) && isset($this->headers);
 
@@ -91,9 +93,9 @@ class HtmlConverter
     $dom->iterateAll(function ($node) use (&$self, $marker, $adds_hreflang, &$html, &$head, &$body) {
       if (strtolower($node->tag) == "html") {
         $html = $node;
-      } else if (strtolower($node->tag) == "head") {
+      } elseif (strtolower($node->tag) == "head") {
         $head = $node;
-      } else if (strtolower($node->tag) == "body") {
+      } elseif (strtolower($node->tag) == "body") {
         $body = $node;
       }
       $self->_removeSnippet($node);
@@ -186,22 +188,6 @@ class HtmlConverter
   }
 
   /**
-   * @param SimpleHtmlDomNode $node
-   */
-  function _removeSnippet($node)
-  {
-    if (strtolower($node->tag) !== 'script') {
-      return;
-    }
-
-    $src_value = $node->getAttribute('src');
-    if (strpos($src_value, '//j.wovn.io/') !== false ||
-      strpos($src_value, '//j.dev-wovn.io:3000/') !== false) {
-      $node->outertext = ''; // remove node
-    }
-  }
-
-  /**
    * Insert hreflang tags for all supported_langs
    *
    * @param string $html
@@ -233,7 +219,8 @@ class HtmlConverter
     return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
   }
 
-  private function buildHrefLang($lang_code) {
+  private function buildHrefLang($lang_code)
+  {
     $url = $this->headers->urlKeepTrailingSlash;
 
     $defaultLangAlias = $this->store->defaultLangAlias();
@@ -249,12 +236,68 @@ class HtmlConverter
   }
 
   /**
+   * Remove User specified content from <!--backend-wovn-ignore--> to <!--/backend-wovn-ignore'-->
+   *
+   * @param String $html
+   * @param HtmlReplaceMarker $marker
+   * @return String
+   */
+  private function removeBackendWovnIgnoreComment($html, $marker)
+  {
+    $ignoreMark = 'backend-wovn-ignore';
+
+    return preg_replace_callback(
+      "/(<!--\s*$ignoreMark\s*-->)(.+?)(<!--\s*\/$ignoreMark\s*-->)/s",
+      function ($matches) use (&$marker) {
+        $comment = $matches[2];
+        $key = $marker->addCommentValue($comment);
+        return $matches[1] . $key . $matches[3];
+      },
+      $html
+    );
+  }
+
+  /**
+   * Replace original to key (comment) to not send to translation API
+   *
+   * @param $element
+   * @param HtmlReplaceMarker $marker
+   */
+  private function putReplaceMarker($element, $marker)
+  {
+    $originalText = $element->innertext;
+    if (strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
+      return;
+    }
+
+    $key = $marker->addCommentValue($originalText);
+    $element->innertext = $key;
+  }
+
+  /**
+   * @param SimpleHtmlDomNode $node
+   */
+  function _removeSnippet($node)
+  {
+    if (strtolower($node->tag) !== 'script') {
+      return;
+    }
+
+    $src_value = $node->getAttribute('src');
+    if (strpos($src_value, '//j.wovn.io/') !== false ||
+      strpos($src_value, '//j.dev-wovn.io:3000/') !== false) {
+      $node->outertext = ''; // remove node
+    }
+  }
+
+  /**
    * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
    * Use `_` prefix to imply `private`
    *
    * @param SimpleHtmlDomNode $node
    */
-  function _removeHreflang($node) {
+  function _removeHreflang($node)
+  {
     if (strtolower($node->tag) != 'link') {
       return;
     }
@@ -273,13 +316,15 @@ class HtmlConverter
    * @param SimpleHtmlDomNode $node
    * @param HtmlReplaceMarker $marker
    */
-  function _removeWovnIgnore($node, $marker) {
+  function _removeWovnIgnore($node, $marker)
+  {
     if ($node->getAttribute('wovn-ignore')) {
       $this->putReplaceMarker($node, $marker);
     }
   }
 
-  function _removeCustomIgnoreClass($node, $marker) {
+  function _removeCustomIgnoreClass($node, $marker)
+  {
     $class_attr = $node->getAttribute('class');
     if ($class_attr) {
       $classes_to_ignore = $this->store->settings['ignore_class'];
@@ -333,44 +378,5 @@ class HtmlConverter
     if (strtolower($node->tag) === 'script') {
       $this->putReplaceMarker($node, $marker);
     }
-  }
-
-  /**
-   * Remove User specified content from <!--backend-wovn-ignore--> to <!--/backend-wovn-ignore'-->
-   *
-   * @param String $html
-   * @param HtmlReplaceMarker $marker
-   * @return String
-   */
-  private function removeBackendWovnIgnoreComment($html, $marker)
-  {
-    $ignoreMark = 'backend-wovn-ignore';
-
-    return preg_replace_callback(
-      "/(<!--\s*$ignoreMark\s*-->)(.+?)(<!--\s*\/$ignoreMark\s*-->)/s",
-      function ($matches) use (&$marker) {
-        $comment = $matches[2];
-        $key = $marker->addCommentValue($comment);
-        return $matches[1] . $key . $matches[3];
-      },
-      $html
-    );
-  }
-
-  /**
-   * Replace original to key (comment) to not send to translation API
-   *
-   * @param $element
-   * @param HtmlReplaceMarker $marker
-   */
-  private function putReplaceMarker($element, $marker)
-  {
-    $originalText = $element->innertext;
-    if (strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
-      return;
-    }
-
-    $key = $marker->addCommentValue($originalText);
-    $element->innertext = $key;
   }
 }

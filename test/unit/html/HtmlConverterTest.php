@@ -1,11 +1,13 @@
 <?php
-use Wovnio\Html\HtmlConverter;
-use Wovnio\Wovnphp\Utils;
-use Wovnio\Html\HtmlReplaceMarker;
-use Wovnio\Test\Helpers\StoreAndHeadersFactory;
-use Wovnio\ModifiedVendor\SimpleHtmlDom;
+namespace Wovnio\Wovnphp\Tests\Unit;
 
-class HtmlConverterTest extends PHPUnit_Framework_TestCase
+use \Wovnio\Html\HtmlConverter;
+use \Wovnio\Wovnphp\Utils;
+use \Wovnio\Html\HtmlReplaceMarker;
+use \Wovnio\Test\Helpers\StoreAndHeadersFactory;
+use \Wovnio\ModifiedVendor\SimpleHtmlDom;
+
+class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 {
   public function testConvertAndRevertAtStackOverflow()
   {
@@ -16,12 +18,12 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_expected.html');
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($expected_html_text, 'HTML-ENTITIES', "utf-8"));
     $expected_html = $doc->saveHTML();
 
     $actual_html_text = $marker->revert($translated_html);
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
     $actual_html = $doc->saveHTML();
 
@@ -37,12 +39,12 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/youtube_expected.html');
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($expected_html_text, 'HTML-ENTITIES', "utf-8"));
     $expected_html = $doc->saveHTML();
 
     $actual_html_text = $marker->revert($translated_html);
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
     $actual_html = $doc->saveHTML();
 
@@ -58,12 +60,12 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yelp_expected.html');
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($expected_html_text, 'HTML-ENTITIES', "utf-8"));
     $expected_html = $doc->saveHTML();
 
     $actual_html_text = $marker->revert($translated_html);
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
     $actual_html = $doc->saveHTML();
 
@@ -79,12 +81,12 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
     list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
     $expected_html_text = file_get_contents('test/fixtures/real_html/yahoo_jp_expected.html');
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($expected_html_text, 'HTML-ENTITIES', "utf-8"));
     $expected_html = $doc->saveHTML();
 
     $actual_html_text = $marker->revert($translated_html);
-    $doc = new DOMDocument("1.0", "ISO-8859-15");
+    $doc = new \DOMDocument("1.0", "ISO-8859-15");
     $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
     $actual_html = $doc->saveHTML();
 
@@ -286,7 +288,7 @@ class HtmlConverterTest extends PHPUnit_Framework_TestCase
 
   public function testConvertToAppropriateBodyForApiWithSupportedEncoding()
   {
-    foreach (HtmlConverter::$supported_encodings as $encoding) {
+    foreach (HtmlConverter::$supportedEncodings as $encoding) {
       $html = mb_convert_encoding('<html>こんにちは</html>', $encoding);
       list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
       $converter = new HtmlConverter($html, $encoding, $store->settings['project_token'], $store, $headers);
@@ -691,7 +693,7 @@ bye
     $dom = SimpleHtmlDom::str_get_html($html, $charset, false, false, $charset, false);
     $marker = new HtmlReplaceMarker();
 
-    $method = new ReflectionMethod($converter, $name);
+    $method = new \ReflectionMethod($converter, $name);
     $method->setAccessible(true);
 
     $dom->iterateAll(function ($node) use ($method, $converter, $marker) {
@@ -709,7 +711,7 @@ bye
   {
     $marker = new HtmlReplaceMarker();
 
-    $method = new ReflectionMethod($converter, 'removeBackendWovnIgnoreComment');
+    $method = new \ReflectionMethod($converter, 'removeBackendWovnIgnoreComment');
     $method->setAccessible(true);
     $converted_html = $method->invoke($converter, $html, $marker);
 
