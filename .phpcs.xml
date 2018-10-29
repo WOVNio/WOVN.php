@@ -6,14 +6,12 @@
 
   <file>./</file>
   <exclude-pattern>./vendor</exclude-pattern>
+  <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
   <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/html/HtmlConverter.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDom.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDomNode.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/Url.php</exclude-pattern>
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>

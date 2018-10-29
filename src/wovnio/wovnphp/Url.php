@@ -1,7 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
-class Url {
+class Url
+{
   /**
    * Escapes a text to be used inside of a regular expression.
    *
@@ -9,7 +10,8 @@ class Url {
    *
    * @return String The text escaped to be used inside a regular expression.
    */
-  private static function formatForRegExp($text) {
+  private static function formatForRegExp($text)
+  {
     return str_replace('$', '\$', str_replace("\\", "\\\\", $text));
   }
 
@@ -23,7 +25,8 @@ class Url {
    *
    * @return String The new uri containing the language code.
    */
-  public static function addLangCode($uri, $store, $lang, $headers) {
+  public static function addLangCode($uri, $store, $lang, $headers)
+  {
     if (!$lang || strlen($lang) == 0) {
       return $uri;
     }
@@ -66,7 +69,7 @@ class Url {
           case 'subdomain':
             // check if subdomain already exists
             if (preg_match('/\./', $parsed_url['host'])) {
-              $sub_do_a = explode( '.', $parsed_url['host']);
+              $sub_do_a = explode('.', $parsed_url['host']);
               $sub_do = $sub_do_a[0];
               $sub_do_lang = Lang::getCode($sub_do);
               if ($sub_do_lang && strtolower($sub_do_lang) === strtolower($lang_code)) {
@@ -87,25 +90,22 @@ class Url {
         }
       }
     } else {
-      if(!preg_match('/:/', $no_lang_uri)) { // do nothing for protocols other than http and https (e.g. tel)
+      if (!preg_match('/:/', $no_lang_uri)) { // do nothing for protocols other than http and https (e.g. tel)
         // relative links
         switch ($pattern) {
           case 'subdomain':
             $lang_url = $headers->protocol . '://' . strtolower($lang_code) . '.' . $headers->host;
-            $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname,1);
-            if (preg_match('/^\.\..*$/',$no_lang_uri)) {
+            $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
+            if (preg_match('/^\.\..*$/', $no_lang_uri)) {
               // ../path
               $new_uri = $lang_url . '/' . preg_replace('/^\.\.\//', '', $no_lang_uri);
-            }
-            else if (preg_match('/^\..*$/', $no_lang_uri)) {
+            } elseif (preg_match('/^\..*$/', $no_lang_uri)) {
               // ./path
               $new_uri = $lang_url . $current_dir . preg_replace('/^\.\//', '', $no_lang_uri);
-            }
-            else if (preg_match('/^\/.*$/', $no_lang_uri)) {
+            } elseif (preg_match('/^\/.*$/', $no_lang_uri)) {
               // /path
               $new_uri = $lang_url . $no_lang_uri;
-            }
-            else {
+            } else {
               $new_uri = $lang_url . $current_dir . $no_lang_uri;
             }
             break;
@@ -115,8 +115,7 @@ class Url {
           default: // path
             if (preg_match('/^\//', $no_lang_uri)) {
               $new_uri = '/' . $lang_code . $no_lang_uri;
-            }
-            else {
+            } else {
               $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
               $new_uri = '/' . $lang_code . $current_dir . $no_lang_uri;
             }
@@ -135,7 +134,8 @@ class Url {
    *
    * @return String The new uri containing the language code.
    */
-  private static function addQueryLangCode($uri, $lang_code) {
+  private static function addQueryLangCode($uri, $lang_code)
+  {
     $sep = '?';
     if (preg_match('/\?/', $uri)) {
       $sep = '&';
@@ -151,7 +151,8 @@ class Url {
    * @param String $lang_code The lang to remove
    * @return array The url without the lang
    */
-  public static function removeLangCode($uri, $pattern, $lang_code) {
+  public static function removeLangCode($uri, $pattern, $lang_code)
+  {
     if (!$lang_code || strlen($lang_code) == 0) {
       return $uri;
     }
