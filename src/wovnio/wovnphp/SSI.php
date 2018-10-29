@@ -3,18 +3,21 @@
 
   require_once(__DIR__ . '/../../wovn_helper.php');
 
-  class SSI {
-    public static function readFile($includePath, $rootDir=null) {
+  class SSI
+  {
+    public static function readFile($includePath, $rootDir = null)
+    {
       $rootDir = $rootDir ? $rootDir : dirname(dirname(dirname(dirname(__DIR__))));
       $limit = 10; // limit to 10 times nested SSI includes
       return self::readFileRecursive($includePath, $rootDir, $limit);
     }
 
-    public static function readFileRecursive($includePath, $rootDir, &$limit) {
+    public static function readFileRecursive($includePath, $rootDir, &$limit)
+    {
       $ssiIncludeRegexp = '/<!--#include virtual="(.+?)"\s*-->/';
       $includeDir = dirname($includePath);
-      $code = self::get_contents($includePath);
-      $fixSSIPath = function($path, $dir) {
+      $code = self::getContents($includePath);
+      $fixSSIPath = function ($path, $dir) {
         if (!is_file($path)) {
           $candidates = wovn_helper_detect_paths($dir, $path);
 
@@ -29,7 +32,7 @@
       };
 
       while (preg_match($ssiIncludeRegexp, $code)) {
-        $code = preg_replace_callback($ssiIncludeRegexp, function($match) use ($rootDir, $includeDir, $limit, $fixSSIPath) {
+        $code = preg_replace_callback($ssiIncludeRegexp, function ($match) use ($rootDir, $includeDir, $limit, $fixSSIPath) {
           $pathAndQueryString = explode('?', $match[1]);
           $ssiPath = $pathAndQueryString[0];
           if (substr($ssiPath, 0, 1) == '/') {
@@ -44,8 +47,7 @@
 
           if (file_exists($path)) {
             return SSI::readFileRecursive($path, $rootDir, $limit);
-          }
-          else {
+          } else {
             return '<!-- File not found: ' . $path . ' -->';
           }
         }, $code);
@@ -54,7 +56,8 @@
       return $code;
     }
 
-    private static function get_contents($includePath) {
+    private static function getContents($includePath)
+    {
       ob_start();
       include $includePath;
 
