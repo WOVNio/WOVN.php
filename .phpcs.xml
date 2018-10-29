@@ -6,32 +6,25 @@
 
   <file>./</file>
   <exclude-pattern>./vendor</exclude-pattern>
+  <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
   <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/html/HtmlConverter.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/html/HtmlReplaceMarker.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDom.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/modified_vendor/SimpleHtmlDomNode.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/SSI.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/Url.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/EnvFactory.php</exclude-pattern>
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/StoreAndHeadersFactory.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlConverterTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlReplaceMakerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/LangTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/SSITest.php</exclude-pattern>
   <exclude-pattern>./test/unit/StoreTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UrlTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
+  <!-- FIXME: needs indent fixed to solve last errors -->
+  <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>

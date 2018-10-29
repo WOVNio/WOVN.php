@@ -7,14 +7,16 @@ namespace Wovnio\Html;
  * 1. Replace to comment
  * 2. Revert to original content
  */
-class HtmlReplaceMarker {
+class HtmlReplaceMarker
+{
   // The key must not be the same with common html.
-  public static $key_prefix = '__wovn-backend-ignored-key-';
+  public static $keyPrefix = '__wovn-backend-ignored-key-';
 
   private $mappedValues;
   private $currentKeyNumber = 0;
 
-  function __construct() {
+  function __construct()
+  {
     $this->mappedValues = array();
   }
 
@@ -24,7 +26,8 @@ class HtmlReplaceMarker {
    * @param string $value value to swap
    * @return string correspond key to the value
    */
-  function addValue($value) {
+  function addValue($value)
+  {
     $key = $this->generateKey();
     array_push($this->mappedValues, array($key, $value));
     return $key;
@@ -36,7 +39,8 @@ class HtmlReplaceMarker {
    * @param string $value value to swap
    * @return string correspond key to the value
    */
-  function addCommentValue($value) {
+  function addCommentValue($value)
+  {
     $key = '<!-- '.$this->generateKey().' -->';
     array_push($this->mappedValues, array($key, $value));
     return $key;
@@ -48,9 +52,10 @@ class HtmlReplaceMarker {
    * @param string $markedHtml html which contains keys
    * @return string reverted html
    */
-  public function revert($markedHtml) {
+  public function revert($markedHtml)
+  {
     // Replace inversely to handle duplicate replacement
-    for($i = count($this->mappedValues) - 1; $i >= 0; $i--){
+    for ($i = count($this->mappedValues) - 1; $i >= 0; $i--) {
       $marked_value = $this->mappedValues[$i];
       $key = $marked_value[0];
       $value = $marked_value[1];
@@ -65,7 +70,8 @@ class HtmlReplaceMarker {
    *
    * @return array
    */
-  public function keys() {
+  public function keys()
+  {
     $key_array = array();
     foreach ($this->mappedValues as $marked_value) {
       $key = $marked_value[0];
@@ -78,8 +84,9 @@ class HtmlReplaceMarker {
    * Generate unique key
    * @return string
    */
-  private function generateKey() {
-    $new_key = self::$key_prefix . $this->currentKeyNumber;
+  private function generateKey()
+  {
+    $new_key = self::$keyPrefix . $this->currentKeyNumber;
 
     $this->currentKeyNumber++;
     return $new_key;

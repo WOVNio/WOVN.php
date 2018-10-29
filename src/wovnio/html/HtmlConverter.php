@@ -309,7 +309,7 @@ class HtmlConverter
 
     if (strtolower($node->tag) === 'input' && strtolower($node->getAttribute('type')) == 'hidden') {
       $originalText = $node->getAttribute('value');
-      if (strpos($originalText, HtmlReplaceMarker::$key_prefix) !== false) {
+      if (strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
         return;
       }
 
@@ -366,7 +366,7 @@ class HtmlConverter
   private function putReplaceMarker($element, $marker)
   {
     $originalText = $element->innertext;
-    if (strpos($originalText, HtmlReplaceMarker::$key_prefix) !== false) {
+    if (strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
       return;
     }
 
