@@ -15,18 +15,17 @@
   <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
   <exclude-pattern>./test/unit/HeadersTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlConverterTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlReplaceMakerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/LangTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/SSITest.php</exclude-pattern>
   <exclude-pattern>./test/unit/StoreTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UrlTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/UtilsTest.php</exclude-pattern>
+  <!-- FIXME: needs indent fixed to solve last errors -->
+  <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>
