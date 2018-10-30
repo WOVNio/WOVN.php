@@ -3,6 +3,7 @@
 
   require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
 
+  use \Wovnio\Wovnphp\Logger;
   use Wovnio\Html\HtmlConverter;
   use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
@@ -74,7 +75,8 @@
           return $marker->revert($converted_html);
         }
       } catch (\Exception $e) {
-        error_log('****** WOVN++ LOGGER :: Failed to get translated content: ' . $e->getMessage() . ' ******');
+        Logger::get()->error('Failed to get translated content: {exception}.', array('exception' => $e));
+
         return $marker->revert($converted_html);
       }
     }

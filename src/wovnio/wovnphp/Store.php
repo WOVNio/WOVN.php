@@ -1,5 +1,7 @@
 <?php
   namespace Wovnio\Wovnphp;
+
+  use \Wovnio\Wovnphp\Logger;
   use Wovnio\Html\HtmlConverter;
 
   /**
@@ -126,7 +128,8 @@
       }
 
       if (isset($vals['encoding']) && in_array($vals['encoding'], HtmlConverter::$supported_encodings) == false) {
-        error_log('****** WOVN++ LOGGER :: Invalid encoding setting: ' . $vals['encoding'] . ' ******');
+        Logger::get()->warning('Invalid encoding setting: {encoding}.', $vals);
+
         $vals['encoding'] = null;
       }
 
