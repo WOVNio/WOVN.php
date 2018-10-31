@@ -12,7 +12,6 @@
   <exclude-pattern>./src/wovnio/html/HtmlConverter.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlConverterTest.php</exclude-pattern>
