@@ -6,25 +6,19 @@
 
   <file>./</file>
   <exclude-pattern>./vendor</exclude-pattern>
+  <!-- FIXME: original indentation is 4, but it was changed to 2 -->
   <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
   <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/html/HtmlConverter.php</exclude-pattern>
   <exclude-pattern>./src/wovnio/wovnphp/Lang.php</exclude-pattern>
-  <exclude-pattern>./src/wovnio/wovnphp/Store.php</exclude-pattern>
-  <exclude-pattern>./test/helpers/HeadersMock.php</exclude-pattern>
   <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/html/HtmlConverterTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlReplaceMakerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/LangTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/StoreTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UrlTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
-  <!-- FIXME: needs indent fixed to solve last errors -->
-  <exclude-pattern>./test/unit/APITest.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>
@@ -35,7 +29,9 @@
     <!-- PHP 5.3 doesn't allow calling private method inside anonymous
          functions, so we use '_' for implicit visibility in some classes -->
     <exclude name="Squiz.Scope.MethodScope.Missing" />
+    <exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
     <!-- TODO: Fix and remove once other rules are fixed -->
+    <exclude name="PSR2.Methods.FunctionCallSignature.Indent" />
     <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
     <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
     <!-- TODO: Fix indentation before, because this error detection seems too
