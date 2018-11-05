@@ -21,9 +21,9 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
   {
     parent::tearDown();
 
-    \Wovnio\Wovnphp\restore_headers_sent();
-    \Wovnio\Wovnphp\restore_apache_response_headers();
-    \Wovnio\Wovnphp\restore_header();
+    \Wovnio\Wovnphp\restoreHeadersSent();
+    \Wovnio\Wovnphp\restoreApacheResponseHeaders();
+    \Wovnio\Wovnphp\restoreHeader();
   }
 
   public function testHeadersExists()
@@ -956,11 +956,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithDefaultLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -971,16 +971,16 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPatternWhenApacheNotUsed()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(false);
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(false);
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -991,18 +991,18 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPatternWhenHeadersSent()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(true);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(true);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -1013,18 +1013,18 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutAbsoluteUrlWithNotDefaultLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => 'http://my-site.com/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -1035,7 +1035,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
@@ -1043,11 +1043,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithNotDefaultLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -1058,7 +1058,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
@@ -1066,11 +1066,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => 'http://fr.my-site.com/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -1081,7 +1081,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr.my-site.com/index.php', $receivedHeaders[0]);
@@ -1089,11 +1089,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutOutsideRedirectionWithNotDefaultLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => 'http://google.com/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'subdomain');
     $env = array(
@@ -1104,7 +1104,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://google.com/index.php', $receivedHeaders[0]);
@@ -1112,11 +1112,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithNotDefaultAlreadyInRedirectLocationCustomLangAndSubdomainPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => 'http://fr-test.my-site.com/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array(
       'url_pattern_name' => 'subdomain',
@@ -1130,7 +1130,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: http://fr-test.my-site.com/index.php', $receivedHeaders[0]);
@@ -1138,70 +1138,70 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithDefaultLangAndPathPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPatternWhenApacheNotUsed()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(false);
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(false);
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/fr/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPatternWhenHeadersSent()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(true);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(true);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/fr/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndPathPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/fr/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /fr/index.php', $receivedHeaders[0]);
@@ -1209,18 +1209,18 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithNotDefaultLangAlreadyInRedirectLocationAndPathPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/fr/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'path');
     $env = array( 'REQUEST_URI' => '/fr/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /fr/index.php', $receivedHeaders[0]);
@@ -1228,70 +1228,70 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithDefaultLangAndQueryPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'query');
     $env = array( 'REQUEST_URI' => '/test');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPatternWhenApacheNotUsed()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(false);
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(false);
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'query');
     $env = array( 'REQUEST_URI' => '/test?wovn=fr');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPatternWhenHeadersSent()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(true);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(true);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'query');
     $env = array( 'REQUEST_URI' => '/test?wovn=fr');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(0, count($receivedHeaders));
   }
 
   public function testResponseOutWithNotDefaultLangAndQueryPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'query');
     $env = array( 'REQUEST_URI' => '/test?wovn=fr');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
@@ -1299,18 +1299,18 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
   public function testResponseOutWithNotDefaultLangAlreadyInRedirectLocationAndQueryPattern()
   {
-    \Wovnio\Wovnphp\mock_headers_sent(false);
-    \Wovnio\Wovnphp\mock_apache_response_headers(true, array(
+    \Wovnio\Wovnphp\mockHeadersSent(false);
+    \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
       'Location' => '/index.php?wovn=fr'
     ));
-    \Wovnio\Wovnphp\mock_header();
+    \Wovnio\Wovnphp\mockHeader();
 
     $settings = array('url_pattern_name' => 'query');
     $env = array( 'REQUEST_URI' => '/test?wovn=fr');
     list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
     $headers->responseOut();
-    $receivedHeaders = \Wovnio\Wovnphp\get_headers_received_by_header_mock();
+    $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
     $this->assertEquals(1, count($receivedHeaders));
     $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);

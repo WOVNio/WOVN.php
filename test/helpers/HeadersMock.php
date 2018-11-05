@@ -1,4 +1,6 @@
 <?php
+// This namespace cannot be Wovnio\Wovnphp\Tests\Helpers because it must
+// redefine function in the scope of Wovnio\Wovnphp objects.
 namespace Wovnio\Wovnphp;
 
 $mockHeadersSent = false;
@@ -13,7 +15,8 @@ $receivedHeaders = null;
 
 /** MOCK HELPERS **************************************************************/
 
-function mock_headers_sent($mockValue) {
+function mockHeadersSent($mockValue)
+{
   global $mockHeadersSent;
   global $headersSentMock;
 
@@ -21,7 +24,8 @@ function mock_headers_sent($mockValue) {
   $headersSentMock = $mockValue;
 }
 
-function restore_headers_sent() {
+function restoreHeadersSent()
+{
   global $mockHeadersSent;
   global $headersSentMock;
 
@@ -29,7 +33,8 @@ function restore_headers_sent() {
   $headersSentMock = null;
 }
 
-function mock_apache_response_headers($functionExists, $mockValue = array()) {
+function mockApacheResponseHeaders($functionExists, $mockValue = array())
+{
   global $mockApacheResponseHeaders;
   global $functionExistsForApacheResponseHeadersMock;
   global $apacheResponseHeadersMock;
@@ -39,7 +44,8 @@ function mock_apache_response_headers($functionExists, $mockValue = array()) {
   $apacheResponseHeadersMock = $mockValue;
 }
 
-function restore_apache_response_headers() {
+function restoreApacheResponseHeaders()
+{
   global $mockApacheResponseHeaders;
   global $functionExistsForApacheResponseHeadersMock;
   global $apacheResponseHeadersMock;
@@ -49,7 +55,8 @@ function restore_apache_response_headers() {
   $apacheResponseHeadersMock = null;
 }
 
-function mock_header() {
+function mockHeader()
+{
   global $mockHeader;
   global $receivedHeaders;
 
@@ -57,7 +64,8 @@ function mock_header() {
   $receivedHeaders = array();
 }
 
-function restore_header() {
+function restoreHeader()
+{
   global $mockHeader;
   global $receivedHeaders;
 
@@ -65,7 +73,8 @@ function restore_header() {
   $receivedHeaders = null;
 }
 
-function get_headers_received_by_header_mock() {
+function getHeadersReceivedByHeaderMock()
+{
   global $receivedHeaders;
 
   return $receivedHeaders;
@@ -73,7 +82,9 @@ function get_headers_received_by_header_mock() {
 
 /** MOCKED FUNCTIONS **********************************************************/
 
-function headers_sent() {
+// @codingStandardsIgnoreLine
+function headers_sent()
+{
   global $mockHeadersSent;
   global $headersSentMock;
 
@@ -84,7 +95,9 @@ function headers_sent() {
   }
 }
 
-function function_exists($funcName) {
+// @codingStandardsIgnoreLine
+function function_exists($funcName)
+{
   global $mockApacheResponseHeaders;
   global $functionExistsForApacheResponseHeadersMock;
 
@@ -95,7 +108,9 @@ function function_exists($funcName) {
   }
 }
 
-function apache_response_headers() {
+// @codingStandardsIgnoreLine
+function apache_response_headers()
+{
   global $mockApacheResponseHeaders;
   global $apacheResponseHeadersMock;
 
@@ -106,7 +121,8 @@ function apache_response_headers() {
   }
 }
 
-function header($h) {
+function header($h)
+{
   global $mockHeader;
   global $receivedHeaders;
 
@@ -116,4 +132,3 @@ function header($h) {
     return call_user_func_array('\header', func_get_args());
   }
 }
-
