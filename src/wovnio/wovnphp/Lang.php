@@ -66,11 +66,11 @@ class Lang
 
     $lang_code = $store->convertToOriginalCode($lang_code);
 
-    if (self::$index[$lang_code] !== null) {
+    if (isset(LANG::$index[$lang_code])) {
       return $lang_code;
     }
 
-    foreach (self::$index as $lang) {
+    foreach (LANG::$index as $lang) {
       if (strtolower($lang_code) === strtolower($lang['code'])) {
         return $lang['code'];
       }
@@ -90,10 +90,10 @@ class Lang
     if ($lang_name === null) {
       return null;
     }
-    if (self::$index[$lang_name] !== null) {
+    if (isset(LANG::$index[$lang_name])) {
       return $lang_name;
     }
-    foreach (self::$index as $lang) {
+    foreach (LANG::$index as $lang) {
       if (strtolower($lang_name) === strtolower($lang['name']) || strtolower($lang_name) === strtolower($lang['en']) || strtolower($lang_name) === strtolower($lang['code']) || strtolower($lang_name) === strtolower($lang['iso639-1'])) {
         return $lang['code'];
       }
@@ -109,7 +109,7 @@ class Lang
   public static function getEnglishNamesArray()
   {
     $englishNamesArray = array();
-    foreach (self::$index as $lang) {
+    foreach (LANG::$index as $lang) {
       array_push($englishNamesArray, $lang['en']);
     }
     return $englishNamesArray;
@@ -125,8 +125,8 @@ class Lang
    */
   public static function iso6391Normalization($lang_code)
   {
-    if (self::$index[$lang_code] !== null) {
-      return self::$index[$lang_code]['iso639-1'];
+    if (isset(LANG::$index[$lang_code])) {
+      return LANG::$index[$lang_code]['iso639-1'];
     } else {
       return null;
     }
