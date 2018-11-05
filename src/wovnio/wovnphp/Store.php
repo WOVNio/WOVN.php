@@ -132,7 +132,7 @@
         $vals['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
       }
 
-      if (isset($vals['encoding']) && in_array($vals['encoding'], HtmlConverter::$supported_encodings) == false) {
+      if (isset($vals['encoding']) && in_array($vals['encoding'], HtmlConverter::$supportedEncodings) == false) {
         error_log('****** WOVN++ LOGGER :: Invalid encoding setting: ' . $vals['encoding'] . ' ******');
         $vals['encoding'] = null;
       }
