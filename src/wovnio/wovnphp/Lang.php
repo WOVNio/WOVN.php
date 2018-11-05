@@ -8,7 +8,7 @@ namespace Wovnio\Wovnphp;
  */
 class Lang
 {
-  const INDEX = array(
+  public static $index = array(
     'ar' => array('name' => 'العربية',          'code' => 'ar',     'iso639-1' => 'ar',      'en' => 'Arabic'),
     'eu' => array('name' => 'Euskara',          'code' => 'eu',     'iso639-1' => 'eu',      'en' => 'Basque'),
     'bn' => array('name' => 'বাংলা ভাষা',          'code' => 'bn',     'iso639-1' => 'bn',      'en' => 'Bengali'),
@@ -66,11 +66,11 @@ class Lang
 
     $lang_code = $store->convertToOriginalCode($lang_code);
 
-    if (Lang::INDEX[$lang_code] !== null) {
+    if (self::$index[$lang_code] !== null) {
       return $lang_code;
     }
 
-    foreach (self::INDEX as $lang) {
+    foreach (self::$index as $lang) {
       if (strtolower($lang_code) === strtolower($lang['code'])) {
         return $lang['code'];
       }
@@ -90,10 +90,10 @@ class Lang
     if ($lang_name === null) {
       return null;
     }
-    if (self::INDEX[$lang_name] !== null) {
+    if (self::$index[$lang_name] !== null) {
       return $lang_name;
     }
-    foreach (self::INDEX as $lang) {
+    foreach (self::$index as $lang) {
       if (strtolower($lang_name) === strtolower($lang['name']) || strtolower($lang_name) === strtolower($lang['en']) || strtolower($lang_name) === strtolower($lang['code']) || strtolower($lang_name) === strtolower($lang['iso639-1'])) {
         return $lang['code'];
       }
@@ -109,7 +109,7 @@ class Lang
   public static function getEnglishNamesArray()
   {
     $englishNamesArray = array();
-    foreach (self::INDEX as $lang) {
+    foreach (self::$index as $lang) {
       array_push($englishNamesArray, $lang['en']);
     }
     return $englishNamesArray;
@@ -125,8 +125,8 @@ class Lang
    */
   public static function iso6391Normalization($lang_code)
   {
-    if (self::INDEX[$lang_code] !== null) {
-      return self::INDEX[$lang_code]['iso639-1'];
+    if (self::$index[$lang_code] !== null) {
+      return self::$index[$lang_code]['iso639-1'];
     } else {
       return null;
     }
