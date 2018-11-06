@@ -10,8 +10,8 @@ class Logger
 {
   private static $logger = null;
 
-  public $prefix;
-  public $quiet;
+  private $prefix;
+  private $quiet;
 
   public static function get()
   {
@@ -30,6 +30,26 @@ class Logger
   public function __construct($quiet = false, $prefix = 'WOVN.php')
   {
     $this->prefix = $prefix;
+    $this->quiet = $quiet;
+  }
+
+  public function getPrefix()
+  {
+    return $this->prefix;
+  }
+
+  public function setPrefix($prefix)
+  {
+    $this->prefix = $prefix;
+  }
+
+  public function getQuiet()
+  {
+    return $this->quiet;
+  }
+
+  public function setQuiet($quiet)
+  {
     $this->quiet = $quiet;
   }
 

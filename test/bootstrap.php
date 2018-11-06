@@ -20,4 +20,4 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDomNode.php';
 require_once 'test/helpers/StoreAndHeadersFactory.php';
 
 // disable error logging
-\Wovnio\Wovnphp\Logger::set(new \Wovnio\Wovnphp\Logger(true));
+\Wovnio\Wovnphp\Logger::get()->setQuiet(true);
