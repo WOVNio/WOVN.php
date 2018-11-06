@@ -1,11 +1,15 @@
 <?php
+namespace Wovnio\Wovnphp\Tests\Integration;
+
 /*
  * Notes
  * - @runInSeparateProcess: It's need if test call header() function
  */
 
-class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
-  protected function setUp() {
+class WovnIndexSampleTest extends \PHPUnit_Framework_TestCase
+{
+  protected function setUp()
+  {
     $this->baseDir = getcwd();
     $this->workspace = dirname(__FILE__) . '/wovn_index_sample_workspace';
     $this->paths = array();
@@ -31,7 +35,8 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
-  protected function tearDown() {
+  protected function tearDown()
+  {
     // Normaly, this variable is undefined so revert it
     unset($_SERVER['REQUEST_URI']);
     unset($_SERVER['SERVER_PROTOCOL']);
@@ -42,17 +47,20 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $this->paths = array();
   }
 
-  public function testWithFile () {
+  public function testWithFile()
+  {
     $this->touch('index.html');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/index.html'));
   }
 
-  public function testDetectIndexPhp () {
+  public function testDetectIndexPhp()
+  {
     $this->touch('index.php');
     $this->assertEquals('This is index.php', $this->runWovnIndex('/'));
   }
 
-  public function testDetectMultipleFiles () {
+  public function testDetectMultipleFiles()
+  {
     $this->touch('index.html');
     $this->touch('index.php');
     $this->assertEquals('This is index.html', $this->runWovnIndex('/'));
@@ -61,7 +69,8 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   /**
    * @runInSeparateProcess
    */
-  public function testLeadingDoubleDotsBad () {
+  public function testLeadingDoubleDotsBad()
+  {
     $this->touch('index.php');
     $this->assertEquals('Page Not Found', $this->runWovnIndex('/../../index.php'));
   }
@@ -69,7 +78,8 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   /**
    * @runInSeparateProcess
    */
-  public function testTrailingDoubleDotsOk () {
+  public function testTrailingDoubleDotsOk()
+  {
     $this->touch('index.php');
     $this->assertEquals('This is index.php', $this->runWovnIndex('/bird/..'));
   }
@@ -77,7 +87,8 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   /**
    * @runInSeparateProcess
    */
-  public function testSingleDotsOk () {
+  public function testSingleDotsOk()
+  {
     $this->touch('index.php');
     $this->assertEquals('This is index.php', $this->runWovnIndex('/./././././'));
   }
@@ -85,18 +96,21 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
   /**
    * @runInSeparateProcess
    */
-  public function testNotFoundFile () {
+  public function testNotFoundFile()
+  {
     $this->assertEquals('Page Not Found', $this->runWovnIndex('/index.html'));
   }
 
   /**
    * @runInSeparateProcess
    */
-  public function testNotFoundWithDetection () {
+  public function testNotFoundWithDetection()
+  {
     $this->assertEquals('Page Not Found', $this->runWovnIndex('/'));
   }
 
-  private function runWovnIndex($request_uri) {
+  private function runWovnIndex($request_uri)
+  {
     $_SERVER['HTTP_HOST'] = 'localhost';
     $_SERVER['SERVER_NAME'] = 'wovn.php';
     $_SERVER['REQUEST_URI'] = $request_uri;
@@ -106,7 +120,8 @@ class WovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     return ob_get_clean();
   }
 
-  private function touch($file, $content=null) {
+  private function touch($file, $content = null)
+  {
     $content = $content !== null ? $content : 'This is ' . $file;
     file_put_contents($file, $content);
     array_push($this->paths, $file);
