@@ -4,8 +4,8 @@
   require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
 
   use \Wovnio\Wovnphp\Logger;
-  use Wovnio\Html\HtmlConverter;
-  use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
+  use \Wovnio\Html\HtmlConverter;
+  use \Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
   if (!defined('WOVN_PHP_VERSION')) {
     define('WOVN_PHP_VERSION', '0.1.10');
