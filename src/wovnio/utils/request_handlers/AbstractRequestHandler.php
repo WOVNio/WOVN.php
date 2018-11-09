@@ -1,6 +1,8 @@
 <?php
   namespace Wovnio\Utils\RequestHandlers;
 
+  use \Wovnio\Wovnphp\Logger;
+
   abstract class AbstractRequestHandler
   {
 
@@ -22,7 +24,9 @@
             break;
         }
       } catch (\Exception $e) {
-        error_log('****** WOVN++ LOGGER :: Failed to get data from ' . $url . ': ' . $e->getMessage() . ' ******');
+        $errorContext = array('method' => $method, 'url' => $url, 'exception' => $e);
+
+        \Wovnio\Wovnphp\Logger::get()->error('Failed to send {method} request to {url}: {exception}', $errorContext);
       }
 
       return $response;
