@@ -6,6 +6,7 @@ require_once 'vendor/autoload.php';
 
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
+require_once 'src/wovnio/wovnphp/Logger.php';
 require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
 require_once 'src/wovnio/wovnphp/Utils.php';
@@ -17,3 +18,6 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'src/wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
+
+// disable error logging
+\Wovnio\Wovnphp\Logger::get()->setQuiet(true);

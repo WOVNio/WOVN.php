@@ -1,6 +1,7 @@
 <?php
   require_once 'wovnio/wovnphp/Headers.php';
   require_once 'wovnio/wovnphp/Lang.php';
+  require_once 'wovnio/wovnphp/Logger.php';
   require_once 'wovnio/wovnphp/Store.php';
   require_once 'wovnio/wovnphp/Utils.php';
   require_once 'wovnio/wovnphp/API.php';
