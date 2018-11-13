@@ -1,5 +1,5 @@
 <?php
-namespace Wovnio\Wovnphp\Tests;
+namespace Wovnio\Wovnphp\Tests\Units;
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
 
