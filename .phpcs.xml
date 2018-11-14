@@ -17,8 +17,6 @@
   <exclude-pattern>./test/unit/LangTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UrlTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/utils/request_handlers/CurlRequestHandlerTest.php</exclude-pattern>
-  <exclude-pattern>./test/unit/utils/request_handlers/FileGetContentsRequestHandlerTest.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
     <type>error</type>

@@ -1,9 +1,12 @@
 <?php
+namespace Wovn\Wovnphp\Tests\Unit\Utils\RequestHandlers;
 
 require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
 
-class CurlRequestHandlerTest extends PHPUnit_Framework_TestCase {
-  public function testPost() {
+class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
+{
+  public function testPost()
+  {
     $api_url = 'http://api.wovn.io/a/b';
     $data =  array(
       'url' => 'http://wovn.io/a/b',
@@ -21,12 +24,12 @@ class CurlRequestHandlerTest extends PHPUnit_Framework_TestCase {
     );
 
     $options = array(
-      CURLOPT_RETURNTRANSFER => TRUE,
+      CURLOPT_RETURNTRANSFER => true,
       CURLOPT_TIMEOUT => 10,
       CURLOPT_ENCODING => 'gzip',
-      CURLOPT_POST => TRUE,
+      CURLOPT_POST => true,
       CURLOPT_POSTFIELDS => $expected_content,
-      CURLOPT_HEADER => TRUE,
+      CURLOPT_HEADER => true,
       CURLOPT_HTTPHEADER => $expected_context
     );
 
@@ -38,8 +41,9 @@ class CurlRequestHandlerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_response, $response);
   }
 
-  private function createMockedCurlRequestHandler($api_url, $options, $response) {
-    $builder = $this->getMockBuilder('Wovnio\Utils\RequestHandlers\CurlRequestHandler');
+  private function createMockedCurlRequestHandler($api_url, $options, $response)
+  {
+    $builder = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\CurlRequestHandler');
     $builder->setMethods(array('curlExec'));
     $curl_request_handler = $builder->getMock();
     if (method_exists($this, 'registerMockObject')) {
