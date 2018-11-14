@@ -120,7 +120,7 @@ class HtmlConverter
         $lang_codes = $this->store->settings['supported_langs'];
         foreach ($lang_codes as $lang_code) {
           $href = $this->buildHrefLang($lang_code);
-          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
+          array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
         }
       }
 
@@ -211,7 +211,7 @@ class HtmlConverter
     $hreflangTags = array();
     foreach ($lang_codes as $lang_code) {
       $href = $this->buildHrefLang($lang_code);
-      array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso639_1Normalization($lang_code) . '" href="' . $href . '">');
+      array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
     }
 
     $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
