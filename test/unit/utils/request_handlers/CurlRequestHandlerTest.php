@@ -1,5 +1,5 @@
 <?php
-namespace Wovn\Wovnphp\Tests\Unit\Utils\RequestHandlers;
+namespace Wovnio\Wovnphp\Tests\Unit\Utils\RequestHandlers;
 
 require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
 
