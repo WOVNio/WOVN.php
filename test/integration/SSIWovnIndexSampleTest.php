@@ -1,6 +1,10 @@
 <?php
-class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
-  protected function setUp() {
+namespace Wovnio\Wovnphp\Tests\Integration;
+
+class SSIWovnIndexSampleTest extends \PHPUnit_Framework_TestCase
+{
+  protected function setUp()
+  {
     $this->baseDir = getcwd();
     $this->workspace = dirname(__FILE__) . '/wovn_index_sample_workspace';
     $this->paths = array();
@@ -32,7 +36,8 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
   }
 
-  protected function tearDown() {
+  protected function tearDown()
+  {
     // Normaly, this variable is undefined so revert it
     unset($_SERVER['REQUEST_URI']);
     unset($_SERVER['SERVER_PROTOCOL']);
@@ -43,7 +48,8 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $this->paths = array();
   }
 
-  public function testWithSSIAndPHP () {
+  public function testWithSSIAndPHP()
+  {
     // If you are getting errors here and you modified wovn_index_sample, check the 'sed' commands above
     $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include virtual="include.html" -->');
     $this->touch('include.html', 'include <!--#include virtual="nested.html" -->');
@@ -51,7 +57,8 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
   }
 
-  private function runWovnIndex($request_uri) {
+  private function runWovnIndex($request_uri)
+  {
     $_SERVER['HTTP_HOST'] = 'localhost';
     $_SERVER['SERVER_NAME'] = 'wovn.php';
     $_SERVER['REQUEST_URI'] = $request_uri;
@@ -61,7 +68,8 @@ class SSIWovnIndexSampleTest extends PHPUnit_Framework_TestCase {
     return ob_get_clean();
   }
 
-  private function touch($file, $content=null) {
+  private function touch($file, $content = null)
+  {
     $content = $content !== null ? $content : 'This is ' . $file;
     file_put_contents($file, $content);
     array_push($this->paths, $file);
