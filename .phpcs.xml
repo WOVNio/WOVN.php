@@ -10,8 +10,6 @@
   <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
   <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
-  <exclude-pattern>./test/integration/SSIWovnIndexSampleTest.php</exclude-pattern>
-  <exclude-pattern>./test/integration/WovnIndexSampleTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/html/HtmlReplaceMakerTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
   <exclude-pattern>./test/unit/UrlTest.php</exclude-pattern>
