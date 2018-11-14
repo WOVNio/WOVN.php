@@ -82,7 +82,8 @@ function getHeadersReceivedByHeaderMock()
 
 /** MOCKED FUNCTIONS **********************************************************/
 
-// @codingStandardsIgnoreLine
+// phpcs:disable Squiz.NamingConventions.ValidFunctionName.NotCamelCaps
+
 function headers_sent()
 {
   global $mockHeadersSent;
@@ -95,7 +96,6 @@ function headers_sent()
   }
 }
 
-// @codingStandardsIgnoreLine
 function function_exists($funcName)
 {
   global $mockApacheResponseHeaders;
@@ -108,7 +108,6 @@ function function_exists($funcName)
   }
 }
 
-// @codingStandardsIgnoreLine
 function apache_response_headers()
 {
   global $mockApacheResponseHeaders;
@@ -132,3 +131,5 @@ function header($h)
     return call_user_func_array('\header', func_get_args());
   }
 }
+
+// phpcs:enable
