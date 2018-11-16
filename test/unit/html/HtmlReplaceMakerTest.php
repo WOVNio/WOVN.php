@@ -1,15 +1,20 @@
 <?php
+namespace Wovnio\Wovnphp\Tests\Unit;
+
 require_once 'src/wovnio/html/HtmlReplaceMarker.php';
 
 use Wovnio\Html\HtmlReplaceMarker;
 
-class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
-  public function testAddCommentValue() {
+class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
+{
+  public function testAddCommentValue()
+  {
     $marker = new HtmlReplaceMarker();
     $this->assertEquals('<!-- __wovn-backend-ignored-key-0 -->', $marker->addCommentValue('hello'));
   }
 
-  public function testAddCommentValueMultipleTimes() {
+  public function testAddCommentValueMultipleTimes()
+  {
     $maker = new HtmlReplaceMarker();
     $this->assertEquals('<!-- __wovn-backend-ignored-key-0 -->', $maker->addCommentValue('hello'));
     $this->assertEquals('<!-- __wovn-backend-ignored-key-1 -->', $maker->addCommentValue('hello'));
@@ -17,7 +22,8 @@ class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('<!-- __wovn-backend-ignored-key-3 -->', $maker->addCommentValue('hello'));
   }
 
-  public function testAddCommentValueManyTimes() {
+  public function testAddCommentValueManyTimes()
+  {
     $marker = new HtmlReplaceMarker();
 
     for ($i = 0; $i < 25; $i++) {
@@ -25,7 +31,8 @@ class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
     }
   }
 
-  public function testRevert() {
+  public function testRevert()
+  {
     $marker = new HtmlReplaceMarker();
     $original_html = '<html><body>hello<a>  replacement </a>world </body></html>';
     $key = $marker->addCommentValue('hello');
@@ -34,7 +41,8 @@ class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($original_html, $marker->revert($new_html));
   }
 
-  public function testRevertMultipleValue() {
+  public function testRevertMultipleValue()
+  {
     $marker = new HtmlReplaceMarker();
     $original_html = '<html><body>hello<a>  replacement </a>world </body></html>';
     $key1 = $marker->addCommentValue('hello');
@@ -47,7 +55,8 @@ class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($original_html, $marker->revert($new_html));
   }
 
-  public function testRevertManyValue() {
+  public function testRevertManyValue()
+  {
     $marker = new HtmlReplaceMarker();
     $original_html = '<html><body>';
     for ($i = 0; $i < 25; $i++) {
@@ -63,11 +72,12 @@ class HtmlReplaceMarkerTest extends PHPUnit_Framework_TestCase {
       $new_html = str_replace("hello_$i", $key, $new_html);
     }
 
-    $this->assertEquals(false, strpos($new_html,'hello'));
+    $this->assertEquals(false, strpos($new_html, 'hello'));
     $this->assertEquals($original_html, $marker->revert($new_html));
   }
 
-  public function testRevertSameValue() {
+  public function testRevertSameValue()
+  {
     $marker = new HtmlReplaceMarker();
     $original_html = '<html><body>hello<a>hello</a>hello</body></html>';
     $key1 = $marker->addCommentValue('hello');

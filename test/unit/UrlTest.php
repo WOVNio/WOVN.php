@@ -1,4 +1,6 @@
 <?php
+namespace Wovnio\Wovnphp\Tests\Unit;
+
 require_once 'test/helpers/StoreAndHeadersFactory.php';
 
 require_once 'src/wovnio/wovnphp/Url.php';
@@ -13,8 +15,10 @@ use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
 use Wovnio\Wovnphp\Lang;
 
-class UrlTest extends PHPUnit_Framework_TestCase {
-  private function getStarted ($pattern='path', $additional_env=array()) {
+class UrlTest extends \PHPUnit_Framework_TestCase
+{
+  private function getStarted($pattern = 'path', $additional_env = array())
+  {
     $settings = array(
       'default_lang' => 'ja',
       'supported_langs' => array('en'),
@@ -24,7 +28,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     return StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
   }
 
-  public function testAddLangCodeRelativePathWithPathPattern () {
+  public function testAddLangCodeRelativePathWithPathPattern()
+  {
     $uri = '/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -35,7 +40,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("/$lang$uri", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeRelativePathWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeRelativePathWithLangCodeInsideAndPathPattern()
+  {
     $uri = '/fr/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -60,7 +66,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::addLangCode($req_uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeRelativePathWithQueryPattern () {
+  public function testAddLangCodeRelativePathWithQueryPattern()
+  {
     $uri = '/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -71,7 +78,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=$lang", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeRelativePathAndAnchorWithQueryPattern () {
+  public function testAddLangCodeRelativePathAndAnchorWithQueryPattern()
+  {
     $uri = '/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -82,7 +90,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("/index.php?wovn=$lang#test", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeRelativePathWithLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeRelativePathWithLangCodeInsideAndQueryPattern()
+  {
     $uri = '/index.php?wovn=fr';
     $lang = 'fr';
     $pattern = 'query';
@@ -93,7 +102,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLOfDifferentHostWithSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLOfDifferentHostWithSubdomainPattern()
+  {
     $uri = 'http://google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -104,7 +114,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://google.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern()
+  {
     $uri = 'http://fr.google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -115,7 +126,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr.google.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithSubdomainPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -126,7 +138,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr.my-site.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndSubdomainPattern()
+  {
     $uri = 'http://fr.my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -137,7 +150,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithPathPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithPathPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -148,7 +162,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://my-site.com/fr/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndPathPattern()
+  {
     $uri = 'http://my-site.com/fr/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -159,7 +174,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -170,7 +186,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=$lang", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLAndAnchorWithQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLAndAnchorWithQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -181,7 +198,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("http://my-site.com/index.php?wovn=$lang#test", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPURLWithLangCodeInsideAndQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php?wovn=fr';
     $lang = 'fr';
     $pattern = 'query';
@@ -192,7 +210,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLOfDifferentHostWithSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLOfDifferentHostWithSubdomainPattern()
+  {
     $uri = 'https://google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -203,7 +222,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://google.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern()
+  {
     $uri = 'https://fr.google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -214,7 +234,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://fr.google.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -225,7 +246,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://fr.my-site.com/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndSubdomainPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndSubdomainPattern()
+  {
     $uri = 'https://fr.my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -236,7 +258,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithPathPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithPathPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -247,7 +270,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://my-site.com/fr/index.php', Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndPathPattern()
+  {
     $uri = 'https://my-site.com/fr/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -258,7 +282,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -269,7 +294,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=$lang", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLAndAnchorWithQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLAndAnchorWithQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -280,7 +306,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://my-site.com/index.php?wovn=$lang#test", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php?wovn=fr';
     $lang = 'fr';
     $pattern = 'query';
@@ -291,7 +318,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteURLAndPortWithSubdomainPattern () {
+  public function testAddLangCodeAbsoluteURLAndPortWithSubdomainPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -303,7 +331,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://$lang.my-site.com:3000/index.php", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteURLAndPortWithPathPattern () {
+  public function testAddLangCodeAbsoluteURLAndPortWithPathPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -315,7 +344,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://my-site.com:3000/$lang/index.php", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeAbsoluteURLAndPortWithQueryPattern () {
+  public function testAddLangCodeAbsoluteURLAndPortWithQueryPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -327,7 +357,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=fr", Url::addLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeRelativePathWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeCustomLangCodeRelativePathWithLangCodeInsideAndPathPattern()
+  {
     $uri = '/fr-test/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -339,7 +370,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeRelativePathWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeRelativePathWithQueryPattern()
+  {
     $uri = '/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -351,7 +383,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=fr-test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeRelativePathAndAnchorWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeRelativePathAndAnchorWithQueryPattern()
+  {
     $uri = '/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -363,7 +396,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("/index.php?wovn=fr-test#test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeRelativePathWithLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeCustomLangCodeRelativePathWithLangCodeInsideAndQueryPattern()
+  {
     $uri = '/index.php?wovn=fr-test';
     $lang = 'fr';
     $pattern = 'query';
@@ -375,7 +409,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLOfDifferentHostWithSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLOfDifferentHostWithSubdomainPattern()
+  {
     $uri = 'http://google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -387,7 +422,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://google.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern()
+  {
     $uri = 'http://fr.google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -399,7 +435,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr.google.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithSubdomainPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -411,7 +448,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr-test.my-site.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithLangCodeInsideAndSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithLangCodeInsideAndSubdomainPattern()
+  {
     $uri = 'http://fr-test.my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -423,7 +461,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr-test.my-site.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndSubdomainPattern()
+  {
     $uri = 'http://fr.my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -435,7 +474,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://fr.my-site.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithPathPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -447,7 +487,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://my-site.com/fr-test/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithLangCodeInsideAndPathPattern()
+  {
     $uri = 'http://my-site.com/fr-test/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -459,7 +500,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndPathPattern()
+  {
     $uri = 'http://my-site.com/fr/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -471,7 +513,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://my-site.com/fr-test/fr/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -483,7 +526,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=fr-test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLAndAnchorWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLAndAnchorWithQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -495,7 +539,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("http://my-site.com/index.php?wovn=fr-test#test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPURLWithDifferentLangCodeInsideAndQueryPattern()
+  {
     $uri = 'http://my-site.com/index.php?wovn=fr';
     $lang = 'fr';
     $pattern = 'query';
@@ -507,7 +552,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('http://my-site.com/index.php?wovn=fr&wovn=fr-test', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLOfDifferentHostWithSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLOfDifferentHostWithSubdomainPattern()
+  {
     $uri = 'https://google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -519,7 +565,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://google.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLOfDifferentHostWithPseudoLangCodeAndSubdomainPattern()
+  {
     $uri = 'https://fr-test.google.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -531,7 +578,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://fr-test.google.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -543,7 +591,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://fr-test.my-site.com/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndSubdomainPattern()
+  {
     $uri = 'https://fr-test.my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -555,7 +604,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithPathPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -567,7 +617,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('https://my-site.com/fr-test/index.php', Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndPathPattern()
+  {
     $uri = 'https://my-site.com/fr-test/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -579,7 +630,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -591,7 +643,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=fr-test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLAndAnchorWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLAndAnchorWithQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php#test';
     $lang = 'fr';
     $pattern = 'query';
@@ -603,7 +656,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://my-site.com/index.php?wovn=fr-test#test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteHTTPSURLWithLangCodeInsideAndQueryPattern()
+  {
     $uri = 'https://my-site.com/index.php?wovn=fr-test';
     $lang = 'fr';
     $pattern = 'query';
@@ -615,7 +669,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($uri, Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithSubdomainPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithSubdomainPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'subdomain';
@@ -628,7 +683,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://fr-test.my-site.com:3000/index.php", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithPathPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithPathPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'path';
@@ -641,7 +697,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("https://my-site.com:3000/fr-test/index.php", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithQueryPattern () {
+  public function testAddLangCodeCustomLangCodeAbsoluteURLAndPortWithQueryPattern()
+  {
     $uri = 'https://my-site.com:3000/index.php';
     $lang = 'fr';
     $pattern = 'query';
@@ -654,7 +711,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals("$uri?wovn=fr-test", Url::AddLangCode($uri, $store, $lang, $headers));
   }
 
-  public function testRemoveLangCodeRelativePathWithPathPattern () {
+  public function testRemoveLangCodeRelativePathWithPathPattern()
+  {
     $lang = 'fr';
     $expected_uri = '/index.php';
     $uri = "/$lang$expected_uri";
@@ -666,7 +724,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndPathPattern () {
+  public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndPathPattern()
+  {
     $lang = 'fr';
     $expected_uri = '/index.php';
     $uri = "$expected_uri";
@@ -678,7 +737,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function tesRemoveLangCodeRelativePathWithQueryPattern () {
+  public function tesRemoveLangCodeRelativePathWithQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = '/index.php';
     $uri = "$expected_uri?wovn=$lang";
@@ -690,7 +750,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndQueryPattern () {
+  public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = '/index.php';
     $uri = "$expected_uri?wovn=$lang";
@@ -702,7 +763,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithSubdomainPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithSubdomainPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'http://my-site.com/index.php';
     $uri = "http://$lang.my-site.com/index.php";
@@ -714,7 +776,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndSubdomainPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndSubdomainPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'http://my-site.com/index.php';
     $uri = $expected_uri;
@@ -726,7 +789,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithPathPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithPathPattern()
+  {
     $lang = 'fr';
     $expected_url = 'http://my-site.com/index.php';
     $uri = 'http://my-site.com/fr/index.php';
@@ -738,7 +802,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndPathPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndPathPattern()
+  {
     $lang = 'fr';
     $expected_url = 'http://my-site.com/index.php';
     $uri = $expected_url;
@@ -750,7 +815,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithQueryPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'http://my-site.com/index.php';
     $uri = "$expected_uri?wovn=$lang";
@@ -762,7 +828,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndQueryPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'http://my-site.com/index.php';
     $uri = $expected_uri;
@@ -774,7 +841,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithSubdomainPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = 'https://fr.my-site.com/index.php';
@@ -786,7 +854,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndSubdomainPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndSubdomainPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = $expected_uri;
@@ -798,7 +867,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithPathPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithPathPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = 'https://my-site.com/fr/index.php';
@@ -810,7 +880,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndPathPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndPathPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = $expected_uri;
@@ -822,7 +893,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithQueryPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = "$expected_uri?wovn=$lang";
@@ -834,7 +906,8 @@ class UrlTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
   }
 
-  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndQueryPattern () {
+  public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndQueryPattern()
+  {
     $lang = 'fr';
     $expected_uri = 'https://my-site.com/index.php';
     $uri = $expected_uri;
