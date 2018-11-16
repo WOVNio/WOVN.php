@@ -1,8 +1,12 @@
 <?php
+namespace Wovnio\Wovnphp\Tests\Unit\Utils\RequestHandlers;
+
 require_once 'src/wovnio/utils/request_handlers/FileGetContentsRequestHandler.php';
 
-class FileGetContentsRequestHandlerTest extends PHPUnit_Framework_TestCase {
-  public function testPost() {
+class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
+{
+  public function testPost()
+  {
     $api_url = 'http://api.wovn.io/a/b';
     $data =  array(
       'url' => 'http://wovn.io/a/b',
@@ -28,8 +32,9 @@ class FileGetContentsRequestHandlerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($expected_response, $response);
   }
 
-  private function createMockedFileGetHandler($api_url, $http_context, $response) {
-    $builder = $this->getMockBuilder('Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler');
+  private function createMockedFileGetHandler($api_url, $http_context, $response)
+  {
+    $builder = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler');
     $builder->setMethods(array('fileGetContents'));
     $file_get_handler = $builder->getMock();
     if (method_exists($this, 'registerMockObject')) {
