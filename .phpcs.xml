@@ -9,7 +9,6 @@
   <!-- FIXME: original indentation is 4, but it was changed to 2 -->
   <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
   <!-- TODO: fix excluded files below -->
-  <exclude-pattern>./src/wovn_helper.php</exclude-pattern>
   <exclude-pattern>./test/unit/modified_vendor/SimpleHtmlDomTest.php</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
