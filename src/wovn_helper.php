@@ -1,23 +1,29 @@
 <?php
 require_once(__DIR__ . '/wovnio/wovnphp/SSI.php');
+
 use Wovnio\Wovnphp\SSI;
 
-function reduce_slashes($path) {
+// Changing code to pass this rule will break compatibility with current
+// static websites using WOVN.php.
+// phpcs:disable Squiz.NamingConventions.ValidFunctionName.NotCamelCaps
+
+function reduce_slashes($path)
+{
   # Reduces a sequence of slashes to a single slash
   # e.g. '///./////.///' -> '/././'
   $i = 0;
-  while($i + 1 < strlen($path)) {
-    if($path[$i] == '/' && $path[$i + 1] == '/') {
+  while ($i + 1 < strlen($path)) {
+    if ($path[$i] == '/' && $path[$i + 1] == '/') {
       $path = substr($path, 0, $i) . substr($path, $i + 1, strlen($path));
-    }
-    else {
+    } else {
       $i++;
     }
   }
   return $path;
 }
 
-function remove_dots_from_path($path) {
+function remove_dots_from_path($path)
+{
   # Removes '/./ in paths and resolves '/../' in paths
   # From https://tomnomnom.com/posts/realish-paths-without-realpath
   # See also http://php.net/manual/en/function.realpath.php#84012
@@ -25,7 +31,7 @@ function remove_dots_from_path($path) {
 
   $path_parts = explode('/', $path);
   $tmp_out = array();
-  foreach($path_parts as $part){
+  foreach ($path_parts as $part) {
     if ($part == '.') {
       continue;
     }
@@ -38,7 +44,8 @@ function remove_dots_from_path($path) {
   return implode('/', $tmp_out);
 }
 
-function wovn_helper_default_index_files() {
+function wovn_helper_default_index_files()
+{
   if (defined('WOVNPHP_DEFAULT_INDEX_FILE')) {
     return array(WOVNPHP_DEFAULT_INDEX_FILE);
   }
@@ -54,7 +61,8 @@ function wovn_helper_default_index_files() {
   );
 }
 
-function wovn_helper_detect_paths($local_dir, $path_of_url) {
+function wovn_helper_detect_paths($local_dir, $path_of_url)
+{
   $base_dir = realpath(remove_dots_from_path($local_dir));
   $request_path = $base_dir . '/' . $path_of_url;
   $local_path = realpath(remove_dots_from_path($request_path));
@@ -63,7 +71,7 @@ function wovn_helper_detect_paths($local_dir, $path_of_url) {
 
   if ($local_path && is_file($local_path)) {
     return array($local_path);
-  } else if (is_dir($local_path)) {
+  } elseif (is_dir($local_path)) {
     $local_dir = substr($local_path, 0, strlen($local_path)) === '/' ? $local_path : $local_path . '/';
     $detect_paths = array();
     foreach (wovn_helper_default_index_files() as $index_file) {
@@ -75,7 +83,8 @@ function wovn_helper_detect_paths($local_dir, $path_of_url) {
   }
 }
 
-function wovn_helper_include_by_paths($paths) {
+function wovn_helper_include_by_paths($paths)
+{
   foreach ($paths as $path) {
     if (is_file($path)) {
       include($path);
@@ -85,7 +94,8 @@ function wovn_helper_include_by_paths($paths) {
   return false;
 }
 
-function wovn_helper_include_by_paths_with_ssi($paths) {
+function wovn_helper_include_by_paths_with_ssi($paths)
+{
   foreach ($paths as $path) {
     if (is_file($path)) {
       echo SSI::readFile($path);
@@ -94,3 +104,5 @@ function wovn_helper_include_by_paths_with_ssi($paths) {
   }
   return false;
 }
+
+// phpcs:enable
