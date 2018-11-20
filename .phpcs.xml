@@ -6,7 +6,6 @@
 
   <file>./</file>
   <exclude-pattern>./vendor</exclude-pattern>
-  <!-- FIXME: original indentation is 4, but it was changed to 2 -->
   <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
 
   <rule ref="Internal.Tokenizer.Exception">
@@ -15,13 +14,6 @@
 
   <!-- https://www.php-fig.org/psr/psr-2/ -->
   <rule ref="PSR2">
-    <!-- TODO: Fix and remove once other rules are fixed -->
-    <exclude name="PSR2.Methods.FunctionCallSignature.Indent" />
-    <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
-    <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect" />
-    <!-- TODO: Fix indentation before, because this error detection seems too
-               dependent to the indentation size -->
-    <exclude name="PSR2.ControlStructures.SwitchDeclaration.BreakIndent" />
     <!-- TODO: Fix indentation before fixing lines too long warnings -->
     <exclude name="Generic.Files.LineLength.TooLong" />
     <!-- TODO: Fix at last (probably fixed after autoloading setup) -->

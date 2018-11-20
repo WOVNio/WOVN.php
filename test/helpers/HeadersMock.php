@@ -17,67 +17,67 @@ $receivedHeaders = null;
 
 function mockHeadersSent($mockValue)
 {
-  global $mockHeadersSent;
-  global $headersSentMock;
+    global $mockHeadersSent;
+    global $headersSentMock;
 
-  $mockHeadersSent = true;
-  $headersSentMock = $mockValue;
+    $mockHeadersSent = true;
+    $headersSentMock = $mockValue;
 }
 
 function restoreHeadersSent()
 {
-  global $mockHeadersSent;
-  global $headersSentMock;
+    global $mockHeadersSent;
+    global $headersSentMock;
 
-  $mockHeadersSent = false;
-  $headersSentMock = null;
+    $mockHeadersSent = false;
+    $headersSentMock = null;
 }
 
 function mockApacheResponseHeaders($functionExists, $mockValue = array())
 {
-  global $mockApacheResponseHeaders;
-  global $functionExistsForApacheResponseHeadersMock;
-  global $apacheResponseHeadersMock;
+    global $mockApacheResponseHeaders;
+    global $functionExistsForApacheResponseHeadersMock;
+    global $apacheResponseHeadersMock;
 
-  $mockApacheResponseHeaders = true;
-  $functionExistsForApacheResponseHeadersMock = $functionExists;
-  $apacheResponseHeadersMock = $mockValue;
+    $mockApacheResponseHeaders = true;
+    $functionExistsForApacheResponseHeadersMock = $functionExists;
+    $apacheResponseHeadersMock = $mockValue;
 }
 
 function restoreApacheResponseHeaders()
 {
-  global $mockApacheResponseHeaders;
-  global $functionExistsForApacheResponseHeadersMock;
-  global $apacheResponseHeadersMock;
+    global $mockApacheResponseHeaders;
+    global $functionExistsForApacheResponseHeadersMock;
+    global $apacheResponseHeadersMock;
 
-  $mockApacheResponseHeaders = false;
-  $functionExistsForApacheResponseHeadersMock = null;
-  $apacheResponseHeadersMock = null;
+    $mockApacheResponseHeaders = false;
+    $functionExistsForApacheResponseHeadersMock = null;
+    $apacheResponseHeadersMock = null;
 }
 
 function mockHeader()
 {
-  global $mockHeader;
-  global $receivedHeaders;
+    global $mockHeader;
+    global $receivedHeaders;
 
-  $mockHeader = true;
-  $receivedHeaders = array();
+    $mockHeader = true;
+    $receivedHeaders = array();
 }
 
 function restoreHeader()
 {
-  global $mockHeader;
-  global $receivedHeaders;
+    global $mockHeader;
+    global $receivedHeaders;
 
-  $mockHeader = false;
-  $receivedHeaders = null;
+    $mockHeader = false;
+    $receivedHeaders = null;
 }
 
 function getHeadersReceivedByHeaderMock()
 {
-  global $receivedHeaders;
+    global $receivedHeaders;
 
-  return $receivedHeaders;
+    return $receivedHeaders;
 }
 
 /** MOCKED FUNCTIONS **********************************************************/
@@ -86,50 +86,50 @@ function getHeadersReceivedByHeaderMock()
 
 function headers_sent()
 {
-  global $mockHeadersSent;
-  global $headersSentMock;
+    global $mockHeadersSent;
+    global $headersSentMock;
 
-  if ($mockHeadersSent) {
-     return $headersSentMock;
-  } else {
-    return call_user_func_array('\headers_sent', func_get_args());
-  }
+    if ($mockHeadersSent) {
+        return $headersSentMock;
+    } else {
+        return call_user_func_array('\headers_sent', func_get_args());
+    }
 }
 
 function function_exists($funcName)
 {
-  global $mockApacheResponseHeaders;
-  global $functionExistsForApacheResponseHeadersMock;
+    global $mockApacheResponseHeaders;
+    global $functionExistsForApacheResponseHeadersMock;
 
-  if ($mockApacheResponseHeaders && $funcName === 'apache_response_headers') {
-     return $functionExistsForApacheResponseHeadersMock;
-  } else {
-    return call_user_func_array('\function_exists', func_get_args());
-  }
+    if ($mockApacheResponseHeaders && $funcName === 'apache_response_headers') {
+        return $functionExistsForApacheResponseHeadersMock;
+    } else {
+        return call_user_func_array('\function_exists', func_get_args());
+    }
 }
 
 function apache_response_headers()
 {
-  global $mockApacheResponseHeaders;
-  global $apacheResponseHeadersMock;
+    global $mockApacheResponseHeaders;
+    global $apacheResponseHeadersMock;
 
-  if ($mockApacheResponseHeaders) {
-     return $apacheResponseHeadersMock;
-  } else {
-    return call_user_func_array('\apache_response_headers', func_get_args());
-  }
+    if ($mockApacheResponseHeaders) {
+        return $apacheResponseHeadersMock;
+    } else {
+        return call_user_func_array('\apache_response_headers', func_get_args());
+    }
 }
 
 function header($h)
 {
-  global $mockHeader;
-  global $receivedHeaders;
+    global $mockHeader;
+    global $receivedHeaders;
 
-  if ($mockHeader) {
-     array_push($receivedHeaders, $h);
-  } else {
-    return call_user_func_array('\header', func_get_args());
-  }
+    if ($mockHeader) {
+        array_push($receivedHeaders, $h);
+    } else {
+        return call_user_func_array('\header', func_get_args());
+    }
 }
 
 // phpcs:enable
