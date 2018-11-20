@@ -275,7 +275,7 @@ class HtmlConverter
   }
 
   // PHP 5.3 doesn't allow calling private method inside anonymous functions,
-  // so we use '_' for implicit visibility in some classes
+  // so we use '_' for implicit visibility in the methods below
   // phpcs:disable Squiz.Scope.MethodScope.Missing
   // phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
 
