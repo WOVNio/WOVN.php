@@ -15,7 +15,7 @@ class HtmlReplaceMarker
   private $mappedValues;
   private $currentKeyNumber = 0;
 
-  function __construct()
+  public function __construct()
   {
     $this->mappedValues = array();
   }
@@ -26,7 +26,7 @@ class HtmlReplaceMarker
    * @param string $value value to swap
    * @return string correspond key to the value
    */
-  function addValue($value)
+  public function addValue($value)
   {
     $key = $this->generateKey();
     array_push($this->mappedValues, array($key, $value));
@@ -39,7 +39,7 @@ class HtmlReplaceMarker
    * @param string $value value to swap
    * @return string correspond key to the value
    */
-  function addCommentValue($value)
+  public function addCommentValue($value)
   {
     $key = '<!-- '.$this->generateKey().' -->';
     array_push($this->mappedValues, array($key, $value));

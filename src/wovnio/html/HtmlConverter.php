@@ -274,6 +274,11 @@ class HtmlConverter
     $element->innertext = $key;
   }
 
+  // PHP 5.3 doesn't allow calling private method inside anonymous functions,
+  // so we use '_' for implicit visibility in some classes
+  // phpcs:disable Squiz.Scope.MethodScope.Missing
+  // phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
+
   /**
    * @param SimpleHtmlDomNode $node
    */
@@ -379,4 +384,6 @@ class HtmlConverter
       $this->putReplaceMarker($node, $marker);
     }
   }
+
+  // phpcs:enable
 }

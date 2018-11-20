@@ -24,7 +24,7 @@ class Utils
    * @example
    *  joinPath('/hello/', '/world/') #=> '/hello/world/'
    */
-  static function joinPath($parentPath, $childPath)
+  public static function joinPath($parentPath, $childPath)
   {
     return preg_replace('/\/+/', '/', $parentPath . '/'. $childPath);
   }

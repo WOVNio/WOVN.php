@@ -18,10 +18,6 @@
 
   <!-- https://www.php-fig.org/psr/psr-2/ -->
   <rule ref="PSR2">
-    <!-- PHP 5.3 doesn't allow calling private method inside anonymous
-         functions, so we use '_' for implicit visibility in some classes -->
-    <exclude name="Squiz.Scope.MethodScope.Missing" />
-    <exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
     <!-- TODO: Fix and remove once other rules are fixed -->
     <exclude name="PSR2.Methods.FunctionCallSignature.Indent" />
     <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact" />
