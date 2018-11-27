@@ -8,31 +8,31 @@ use Wovnio\Wovnphp\Headers;
 
 class StoreAndHeadersFactory
 {
-  public static function fromFixture($fixture = 'default', $settingsOverwrite = array(), $envOverwrite = array())
-  {
-    $storeSettings = self::buildStoreOptions($settingsOverwrite);
-    $env = EnvFactory::fromFixture($fixture, $envOverwrite);
+    public static function fromFixture($fixture = 'default', $settingsOverwrite = array(), $envOverwrite = array())
+    {
+        $storeSettings = self::buildStoreOptions($settingsOverwrite);
+        $env = EnvFactory::fromFixture($fixture, $envOverwrite);
 
-    return StoreAndHeadersFactory::get($env, $storeSettings);
-  }
+        return StoreAndHeadersFactory::get($env, $storeSettings);
+    }
 
-  public static function get($env, $settings = array())
-  {
-    $store = new Store($settings);
-    $headers = new Headers($env, $store);
+    public static function get($env, $settings = array())
+    {
+        $store = new Store($settings);
+        $headers = new Headers($env, $store);
 
-    return array($store, $headers);
-  }
+        return array($store, $headers);
+    }
 
-  private static function buildStoreOptions($options)
-  {
-    $defaultOptions = array(
-      'default_lang' => 'en',
-      'supported_langs' => array('en'),
-      'url_pattern_name' => 'query',
-      'project_token' => '123456'
-    );
+    private static function buildStoreOptions($options)
+    {
+        $defaultOptions = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en'),
+            'url_pattern_name' => 'query',
+            'project_token' => '123456'
+        );
 
-    return array_merge($defaultOptions, $options);
-  }
+        return array_merge($defaultOptions, $options);
+    }
 }

@@ -1,31 +1,31 @@
 <?php
-  namespace Wovnio\Utils\RequestHandlers;
+namespace Wovnio\Utils\RequestHandlers;
 
-  require_once 'FileGetContentsRequestHandler.php';
-  require_once 'CurlRequestHandler.php';
+require_once 'FileGetContentsRequestHandler.php';
+require_once 'CurlRequestHandler.php';
 
-  use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
-  use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
+use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
+use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
 
-  class RequestHandlerFactory
-  {
+class RequestHandlerFactory
+{
     private static $instance = null;
 
     public static function setInstance($instance)
     {
-      self::$instance = $instance;
+        self::$instance = $instance;
     }
 
     public static function get()
     {
-      if (self::$instance === null) {
-        if (function_exists('curl_version')) {
-          self::$instance = new CurlRequestHandler();
-        } else {
-          self::$instance = new FileGetContentsRequestHandler();
+        if (self::$instance === null) {
+            if (function_exists('curl_version')) {
+                self::$instance = new CurlRequestHandler();
+            } else {
+                self::$instance = new FileGetContentsRequestHandler();
+            }
         }
-      }
 
-      return self::$instance;
+        return self::$instance;
     }
-  }
+}
