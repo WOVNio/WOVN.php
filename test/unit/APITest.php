@@ -90,13 +90,15 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     private function getExpectedData($store, $headers, $converted_body, $extra = array())
     {
-        $data = array_merge($store->settings, array(
+        $data = array(
             'url' => $headers->urlKeepTrailingSlash,
+            'token' => $store->settings['project_token'],
             'lang_code' => $headers->lang(),
+            'url_pattern' => $store->settings['url_pattern_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body
-        ));
+        );
 
         return array_merge($data, $extra);
     }
