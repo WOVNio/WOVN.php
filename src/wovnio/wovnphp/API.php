@@ -48,13 +48,15 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
-        $data = array_merge($store->settings, array(
+        $data = array(
             'url' => $headers->urlKeepTrailingSlash,
+            'token' => $token,
             'lang_code' => $headers->lang(),
+            'url_pattern' => $store->settings['url_pattern_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_html
-        ));
+        );
 
         if (count($store->settings['custom_lang_aliases']) > 0) {
             $data['custom_lang_aliases'] = json_encode($store->settings['custom_lang_aliases']);
