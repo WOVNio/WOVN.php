@@ -102,7 +102,7 @@ an Apache server, please follow the
 using Nginx withtout Apache, please follow the
 [instructions for Nginx](#redirect-to-wovn_indexphp-with-nginx).
 
-##### Redirect to `wovn_index.php` with Apache
+#### Redirect to `wovn_index.php` with Apache
 For redirecting requests to `wovn_index.php`, we recommend using `.htaccess`
 configuration with `mod_rewrite` PHP module. Please follow the
 [official instructions](https://httpd.apache.org/docs/2.4/) for installing and
@@ -133,7 +133,7 @@ directory.
 $ cp WOVN.php/htaccess_sample .htaccess
 ```
 
-##### Redirect to `wovn_index.php` with Nginx
+#### Redirect to `wovn_index.php` with Nginx
 For redirecting to `wovn_index.php`, you need to update your Nginx configuration
 (`/etc/nginx/conf.d/site.conf`). Bellow is an highlight of the configurations
 you need to add in the congiguration file.
