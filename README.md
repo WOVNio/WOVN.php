@@ -1,16 +1,16 @@
 # WOVN.php Instructions
 
 ## Table of Contents
-1. [Requirements](requirements)
-2. [Installation](installation)
-3. [Configuration](configuration)
-4. [Bug Report](bug-report)
-5. [Troubleshooting](frequently-asked-questions)
+1. [Requirements](#requirements)
+2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [Bug Report](#bug-report)
+5. [Troubleshooting](#frequently-asked-questions)
 
 ## 1. Requirements
 WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
 Depending on your configuration, you might have to install and/or activate the
-PHP module `mod_rewrite` (see [Section 3.](configuration)).
+PHP module `mod_rewrite` (see [Section 3.](#configuration)).
 
 WOVN.php has been tested with Apache 2 and Nginx. We provide installation
 instructions for both. If you use other technologies, we encourage you to
@@ -41,7 +41,7 @@ $ cp WOVN.php/wovn.ini wovn.ini
 
 In this section, we give you the basic configuration you should use to get
 started. You can find complete details of WOVN.php configuration at
-[Section 3.](configuration). To get started, you need to know at least your
+[Section 3.](#configuration). To get started, you need to know at least your
 WOVN.io project token, the original language of your website and the languages
 your website can be translated into by WOVN.io. To obtain your project token,
 you can visit your project dashboard, click on "INTEGRATION METHODS" and then
