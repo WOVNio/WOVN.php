@@ -161,23 +161,24 @@ server {
 ## 3. Configuration
 Bellow is every WOVN.php parameter that you can set at `wovn.ini`.
 
-Parameter | Required? | Advanced? | Default value | Comment
-`project_token` | • | | | WOVN.io project token.
-`default_lang` | • | | | Website's original language.
-`supported_langs` | • | | WOVN.io translatable languages.
-`url_pattern_name` | | • | `query` | URL component where the language information will be added for each Web page.
-`encoding` | | `UTF-8` | | Your content encoding.
-`api_timeout` | | 1.0 | • | Maximum amount of time allowed to localize content (in seconds).
-`disable_api_request_for_default_lang` | • | `false` | Set to `true` for optimization. When set to `true`, Web pages requested in original language won't be sent to our translation API.
-`use_proxy` | | | • |
-`query` | | | |
-`custom_lang_aliases` | | | |
-`override_content_length` | | | • |
-`clean_unprocessable_characters` | | | • |
-`use_server_error_settings` | | | • |
-`ignore_paths` | | | |
-`ignore_regex` | | | |
-`ignore_class` | | | |
+Parameter                              | Required? | Advanced? | Default value | Comment
+-------------------------------------- | --------- | --------- | ------------- | -------
+`project_token`                        |     •     |           |               | WOVN.io project token.
+`default_lang`                         |     •     |           |               | Website's original language.
+`supported_langs`                      |     •     |           |               | WOVN.io translatable languages.
+`url_pattern_name`                     |           |     •     |    `query`    | URL component where the language information will be added for each Web page.
+`encoding`                             |           |           |    `UTF-8`    | Your content encoding.
+`api_timeout`                          |           |     •     |      1.0      | Maximum amount of time allowed to localize content (in seconds).
+`disable_api_request_for_default_lang` |           |     •     |    `false`    | Set to `true` for optimization. When set to `true`, Web pages requested in original language won't be sent to our translation API.
+`use_proxy`                            |           |     •     |               |
+`query`                                |           |           |               |
+`custom_lang_aliases`                  |           |           |               |
+`override_content_length`              |           |     •     |               |
+`clean_unprocessable_characters`       |           |     •     |               |
+`use_server_error_settings`            |           |     •     |               |
+`ignore_paths`                         |           |           |               |
+`ignore_regex`                         |           |           |               |
+`ignore_class`                         |           |           |               |
 
 ### `supported_langs`
 ### `url_pattern_name`
