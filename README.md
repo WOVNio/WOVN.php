@@ -2,7 +2,7 @@
 
 ## Table of Contents
 1. [Requirements](#1-requirements)
-2. [Installation](#2-installation)
+2. [Getting Started](#2-getting-started)
 3. [Configuration](#3-configuration)
 4. [Bug Report](#4-bug-report)
 5. [Troubleshooting](#5-troubleshooting)
@@ -17,7 +17,7 @@ WOVN.php has been tested with Apache 2 and Nginx. We provide installation
 instructions for both. If you use other technologies, we encourage you to
 [contact us](mailto:support@wovn.io) for support.
 
-## 2. Installation
+## 2. Getting Started
 ### 2.1. Download WOVN.php
 To install WOVN.php, you have to manually download WOVN.php from our Github
 repository. The root directory of WOVN.php must be place  at the root of your
