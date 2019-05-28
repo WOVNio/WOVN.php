@@ -10,7 +10,8 @@
 ## 1. Requirements
 WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
 Depending on your configuration, you might have to install and/or activate the
-PHP module `mod_rewrite` (see [Section 3.](#3-configuration)).
+PHP module `mod_rewrite` (see [Section 2.3.2.](#232-for-static-websites) and
+[Section 3.](#3-configuration)).
 
 WOVN.php has been tested with Apache 2 and Nginx. We provide installation
 instructions for both. If you use other technologies, we encourage you to
