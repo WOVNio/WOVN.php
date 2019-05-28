@@ -1,54 +1,79 @@
-# Welcome to WOVN.php
+# WOVN.php Instructions
 
-## I. Basic install
-### 1. Clone the repository in your application root folder
-### 2. Edit the configuration file
-These are the three main settings for your project
- - project_token: your WOVNio's project token
- - url_pattern_name: query, path or subdomain (default is query)
- - default_lang: the code of the default language of your website, ex: ja (for Japanese)
+## Table of Contents
+1. [Requirements](requirements)
+2. [Installation](installation)
+3. [Configuration](configuration)
+4. [Bug Report](bug-report)
+5. [Troubleshooting](frequently-asked-questions)
 
-Please copy the sample file from the library `wovn.ini.sample`, rename it to `wovn.ini` and paste it in your framework's root directory (same level as WOVN.php directory)
+## 1. Requirements
+WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
+Depending on your configuration, you might have to install and/or activate the
+PHP module `mod_rewrite` (see [Section 3.](configuration)).
 
-After pasting, your directory structure should look like the following:
+WOVN.php has been tested with Apache 2 and Nginx. We provide installation
+instructions for both. If you use other technologies, we encourage you to
+[contact us](mailto:support@wovn.io) for support.
+
+## 2. Installation
+### 2.1. Downloading WOVN.php
+To install WOVN.php, you have to manually download WOVN.php from our Github
+repository. The root directory of WOVN.php must be place  at the root of your
+website's directory.
 ```
-root_directory/wovn.ini
-root_directory/WOVN.php/wovn.ini.sample
-```
-
-### 3. Configure .htaccess for "path" URL pattern
-If you are using "path" as URL pattern, you have to configure edit your
-`.htaccess` file to ignore the language code in the path of the URL. If you are
-not using `.htaccess` yet, you can simply create the file in the root directory
-of you website.
-
-Below is the snippet of code using the `mod_rewrite` PHP module. Paste it before
-your other `RewriteRules` (if you have some) to ignore the language code in the
-ath of any URL.
-```
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-  RewriteRule ^/?(?:ar|bg|zh-CHS|zh-CHT|da|nl|en|fi|fr|de|el|he|id|it|ja|ko|ms|no|pl|pt|ru|es|sv|th|hi|tr|uk|vi)($|/.*$) $1  [QSA,L]
-</IfModule>
+$ cd /website/root/dirctory
+$ wget https://github.com/WOVNio/WOVN.php/archive/master.zip -O WOVN.php.zip
+$ unzip WOVN.php.zip; mv WOVN.php-master WOVN.php
 ```
 
-### 4. Require the wovn_interceptor.php file in your application
- `require_once('/path/to/WOVN.php/src/wovn_interceptor.php');`
-<!--
-## Composer install
-### 1. Require the package in your composer.json file
-```
-require: {
-    "WOVNio/WOVN.php": "*"
-}
-```
-### 2. Edit the configuration file
-These are the two main settings for your project
- - project_token: your WOVNio's project token
- - url_pattern: query, path or subdomain (default is query)
- - default_lang: the code of the default language of your website, ex: ja (for Japanese)
- - encoding: encoding of html. If not specified, detect automatically.
-     Supported encoding: 'UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII'
+**Note on updates:** When you need to update WOVN.php, you can simply replace
+all the content of `WOVN.php` directory by the content of the new version.
 
-Please copy the sample file from the library `wovn.ini.sample`, rename it as `wovn.ini` and paste it on your framework root directory (same level as WOVN.php directory)
--->
+### 2.2. Basic configuration
+In order for WOVN.php to work with you WOVN.io project, you need to fill a
+configuration file. The configuration file must be named `wovn.ini` and be
+placed at the root of your website's directory. You start from the sample file
+at `WOVN.php/wovn.ini.sample`.
+```
+$ cp WOVN.php/wovn.ini wovn.ini
+```
+
+In this section, we give you the basic configuration you should use to get
+started. You can find complete details of WOVN.php configuration at
+[Section 3.](configuration). To get started, you need to know at least your
+WOVN.io project token, the original language of your website and the languages
+your website can be translated into by WOVN.io. To obtain your project token,
+you can visit your project dashboard, click on "INTEGRATION METHODS" and then
+select the "PHP Library" installation method.
+
+Bellow is an example configuration for a project with token "TOKEN", original
+language English (`en`) and translated languages Japanese (`ja`) and French
+(`fr`).
+```
+project_token = TOKEN
+url_pattern_name = query
+default_lang = en
+supported_langs[] = ja
+supported_langs[] = fr
+```
+
+At the end of this stage, the file structure of you website should look like below.
+```
++ /website/root/directory
+  + WOVN.php
+  - wovn.ini
+  [...]
+```
+
+### 2.3. Activate WOVN.php
+#### 2.3.1. For dynamic websites
+#### 2.3.2. For static websites
+##### With Apache
+##### With Nginx
+
+## 3. Configuration
+
+## 4. Troubleshooting
+
+## 5. Frequently Asked Questions
