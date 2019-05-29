@@ -165,12 +165,11 @@ parameters you can set.
 ### 3.1. Required parameters
 Below is the list of all parameters that you have to set for WOVN.php to work.
 
-Parameter         | Description                         | Example
-------------------|-------------------------------------|--------
-`project_token`   | WOVN.io project token.              | `project_token = TOKEN`
-`default_lang`    | Website's original language.        | `default_lang` = en
-`supported_langs` | Website's original language\        | `supported_langs[] = ja`\
-                  | and WOVN.io translatable languages. | `supported_langs[] = fr`
+Parameter         | Description                                                        | Example
+------------------|--------------------------------------------------------------------|--------
+`project_token`   | WOVN.io project token.                                             | `project_token = TOKEN`
+`default_lang`    | Website's original language.                                       | `default_lang` = en
+`supported_langs` | Website's original language<br>and WOVN.io translatable languages. | `supported_langs[] = ja`<br>`supported_langs[] = fr`
 
 ### 3.2. Optional parameters
 Below is the list of all optional parameters that you can to set for WOVN.php.
