@@ -168,7 +168,7 @@ Below is the list of all parameters that you have to set for WOVN.php to work.
 | Parameter         | Description                                                        | Example |
 |-------------------|--------------------------------------------------------------------|-------- |
 | `project_token`   | WOVN.io project token.                                             | `project_token = TOKEN` |
-| `default_lang`    | Website's original language.                                       | `default_lang` = en |
+| `default_lang`    | Website's original language.                                       | `default_lang = en` |
 | `supported_langs` | Website's original language<br>and WOVN.io translatable languages. | `supported_langs[] = ja`<br>`supported_langs[] = fr` |
 
 ### 3.2. Optional parameters
@@ -181,16 +181,10 @@ This parameter defines how Web page URLs will be modified to include the
 language information. WOVN.php supports three patterns.
 
 | Option                               | URL Example                                | Example's language |
-|--------------------------------------|--------------------------------------------|--------------------|
-| `url_pattern_name = query` (default) | `https://my-website.com/index.php`         | *Original*         |
-|                                      | `https://my-website.com/index.php?wovn=ja` | Japanese           |
-|                                      | `https://my-website.com/index.php?wovn=fr` | French             |
-| `url_pattern_name = path`            | `https://my-website.com/index.php`         | *Original*         |
-|                                      | `https://my-website.com/ja/index.php`      | Japanese           |
-|                                      | `https://my-website.com/fr/index.php`      | French             |
-| `url_pattern_name = subdomain`       | `https://my-website.com/index.php`         | *Original*         |
-|                                      | `https://ja.my-website.com/index.php`      | Japanese           |
-|                                      | `https://fr.my-website.com/index.php`      | French             |
+|--------------------------------------|--------------------------------------------|:------------------:|
+| `url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
+| `url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
+| `url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
 
 **Note for path pattern users:** you need to change your server settings to
 strip the languages code off of the URL before it is processed by you scripts.
@@ -272,6 +266,27 @@ query[] = forgot_password
 #### `override_content_length`
 #### `clean_unprocessable_characters`
 #### `use_server_error_settings`
+
+Below is the list of all optional parameters that you can to set for WOVN.php.
+We marked some of them as advanced, you should use them only if you have a good
+understanding of your website's code and servers. If not, please
+[contact us](mailto:support@wovn.io) before trying them out.
+
+Parameter                              | Advanced | Description | Default | Example
+---------------------------------------|:--------:|-------------|---------|--------
+`query`                                |          |             |         |
+`custom_lang_aliases`                  |          |             |         |
+`ignore_paths`                         |          |             |         |
+`ignore_regex`                         |          |             |         |
+`ignore_class`                         |          |             |         |
+`url_pattern_name`                     | •        | URL component where the language information will be added in your Web page URLs. | `query`
+`encoding`                             | •        | Your content encoding. | `UTF-8`
+`api_timeout`                          | •        | Maximum amount of time allowed to localize content (in seconds). | `1.0`
+`disable_api_request_for_default_lang` | •        | Set to `1` for optimization. When set to `1`, Web pages requested in original language won't be sent to our translation API. | `0`
+`use_proxy`                            | •        |             | `0`     |
+`override_content_length`              | •        |             | `0`     |
+`clean_unprocessable_characters`       | •        |             | `0`     |
+`use_server_error_settings`            | •        |             | `0`     |
 
 ## 4. Bug Report
 
