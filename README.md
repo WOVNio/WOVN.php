@@ -135,8 +135,8 @@ $ cp WOVN.php/htaccess_sample .htaccess
 
 #### Redirect to `wovn_index.php` with Nginx
 For redirecting to `wovn_index.php`, you need to update your Nginx configuration
-(`/etc/nginx/conf.d/site.conf`). Below is an highlight of the configurations
-you need to add in the configuration file.
+(`/etc/nginx/conf.d/site.conf`). Below is an highlight of the code you need to
+add in the configuration file.
 ```
 server {
   # ...
@@ -180,17 +180,18 @@ and should be used for performance optimization.
 This parameter defines how Web page URLs will be modified to include the
 language information. WOVN.php supports three patterns.
 
-| Option                               | URL Example                                | Example's language |
+| Option                               | URL Examples                               | Example's language |
 |--------------------------------------|--------------------------------------------|:------------------:|
 | `url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
 | `url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
 | `url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
 
-**Note for path pattern users:** you need to change your server settings to
-strip the languages code off of the URL before it is processed by you scripts.
+**Note for path pattern users:**
+You need to change your server settings to strip the language codes off of the
+URL before it is processed by you scripts.
 
 For Apache users, you can add the following to your `.htaccess`. You will need
-to activate the `mo_rewrite` PHP module. Please follow the
+to activate the `mod_rewrite` PHP module. Please follow the
 [official instructions](https://httpd.apache.org/docs/2.4/) for installing and
 activating `mod_rewrite` module (in some cases, `mod_rewrite` is already
 installed but not activated).
@@ -202,8 +203,8 @@ installed but not activated).
 ```
 
 For Nginx (without Apache) users, you need to update your Nginx configuration
-(`/etc/nginx/conf.d/site.conf`). Below is an highlight of the configurations
-you need to add in the configuration file.
+(`/etc/nginx/conf.d/site.conf`). Below is an highlight of the code you need to
+add in the configuration file.
 ```
 server {
   # ...
@@ -218,10 +219,10 @@ server {
 
     # WOVN.php interception ####################################################
 
-		# strip language code off of $uri
-		rewrite ^/(ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)(/.*)$ $2;
+    # strip language code off of $uri
+    rewrite ^/(ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)(/.*)$ $2;
 
-		# ...
+    # ...
   }
 ```
 
@@ -234,16 +235,15 @@ custom_lang_aliases[ja] = japanese
 custom_lang_aliases[fr] = french
 ```
 
-**Note for path URL pattern users:** you need to update your `.htacces` or Nginx
-configuration accordingly.
-`ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`
-would become
-`ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|french|gl|de|el|he|hu|id|it|japanese|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`
-for the above example.
+**Note for path URL pattern users:**
+You need to update your `.htacces` or Nginx configuration accordingly. For the
+example above, `|ja|` and `|fr|` would become `|japanese|` and `|french|`
+respectively in the expression
+`ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`.
 
 #### `query`
 This parameter tells WOVN.php which query parameters make pages unique. Indeed,
-WOVN.io ignores query parameters when searching a translated page (by default).
+by default WOVN.io ignores query parameters when searching a translated page.
 If you've created pages on WOVN.io with specific query parameters, you should
 add those query parameters to WOVN.php settings.
 
@@ -266,27 +266,6 @@ query[] = forgot_password
 #### `override_content_length`
 #### `clean_unprocessable_characters`
 #### `use_server_error_settings`
-
-Below is the list of all optional parameters that you can to set for WOVN.php.
-We marked some of them as advanced, you should use them only if you have a good
-understanding of your website's code and servers. If not, please
-[contact us](mailto:support@wovn.io) before trying them out.
-
-Parameter                              | Advanced | Description | Default | Example
----------------------------------------|:--------:|-------------|---------|--------
-`query`                                |          |             |         |
-`custom_lang_aliases`                  |          |             |         |
-`ignore_paths`                         |          |             |         |
-`ignore_regex`                         |          |             |         |
-`ignore_class`                         |          |             |         |
-`url_pattern_name`                     | •        | URL component where the language information will be added in your Web page URLs. | `query`
-`encoding`                             | •        | Your content encoding. | `UTF-8`
-`api_timeout`                          | •        | Maximum amount of time allowed to localize content (in seconds). | `1.0`
-`disable_api_request_for_default_lang` | •        | Set to `1` for optimization. When set to `1`, Web pages requested in original language won't be sent to our translation API. | `0`
-`use_proxy`                            | •        |             | `0`     |
-`override_content_length`              | •        |             | `0`     |
-`clean_unprocessable_characters`       | •        |             | `0`     |
-`use_server_error_settings`            | •        |             | `0`     |
 
 ## 4. Bug Report
 
