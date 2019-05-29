@@ -229,7 +229,7 @@ server {
 #### `custom_lang_aliases`
 This parameter allows you to redefine the language codes used by WOVN.php. For
 instance, if you want to use "japanese" instead of "ja" and "french" instead of
-"fr", then you should set WOVN.php as below.
+"fr", then you should configure WOVN.php as below.
 ```
 custom_lang_aliases[ja] = japanese
 custom_lang_aliases[fr] = french
@@ -250,16 +250,60 @@ add those query parameters to WOVN.php settings.
 For instance, if you have all three pages `https://my-website.com/index.php`,
 `https://my-website.com/index.php?login=1` and
 `https://my-website.com/index.php?forgot_password=1` on WOVN.io, then you should
-set WOVN.php as below.
+configure WOVN.php as below.
 ```
 query[] = login
 query[] = forgot_password
 ```
 
 #### `ignore_paths`
+This parameter tells WOVN.php to not localize content withing given directories.
+
+For instance, if you want to not localize the admin panels of your website, you
+should configure WOVN.php as below. WOVN.php will localize
+`https://my-website.com/index.html` but not `https://my-wesite.com/admin/` nor
+`https://my-website.com/admin/plugin.html`.
+```
+ignore_paths[] = /admin
+```
+
 #### `ignore_regex`
+This parameter is similar to `ignore_paths` (see [above](#ignore_paths)) except
+that you can use regular expressions instead.
+
+For instance, if you want to not localize the search pages, you should configure
+WOVN.php as below. WOVN.php will localize
+`https://my-website.com/search/index.php` but not
+`https://my-website.com/search/01/` nor `https://my-website.com/search/02/`.
+```
+ignore_paths[] = /\/search\/\d\d\//
+```
+
 #### `ignore_class`
+This parameter tells WOVN.php which HTML fragments it should ignore when
+localizing. The classes given by `ignore_class` are HTML element classes. Every
+HTML element of the given classes won't be translated by WOVN.php.
+
+For instance, if you want to ignore every HTML elements of class `ignore` and
+`no-translate`, you should WOVN.php as below.
+```
+ignore_class[] = ignore
+ignore_class[] = no-translate
+```
+
 #### `encoding`
+This parameter tells WOVN.php which encoding you use for you files. WOVN.php
+supports 8 encodings: `UTF-8`, `EUC-JP`, `SJIS`, `eucJP-win`, `SJIS-win`, `JIS`,
+`ISO-2022-JP` and `ASCII`. If you don't set the encoding, WOVN.php will detect
+it automatically. However, encoding detection might take time, so we recommend
+you to set the encoding for better performances.
+
+For instance, if your website files are encoded in UTF-8, you should configure
+WOVN.php as below.
+```
+encoding = UTF-8
+```
+
 #### `api_timeout`
 #### `disable_api_request_for_default_lang`
 #### `use_proxy`
