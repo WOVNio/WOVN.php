@@ -242,7 +242,7 @@ respectively in the expression
 
 #### `query`
 This parameter tells WOVN.php which query parameters make pages unique. By
-default WOVN.io ignores query parameters when searching a translated page. If
+default WOVN.io ignores query parameters when identifying unique pages. If
 you've created pages on WOVN.io with specific query parameters, you should add
 those query parameters to WOVN.php settings.
 
