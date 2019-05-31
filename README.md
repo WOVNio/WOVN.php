@@ -5,7 +5,6 @@
 2. [Getting Started](#2-getting-started)
 3. [Configuration](#3-configuration)
 4. [Bug Report](#4-bug-report)
-5. [Troubleshooting](#5-troubleshooting)
 
 ## 1. Requirements
 WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
@@ -350,5 +349,17 @@ override_content_length = 1
 ```
 
 ## 4. Bug Report
+If you encounter problems installing WOVN.php, setting WOVN.php, or you just
+found a bug opn your website that is related to WOVN.php, please contact us at
+[support@wovn.io](support@wovn.io). To help us finding a solution to your
+issue we will require some information. First we need to know on which web pages
+you encounter the issue, as well as steps to reproduce. If possible, we would
+also need test accounts if your issues occur on web pages behind authorization
+(we recommend you to use a staging server for that matter).
 
-## 5. Troubleshooting
+If your problems are happening on your server side (language not detected,
+redirections not correctly handled, etc), we usually need more information. To
+help us find a solution to your issue as soon as possible, we would need to know
+any non-sensitive information that you could provide us, such as the content of
+your `.htaccess` file, the content of your Nginx configuration file, the content
+of your `wovn.ini` file and a snapshot of your website's directory structure.
