@@ -284,7 +284,7 @@ localizing. The classes given by `ignore_class` are HTML element classes. All
 HTML elements with one or more ignored class won't be translated by WOVN.php.
 
 For instance, if you want to ignore every HTML elements of class `ignore` and
-`no-translate`, you should WOVN.php as below.
+`no-translate`, you should configure WOVN.php as below.
 ```
 ignore_class[] = ignore
 ignore_class[] = no-translate
@@ -304,11 +304,50 @@ encoding = UTF-8
 ```
 
 #### `api_timeout`
+This parameter tells WOVN.php the maximum amount of time that can be spent on
+localizing content with our API. Indeed, we centralize most of our localization
+logic on separate servers at WOVN.io and WOVN.php delegates most of the job to
+them. Setting up the `api_timeout` will WOVN.php how long to wait for an answer
+from our API. If the API is too long to respond, the original content will be
+served. By default, the `api_timeout` is set to 1 second.
+
+For instance, if you want to increase the default timeout up to 2 seconds, you
+should configure WOVN.php as below.
+```
+api_timeout = 1
+```
+
 #### `disable_api_request_for_default_lang`
+This parameter tells WOVN.php whether or not it should use our localization API
+when content is requested in original language. By default, the
+`disable_api_request_for_default_lang` option is set to `0` (fasle). It means
+that WOVN.php will use our localization API even if the content does not have to
+be translated. When this setting is set to `0`, you may notice more server
+resource being used. This is because WOVN.php has to do some HTML parsing that
+our localization API usually does (for instance, to insert `hreflang`
+information). If you experience such issue you should set
+`disable_api_request_for_default_lang` to `1` (true).
+```
+disable_api_request_for_default_lang = 1
+```
+
 #### `use_proxy`
+This parameter tells WOVN.php whether or not your content is served through a
+proxy. By default, this setting is set to `0` (false). If your content is served
+through a proxy, WOVN.php needs to know it when gathering information based on
+requested URL. In that case, you should set `use_proxy` to `1` (true).
+```
+use_proxy = 1
+```
+
 #### `override_content_length`
-#### `clean_unprocessable_characters`
-#### `use_server_error_settings`
+This parameter tell WOVN.php whether or not it should update the response header
+"Content-Length". By default, `override_content_length` is set to `0` (false).
+If you need to update the response header "Content-Length" you should set
+`override_content_length` to `1` (true).
+```
+override_content_length = 1
+```
 
 ## 4. Bug Report
 
