@@ -306,9 +306,9 @@ encoding = UTF-8
 This parameter tells WOVN.php the maximum amount of time that can be spent on
 localizing content with our API. Indeed, we centralize most of our localization
 logic on separate servers at WOVN.io and WOVN.php delegates most of the job to
-them. Setting up the `api_timeout` will WOVN.php how long to wait for an answer
-from our API. If the API is too long to respond, the original content will be
-served. By default, the `api_timeout` is set to 1 second.
+them. Setting up the `api_timeout` will tell WOVN.php how long to wait for an
+answer from our API. If the API is too long to respond, the original content
+will be served. By default, the `api_timeout` is set to 1 second.
 
 For instance, if you want to increase the default timeout up to 2 seconds, you
 should configure WOVN.php as below.
@@ -321,11 +321,12 @@ This parameter tells WOVN.php whether or not it should use our localization API
 when content is requested in original language. By default, the
 `disable_api_request_for_default_lang` option is set to `0` (fasle). It means
 that WOVN.php will use our localization API even if the content does not have to
-be translated. When this setting is set to `0`, you may notice more server
+be translated. When this setting is set to `1`, you may notice more server
 resource being used. This is because WOVN.php has to do some HTML parsing that
 our localization API usually does (for instance, to insert `hreflang`
-information). If you experience such issue you should set
-`disable_api_request_for_default_lang` to `1` (true).
+information). However, it will save web page loading time since it does not send
+a request to our API. If you experience no resource issues, we recommand you to
+deactivate API requests for original language as below.
 ```
 disable_api_request_for_default_lang = 1
 ```
@@ -350,16 +351,17 @@ override_content_length = 1
 
 ## 4. Bug Report
 If you encounter problems installing WOVN.php, setting WOVN.php, or you just
-found a bug opn your website that is related to WOVN.php, please contact us at
+found a bug on your website that is related to WOVN.php, please contact us at
 [support@wovn.io](support@wovn.io). To help us finding a solution to your
 issue we will require some information. First we need to know on which web pages
 you encounter the issue, as well as steps to reproduce. If possible, we would
 also need test accounts if your issues occur on web pages behind authorization
 (we recommend you to use a staging server for that matter).
 
-If your problems are happening on your server side (language not detected,
-redirections not correctly handled, etc), we usually need more information. To
-help us find a solution to your issue as soon as possible, we would need to know
-any non-sensitive information that you could provide us, such as the content of
-your `.htaccess` file, the content of your Nginx configuration file, the content
-of your `wovn.ini` file and a snapshot of your website's directory structure.
+If your problems are happening on your server side (widget snippet not inserted,
+language not detected, redirections not correctly handled, etc), we usually need
+more information. To help us find a solution to your issue as soon as possible,
+we would need to know any non-sensitive information that you could provide us,
+such as the content of your `.htaccess` file, the content of your Nginx
+configuration file, the content of your `wovn.ini` file and a snapshot of your
+website's directory structure.
