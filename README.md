@@ -343,9 +343,9 @@ use_proxy = 1
 
 #### `override_content_length`
 This parameter tell WOVN.php whether or not it should update the response header
-"Content-Length". By default, `override_content_length` is set to `0` (false).
-If you need to update the response header "Content-Length" you should set
-`override_content_length` to `1` (true).
+"Content-Length". For performance optimization, `override_content_length` is set
+to `0` (false) by default. If you need to maintain the response header
+"Content-Length" update, you should set `override_content_length` to `1` (true).
 ```
 override_content_length = 1
 ```
