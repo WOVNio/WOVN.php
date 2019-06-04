@@ -112,7 +112,7 @@ Bellow is the `.htaccess` configuration you should use.
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # Don't intercept .cgi files, as they won't execute
+  # Don't intercept .cgi files, as they would not execute
   RewriteCond %{THE_REQUEST} \.cgi
   RewriteRule .? - [L]
 
@@ -280,7 +280,8 @@ ignore_paths[] = /\/search\/\d\d\//
 #### `ignore_class`
 This parameter tells WOVN.php which HTML fragments it should ignore when
 localizing. The classes given by `ignore_class` are HTML element classes. All
-HTML elements with one or more ignored class won't be translated by WOVN.php.
+HTML elements with one or more ignored class would not be translated by
+WOVN.php.
 
 For instance, if you want to ignore every HTML elements of class `ignore` and
 `no-translate`, you should configure WOVN.php as below.
@@ -292,7 +293,7 @@ ignore_class[] = no-translate
 #### `encoding`
 This parameter tells WOVN.php which encoding you use for you files. WOVN.php
 supports 8 encodings: `UTF-8`, `EUC-JP`, `SJIS`, `eucJP-win`, `SJIS-win`, `JIS`,
-`ISO-2022-JP` and `ASCII`. If you don't set the encoding, WOVN.php will detect
+`ISO-2022-JP` and `ASCII`. If you do not set the encoding, WOVN.php will detect
 it automatically. However, encoding detection might take time, so we recommend
 you to set the encoding for better performances.
 
@@ -319,7 +320,7 @@ api_timeout = 1
 #### `disable_api_request_for_default_lang`
 This parameter tells WOVN.php whether or not it should use our localization API
 when content is requested in original language. By default, the
-`disable_api_request_for_default_lang` option is set to `0` (fasle). It means
+`disable_api_request_for_default_lang` option is set to `0` (false). It means
 that WOVN.php will use our localization API even if the content does not have to
 be translated. When this setting is set to `1`, you may notice more server
 resource being used. This is because WOVN.php has to do some HTML parsing that
@@ -358,10 +359,10 @@ you encounter the issue, as well as steps to reproduce. If possible, we would
 also need test accounts if your issues occur on web pages behind authorization
 (we recommend you to use a staging server for that matter).
 
-If your problems are happening on your server side (widget snippet not inserted,
-language not detected, redirections not correctly handled, etc), we usually need
-more information. To help us find a solution to your issue as soon as possible,
-we would need to know any non-sensitive information that you could provide us,
-such as the content of your `.htaccess` file, the content of your Nginx
-configuration file, the content of your `wovn.ini` file and a snapshot of your
-website's directory structure.
+If your problems are happening on your server side (widget `<script>` tag not
+inserted, language not detected, redirections not correctly handled, etc), we
+usually need more information. To help us find a solution to your issue as soon
+as possible, we would need to know any non-sensitive information that you could
+provide us, such as the content of your `.htaccess` file, the content of your
+Nginx configuration file, the content of your `wovn.ini` file and a snapshot of
+your website's directory structure.
