@@ -188,7 +188,7 @@ language information. WOVN.php supports three patterns.
 You need to change your server settings to strip the language codes off of the
 URL before it is processed by you scripts.
 
-For Apache users, you can add the following rules at the top of you `.htaccess`.
+For Apache users, you can add the following rule at the top of your `.htaccess`.
 You will need to activate the `mod_rewrite` PHP module. Please follow the
 [official instructions](https://httpd.apache.org/docs/2.4/) for installing and
 activating `mod_rewrite` module (in some cases, `mod_rewrite` is already
