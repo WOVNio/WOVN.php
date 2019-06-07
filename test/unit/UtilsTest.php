@@ -45,6 +45,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $store->settings['ignore_regex'] = array("/img\/assets$/i");
         $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.rar', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.tar.gz', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/img/assets', $store));
