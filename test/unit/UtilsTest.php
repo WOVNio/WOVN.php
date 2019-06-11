@@ -46,6 +46,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.zip', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.7zip', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.7z', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.gzip', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.rar', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.tar.gz', $store));
