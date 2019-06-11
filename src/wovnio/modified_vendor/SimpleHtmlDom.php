@@ -438,7 +438,7 @@ class SimpleHtmlDom {
             return true;
         }
 
-        if (!preg_match("/^[\w-:]+$/", $tag)) {
+        if (!preg_match("/^[\w\-:]+$/", $tag)) {
             $node->info_text = '<' . $tag . $this->copy_until($doc, '<>');
             if ($this->char==='<') {
                 $this->link_nodes($node, false);
