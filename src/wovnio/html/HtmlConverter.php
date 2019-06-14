@@ -177,8 +177,9 @@ class HtmlConverter
         $current_lang = $this->headers->lang();
         $default_lang = $this->store->settings['default_lang'];
         $url_pattern = $this->store->settings['url_pattern_name'];
+        $lang_param_name = $this->store->settings['lang_param_name'];
         $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
-        $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&version=WOVN.php");
+        $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&langParamName=$lang_param_name&version=WOVN.php");
 
         if ($adds_backend_error_mark) {
             return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"fallback_snippet\" async></script>";

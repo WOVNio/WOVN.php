@@ -67,6 +67,7 @@ class Store
         return array(
             'project_token' => '',
             'url_pattern_name' => 'query',
+            'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
             'query' => array(),
             'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
@@ -125,7 +126,11 @@ class Store
 
         // getting the url pattern
         if (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'query') {
-            $vals['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+            if (isset($vals['lang_param_name'])) {
+                $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $vals['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
+            } else {
+                $vals['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+            }
         } elseif (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'subdomain') {
             $vals['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {

@@ -82,10 +82,11 @@ class APITest extends \PHPUnit_Framework_TestCase
         $url = $headers->urlKeepTrailingSlash;
         $token = $store->settings['project_token'];
         $pattern = $store->settings['url_pattern_name'];
+        $lang_param_name = $store->settings['lang_param_name'];
         $default_lang = $store->settings['default_lang'];
         $current_lang = $headers->lang();
 
-        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>";
+        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>";
     }
 
     private function getExpectedData($store, $headers, $converted_body, $extra = array())
@@ -95,6 +96,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'token' => $store->settings['project_token'],
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
+            'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body
@@ -218,7 +220,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $html = '<html><head></head><body><h1>en</h1></body></html>';
-        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
 
         $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
         $mock->expects($this->never())->method('sendRequest');
