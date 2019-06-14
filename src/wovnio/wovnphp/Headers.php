@@ -252,9 +252,9 @@ class Headers
                 // if (!preg_match('/\?/', $this->env['REQUEST_URI'])) {
                 // as $location is directtly modified it is safe to directly test it
                 if (!preg_match('/\?/', $location)) {
-                    $location = $location . '?wovn=' . $lang;
+                    $location = $location . '?' . $this->store->settings['lang_param_name'] . '=' . $lang;
                 } else {
-                    $location = $location . '&wovn=' . $lang;
+                    $location = $location . '&' . $this->store->settings['lang_param_name'] . '=' . $lang;
                 }
                 break;
             case 'subdomain':
@@ -355,10 +355,10 @@ class Headers
         $default_lang = $this->store->settings['default_lang'];
         $aliases = $this->store->settings['custom_lang_aliases'];
         if (array_key_exists($default_lang, $aliases)) {
-            $no_lang_uri = Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
+            $no_lang_uri = Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code, $this->store->settings['lang_param_name']);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
-            return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code);
+            return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code, $this->store->settings['lang_param_name']);
         }
     }
 

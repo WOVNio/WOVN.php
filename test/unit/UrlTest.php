@@ -22,7 +22,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $settings = array(
             'default_lang' => 'ja',
             'supported_langs' => array('en'),
-            'url_pattern_name' => $pattern
+            'url_pattern_name' => $pattern,
+            'lang_param_name' => 'wovn'
         );
 
         return StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
@@ -717,11 +718,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = '/index.php';
         $uri = "/$lang$expected_uri";
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndPathPattern()
@@ -730,11 +732,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = '/index.php';
         $uri = "$expected_uri";
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function tesRemoveLangCodeRelativePathWithQueryPattern()
@@ -743,11 +746,26 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = '/index.php';
         $uri = "$expected_uri?wovn=$lang";
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+    }
+
+    public function tesRemoveLangCodeRelativePathWithQueryPatternAndCustomLangParamName()
+    {
+        $lang = 'fr';
+        $expected_uri = '/index.php';
+        $uri = "$expected_uri?language=$lang";
+        $pattern = 'query';
+        $lang_param_name = 'language';
+        list($store, $headers) = $this->getStarted($pattern, array(
+            'REQUEST_URI' => "/test?language=$lang"
+        ));
+
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndQueryPattern()
@@ -756,11 +774,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = '/index.php';
         $uri = "$expected_uri?wovn=$lang";
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithSubdomainPattern()
@@ -769,11 +788,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = "http://$lang.my-site.com/index.php";
         $pattern = 'subdomain';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -782,11 +802,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'subdomain';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithPathPattern()
@@ -795,11 +816,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_url = 'http://my-site.com/index.php';
         $uri = 'http://my-site.com/fr/index.php';
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndPathPattern()
@@ -808,11 +830,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_url = 'http://my-site.com/index.php';
         $uri = $expected_url;
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithQueryPattern()
@@ -821,11 +844,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = "$expected_uri?wovn=$lang";
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndQueryPattern()
@@ -834,11 +858,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
@@ -847,11 +872,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = 'https://fr.my-site.com/index.php';
         $pattern = 'subdomain';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -860,11 +886,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'subdomain';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithPathPattern()
@@ -873,11 +900,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = 'https://my-site.com/fr/index.php';
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndPathPattern()
@@ -886,11 +914,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'path';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithQueryPattern()
@@ -899,11 +928,12 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = "$expected_uri?wovn=$lang";
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndQueryPattern()
@@ -912,10 +942,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'https://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'query';
+        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "https://my-site.com/test?wovn=fr$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
     }
 }

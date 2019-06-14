@@ -39,14 +39,15 @@ class Url
         $new_uri = $uri;
         $pattern = $store->settings['url_pattern_name'];
         $lang_code = $store->convertToCustomLangCode($lang);
+        $lang_param_name = $store->settings['lang_param_name'];
 
-        $no_lang_uri = self::removeLangCode($uri, $pattern, $lang_code);
-        $no_lang_host = self::removeLangCode($headers->host, $pattern, $lang_code);
+        $no_lang_uri = self::removeLangCode($uri, $pattern, $lang_code, $lang_param_name);
+        $no_lang_host = self::removeLangCode($headers->host, $pattern, $lang_code, $lang_param_name);
 
         if ($store->defaultLangAlias()) {
             $default_lang = $store->settings['default_lang'];
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $pattern, $default_lang);
-            $no_lang_host = self::removeLangCode($no_lang_host, $pattern, $default_lang);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $pattern, $default_lang, $lang_param_name);
+            $no_lang_host = self::removeLangCode($no_lang_host, $pattern, $default_lang, $lang_param_name);
         }
 
         // absolute urls
@@ -82,7 +83,7 @@ class Url
                         }
                         break;
                     case 'query':
-                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code);
+                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
                         break;
                     default:
                         //path
@@ -110,7 +111,7 @@ class Url
                         }
                         break;
                     case 'query':
-                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code);
+                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
                         break;
                     default: // path
                         if (preg_match('/^\//', $no_lang_uri)) {
@@ -134,13 +135,13 @@ class Url
      *
      * @return String The new uri containing the language code.
      */
-    private static function addQueryLangCode($uri, $lang_code)
+    private static function addQueryLangCode($uri, $lang_code, $lang_param_name)
     {
         $sep = '?';
         if (preg_match('/\?/', $uri)) {
             $sep = '&';
         }
-        return preg_replace('/(#|$)/', $sep . 'wovn=' . $lang_code . '${1}', $uri, 1);
+        return preg_replace('/(#|$)/', $sep . $lang_param_name . '=' . $lang_code . '${1}', $uri, 1);
     }
 
     /**
@@ -151,7 +152,7 @@ class Url
      * @param String $lang_code The lang to remove
      * @return array The url without the lang
      */
-    public static function removeLangCode($uri, $pattern, $lang_code)
+    public static function removeLangCode($uri, $pattern, $lang_code, $lang_param_name)
     {
         if (!$lang_code || strlen($lang_code) == 0) {
             return $uri;
@@ -164,7 +165,7 @@ class Url
 
         switch ($pattern) {
             case 'query':
-                return preg_replace('/(\?|&)$/', '', preg_replace('/(^|\?|&)wovn=' . $lang_code . '(&|$)/i', '\1', $uri));
+                return preg_replace('/(\?|&)$/', '', preg_replace('/(^|\?|&)' . $lang_param_name . '=' . $lang_code . '(&|$)/i', '\1', $uri));
                 break;
             case 'subdomain':
                 // limit to one replacement
