@@ -129,7 +129,7 @@ class Store
             if (isset($vals['lang_param_name'])) {
                 $lang_param_name = $vals['lang_param_name'];
             } else {
-                $lang_param_name = $this->defaultSettings()['lang_param_name'];
+                $lang_param_name = ($this->defaultSettings())['lang_param_name'];
             }
             $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $lang_param_name . '=(?P<lang>[^&]+)(&|$)';
         } elseif (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'subdomain') {
