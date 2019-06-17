@@ -127,10 +127,11 @@ class Store
         // getting the url pattern
         if (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'query') {
             if (isset($vals['lang_param_name'])) {
-                $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $vals['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
+                $lang_param_name = $vals['lang_param_name'];
             } else {
-                $vals['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+                $lang_param_name = $this->defaultSettings()['lang_param_name'];
             }
+            $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $lang_param_name . '=(?P<lang>[^&]+)(&|$)';
         } elseif (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'subdomain') {
             $vals['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {
