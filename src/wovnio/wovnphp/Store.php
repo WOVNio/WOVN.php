@@ -111,6 +111,8 @@ class Store
      */
     public function updateSettings($vals)
     {
+        $defaultSettings = $this->defaultSettings();
+
         // GETTING THE LANGUAGE AND SETTING IT AS CODE
         $vals['default_lang'] = Lang::getCode($vals['default_lang']);
 
@@ -129,7 +131,6 @@ class Store
             if (isset($vals['lang_param_name'])) {
                 $lang_param_name = $vals['lang_param_name'];
             } else {
-                $defaultSettings = $this->defaultSettings();
                 $lang_param_name = $defaultSettings['lang_param_name'];
             }
             $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $lang_param_name . '=(?P<lang>[^&]+)(&|$)';
@@ -158,7 +159,6 @@ class Store
         }
 
         // update settings if wovn dev mode is activated
-        $defaultSettings = $this->defaultSettings();
         if ($this->isWovnDevModeActivated($vals) && (!array_key_exists('api_url', $vals) || $vals['api_url'] === $defaultSettings['api_url'])) {
             $vals['api_url'] = $this->wovnProtocol($vals) . '://api.' . $this->wovnHost($vals) . '/v0/';
         }
