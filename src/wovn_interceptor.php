@@ -1,4 +1,5 @@
 <?php
+require_once 'version.php';
 require_once 'wovnio/wovnphp/Headers.php';
 require_once 'wovnio/wovnphp/Lang.php';
 require_once 'wovnio/wovnphp/Logger.php';

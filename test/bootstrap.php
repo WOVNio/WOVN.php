@@ -4,6 +4,7 @@ require_once 'vendor/autoload.php';
 // TODO: create autoload instead of loading every files
 // TODO: not all files are loaded yet
 
+require_once 'src/version.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Logger.php';
