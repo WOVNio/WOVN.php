@@ -30,6 +30,7 @@ class StoreAndHeadersFactory
             'default_lang' => 'en',
             'supported_langs' => array('en'),
             'url_pattern_name' => 'query',
+            'lang_param_name' => 'wovn',
             'project_token' => '123456'
         );
 

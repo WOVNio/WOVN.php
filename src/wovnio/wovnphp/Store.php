@@ -67,6 +67,7 @@ class Store
         return array(
             'project_token' => '',
             'url_pattern_name' => 'query',
+            'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
             'query' => array(),
             'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
@@ -110,6 +111,8 @@ class Store
      */
     public function updateSettings($vals)
     {
+        $defaultSettings = $this->defaultSettings();
+
         // GETTING THE LANGUAGE AND SETTING IT AS CODE
         $vals['default_lang'] = Lang::getCode($vals['default_lang']);
 
@@ -125,7 +128,12 @@ class Store
 
         // getting the url pattern
         if (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'query') {
-            $vals['url_pattern_reg'] = '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)';
+            if (isset($vals['lang_param_name'])) {
+                $lang_param_name = $vals['lang_param_name'];
+            } else {
+                $lang_param_name = $defaultSettings['lang_param_name'];
+            }
+            $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $lang_param_name . '=(?P<lang>[^&]+)(&|$)';
         } elseif (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'subdomain') {
             $vals['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {
@@ -151,7 +159,6 @@ class Store
         }
 
         // update settings if wovn dev mode is activated
-        $defaultSettings = $this->defaultSettings();
         if ($this->isWovnDevModeActivated($vals) && (!array_key_exists('api_url', $vals) || $vals['api_url'] === $defaultSettings['api_url'])) {
             $vals['api_url'] = $this->wovnProtocol($vals) . '://api.' . $this->wovnHost($vals) . '/v0/';
         }

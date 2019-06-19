@@ -224,6 +224,24 @@ server {
   }
 ```
 
+#### `lang_param_name`
+This parameter is only valid for when `url_pattern_name = query`.
+
+It allows you to set the query parameter name for declaring the language of the page.
+The default value for this setting is `lang_param_name = wovn`, such that a page URL
+in translated language English has the form
+```
+https://my-website.com/index.php?wovn=en
+```
+If you instead set the value like this
+```
+lang_param_name = language
+```
+The above URL example would have the form
+```
+https://my-website.com/index.php?language=en
+```
+
 #### `custom_lang_aliases`
 This parameter allows you to redefine the language codes used by WOVN.php. For
 instance, if you want to use "japanese" instead of "ja" and "french" instead of

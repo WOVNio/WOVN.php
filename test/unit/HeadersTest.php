@@ -496,7 +496,10 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
     public function testHeadersRedirectLocationWithQueryPatternAndNoQuery()
     {
-        $settings = array('url_pattern_name' => 'query');
+        $settings = array(
+            'url_pattern_name' => 'query',
+            'lang_param_name' => 'wovn'
+        );
         $env = array('QUERY_STRING' => '');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
@@ -509,7 +512,10 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
     public function testHeadersRedirectLocationWithQueryPatternAndExistingQuery()
     {
-        $settings = array('url_pattern_name' => 'query');
+        $settings = array(
+            'url_pattern_name' => 'query',
+            'lang_param_name' => 'wovn'
+        );
         $env = array('QUERY_STRING' => '?page=1');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
