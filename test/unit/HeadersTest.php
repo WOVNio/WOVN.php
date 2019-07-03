@@ -1346,7 +1346,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/path', $headers->getDocumentURI());
     }
 
-    public function testUrlKeepTrailingSlash__NoProxy()
+    public function testUrlKeepTrailingSlashWithoutProxy()
     {
         $settings = array(
             'url_pattern_name' => 'path',
@@ -1363,7 +1363,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://sub.domain.com/path', $headers->urlKeepTrailingSlash);
     }
 
-    public function testUrlKeepTrailingSlash__UseProxy()
+    public function testUrlKeepTrailingSlashWithUseProxy()
     {
         $settings = array(
             'url_pattern_name' => 'path',
