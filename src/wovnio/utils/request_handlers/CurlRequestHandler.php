@@ -11,10 +11,11 @@ class CurlRequestHandler extends AbstractRequestHandler
     {
         $used_functions = array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close');
         $supported_protocols = array('http', 'https');
+        $curl_version = curl_version();
 
         return extension_loaded('curl')
                && count(array_intersect(get_extension_funcs('curl'), $used_functions)) === count($used_functions)
-               && count(array_intersect(curl_version()['protocols'], $supported_protocols)) === count($supported_protocols);
+               && count(array_intersect($curl_session['protocols'], $supported_protocols)) === count($supported_protocols);
     }
 
     protected function post($url, $request_headers, $data, $timeout)
