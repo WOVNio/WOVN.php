@@ -58,9 +58,13 @@ class API
 
         try {
             $request_handler = RequestHandlerFactory::get_best_available_request_handler();
-            if ($request_handler === null) return $marker->revert($converted_html);
+            if ($request_handler === null) {
+                return $marker->revert($converted_html);
+            }
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
-            if ($response === null) return $marker->revert($converted_html);
+            if ($response === null) {
+                return $marker->revert($converted_html);
+            }
 
             $translation_response = json_decode($response, true);
             if (array_key_exists('body', $translation_response)) {
