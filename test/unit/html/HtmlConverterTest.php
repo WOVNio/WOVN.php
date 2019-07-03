@@ -108,6 +108,26 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testInsertHreflangTagsWithLangCodeAliases()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'supported_langs' => array('en', 'vi', 'zh-CHT', 'zh-CHS'),
+            'custom_lang_aliases' => array(
+                'vi' => 'tieng-viet',
+                'zh-CHT' => 'tw',
+                'zh-CHS' => 'cn'
+            )
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/tieng-viet/\"><link rel=\"alternate\" hreflang=\"zh-Hant\" href=\"http://my-site.com/tw/\"><link rel=\"alternate\" hreflang=\"zh-Hans\" href=\"http://my-site.com/cn/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;vi&quot;:&quot;tieng-viet&quot;,&quot;zh-CHT&quot;:&quot;tw&quot;,&quot;zh-CHS&quot;:&quot;cn&quot;}&amp;langParamName=wovn&amp;version=WOVN.php\" async></script><a>hello</a></body></html>";
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
     public function testinsertSnippetAndHreflangTagsWithErrorMark()
     {
         $html = '<html><body><a>hello</a></body></html>';
