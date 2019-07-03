@@ -817,12 +817,14 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testRequestOutUrlPatternPath()
     {
         $settings = array('url_pattern_name' => 'path');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings);
+        $env = array('HTTP_X_FORWARDED_REQUEST_URI' => '/ja/forwarded/path/');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings, $env);
 
         $he = $headers->getEnv();
         $this->assertEquals('/ja/mypage.php', $he['REQUEST_URI']);
         $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
         $this->assertEquals('/ja/index.php', $he['HTTP_REFERER']);
+        $this->assertEquals('/ja/forwarded/path/', $he['HTTP_X_FORWARDED_REQUEST_URI']);
 
         $headers->requestOut();
 
@@ -830,6 +832,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
         $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
         $this->assertEquals('/index.php', $he['HTTP_REFERER']);
+        $this->assertEquals('/forwarded/path/', $he['HTTP_X_FORWARDED_REQUEST_URI']);
     }
 
     public function testRequestOutUrlPatternQuery()
@@ -1341,5 +1344,39 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('/path', $headers->getDocumentURI());
+    }
+
+    public function testUrlKeepTrailingSlash__NoProxy()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'use_proxy' => 0
+        );
+        $env = array(
+            'HTTP_HOST' => 'sub.domain.com',
+            'HTTP_X_FORWARDED_HOST' => 'main.com',
+            'REQUEST_URI' => '/en/path',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/forwarded/other/path'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('http://sub.domain.com/path', $headers->urlKeepTrailingSlash);
+    }
+
+    public function testUrlKeepTrailingSlash__UseProxy()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'use_proxy' => 1
+        );
+        $env = array(
+            'HTTP_HOST' => 'sub.domain.com',
+            'HTTP_X_FORWARDED_HOST' => 'main.com',
+            'REQUEST_URI' => '/en/path',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/en/forwarded/other/path'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('http://main.com/forwarded/other/path', $headers->urlKeepTrailingSlash);
     }
 }
