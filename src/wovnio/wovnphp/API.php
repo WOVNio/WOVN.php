@@ -57,7 +57,7 @@ class API
         }
 
         try {
-            $request_handler = RequestHandlerFactory::get_best_available_request_handler();
+            $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
             if ($request_handler === null) {
                 return $marker->revert($converted_html);
             }

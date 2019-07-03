@@ -7,19 +7,20 @@ abstract class AbstractRequestHandler
 {
     abstract protected function post($url, $request_headers, $data, $timeout);
 
-    static public function available() {
-		return false;
-	}
+    public static function available()
+    {
+        return false;
+    }
 
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
         $formatted_data = http_build_query($data);
-		$compressed_data = gzencode($formatted_data);
-		$content_length = strlen($compressed_data);
-		$headers = array(
-			'Content-Type: application/octet-stream',
-			"Content-Length: $content_length"
-		);
+        $compressed_data = gzencode($formatted_data);
+        $content_length = strlen($compressed_data);
+        $headers = array(
+            'Content-Type: application/octet-stream',
+            "Content-Length: $content_length"
+        );
 
         try {
             switch ($method) {

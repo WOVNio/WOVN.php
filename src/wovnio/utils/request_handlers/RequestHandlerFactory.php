@@ -9,15 +9,16 @@ use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
 
 class RequestHandlerFactory
 {
-    static public function get_best_available_request_handler() {
-		$request_handler = null;
+    public static function getBestAvailableRequestHandler()
+    {
+        $request_handler = null;
 
-		if (CurlRequestHandler::available()) {
-			$request_handler = new CurlRequestHandler();
-		} else if (FileGetContentsRequestHandler::available()) {
-			$request_handler = new FileGetContentsRequestHandler();
-		}
+        if (CurlRequestHandler::available()) {
+            $request_handler = new CurlRequestHandler();
+        } elseif (FileGetContentsRequestHandler::available()) {
+            $request_handler = new FileGetContentsRequestHandler();
+        }
 
-		return $request_handler;
+        return $request_handler;
     }
 }
