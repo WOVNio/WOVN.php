@@ -14,8 +14,8 @@ abstract class AbstractRequestHandler
 
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
-        $formatted_data = http_build_query($data);
-        $compressed_data = gzencode($formatted_data);
+        // reduce networkIO to make request faster.
+        $compressed_data = gzencode(http_build_query($data));
         $content_length = strlen($compressed_data);
         $headers = array(
             'Content-Type: application/octet-stream',

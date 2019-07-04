@@ -35,8 +35,8 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
     private function createMockedCurlRequestHandler($api_url, $header, $content, $timeout, $response)
     {
         $curl_request_handler = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\CurlRequestHandler')
-                                    ->setMethods(array('post'))
-                                    ->getMock();
+            ->setMethods(array('post'))
+            ->getMock();
         if (method_exists($this, 'registerMockObject')) {
             $this->registerMockObject($curl_request_handler);
         } else {

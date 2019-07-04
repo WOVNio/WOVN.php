@@ -15,7 +15,7 @@ class CurlRequestHandler extends AbstractRequestHandler
 
         return extension_loaded('curl')
                && count(array_intersect(get_extension_funcs('curl'), $used_functions)) === count($used_functions)
-               && count(array_intersect($curl_session['protocols'], $supported_protocols)) === count($supported_protocols);
+               && count(array_intersect($curl_version['protocols'], $supported_protocols)) === count($supported_protocols);
     }
 
     protected function post($url, $request_headers, $data, $timeout)
