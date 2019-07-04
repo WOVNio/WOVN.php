@@ -103,6 +103,7 @@ class Store
             'save_memory_by_sending_wovn_ignore_content' => false
         );
     }
+
     /**
      * Updates the current settings of the user in the class \n
      *
@@ -148,6 +149,10 @@ class Store
 
         if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
             $vals['custom_lang_aliases'] = array();
+        } else {
+            if (isset($vals['custom_lang_aliases']) && isset($vals['supported_langs'])) {
+                $vals['supported_langs'] = $this->ensureValidSupportedLanguages($vals['supported_langs'], $vals['custom_lang_aliases']);
+            }
         }
 
         if (isset($vals['ignore_paths']) && !is_array($vals['ignore_paths'])) {
@@ -166,6 +171,17 @@ class Store
         $this->configLoaded = true;
 
         return $vals;
+    }
+
+    private function ensureValidSupportedLanguages($supportedLangs, $customLangAliases)
+    {
+        if (isset($supportedLangs)) {
+            foreach ($supportedLangs as $index => $langCode) {
+                $supportedLangs[$index] = $this->convertToOriginalCode($langCode, $customLangAliases);
+            }
+        }
+
+        return $supportedLangs;
     }
 
     private function isWovnDevModeActivated($settings = null)
@@ -204,9 +220,13 @@ class Store
         return $lang_code;
     }
 
-    public function convertToOriginalCode($lang_code)
+    public function convertToOriginalCode($lang_code, $customLangAliases = null)
     {
-        foreach ($this->settings['custom_lang_aliases'] as $lang => $custom_lang) {
+        if ($customLangAliases == null) {
+            $customLangAliases = $this->settings['custom_lang_aliases'];
+        }
+
+        foreach ($customLangAliases as $lang => $custom_lang) {
             if ($lang_code == $custom_lang) {
                 return $lang;
             }
