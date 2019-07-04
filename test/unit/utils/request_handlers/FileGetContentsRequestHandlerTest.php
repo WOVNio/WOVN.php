@@ -18,38 +18,41 @@ class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
 
         $expected_content = gzencode(http_build_query($data));
         $expected_content_length = strlen($expected_content);
-        $expected_http_context = array(
-            'header' => "Accept-Encoding: gzip\r\nContent-type: application/octet-stream\r\nContent-Length: $expected_content_length",
-            'method' => 'POST',
-            'timeout' => 10,
-            'content' => $expected_content
+        $expected_header = array(
+            'Content-Type: application/octet-stream',
+            "Content-Length: $expected_content_length"
         );
         $expected_response = '{"foo": "bar"}';
-        $file_get_handler = $this->createMockedFileGetHandler($api_url, $expected_http_context, $expected_response);
         $timeout = 10;
+        $file_get_handler = $this->createMockedFileGetHandler($api_url, $expected_header, $expected_content, $timeout, $expected_response);
 
-        $response = $file_get_handler->sendRequest('POST', $api_url, $data, $timeout);
+        list($response, $headers, $error)  = $file_get_handler->sendRequest('POST', $api_url, $data, $timeout);
+        var_dump($response);
         $this->assertEquals($expected_response, $response);
     }
 
-    private function createMockedFileGetHandler($api_url, $http_context, $response)
+    private function createMockedFileGetHandler($api_url, $header, $content, $timeout, $response)
     {
-        $builder = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler');
-        $builder->setMethods(array('fileGetContents'));
-        $file_get_handler = $builder->getMock();
+        $file_get_handler = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler')
+            ->setMethods(array('post'))
+            ->getMock();
+
         if (method_exists($this, 'registerMockObject')) {
             $this->registerMockObject($file_get_handler);
         } else {
             $this->mockObjects[] = $file_get_handler;
         }
 
-        $file_get_handler->expects($this->once())
-            ->method('fileGetContents')
+        $file_get_handler
+            ->expects($this->once())
+            ->method('post')
             ->with(
                 $this->equalTo($api_url),
-                $this->equalTo($http_context)
+                $this->equalTo($header),
+                $this->equalTo($content),
+                $this->equalTo($timeout)
             )
-            ->willReturn($response);
+            ->willReturn(array($response, null, null));
 
         return $file_get_handler;
     }
