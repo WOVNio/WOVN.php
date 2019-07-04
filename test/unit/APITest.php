@@ -60,7 +60,7 @@ class APITest extends \PHPUnit_Framework_TestCase
                 $this->equalTo($expected_data),
                 $this->equalTo(1.0)
             )
-            ->willReturn($response);
+            ->willReturn(array($response, null, null));
         RequestHandlerFactory::setInstance($mock);
     }
 
