@@ -742,20 +742,43 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $pathlang);
     }
 
-    public function testPathLangWithUseProxyTrue()
+    public function testPathLangWithSubdomainAndUseProxyTrue()
     {
         $settings = array(
             'url_pattern_name' => 'subdomain',
             'use_proxy' => 1
         );
-        $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
+        $env = array(
+            'SERVER_NAME' => 'ja.wovn.io',
+            'REQUEST_URI' => '/ko/path/index.html',
+            'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
+        );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->computePathLang();
         $this->assertEquals('en', $pathlang);
     }
 
-    public function testPathLangWithUseProxyFalse()
+    public function testPathLangWithPathAndUseProxyTrue()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'use_proxy' => 1
+        );
+        $env = array(
+            'SERVER_NAME' => 'ja.wovn.io',
+            'REQUEST_URI' => '/ko/path/index.html',
+            'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $pathlang = $headers->computePathLang();
+        $this->assertEquals('sv', $pathlang);
+    }
+
+    public function testPathLangWithSubdomainAndUseProxyFalse()
     {
         $settings = array(
             'url_pattern_name' => 'subdomain',
@@ -763,12 +786,32 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         $env = array(
             'SERVER_NAME' => 'ja.wovn.io',
-            'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co'
+            'REQUEST_URI' => '/ko/path/index.html',
+            'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->computePathLang();
         $this->assertEquals('ja', $pathlang);
+    }
+
+    public function testPathLangWithPathAndUseProxyFalse()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'use_proxy' => false
+        );
+        $env = array(
+            'SERVER_NAME' => 'ja.wovn.io',
+            'REQUEST_URI' => '/ko/path/index.html',
+            'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $pathlang = $headers->computePathLang();
+        $this->assertEquals('ko', $pathlang);
     }
 
     public function testPathLangWithUseProxyTrueButNoForwardedHost()
