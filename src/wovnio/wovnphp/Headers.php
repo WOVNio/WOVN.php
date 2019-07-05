@@ -188,7 +188,12 @@ class Headers
             }
             // get the lang in the path
             $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
-            preg_match($rp, $server_name . $this->env['REQUEST_URI'], $match);
+            if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+                $request_uri = $this->env['HTTP_X_FORWARDED_REQUEST_URI'];
+            } else {
+                $request_uri = $this->env['REQUEST_URI'];
+            }
+            preg_match($rp, $server_name . $request_uri, $match);
             if (isset($match['lang'])) {
                 $lang_code = Lang::formatLangCode($match['lang'], $this->store);
                 if (!is_null($lang_code)) {
