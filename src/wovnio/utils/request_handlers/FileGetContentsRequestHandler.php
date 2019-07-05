@@ -14,10 +14,10 @@ class FileGetContentsRequestHandler extends AbstractRequestHandler
 
     /**
      * @param $url
+     * @param $request_headers
      * @param $data
      * @param $timeout
-     * @return string
-     *
+     * @return array
      */
     protected function post($url, $request_headers, $data, $timeout)
     {
@@ -55,8 +55,6 @@ class FileGetContentsRequestHandler extends AbstractRequestHandler
     public function fileGetContents($url, $http_context)
     {
         $response = @file_get_contents($url, false, $http_context);
-        $response_headers = $http_response_header;
-
-        return array($response, $response_headers);
+        return array($response, $http_response_header);
     }
 }

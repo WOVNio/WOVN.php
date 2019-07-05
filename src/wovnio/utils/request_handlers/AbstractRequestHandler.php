@@ -14,18 +14,26 @@ abstract class AbstractRequestHandler
 
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
-        // reduce networkIO to make request faster.
-        $compressed_data = gzencode(http_build_query($data));
-        $content_length = strlen($compressed_data);
-        $headers = array(
-            'Content-Type: application/octet-stream',
-            "Content-Length: $content_length"
-        );
+        if (function_exists('gzencode')) {
+            // reduce networkIO to make request faster.
+            $data = gzencode($data);
+            $content_length = strlen($data);
+            $headers = array(
+                'Content-Type: application/octet-stream',
+                "Content-Length: $content_length"
+            );
+        } else {
+            $content_length = strlen($data);
+            $headers = array(
+                'Content-Type: application/x-www-form-urlencoded',
+                "Content-Length: $content_length"
+            );
+        }
 
         try {
             switch ($method) {
                 case 'POST':
-                    return $this->post($url, $headers, $compressed_data, $timeout);
+                    return $this->post($url, $headers, $data, $timeout);
                     break;
             }
         } catch (\Exception $e) {

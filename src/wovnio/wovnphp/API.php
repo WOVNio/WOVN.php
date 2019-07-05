@@ -61,7 +61,8 @@ class API
             if ($request_handler === null) {
                 return $marker->revert($converted_html);
             }
-            list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
+            $query = http_build_query($data);
+            list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $query, $timeout);
             if ($response === null) {
                 return $marker->revert($converted_html);
             }
