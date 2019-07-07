@@ -5,7 +5,7 @@ use \Wovnio\Wovnphp\Logger;
 
 abstract class AbstractRequestHandler
 {
-    abstract protected function post($url, $request_headers, $data, $timeout);
+    abstract protected function post($url, $request_headers, $query, $timeout);
 
     public static function available()
     {
@@ -14,16 +14,17 @@ abstract class AbstractRequestHandler
 
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
+        $query = http_build_query($data);
         if (function_exists('gzencode')) {
             // reduce networkIO to make request faster.
-            $data = gzencode($data);
-            $content_length = strlen($data);
+            $query = gzencode($query);
+            $content_length = strlen($query);
             $headers = array(
                 'Content-Type: application/octet-stream',
                 "Content-Length: $content_length"
             );
         } else {
-            $content_length = strlen($data);
+            $content_length = strlen($query);
             $headers = array(
                 'Content-Type: application/x-www-form-urlencoded',
                 "Content-Length: $content_length"
@@ -33,7 +34,7 @@ abstract class AbstractRequestHandler
         try {
             switch ($method) {
                 case 'POST':
-                    return $this->post($url, $headers, $data, $timeout);
+                    return $this->post($url, $headers, $query, $timeout);
                     break;
             }
         } catch (\Exception $e) {
