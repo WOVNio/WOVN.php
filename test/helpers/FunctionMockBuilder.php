@@ -6,7 +6,7 @@ use phpmock\MockBuilder;
 
 class FunctionMockBuilder extends MockBuilder
 {
-    public static function build_function_mock($name, $return, $namespace=null)
+    public static function buildFunctionMock($name, $return, $namespace=null)
     {
         $func = is_callable($return) ? $return : function () use (&$return) {
             return $return;

@@ -22,23 +22,23 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         Mock::disableAll();
     }
 
-    private function configure_availability($curl_loaded, $curl_functions, $curl_protocols)
+    private function configureAvailability($curl_loaded, $curl_functions, $curl_protocols)
     {
-        FunctionMockBuilder::build_function_mock('extension_loaded', $curl_loaded)->enable();
-        FunctionMockBuilder::build_function_mock('get_extension_funcs', $curl_functions)->enable();
-        FunctionMockBuilder::build_function_mock('curl_version', array('protocols' => $curl_protocols))->enable();
+        FunctionMockBuilder::buildFunctionMock('extension_loaded', $curl_loaded)->enable();
+        FunctionMockBuilder::buildFunctionMock('get_extension_funcs', $curl_functions)->enable();
+        FunctionMockBuilder::buildFunctionMock('curl_version', array('protocols' => $curl_protocols))->enable();
     }
 
-    private function set_available()
+    private function setAvailable()
     {
-        $this->configure_availability(
+        $this->configureAvailability(
             true,
             array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
             array('http', 'https')
         );
     }
 
-    private function assert_post_request($expected_response, $expected_headers, $expected_error)
+    private function assertPostRequest($expected_response, $expected_headers, $expected_error)
     {
         $sut = new CurlRequestHandler();
         $body = '<html><head></head><body><h1>Congratulations!</h1></body></html>';
@@ -57,12 +57,12 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $curl_error = $expected_error ? 'ERROR :|' : '';
 
         $that = &$this;
-        FunctionMockBuilder::build_function_mock('curl_exec', function ($curl_session) use (&$that, &$data, &$curl_response) {
+        FunctionMockBuilder::buildFunctionMock('curl_exec', function ($curl_session) use (&$that, &$data, &$curl_response) {
             $that->assertEquals($data['url'], \curl_getinfo($curl_session, CURLINFO_EFFECTIVE_URL));
 
             return $curl_response;
         })->enable();
-        FunctionMockBuilder::build_function_mock('curl_setopt_array', function ($curl_session, $options) use (&$that, &$data) {
+        FunctionMockBuilder::buildFunctionMock('curl_setopt_array', function ($curl_session, $options) use (&$that, &$data) {
             $formatted_data = http_build_query($data);
             $compressed_data = gzencode($formatted_data);
             $content_length = strlen($compressed_data);
@@ -82,8 +82,8 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
 
             return \curl_setopt_array($curl_session, $options);
         })->enable();
-        FunctionMockBuilder::build_function_mock('curl_error', $curl_error)->enable();
-        FunctionMockBuilder::build_function_mock('curl_getinfo', function ($curl_session, $option) use ($expected_headers, $headers_string) {
+        FunctionMockBuilder::buildFunctionMock('curl_error', $curl_error)->enable();
+        FunctionMockBuilder::buildFunctionMock('curl_getinfo', function ($curl_session, $option) use ($expected_headers, $headers_string) {
             switch ($option) {
                 case CURLINFO_HEADER_SIZE:
                     return strlen($headers_string);
@@ -103,15 +103,15 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_error, $response_error);
     }
 
-    public function test_available()
+    public function testAvailable()
     {
-        $this->set_available();
+        $this->setAvailable();
         $this->assertTrue(CurlRequestHandler::available());
     }
 
-    public function test_not_available_because_extension_not_loaded()
+    public function testNotAvailableBecauseExtensionNotLoaded()
     {
-        $this->configure_availability(
+        $this->configureAvailability(
             false,
             array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
             array('http', 'https')
@@ -119,9 +119,9 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(CurlRequestHandler::available());
     }
 
-    public function test_not_available_because_extension_because_of_missing_functions()
+    public function testNotAvailableBecauseExtensionBecauseOfMissingFunctions()
     {
-        $this->configure_availability(
+        $this->configureAvailability(
             true,
             array(),
             array('http', 'https')
@@ -129,9 +129,9 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(CurlRequestHandler::available());
     }
 
-    public function test_not_available_because_extension_because_of_missing_protocols()
+    public function testNotAvailableBecauseExtensionBecauseOfMissingProtocols()
     {
-        $this->configure_availability(
+        $this->configureAvailability(
             true,
             array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
             array()
@@ -139,7 +139,7 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(CurlRequestHandler::available());
     }
 
-    public function test_send_request_post()
+    public function testSendRequestPost()
     {
         $formatted_response = array(
             'body' =>'<html><head></head><body><h1>Félicitations !</h1></body></html>'
@@ -150,10 +150,10 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
             'Content-Encoding: gzip'
         );
 
-        $this->assert_post_request($expected_response, $expected_headers, null);
+        $this->assertPostRequest($expected_response, $expected_headers, null);
     }
 
-    public function test_send_request_post_with_error()
+    public function testSendRequestPostWithError()
     {
         $error_code = 500;
         $error_headers = array(
@@ -161,6 +161,6 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         );
         $expected_error = "[cURL] Request failed (0-$error_code).";
 
-        $this->assert_post_request(null, $error_headers, $expected_error);
+        $this->assertPostRequest(null, $error_headers, $expected_error);
     }
 }
