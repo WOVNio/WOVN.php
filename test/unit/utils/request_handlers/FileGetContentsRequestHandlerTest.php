@@ -82,8 +82,8 @@ class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
 
         $that = &$this;
         $sut->expects($this->once())
-			->method('fileGetContents')
-			->will($this->returnCallback(function ($uri, $http_context) use (&$that, &$data, &$file_get_contents_response, &$expected_headers) {
+            ->method('fileGetContents')
+            ->will($this->returnCallback(function ($uri, $http_context) use (&$that, &$data, &$file_get_contents_response, &$expected_headers) {
                 $http_context_array = stream_context_get_options($http_context)['http'];
                 $http_headers = explode("\r\n", $http_context_array['header']);
                 $formatted_data = http_build_query($data);
