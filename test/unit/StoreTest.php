@@ -275,4 +275,20 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         unlink($file_config);
         $this->assertEquals('ja-test', $store->convertToCustomLangCode('ja'));
     }
+
+    public function testFixSupportedLangsSetWithCustomLangCode()
+    {
+        $sut = new Store(array(
+            'project_token' => 'T0k3n_',
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'fr', 'cn', 'tw', 'kr'),
+            'custom_lang_aliases' => array(
+                'zh-CHS' => 'cn',
+                'zh-CHT' => 'tw',
+                'ko' => 'kr'
+            )
+        ));
+
+        $this->assertEquals(array('en', 'fr', 'zh-CHS', 'zh-CHT', 'ko'), $sut->settings['supported_langs']);
+    }
 }
