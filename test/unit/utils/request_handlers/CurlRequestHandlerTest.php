@@ -65,40 +65,43 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         return $curl_request_handler;
     }
 
-    public function testAvailable() {
+    public function testAvailable()
+    {
         mockCurl(
             true,
             array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
-			array('http', 'https')
+            array('http', 'https')
         );
-		$this->assertTrue(CurlRequestHandler::available());
+        $this->assertTrue(CurlRequestHandler::available());
     }
 
-    public function testNotAvailableBecauseExtensionNotLoaded() {
-		mockCurl(
-			false,
-			array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
-			array('http', 'https')
-		);
-		$this->assertFalse(CurlRequestHandler::available());
-	}
+    public function testNotAvailableBecauseExtensionNotLoaded()
+    {
+        mockCurl(
+            false,
+            array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
+            array('http', 'https')
+        );
+        $this->assertFalse(CurlRequestHandler::available());
+    }
 
-	public function testNotAvailableBecauseExtensionBecauseOfMissingFunctions() {
-		mockCurl(
-			true,
-			array(),
-			array('http', 'https')
-		);
-		$this->assertFalse(CurlRequestHandler::available());
-	}
+    public function testNotAvailableBecauseExtensionBecauseOfMissingFunctions()
+    {
+        mockCurl(
+            true,
+            array(),
+            array('http', 'https')
+        );
+        $this->assertFalse(CurlRequestHandler::available());
+    }
 
-	public function testNotAvailableBecauseExtensionBecauseOfMissingProtocols() {
-		mockCurl(
-			true,
-			array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
-			array()
-		);
-		$this->assertFalse(CurlRequestHandler::available());
-	}
-
+    public function testNotAvailableBecauseExtensionBecauseOfMissingProtocols()
+    {
+        mockCurl(
+            true,
+            array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
+            array()
+        );
+        $this->assertFalse(CurlRequestHandler::available());
+    }
 }

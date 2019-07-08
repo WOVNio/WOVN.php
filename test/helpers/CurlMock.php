@@ -23,7 +23,8 @@ function mockCurl($curl_loaded, $curl_functions, $curl_protocols)
     $curl_version = array('protocols' => $curl_protocols);
 }
 
-function restoreCurl() {
+function restoreCurl()
+{
     global $mockCurl;
     global $extension_loaded;
     global $get_extension_funcs;
