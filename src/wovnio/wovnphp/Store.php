@@ -42,23 +42,9 @@ class Store
      */
     public function __construct($userSettings)
     {
-        $defaultSettings = $this->defaultSettings();
+        $this->settings = $this->defaultSettings();
         if ($userSettings) {
-            $userSettings = $this->updateSettings($userSettings);
-        } else {
-            $userSettings = array();
-        }
-
-        $this->settings = array_merge($defaultSettings, $userSettings);
-
-        // Use default api_url property when user api_url property is empty.
-        if ($this->settings['api_url'] === '') {
-            $this->settings['api_url'] = $defaultSettings['api_url'];
-        }
-
-        // Use default timeout if not set
-        if ($this->settings['api_timeout'] === '') {
-            $this->settings['api_timeout'] = $defaultSettings['api_timeout'];
+            $this->updateSettings($userSettings);
         }
     }
 
@@ -107,81 +93,84 @@ class Store
     /**
      * Updates the current settings of the user in the class \n
      *
-     * @param array $vals The vals to update in the settings
+     * @param array $updatedOptions The options to update in the settings
      * @return array The new settings of the user
      */
-    public function updateSettings($vals)
+    public function updateSettings($updatedOptions)
     {
         $defaultSettings = $this->defaultSettings();
 
+        $this->settings = array_merge($this->settings, $updatedOptions);
+
         // GETTING THE LANGUAGE AND SETTING IT AS CODE
-        $vals['default_lang'] = Lang::getCode($vals['default_lang']);
+        $this->settings['default_lang'] = Lang::getCode($this->settings['default_lang']);
 
         // Gettting the query params array, adding = if missing and sorting
-        if (isset($vals['query']) && !empty($vals['query'])) {
-            foreach ($vals['query'] as $k => $q) {
+        if (!empty($this->settings['query'])) {
+            foreach ($this->settings['query'] as $k => $q) {
                 if (!preg_match('/=$/', $q)) {
-                    $vals['query'][$k] = $q . '=';
+                    $this->settings['query'][$k] = $q . '=';
                 }
             }
-            sort($vals['query'], SORT_STRING);
+            sort($this->settings['query'], SORT_STRING);
         }
 
         // getting the url pattern
-        if (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'query') {
-            if (isset($vals['lang_param_name'])) {
-                $lang_param_name = $vals['lang_param_name'];
-            } else {
-                $lang_param_name = $defaultSettings['lang_param_name'];
-            }
-            $vals['url_pattern_reg'] = '((\?.*&)|\?)' . $lang_param_name . '=(?P<lang>[^&]+)(&|$)';
-        } elseif (isset($vals['url_pattern_name']) && $vals['url_pattern_name'] === 'subdomain') {
-            $vals['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
+        if ($this->settings['url_pattern_name'] === 'query') {
+            $this->settings['url_pattern_reg'] = '((\?.*&)|\?)' . $this->settings['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
+        } elseif ($this->settings['url_pattern_name'] === 'subdomain') {
+            $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {
-            $vals['url_pattern_name'] = 'path';
-            $vals['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+            $this->settings['url_pattern_name'] = 'path';
+            $this->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
         }
 
-        if (isset($vals['encoding']) && in_array($vals['encoding'], HtmlConverter::$supportedEncodings) == false) {
-            Logger::get()->warning('Invalid encoding setting: {encoding}.', $vals);
-            $vals['encoding'] = null;
+        if (in_array($this->settings['encoding'], HtmlConverter::$supportedEncodings) == false) {
+            Logger::get()->warning('Invalid encoding setting: {encoding}.', $this->settings);
+            $this->settings['encoding'] = null;
         }
 
-        if (isset($vals['custom_lang_aliases']) && !is_array($vals['custom_lang_aliases'])) {
-            $vals['custom_lang_aliases'] = array();
+        if (!is_array($this->settings['custom_lang_aliases'])) {
+            $this->settings['custom_lang_aliases'] = array();
         } else {
-            if (isset($vals['custom_lang_aliases']) && isset($vals['supported_langs'])) {
-                $vals['supported_langs'] = $this->ensureValidSupportedLanguages($vals['supported_langs'], $vals['custom_lang_aliases']);
+            if (isset($this->settings['supported_langs'])) {
+                $this->ensureValidSupportedLanguages();
             }
         }
 
-        if (isset($vals['ignore_paths']) && !is_array($vals['ignore_paths'])) {
-            $vals['ignore_paths'] = array();
+        if (!is_array($this->settings['ignore_paths'])) {
+            $this->settings['ignore_paths'] = array();
         }
 
-        if (isset($vals['ignore_regex']) && !is_array($vals['ignore_regex'])) {
-            $vals['ignore_regex'] = array();
+        if (!is_array($this->settings['ignore_regex'])) {
+            $this->settings['ignore_regex'] = array();
         }
 
         // update settings if wovn dev mode is activated
-        if ($this->isWovnDevModeActivated($vals) && (!array_key_exists('api_url', $vals) || $vals['api_url'] === $defaultSettings['api_url'])) {
-            $vals['api_url'] = $this->wovnProtocol($vals) . '://api.' . $this->wovnHost($vals) . '/v0/';
+        if ($this->isWovnDevModeActivated() && (!array_key_exists('api_url', $this->settings) || $this->settings['api_url'] === $defaultSettings['api_url'])) {
+            $this->settings['api_url'] = $this->wovnProtocol() . '://api.' . $this->wovnHost() . '/v0/';
+        }
+
+        // Use default api_url property when user api_url property is empty.
+        if ($this->settings['api_url'] === '') {
+            $this->settings['api_url'] = $defaultSettings['api_url'];
+        }
+
+        // Use default timeout if not set
+        if ($this->settings['api_timeout'] === '') {
+            $this->settings['api_timeout'] = $defaultSettings['api_timeout'];
         }
 
         $this->configLoaded = true;
 
-        return $vals;
+        return $this->settings;
     }
 
-    private function ensureValidSupportedLanguages($supportedLangs, $customLangAliases)
+    private function ensureValidSupportedLanguages()
     {
-        if (isset($supportedLangs)) {
-            foreach ($supportedLangs as $index => $langCode) {
-                $supportedLangs[$index] = $this->convertToOriginalCode($langCode, $customLangAliases);
-            }
+        foreach ($this->settings['supported_langs'] as $index => $langCode) {
+            $this->settings['supported_langs'][$index] = $this->convertToOriginalCode($langCode);
         }
-
-        return $supportedLangs;
     }
 
     private function isWovnDevModeActivated($settings = null)
@@ -220,13 +209,9 @@ class Store
         return $lang_code;
     }
 
-    public function convertToOriginalCode($lang_code, $customLangAliases = null)
+    public function convertToOriginalCode($lang_code)
     {
-        if ($customLangAliases == null) {
-            $customLangAliases = $this->settings['custom_lang_aliases'];
-        }
-
-        foreach ($customLangAliases as $lang => $custom_lang) {
+        foreach ($this->settings['custom_lang_aliases'] as $lang => $custom_lang) {
             if ($lang_code == $custom_lang) {
                 return $lang;
             }
