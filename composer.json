@@ -8,7 +8,6 @@
   },
   "require-dev": {
     "phpunit/phpunit": "4.3.*",
-    "squizlabs/php_codesniffer": "*",
-    "php-mock/php-mock": "^2.1"
+    "squizlabs/php_codesniffer": "*"
   }
 }
