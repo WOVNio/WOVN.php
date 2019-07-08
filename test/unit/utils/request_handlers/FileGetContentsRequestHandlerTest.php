@@ -27,7 +27,6 @@ class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $file_get_handler = $this->createMockedFileGetHandler($api_url, $expected_header, $expected_content, $timeout, $expected_response);
 
         list($response, $headers, $error)  = $file_get_handler->sendRequest('POST', $api_url, $data, $timeout);
-        var_dump($response);
         $this->assertEquals($expected_response, $response);
     }
 

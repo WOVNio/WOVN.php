@@ -3,7 +3,7 @@
 // redefine function in the scope of Wovnio\Wovnphp objects.
 namespace Wovnio\Utils\RequestHandlers;
 
-$mockCurl = false;
+$mock_curl = false;
 $extension_loaded = null;
 $get_extension_funcs = null;
 $curl_version = null;
@@ -12,12 +12,12 @@ $curl_version = null;
 
 function mockCurl($curl_loaded, $curl_functions, $curl_protocols)
 {
-    global $mockCurl;
+    global $mock_curl;
     global $extension_loaded;
     global $get_extension_funcs;
     global $curl_version;
 
-    $mockCurl = true;
+    $mock_curl = true;
     $extension_loaded = $curl_loaded;
     $get_extension_funcs = $curl_functions;
     $curl_version = array('protocols' => $curl_protocols);
@@ -25,12 +25,12 @@ function mockCurl($curl_loaded, $curl_functions, $curl_protocols)
 
 function restoreCurl()
 {
-    global $mockCurl;
+    global $mock_curl;
     global $extension_loaded;
     global $get_extension_funcs;
     global $curl_version;
 
-    $mockCurl = false;
+    $mock_curl = false;
     $extension_loaded = null;
     $get_extension_funcs = null;
     $curl_version = null;
@@ -42,25 +42,25 @@ function restoreCurl()
 
 function extension_loaded()
 {
-    global $mockCurl;
+    global $mock_curl;
     global $extension_loaded;
 
-    return $mockCurl ? $extension_loaded : call_user_func_array('\curl_loaded', func_get_args());
+    return $mock_curl ? $extension_loaded : call_user_func_array('\curl_loaded', func_get_args());
 }
 
 function get_extension_funcs()
 {
-    global $mockCurl;
+    global $mock_curl;
     global $get_extension_funcs;
 
-    return $mockCurl ? $get_extension_funcs : call_user_func_array('\get_extension_funcs', func_get_args());
+    return $mock_curl ? $get_extension_funcs : call_user_func_array('\get_extension_funcs', func_get_args());
 }
 
 function curl_version()
 {
-    global $mockCurl;
+    global $mock_curl;
     global $curl_version;
 
-    return $mockCurl ? $curl_version : call_user_func_array('\curl_version', func_get_args());
+    return $mock_curl ? $curl_version : call_user_func_array('\curl_version', func_get_args());
 }
 // phpcs:enable
