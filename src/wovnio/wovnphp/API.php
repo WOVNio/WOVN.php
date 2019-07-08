@@ -63,6 +63,9 @@ class API
             }
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
             if ($response === null) {
+                if ($error) {
+                    header("X-Wovn-Error: $error");
+                }
                 return $marker->revert($converted_html);
             }
 
