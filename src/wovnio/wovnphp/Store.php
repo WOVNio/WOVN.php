@@ -96,7 +96,7 @@ class Store
      * @param array $updatedOptions The options to update in the settings
      * @return array The new settings of the user
      */
-    public function updateSettings($updatedOptions)
+    private function updateSettings($updatedOptions)
     {
         $defaultSettings = $this->defaultSettings();
 
