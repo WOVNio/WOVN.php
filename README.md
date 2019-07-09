@@ -358,6 +358,20 @@ requested URL. In that case, you should set `use_proxy` to `1` (true).
 ```
 use_proxy = 1
 ```
+When `use_proxy` is active, WOVN.php will attempt to use URL protocol and host
+from HTTP Headers `X-Forwarded-Proto` and `X-Forwarded-Host`. These are standard
+fields for proxy forwarding.
+
+Furthermore, WOVN.php will look for HTTP Header `X-Forwarded-Request-Uri`. This
+may be manually set in order for WOVN.php to see the original client requested
+URI (i.e "/japan/tokyo.html"). If using mod\_proxy and the ProxyPass directive,
+for example, this HTTP Header may be set with the RequestHeader directive as
+follows
+```apache
+ProxyPass        /japan http://my.subdomain.com
+ProxyPassReverse /japan http://my.subdomain.com
+RequestHeader    setifempty X-Forwarded-Request-Uri "expr=%{REQUEST_URI}"
+```
 
 #### `override_content_length`
 This parameter tell WOVN.php whether or not it should update the response header
