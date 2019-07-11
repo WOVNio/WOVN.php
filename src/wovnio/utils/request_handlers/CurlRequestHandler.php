@@ -30,7 +30,6 @@ class CurlRequestHandler extends AbstractRequestHandler
     {
         $curl_session = curl_init($url);
 
-        // https://github.com/WOVNio/equalizer/issues/19751
         // If body size is over 1024 bytes, cURL will add 'Expect: 100-continue' header automatically.
         // And wait until the response from html-swapper is returned.
         // This takes always 1[s].
