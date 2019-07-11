@@ -49,7 +49,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         return $mockObject;
     }
 
-    private function mockApiResponse($expected_api_url, $expected_data, $response)
+    private function mockApiResponse($expected_api_url, $expected_data, $response, $headers = null, $error = null)
     {
         $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
         $mock->expects($this->once())
@@ -60,7 +60,7 @@ class APITest extends \PHPUnit_Framework_TestCase
                 $this->equalTo($expected_data),
                 $this->equalTo(1.0)
             )
-            ->willReturn($response);
+            ->willReturn(array($response, $headers, $error));
         RequestHandlerFactory::setInstance($mock);
     }
 

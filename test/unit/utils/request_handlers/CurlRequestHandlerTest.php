@@ -1,10 +1,19 @@
 <?php
-namespace Wovnio\Wovnphp\Tests\Unit\Utils\RequestHandlers;
+namespace Wovnio\Utils\RequestHandlers;
 
 require_once 'src/wovnio/utils/request_handlers/CurlRequestHandler.php';
+require_once 'test/helpers/CurlMock.php';
+
+use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
 
 class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
 {
+    protected function tearDown()
+    {
+        parent::tearDown();
+        restoreCurl();
+    }
+
     public function testPost()
     {
         $api_url = 'http://api.wovn.io/a/b';
@@ -18,34 +27,25 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
 
         $expected_content = gzencode(http_build_query($data));
         $expected_content_length = strlen($expected_content);
-        $expected_context = array(
+        $expected_header = array(
             "Content-Type: application/octet-stream",
             "Content-Length: $expected_content_length"
         );
 
-        $options = array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 10,
-            CURLOPT_ENCODING => 'gzip',
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $expected_content,
-            CURLOPT_HEADER => true,
-            CURLOPT_HTTPHEADER => $expected_context
-        );
-
         $expected_response = '{"foo": "bar"}';
-        $curl_request_handler = $this->createMockedCurlRequestHandler($api_url, $options, $expected_response);
         $timeout = 10;
+        $curl_request_handler = $this->createMockedCurlRequestHandler($api_url, $expected_header, $expected_content, $timeout, $expected_response);
 
-        $response = $curl_request_handler->sendRequest('POST', $api_url, $data, $timeout);
+        list($response, $headers, $error) = $curl_request_handler->sendRequest('POST', $api_url, $data, $timeout);
+
         $this->assertEquals($expected_response, $response);
     }
 
-    private function createMockedCurlRequestHandler($api_url, $options, $response)
+    private function createMockedCurlRequestHandler($api_url, $header, $content, $timeout, $response)
     {
-        $builder = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\CurlRequestHandler');
-        $builder->setMethods(array('curlExec'));
-        $curl_request_handler = $builder->getMock();
+        $curl_request_handler = $this->getMockBuilder('\Wovnio\Utils\RequestHandlers\CurlRequestHandler')
+            ->setMethods(array('post'))
+            ->getMock();
         if (method_exists($this, 'registerMockObject')) {
             $this->registerMockObject($curl_request_handler);
         } else {
@@ -53,13 +53,55 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         }
 
         $curl_request_handler->expects($this->once())
-            ->method('curlExec')
+            ->method('post')
             ->with(
                 $this->equalTo($api_url),
-                $this->equalTo($options)
+                $this->equalTo($header),
+                $this->equalTo($content),
+                $this->equalTo($timeout)
             )
-            ->willReturn($response);
+            ->willReturn(array($response, null, null));
 
         return $curl_request_handler;
+    }
+
+    public function testAvailable()
+    {
+        mockCurl(
+            true,
+            array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
+            array('http', 'https')
+        );
+        $this->assertTrue(CurlRequestHandler::available());
+    }
+
+    public function testNotAvailableBecauseExtensionNotLoaded()
+    {
+        mockCurl(
+            false,
+            array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
+            array('http', 'https')
+        );
+        $this->assertFalse(CurlRequestHandler::available());
+    }
+
+    public function testNotAvailableBecauseExtensionBecauseOfMissingFunctions()
+    {
+        mockCurl(
+            true,
+            array(),
+            array('http', 'https')
+        );
+        $this->assertFalse(CurlRequestHandler::available());
+    }
+
+    public function testNotAvailableBecauseExtensionBecauseOfMissingProtocols()
+    {
+        mockCurl(
+            true,
+            array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close'),
+            array()
+        );
+        $this->assertFalse(CurlRequestHandler::available());
     }
 }

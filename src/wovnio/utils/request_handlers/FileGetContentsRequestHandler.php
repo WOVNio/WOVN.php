@@ -7,74 +7,54 @@ use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
 
 class FileGetContentsRequestHandler extends AbstractRequestHandler
 {
-    private function buildContext($http_context)
+    public static function available()
     {
-        $context = stream_context_create(array(
-            'http' => $http_context
-        ));
-
-        return $context;
-    }
-
-    protected function get($url, $timeout)
-    {
-        $http_context = array(
-            'header' => "Accept-Encoding: gzip\r\n",
-            'method' => 'GET'
-        );
-
-        return $this->fileGetContents($url, $http_context);
+        return ini_get('allow_url_fopen');
     }
 
     /**
      * @param $url
+     * @param $request_headers
      * @param $data
      * @param $timeout
-     * @return string
-     *
-     * TODO: pass gzipped data at argument of $data.
-     * Because `sendRequest` manage query and body, it's confusing to pass gzipped data to `sendRequest`
+     * @return array
      */
-    protected function post($url, $data, $timeout)
+    protected function post($url, $request_headers, $data, $timeout)
     {
-        if (function_exists('gzencode')) {
-            // reduce networkIO to make request faster.
-            $data = gzencode($data);
-            $content_length = strlen($data);
-            $http_context = array(
-                'header' => "Accept-Encoding: gzip\r\nContent-type: application/octet-stream\r\nContent-Length: $content_length",
-                'method' => 'POST',
-                'timeout' => $timeout,
-                'content' => $data
-            );
-        } else {
-            $content_length = strlen($data);
-            $http_context = array(
-                'header' => "Accept-Encoding: gzip\r\nContent-type: application/x-www-form-urlencoded\r\nContent-Length: $content_length",
-                'method' => 'POST',
-                'timeout' => $timeout,
-                'content' => $data
-            );
-        }
+        array_push($request_headers, 'Accept-Encoding: gzip');
 
-        return $this->fileGetContents($url, $http_context);
-    }
-
-    public function fileGetContents($url, $http_context)
-    {
-        $context = $this->buildContext($http_context);
-        $response = @file_get_contents($url, false, $context);
+        $http_context = stream_context_create(
+            array(
+                'http' => array(
+                    'header' => implode("\r\n", $request_headers),
+                    'method' => 'POST',
+                    'timeout' => $timeout,
+                    'content' => $data
+                )
+            )
+        );
+        list($response, $response_headers) = $this->fileGetContents($url, $http_context);
 
         if ($response === false) {
-            return null;
+            preg_match('{HTTP\/\S*\s(\d{3})}', $response_headers[0], $match);
+
+            $http_error_code = $match[1];
+
+            return array(null, $response_headers, "[fgc] Request failed ($http_error_code)");
         }
 
-        foreach ($http_response_header as $c => $h) {
+        foreach ($response_headers as $c => $h) {
             if (stristr($h, 'content-encoding') and stristr($h, 'gzip')) {
                 $response = gzinflate(substr($response, 10, -8));
             }
         }
 
-        return $response;
+        return array($response, $response_headers, null);
+    }
+
+    public function fileGetContents($url, $http_context)
+    {
+        $response = @file_get_contents($url, false, $http_context);
+        return array($response, $http_response_header);
     }
 }

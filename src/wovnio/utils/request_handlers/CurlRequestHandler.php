@@ -7,66 +7,57 @@ use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
 
 class CurlRequestHandler extends AbstractRequestHandler
 {
-    private function buildSession($url, $options)
+    public static function available()
+    {
+        if (!extension_loaded('curl')) {
+            return false;
+        }
+
+        $used_functions = array('curl_version', 'curl_init', 'curl_setopt_array', 'curl_exec', 'curl_getinfo', 'curl_close');
+        $can_use_functions = count(array_intersect(get_extension_funcs('curl'), $used_functions)) === count($used_functions);
+        if (!$can_use_functions) {
+            return false;
+        }
+
+        $supported_protocols = array('http', 'https');
+        $curl_version = curl_version();
+        $can_use_protocols = count(array_intersect($curl_version['protocols'], $supported_protocols)) === count($supported_protocols);
+
+        return $can_use_protocols;
+    }
+
+    protected function post($url, $request_headers, $data, $timeout)
     {
         $curl_session = curl_init($url);
 
-        foreach ($options as $opt => $val) {
-            curl_setopt($curl_session, $opt, $val);
-        }
-
-        return $curl_session;
-    }
-
-    protected function get($url, $timeout)
-    {
-        $options = array(
+        curl_setopt_array($curl_session, array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $timeout,
-            CURLOPT_ENCODING => 'gzip'
-        );
-
-        return $this->curlExec($url, $options);
-    }
-
-    /**
-     * @param $url
-     * @param $data
-     * @param $timeout
-     * @return string
-     *
-     * TODO: pass gzipped data at argument of $data.
-     * Because `sendRequest` manage query and body, it's confusing to pass gzipped data to `sendRequest`
-     */
-    protected function post($url, $data, $timeout)
-    {
-        // reduce networkIO to make request faster.
-        $data = gzencode($data);
-        $content_length = strlen($data);
-        $context = array(
-            "Content-Type: application/octet-stream",
-            "Content-Length: $content_length"
-        );
-
-        $options = array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => $timeout,
+            // adds header to accept GZIP encoding and handles decoding response
             CURLOPT_ENCODING => 'gzip',
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $data,
             CURLOPT_HEADER => true,
-            CURLOPT_HTTPHEADER => $context
-        );
+            CURLOPT_HTTPHEADER => $request_headers
+        ));
 
-        return $this->curlExec($url, $options);
-    }
-
-    public function curlExec($url, $options)
-    {
-        $curl_session = $this->buildSession($url, $options);
         $response = curl_exec($curl_session);
+        $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
+        $headers = $response ? explode("\r\n", substr($response, 0, $header_size)) : array();
+
+        if (curl_error($curl_session) !== '') {
+            $curl_error_code = curl_errno($curl_session);
+            $http_error_code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+
+            curl_close($curl_session);
+
+            return array(null, $headers, "[cURL] Request failed ($curl_error_code-$http_error_code).");
+        }
+
+        $response_body = substr($response, $header_size);
 
         curl_close($curl_session);
-        return $response;
+
+        return array($response_body, $headers, null);
     }
 }

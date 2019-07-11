@@ -16,12 +16,12 @@ class RequestHandlerFactory
         self::$instance = $instance;
     }
 
-    public static function get()
+    public static function getBestAvailableRequestHandler()
     {
         if (self::$instance === null) {
-            if (function_exists('curl_version')) {
+            if (CurlRequestHandler::available()) {
                 self::$instance = new CurlRequestHandler();
-            } else {
+            } elseif (FileGetContentsRequestHandler::available()) {
                 self::$instance = new FileGetContentsRequestHandler();
             }
         }

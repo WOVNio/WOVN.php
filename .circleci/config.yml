@@ -22,8 +22,10 @@ jobs:
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
       - run: scripts/run_phpunit_tests.sh vectorface/hhvm
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
+      - run: scripts/run_phpunit_tests.sh php:7.3-apache
       - run: scripts/run_server_tests.sh php:5.3-apache
       - run: scripts/run_server_tests.sh php:5.4-apache
       - run: scripts/run_server_tests.sh php:5.5-apache
       - run: scripts/run_server_tests.sh php:5.6-apache
       - run: scripts/run_server_tests.sh php:7.0-apache
+      - run: scripts/run_server_tests.sh php:7.3-apache
