@@ -28,8 +28,9 @@ class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
         $expected_content = gzencode(http_build_query($data));
         $expected_content_length = strlen($expected_content);
         $expected_header = array(
-            "Content-Type: application/octet-stream",
-            "Content-Length: $expected_content_length"
+            'Content-Type: application/octet-stream',
+            "Content-Length: $expected_content_length",
+            'Expect:'
         );
 
         $expected_response = '{"foo": "bar"}';
