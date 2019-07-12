@@ -30,6 +30,12 @@ class CurlRequestHandler extends AbstractRequestHandler
     {
         $curl_session = curl_init($url);
 
+        // If body size is over 1024 bytes, cURL will add 'Expect: 100-continue' header automatically.
+        // And wait until the response from html-swapper is returned.
+        // This takes always 1[s].
+        // So, it is better to disable 'Expect: 100-continue'.
+        array_push($request_headers, 'Expect:');
+
         curl_setopt_array($curl_session, array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $timeout,
