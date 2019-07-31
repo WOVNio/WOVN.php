@@ -13,7 +13,7 @@ class LangTest extends \PHPUnit_Framework_TestCase
 
     public function testLangLength()
     {
-        $this->assertEquals(39, count(Lang::$index));
+        $this->assertEquals(40, count(Lang::$index));
     }
 
     public function testKeysExist()

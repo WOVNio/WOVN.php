@@ -44,6 +44,7 @@ class Lang
         'sv' => array('name' => 'Svensk',           'code' => 'sv',     'iso639-1' => 'sv',      'en' => 'Swedish'),
         'th' => array('name' => 'ภาษาไทย',          'code' => 'th',     'iso639-1' => 'th',      'en' => 'Thai'),
         'hi' => array('name' => 'हिन्दी',              'code' => 'hi',     'iso639-1' => 'hi',      'en' => 'Hindi'),
+        'tl' => array('name' => 'Tagalog',          'code' => 'tl',     'iso639-1' => 'tl',      'en' => 'Tagalog'),
         'tr' => array('name' => 'Türkçe',           'code' => 'tr',     'iso639-1' => 'tr',      'en' => 'Turkish'),
         'ur' => array('name' => 'اردو',             'code' => 'ur',     'iso639-1' => 'ur',      'en' => 'Urdu'),
         'uk' => array('name' => 'Українська',       'code' => 'uk',     'iso639-1' => 'uk',      'en' => 'Ukrainian'),
