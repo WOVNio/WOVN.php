@@ -394,7 +394,18 @@ also need test accounts if your issues occur on web pages behind authorization
 If your problems are happening on your server side (widget `<script>` tag not
 inserted, language not detected, redirections not correctly handled, etc), we
 usually need more information. To help us find a solution to your issue as soon
-as possible, we would need to know any non-sensitive information that you could
-provide us, such as the content of your `.htaccess` file, the content of your
-Nginx configuration file, the content of your `wovn.ini` file and a snapshot of
-your website's directory structure.
+as possible, we would need to know information like the followings.
+
+| Info                 | Description                                                           |
+|----------------------|-----------------------------------------------------------------------|
+| PHP version          | must be 5.3 or higher                                                 |
+| WOVN.php version     | You can check with `src/version.php`                                  |
+| Structure            | Snapshots of your website's directories and files structure           |
+| wovn.ini             | Your `wovn.ini`                                                       |
+| wovn_index.php       | Your `wovn_index.php`, if it is used                                  |
+| index.php            | Your `index.php`                                                      |
+| Server type          | Nginx / Apache / both                                                 |
+| Server config        | Your Nginx configuration file / Your `.htaccess` of Apache            |
+| Log                  | Error log when an error occurs                                        |
+| Request restriction  | Request to `wovn.global.ssl.fastly.net` with 443 port must be allowed |
+| Using SSI            | Whether you are using SSI(Server Side Includes)                       |
