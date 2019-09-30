@@ -87,6 +87,7 @@ function wovn_helper_include_by_paths($paths)
 {
     foreach ($paths as $path) {
         if (is_file($path)) {
+            chdir(dirname($path));
             include($path);
             return true;
         }
