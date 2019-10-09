@@ -54,6 +54,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/assets/img/boop', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/img/assets', $store));
         $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/assets/index.html', $store));
+        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/img/coucou.jpg', $store));
     }
 
     public function testIsHtml()

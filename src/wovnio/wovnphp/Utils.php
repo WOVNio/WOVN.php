@@ -73,6 +73,11 @@ class Utils
         return false;
     }
 
+    /*
+     * Return true if $uri is a filepath or if the file should be
+     * ignored according to `ignore_paths` or `ignore_regex`.
+     * Return false otherwise.
+     */
     public static function isFilePathURI($uri, $store)
     {
         return $uri && (preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
@@ -89,8 +94,18 @@ class Utils
             return false;
         }
 
-        foreach ($store->settings['ignore_paths'] as $path) {
-            if (strpos($uri, $path) !== false) {
+        $path = self::getPath($uri);
+        foreach ($store->settings['ignore_paths'] as $ignored_path) {
+            // make sure ignored path declaration does not have trailing slash
+            $ignored_path = rtrim($ignored_path, "/");
+            $ignored_path_trailing_slash = $ignored_path . "/";
+
+            // ignore URI if path matches an ignored path exactly (i.e. a filename like "/img/dog.png")
+            $ignore_path_is_exact_match = strcasecmp($path, $ignored_path) === 0;
+            // ignore URI if its path starts with the ignored path with trailing slash (i.e. directory like "/global/images/")
+            $uri_starts_with_ignore_path = strcasecmp(substr($path, 0, strlen($ignored_path_trailing_slash)), $ignored_path_trailing_slash) === 0;
+
+            if ($ignore_path_is_exact_match || $uri_starts_with_ignore_path) {
                 return true;
             }
         }
@@ -119,5 +134,19 @@ class Utils
             }
         }
         return '';
+    }
+
+    /*
+     * Return path component of $uri
+     */
+    private static function getPath($uri)
+    {
+        // strip schema
+        $uri_path = preg_replace("/^(https?:\/\/)?/", "", $uri);
+        // strip host
+        $uri_path = preg_replace("/^[^\/]*/", "", $uri_path);
+        // strip query
+        $uri_path = preg_replace("/\?(.)*$/", "", $uri_path);
+        return $uri_path;
     }
 }
