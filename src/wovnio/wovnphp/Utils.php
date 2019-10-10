@@ -74,20 +74,37 @@ class Utils
     }
 
     /*
-     * Return true if $uri is a filepath or if the file should be
-     * ignored according to `ignore_paths` or `ignore_regex`.
+     * Return true if $uri is an image, audio, or vide filepath.
      * Return false otherwise.
      */
     public static function isFilePathURI($uri, $store)
     {
-        return $uri && (preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
+        return $uri && (
+            preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
             preg_match(self::AUDIO_FILE_PATTERN, $uri) ||
             preg_match(self::VIDEO_FILE_PATTERN, $uri) ||
-            preg_match(self::DOC_FILE_PATTERN, $uri) ||
-            self::checkIgnorePaths($uri, $store) ||
-            self::checkIgnoreRegex($uri, $store));
+            preg_match(self::DOC_FILE_PATTERN, $uri)
+        );
     }
 
+    /*
+     * Return true if $uri should be ignored according to `ignore_paths` or `ignore_regex`.
+     * Return false otherwise.
+     */
+    public static function isIgnoredPath($uri, $store)
+    {
+        return $uri && (
+            self::checkIgnorePaths($uri, $store) ||
+            self::checkIgnoreRegex($uri, $store)
+        );
+    }
+
+    /*
+     * Return true if $uri path matches one or more values in `ignore_paths`, false otherwise.
+     * An `ignore_path` is only matched at the beginning of the path, and it is always interpreted
+     * as if starting with a leading slash and end with a trailing slash.
+     * I.e. `global`, `/global`, `global/, and `/global/` will all have the same result.
+     */
     private static function checkIgnorePaths($uri, $store = null)
     {
         if (null === $store || !isset($store->settings['ignore_paths']) || isset($store->settings['ignore_paths']) && empty($store->settings['ignore_paths'])) {
@@ -96,8 +113,8 @@ class Utils
 
         $path = self::getPath($uri);
         foreach ($store->settings['ignore_paths'] as $ignored_path) {
-            // make sure ignored path declaration does not have trailing slash
-            $ignored_path = rtrim($ignored_path, "/");
+            // make sure ignored path has leading slash and not trailing slash
+            $ignored_path = "/" . trim($ignored_path, "/");
             $ignored_path_trailing_slash = $ignored_path . "/";
 
             // ignore URI if path matches an ignored path exactly (i.e. a filename like "/img/dog.png")
@@ -112,6 +129,9 @@ class Utils
         return false;
     }
 
+    /*
+     * Return true if $uri path matches one or more regexes in `ignore_regex`, false otherwise.
+     */
     private static function checkIgnoreRegex($uri, $store = null)
     {
         if (null === $store || !isset($store->settings['ignore_regex']) || isset($store->settings['ignore_regex']) && empty($store->settings['ignore_regex'])) {
