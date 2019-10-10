@@ -275,12 +275,24 @@ query[] = forgot_password
 #### `ignore_paths`
 This parameter tells WOVN.php to not localize content withing given directories.
 
-For instance, if you want to not localize the admin panels of your website, you
-should configure WOVN.php as below. WOVN.php will localize
-`https://my-website.com/index.html` but not `https://my-wesite.com/admin/` nor
-`https://my-website.com/admin/plugin.html`.
-```
+The directories given will only be matched against the beginning of the URL path.
+
+For instance, if you want to not localize the `admin` directory of your website, you
+should configure WOVN.php as below.
+```Text
 ignore_paths[] = /admin
+```
+With this configuration, WOVN.php will ignore the following URLs
+```Text
+https://my-wesite.com/admin
+https://my-wesite.com/admin/
+https://my-website.com/admin/plugin.html
+```
+but allow the following
+```Text
+https://my-website.com/index.html
+https://my-website.com/user/admin
+https://my-website.com/adminpage
 ```
 
 #### `ignore_regex`
