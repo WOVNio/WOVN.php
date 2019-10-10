@@ -44,7 +44,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
     }
 
-    public function testIsIgnoredPath__usingIgnorePathSetting()
+    public function testIsIgnoredPathUsingIgnorePathSetting()
     {
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
@@ -73,7 +73,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/user/admin', $store));
     }
 
-    public function testIsIgnoredPath__usingIgnoreRegexSetting()
+    public function testIsIgnoredPathUsingIgnoreRegexSetting()
     {
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
