@@ -292,7 +292,7 @@ WOVN.php as below. WOVN.php will localize
 `https://my-website.com/search/index.php` but not
 `https://my-website.com/search/01/` nor `https://my-website.com/search/02/`.
 ```
-ignore_paths[] = /\/search\/\d\d\//
+ignore_regex[] = /\/search\/\d\d\//
 ```
 
 #### `ignore_class`
