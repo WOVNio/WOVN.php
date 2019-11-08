@@ -1,18 +1,18 @@
 version: '3'
 services:
-  app:
+  apache:
     container_name: apache
     build:
-      context: ./docker
+      context: ./docker/apache
       dockerfile: Dockerfile
     ports:
       - 80:80
     volumes:
       - .:/var/www/html/WOVN.php
       - ./docker/public:/var/www/html
-      - ./docker/log:/var/log/apache2
-      - ./docker/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
-      - ./docker/php.ini:/etc/php.ini
+      - ./docker/apache/log:/var/log/apache2
+      - ./docker/apache/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
       - ./wovn.ini.sample:/var/www/html/wovn.ini
       - ./wovn_index_sample.php:/var/www/html/wovn_index.php
       - ./htaccess_sample:/var/www/html/.htaccess

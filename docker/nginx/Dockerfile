@@ -1,12 +1,8 @@
-FROM php:7.1-apache
-
-# enable mod_rewrite
-RUN a2enmod rewrite
+FROM php:7.3-fpm
+RUN apt-get update
 
 # install xdebug
 RUN pecl install xdebug
 RUN docker-php-ext-enable xdebug
 
 WORKDIR /var/www/html
-
-

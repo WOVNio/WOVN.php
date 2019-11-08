@@ -1,25 +1,28 @@
-# WOVN.php debug environment
+# WOVN.php debug environment with Apache
 
 ## Start
 1. build docker image  
 Build docker for the first time.
 ```
-docker-compose build
+docker-compose -f apache.yml build
 ```
 
 2. Set wovn.ini  
 Rewrite wovn.ini.sample with your config.
 
-3. Run docker  
+3. Set your .htaccess
+Rewrite htaccess_sample with your config.
+
+4. Run docker  
 Run the following command.  
-You should be able to see the content when you access `localhost`.
+You should be able to see the content located at `/docker/public` when you access `localhost`.
 ```
-docker-compose up -d
+docker-compose -f apache.yml up -d
 ```
 
 ## Stop
 ```
-docker-compose rm -fs
+docker-compose -f apache.yml rm -fs
 ```
 
 ## Use local html-swapper and widget
@@ -34,3 +37,6 @@ api_url = "http://host.docker.internal:3001/v0/"
 Change from `j.wovn.io/1` to `j.dev-wovn.io:3000/1` at `src/wovnio/html/HtmlConverter.php`
 
 3. run local html-swapper and widget
+
+## Nginx environment
+If you change from apache.yml to nginx.yml, you can use with Nginx.
