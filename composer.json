@@ -1,6 +1,6 @@
 {
   "name": "WOVNio/WOVN.php",
-  "type": "Library",
+  "type": "library",
   "description": "PHP server library for WOVNio",
   "homepage": "https://wovn.io",
   "require": {
