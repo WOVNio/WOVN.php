@@ -31,7 +31,16 @@ class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testRevert()
+    public function testAddValueManyTimes()
+    {
+        $marker = new HtmlReplaceMarker();
+
+        for ($i = 0; $i < 25; $i++) {
+            $this->assertEquals("__wovn-backend-ignored-key-$i", $marker->addValue('hello'));
+        }
+    }
+
+    public function testRevertCommentValue()
     {
         $marker = new HtmlReplaceMarker();
         $original_html = '<html><body>hello<a>  replacement </a>world </body></html>';
@@ -41,7 +50,7 @@ class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($original_html, $marker->revert($new_html));
     }
 
-    public function testRevertMultipleValue()
+    public function testRevertMultipleCommentValue()
     {
         $marker = new HtmlReplaceMarker();
         $original_html = '<html><body>hello<a>  replacement </a>world </body></html>';
@@ -55,7 +64,26 @@ class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($original_html, $marker->revert($new_html));
     }
 
-    public function testRevertManyValue()
+    public function testRevertMultipleValue()
+    {
+        $marker = new HtmlReplaceMarker();
+        $original_html = '<html><body>'
+        .'<input type="hidden" value="test1">'
+        .'<input type="hidden" value="test2">'
+        .'<input type="hidden" value="">'
+        .'</body></html>';
+        $key1 = $marker->addValue('test1');
+        $key2 = $marker->addValue('test2');
+        $key3 = $marker->addValue('');
+        $new_html = '<html><body>'
+        ."<input type=\"hidden\" value=\"$key1\">"
+        ."<input type=\"hidden\" value=\"$key2\">"
+        ."<input type=\"hidden\" value=\"$key3\">"
+        .'</body></html>';
+        $this->assertEquals($original_html, $marker->revert($new_html));
+    }
+
+    public function testRevertManyCommentValue()
     {
         $marker = new HtmlReplaceMarker();
         $original_html = '<html><body>';
@@ -84,6 +112,31 @@ class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
         $key2 = $marker->addCommentValue('hello');
         $key3 = $marker->addCommentValue('hello');
         $new_html = "<html><body>$key1<a>$key2</a>$key3</body></html>";
+        $this->assertEquals($original_html, $marker->revert($new_html));
+    }
+
+    public function testRevertMixedCommentValueAndValue()
+    {
+        $marker = new HtmlReplaceMarker();
+        $original_html = '<html><body>'
+        .'<input type="hidden" value="test1">'
+        .'<p>hello</p>'
+        .'<input type="hidden" value="test2">'
+        .'<p>world</p>'
+        .'<input type="hidden" value="">'
+        .'</body></html>';
+        $key1 = $marker->addValue('test1');
+        $key2 = $marker->addCommentValue('hello');
+        $key3 = $marker->addValue('test2');
+        $key4 = $marker->addCommentValue('world');
+        $key5 = $marker->addValue('');
+        $new_html = '<html><body>'
+        ."<input type=\"hidden\" value=\"$key1\">"
+        ."<p>$key2</p>"
+        ."<input type=\"hidden\" value=\"$key3\">"
+        ."<p>$key4</p>"
+        ."<input type=\"hidden\" value=\"$key5\">"
+        .'</body></html>';
         $this->assertEquals($original_html, $marker->revert($new_html));
     }
 }
