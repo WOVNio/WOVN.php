@@ -15,7 +15,7 @@ Rewrite htaccess_sample with your config.
 
 4. Run docker  
 Run the following command.  
-You should be able to see the content when you access `localhost`.
+You should be able to see the content located at `/docker/public` when you access `localhost`.
 ```
 docker-compose -f apache.yml up -d
 ```
