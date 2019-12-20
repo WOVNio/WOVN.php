@@ -228,7 +228,9 @@ class HtmlConverter
 
         $hreflangTags = array();
         foreach ($lang_codes as $lang_code) {
-            if ($this->isNoindexLang($lang_code)) continue;
+            if ($this->isNoindexLang($lang_code)) {
+                continue;
+            }
             $href = $this->buildHrefLang($lang_code);
             array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
         }
