@@ -55,6 +55,9 @@ class API
         if (count($store->settings['custom_lang_aliases']) > 0) {
             $data['custom_lang_aliases'] = json_encode($store->settings['custom_lang_aliases']);
         }
+        if (count($store->settings['no_index_langs']) > 0) {
+            $data['no_index_langs'] = json_encode($store->settings['no_index_langs']);
+        }
 
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
