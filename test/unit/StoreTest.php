@@ -228,24 +228,6 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
     }
 
-    public function testConvertToNoIndexLangs()
-    {
-        $file_config = dirname(__FILE__) . '/test_config.ini';
-        if (file_exists($file_config)) {
-            unlink($file_config);
-        }
-        $data = implode( "\n", array(
-            'project_token = "T0k3N"',
-            'default_lang = "English"',
-            'no_index_langs[] = en',
-            'no_index_langs[] = fr'
-        ));
-        file_put_contents($file_config, $data);
-        $store = Store::createFromFile($file_config);
-        unlink($file_config);
-        $this->assertEquals(array('en', 'fr'), $store->settings['no_index_langs']);
-    }
-
     public function testCustomApiUrlSettingNotChangedWithWovnDevModeOn()
     {
         $file_config = dirname(__FILE__) . '/test_config.ini';
@@ -308,5 +290,23 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals(array('en', 'fr', 'zh-CHS', 'zh-CHT', 'ko'), $sut->settings['supported_langs']);
+    }
+
+    public function testNoIndexLangs()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'no_index_langs[] = en',
+            'no_index_langs[] = fr'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals(array('en', 'fr'), $store->settings['no_index_langs']);
     }
 }
