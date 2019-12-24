@@ -137,6 +137,25 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_result, $result);
     }
 
+    public function testTranslateWithNoindexLangs()
+    {
+        $settings = array('no_index_langs' => array('en'));
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $html = '<html><head></head><body><h1>en</h1></body></html>';
+        $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
+
+        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $html);
+        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
+        $expected_html = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
+        $expected_data = $this->getExpectedData($store, $headers, $expected_html, array('no_index_langs' => json_encode(array('en'))));
+        $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
+
+        $this->mockApiResponse($expected_api_url, $expected_data, $response);
+
+        $result = API::translate($store, $headers, $html);
+        $this->assertEquals($expected_result, $result);
+    }
+
     public function testTranslateWithCustomLangAliases()
     {
         $settings = array('custom_lang_aliases' => array('ja' => 'ja-test'));

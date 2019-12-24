@@ -320,6 +320,17 @@ ignore_class[] = ignore
 ignore_class[] = no-translate
 ```
 
+#### `no_index_langs`
+This parameter tells WOVN.php which languages's HTML should be set `noindex` 
+to avoid index by web crawler.
+
+For instance, if you want to avoid index for English pages, add `en` as below. 
+`<meta name="robots" content="noindex">` tag will be inserted inside `head` tag 
+for English pages.
+```
+no_index_langs[] = en
+```
+
 #### `encoding`
 This parameter tells WOVN.php which encoding you use for you files. WOVN.php
 supports 8 encodings: `UTF-8`, `EUC-JP`, `SJIS`, `eucJP-win`, `SJIS-win`, `JIS`,

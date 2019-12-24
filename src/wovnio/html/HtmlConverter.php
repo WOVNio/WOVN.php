@@ -44,6 +44,11 @@ class HtmlConverter
     {
         $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
         $this->html = $this->insertHreflangTags($this->html);
+
+        if ($this->isNoindexLang($this->headers->lang())) {
+            $this->html = $this->insertNoindex($this->html);
+        }
+
         $marker = new HtmlReplaceMarker();
         return array($this->html, $marker);
     }
@@ -148,6 +153,18 @@ class HtmlConverter
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
     }
 
+    private function insertNoindex($html)
+    {
+        $noindexMetaTag = '<meta name="robots" content="noindex">';
+        $parent_tags = array("(<head\s?.*?>)");
+        return $this->insertAfterTag($parent_tags, $html, $noindexMetaTag);
+    }
+
+    private function isNoindexLang($lang)
+    {
+        return in_array($lang, $this->store->settings['no_index_langs']);
+    }
+
     private function insertAfterTag($tag_names, $html, $insert_str)
     {
         foreach ($tag_names as $tag_name) {
@@ -211,6 +228,9 @@ class HtmlConverter
 
         $hreflangTags = array();
         foreach ($lang_codes as $lang_code) {
+            if ($this->isNoindexLang($lang_code)) {
+                continue;
+            }
             $href = $this->buildHrefLang($lang_code);
             array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
         }

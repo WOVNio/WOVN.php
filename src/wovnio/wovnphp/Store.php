@@ -78,6 +78,7 @@ class Store
             'ignore_paths' => array(),
             'ignore_regex' => array(),
             'ignore_class' => array(),
+            'no_index_langs' => array(),
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
@@ -136,6 +137,9 @@ class Store
             if (isset($this->settings['supported_langs'])) {
                 $this->ensureValidSupportedLanguages();
             }
+            if (isset($this->settings['no_index_langs'])) {
+                $this->ensureValidNoIndexLangs();
+            }
         }
 
         if (!is_array($this->settings['ignore_paths'])) {
@@ -170,6 +174,13 @@ class Store
     {
         foreach ($this->settings['supported_langs'] as $index => $langCode) {
             $this->settings['supported_langs'][$index] = $this->convertToOriginalCode($langCode);
+        }
+    }
+
+    private function ensureValidNoIndexLangs()
+    {
+        foreach ($this->settings['no_index_langs'] as $index => $langCode) {
+            $this->settings['no_index_langs'][$index] = $this->convertToOriginalCode($langCode);
         }
     }
 
