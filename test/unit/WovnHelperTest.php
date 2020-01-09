@@ -22,19 +22,24 @@ class WovnHelperTest extends \PHPUnit_Framework_TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
     */
-    public function testWovnHelperDefaultIndexFilesWithOption()
+    public function testWovnHelperDefaultIndexFilesWithDefinedOption()
     {
         define('WOVNPHP_DEFAULT_INDEX_FILE', 'test1.php');
         $this->assertEquals(array('test1.php'), wovn_helper_default_index_files());
+    }
+
+    public function testWovnHelperDefaultIndexFilesWithArrayArgument()
+    {
+        $this->assertEquals(array('test1.php', 'test2.html'), wovn_helper_default_index_files(array('test1.php', 'test2.html')));
     }
 
     /**
      * @runInSeparateProcess
      * @preserveGlobalState disabled
     */
-    public function testWovnHelperDefaultIndexFilesWithArrayOption()
+    public function testWovnHelperDefaultIndexFilesWithDefinedOptionAndArrayArgument()
     {
-        define('WOVNPHP_DEFAULT_INDEX_FILE', array('test1.php', 'test2.html'));
-        $this->assertEquals(array('test1.php', 'test2.html'), wovn_helper_default_index_files());
+        define('WOVNPHP_DEFAULT_INDEX_FILE', 'test1.php');
+        $this->assertEquals(array('test1.php', 'test2.html'), wovn_helper_default_index_files(array('test1.php', 'test2.html')));
     }
 }

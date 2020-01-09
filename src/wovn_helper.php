@@ -44,10 +44,14 @@ function remove_dots_from_path($path)
     return implode('/', $tmp_out);
 }
 
-function wovn_helper_default_index_files()
+function wovn_helper_default_index_files($default_index_files = null)
 {
+    if (isset($default_index_files)) {
+        return $default_index_files;
+    }
+
     if (defined('WOVNPHP_DEFAULT_INDEX_FILE')) {
-        return is_array(WOVNPHP_DEFAULT_INDEX_FILE) ? WOVNPHP_DEFAULT_INDEX_FILE : array(WOVNPHP_DEFAULT_INDEX_FILE);
+        return array(WOVNPHP_DEFAULT_INDEX_FILE);
     }
 
     return array(
@@ -61,7 +65,7 @@ function wovn_helper_default_index_files()
     );
 }
 
-function wovn_helper_detect_paths($local_dir, $path_of_url)
+function wovn_helper_detect_paths($local_dir, $path_of_url, $default_index_files = null)
 {
     $base_dir = realpath(remove_dots_from_path($local_dir));
     $request_path = $base_dir . '/' . $path_of_url;
@@ -74,7 +78,7 @@ function wovn_helper_detect_paths($local_dir, $path_of_url)
     } elseif (is_dir($local_path)) {
         $local_dir = substr($local_path, 0, strlen($local_path)) === '/' ? $local_path : $local_path . '/';
         $detect_paths = array();
-        foreach (wovn_helper_default_index_files() as $index_file) {
+        foreach (wovn_helper_default_index_files($default_index_files) as $index_file) {
             array_push($detect_paths, $local_dir . $index_file);
         }
         return $detect_paths;
