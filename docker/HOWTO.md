@@ -39,4 +39,8 @@ Change from `j.wovn.io/1` to `j.dev-wovn.io:3000/1` at `src/wovnio/html/HtmlConv
 3. run local html-swapper and widget
 
 ## Nginx environment
-If you change from apache.yml to nginx.yml, you can use with Nginx.
+You can use with Nginx, if you change from `apache.yml` to `nginx.yml`.
+
+## With Wordpress environment
+You can use with Wordpress, if you change from `apache.yml` to `wp_apache.yml`.
+You can set wordpress directory with `working_dir: /var/www/html/anywhere` in `wp_apache.yml`.

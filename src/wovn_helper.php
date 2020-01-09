@@ -47,7 +47,7 @@ function remove_dots_from_path($path)
 function wovn_helper_default_index_files()
 {
     if (defined('WOVNPHP_DEFAULT_INDEX_FILE')) {
-        return array(WOVNPHP_DEFAULT_INDEX_FILE);
+        return is_array(WOVNPHP_DEFAULT_INDEX_FILE) ? WOVNPHP_DEFAULT_INDEX_FILE : array(WOVNPHP_DEFAULT_INDEX_FILE);
     }
 
     return array(

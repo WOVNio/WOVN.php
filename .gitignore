@@ -8,3 +8,4 @@ test/integration/test/integration/wovn_index_sample_workspace
 /**/log
 docker/public/*
 !docker/public/index.html
+docker/db/*

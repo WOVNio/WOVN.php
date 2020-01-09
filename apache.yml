@@ -8,11 +8,11 @@ services:
     ports:
       - 80:80
     volumes:
-      - .:/var/www/html/WOVN.php
-      - ./docker/public:/var/www/html
       - ./docker/apache/log:/var/log/apache2
       - ./docker/apache/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
       - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/public:/var/www/html
+      - .:/var/www/html/WOVN.php
       - ./wovn.ini.sample:/var/www/html/wovn.ini
       - ./wovn_index_sample.php:/var/www/html/wovn_index.php
       - ./htaccess_sample:/var/www/html/.htaccess
