@@ -50,10 +50,6 @@ function wovn_helper_default_index_files($default_index_files = null)
         return $default_index_files;
     }
 
-    if (defined('WOVNPHP_DEFAULT_INDEX_FILE')) {
-        return array(WOVNPHP_DEFAULT_INDEX_FILE);
-    }
-
     return array(
         "index.html",
         "index.shtml",
