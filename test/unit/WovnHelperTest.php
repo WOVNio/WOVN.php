@@ -17,9 +17,4 @@ class WovnHelperTest extends \PHPUnit_Framework_TestCase
             "app.php"
         ), wovn_helper_default_index_files());
     }
-
-    public function testWovnHelperDefaultIndexFilesWithArrayArgument()
-    {
-        $this->assertEquals(array('test1.php', 'test2.html'), wovn_helper_default_index_files(array('test1.php', 'test2.html')));
-    }
 }

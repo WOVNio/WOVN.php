@@ -44,12 +44,8 @@ function remove_dots_from_path($path)
     return implode('/', $tmp_out);
 }
 
-function wovn_helper_default_index_files($default_index_files = null)
+function wovn_helper_default_index_files()
 {
-    if (isset($default_index_files)) {
-        return $default_index_files;
-    }
-
     return array(
         "index.html",
         "index.shtml",
@@ -61,7 +57,7 @@ function wovn_helper_default_index_files($default_index_files = null)
     );
 }
 
-function wovn_helper_detect_paths($local_dir, $path_of_url, $default_index_files = null)
+function wovn_helper_detect_paths($local_dir, $path_of_url)
 {
     $base_dir = realpath(remove_dots_from_path($local_dir));
     $request_path = $base_dir . '/' . $path_of_url;
@@ -74,7 +70,7 @@ function wovn_helper_detect_paths($local_dir, $path_of_url, $default_index_files
     } elseif (is_dir($local_path)) {
         $local_dir = substr($local_path, 0, strlen($local_path)) === '/' ? $local_path : $local_path . '/';
         $detect_paths = array();
-        foreach (wovn_helper_default_index_files($default_index_files) as $index_file) {
+        foreach (wovn_helper_default_index_files() as $index_file) {
             array_push($detect_paths, $local_dir . $index_file);
         }
         return $detect_paths;
