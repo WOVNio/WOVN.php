@@ -18,6 +18,7 @@ use Wovnio\Wovnphp\API;
 // GET STORE AND HEADERS
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER);
 
+// Make it available for user application
 $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 $headers->requestOut();
 

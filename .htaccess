@@ -1,0 +1,2 @@
+# Block direct access to WOVN.php directory
+Deny from all

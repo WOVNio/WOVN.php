@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# With the following commands, you can run unit or integration tests every time a file is changed.
+#   ./scripts/phpunit.sh -l unit
+#   ./scripts/phpunit.sh -l integration
+
 FILE_DIR=$(dirname $0)
 ROOT_DIR=${FILE_DIR}/..
 PHPUNIT_EXE="${ROOT_DIR}/vendor/bin/phpunit"

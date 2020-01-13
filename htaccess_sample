@@ -1,3 +1,8 @@
+# Don't allow access to wovn.ini directly
+<Files ~ "^(wovn\.ini)$">
+  deny from all
+</Files>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # For path pattern, remove language code

@@ -1,0 +1,35 @@
+version: '3'
+services:
+  apache:
+    container_name: apache
+    image: wordpress:4.8.0-php7.1-apache
+    ports:
+      - 80:80
+    depends_on:
+      - mysql
+    environment:
+      WORDPRESS_DB_HOST: mysql:3306
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: wp_user
+    working_dir: /var/www/html/anywhere
+    volumes:
+      - ./docker/apache/log:/var/log/apache2
+      - ./docker/apache/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
+      - ./docker/php.ini:/usr/local/etc/php/php.ini
+      - ./docker/public:/var/www/html
+      - .:/var/www/html/WOVN.php
+      - ./wovn.ini.sample:/var/www/html/wovn.ini
+      - ./wovn_index_sample.php:/var/www/html/wovn_index.php
+      - ./htaccess_sample:/var/www/html/.htaccess
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./docker/db:/var/lib/mysql
+
