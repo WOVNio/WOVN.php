@@ -25,19 +25,6 @@ docker-compose -f apache.yml up -d
 docker-compose -f apache.yml rm -fs
 ```
 
-## Use local html-swapper and widget
-1. change html-swapper url  
-Add the following line to wovn.ini.sample  
-`host.docker.internal` is understood by docker as the localhost of host OS.
-```
-api_url = "http://host.docker.internal:3001/v0/"
-```
-
-2. change widget url  
-Change from `j.wovn.io/1` to `j.dev-wovn.io:3000/1` at `src/wovnio/html/HtmlConverter.php`
-
-3. run local html-swapper and widget
-
 ## Nginx environment
 You can use with Nginx, if you change from `apache.yml` to `nginx.yml`.
 
