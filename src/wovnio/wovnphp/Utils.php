@@ -79,8 +79,9 @@ class Utils
      */
     public static function isFilePathURI($uri, $store)
     {
-        if (!$uri)
+        if (!$uri) {
             return false;
+        }
 
         $uri = self::removeQueryAndHash($uri);
 
