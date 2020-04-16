@@ -64,6 +64,8 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html', $store));
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/', $store));
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/boop', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html?foo', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html#foo', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/page/coucou.html', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou.htmlx', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou', $store));

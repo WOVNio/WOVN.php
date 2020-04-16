@@ -171,8 +171,9 @@ class Utils
         $uri_path = preg_replace("/^(https?:\/\/)?/", "", $uri);
         // strip host
         $uri_path = preg_replace("/^[^\/]*/", "", $uri_path);
-        // strip query
-        $uri_path = preg_replace("/\?(.)*$/", "", $uri_path);
+
+        $uri_path = self::removeQueryAndHash($uri_path);
+
         return $uri_path;
     }
 
