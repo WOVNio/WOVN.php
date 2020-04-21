@@ -31,8 +31,11 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     {
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
+
         $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
         $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3', $store));
+        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/#mp3', $store));
+        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/?mp3', $store));
         $this->assertEquals(true, Utils::isFilePathURI('/test.mp3', $store));
         $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.zip', $store));
@@ -42,6 +45,12 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.rar', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.tar.gz', $store));
         $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.pdf', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.doc', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.docx', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xls', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xlsx', $store));
+        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xlsm', $store));
     }
 
     public function testIsIgnoredPathUsingIgnorePathSetting()
@@ -55,6 +64,8 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html', $store));
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/', $store));
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/boop', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html?foo', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html#foo', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/page/coucou.html', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou.htmlx', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou', $store));
