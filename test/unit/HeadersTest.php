@@ -568,178 +568,153 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testRemoveLangWithPathPattern()
     {
         $settings = array('url_pattern_name' => 'path');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $testCases = array(
+            array('wovn.io/ja', 'wovn.io/', 'ja'),
+            array('http://wovn.io/en', 'http://wovn.io/', 'en'),
+            array('https://wovn.io/en', 'https://wovn.io/', 'en'),
+            array('wovn.io/zh-cht', 'wovn.io/', 'zh-CHT'),
+            array('https://wovn.io/zh-cht', 'https://wovn.io/', 'zh-CHT'),
+            array('wovn.io/en-US', 'wovn.io/', 'en-US'),
+            array('https://wovn.io/en-US', 'https://wovn.io/', 'en-US'),
+            array('wovn.io/zh-Hant-TW', 'wovn.io/', 'zh-Hant-TW'),
+            array('https://wovn.io/zh-Hant-TW', 'https://wovn.io/', 'zh-Hant-TW'),
+        );
 
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
+        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-        $without_scheme = $headers->removeLang('wovn.io/ja', 'ja');
-        $this->assertEquals('wovn.io/', $without_scheme);
-
-        $with_scheme = $headers->removeLang('https://wovn.io/en/', 'en');
-        $this->assertEquals('https://wovn.io/', $with_scheme);
-    }
-
-    public function testRemoveLangWithPathPatternAndChinese()
-    {
-        $settings = array('url_pattern_name' => 'path');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
-
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
-
-        $traditional = $headers->removeLang('wovn.io/zh-cht', 'zh-CHT');
-        $this->assertEquals('wovn.io/', $traditional);
-
-        $simplified = $headers->removeLang('https://wovn.io/zh-CHS', 'zh-CHS');
-        $this->assertEquals('https://wovn.io/', $simplified);
+            $this->assertEquals('path', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
     }
 
     public function testRemoveLangWithQueryPattern()
     {
         $settings = array('url_pattern_name' => 'query');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $testCases = array(
+            array('wovn.io/?wovn=ja', 'wovn.io/', 'ja'),
+            array('http://wovn.io?wovn=en', 'http://wovn.io', 'en'),
+            array('https://wovn.io?wovn=en', 'https://wovn.io', 'en'),
+            array('wovn.io?wovn=zh-cht', 'wovn.io', 'zh-CHT'),
+            array('https://wovn.io?wovn=zh-cht', 'https://wovn.io', 'zh-CHT'),
+            array('wovn.io?wovn=en-US', 'wovn.io', 'en-US'),
+            array('https://wovn.io?wovn=en-US', 'https://wovn.io', 'en-US'),
+            array('wovn.io?wovn=zh-Hant-TW', 'wovn.io', 'zh-Hant-TW'),
+            array('https://wovn.io?wovn=zh-Hant-TW', 'https://wovn.io', 'zh-Hant-TW'),
+        );
 
-        $without_scheme = $headers->removeLang('wovn.io/?wovn=ja', 'ja');
-        $this->assertEquals('wovn.io/', $without_scheme);
+        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-        $with_scheme = $headers->removeLang('http://minimaltech.co?wovn=en', 'en');
-        $this->assertEquals('http://minimaltech.co', $with_scheme);
-    }
-
-    public function testRemoveLangWithQueryPatternAndChinese()
-    {
-        $settings = array('url_pattern_name' => 'query');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
-
-        $traditional = $headers->removeLang('minimaltech.co/?wovn=zh-CHT', 'zh-CHT');
-        $this->assertEquals('minimaltech.co/', $traditional);
-
-        $simplified = $headers->removeLang('http://minimaltech.co?wovn=zh-chs', 'zh-CHS');
-        $this->assertEquals('http://minimaltech.co', $simplified);
+            $this->assertEquals('query', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
     }
 
     public function testRemoveLangWithSubdomainPattern()
     {
         $settings = array('url_pattern_name' => 'subdomain');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $testCases = array(
+            array('ja.wovn.io/', 'wovn.io/', 'ja'),
+            array('http://en.wovn.io', 'http://wovn.io', 'en'),
+            array('https://en.wovn.io', 'https://wovn.io', 'en'),
+            array('zh-cht.wovn.io', 'wovn.io', 'zh-CHT'),
+            array('https://zh-cht.wovn.io', 'https://wovn.io', 'zh-CHT'),
+            array('en-US.wovn.io', 'wovn.io', 'en-US'),
+            array('https://en-US.wovn.io', 'https://wovn.io', 'en-US'),
+            array('zh-Hant-TW.wovn.io', 'wovn.io', 'zh-Hant-TW'),
+            array('https://zh-Hant-TW.wovn.io', 'https://wovn.io', 'zh-Hant-TW'),
+        );
 
-        $without_scheme = $headers->removeLang('ja.minimaltech.co', 'ja');
-        $this->assertEquals('minimaltech.co', $without_scheme);
+        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-        $with_scheme = $headers->removeLang('http://en.wovn.io/', 'en');
-        $this->assertEquals('http://wovn.io/', $with_scheme);
+            $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
     }
 
-    public function testRemoveLangWithSubdomainPatternAndChinese()
-    {
-        $settings = array('url_pattern_name' => 'subdomain');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
-
-        $traditional = $headers->removeLang('zh-cht.wovn.io', 'zh-CHT');
-        $this->assertEquals('wovn.io', $traditional);
-
-        $simplified = $headers->removeLang('https://zh-CHS.wovn.io', 'zh-CHS');
-        $this->assertEquals('https://wovn.io', $simplified);
-    }
-
-    public function testRemoveLangWithCustomLang()
+    public function testRemoveLangWithCustomLangAliases()
     {
         $settings = array(
-            'custom_lang_aliases' => array('ja' => 'ja-test'),
+            'custom_lang_aliases' => array('ja' => 'ja-test','en-US' => 'us', 'zh-Hant-TW' => 'cn'),
             'url_pattern_name' => 'path'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $testCases = array(
+            array('wovn.io/ja-test', 'wovn.io/', 'ja'),
+            array('https://wovn.io/fr/', 'https://wovn.io/', 'fr'),
+            array('https://wovn.io/us/', 'https://wovn.io/', 'en-US'),
+            array('https://wovn.io/cn/', 'https://wovn.io/', 'zh-Hant-TW'),
+        );
 
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
+        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-        $without_scheme = $headers->removeLang('wovn.io/ja-test', 'ja');
-        $this->assertEquals('wovn.io/', $without_scheme);
-
-        $with_scheme = $headers->removeLang('https://wovn.io/en/', 'en');
-        $this->assertEquals('https://wovn.io/', $with_scheme);
+            $this->assertEquals('path', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
     }
 
     public function testPathLangWithPathPattern()
     {
         $settings = array('url_pattern_name' => 'path');
-        $env = array(
-            'SERVER_NAME' => 'wovn.io',
-            'REQUEST_URI' => '/zh-CHT/test'
+        $env = array('SERVER_NAME' => 'wovn.io');
+        $testCases = array(
+            array('/en/test', 'en'),
+            array('/zh-CHT/test', 'zh-CHT'),
+            array('/en-US/test', 'en-US'),
+            array('/zh-Hant-TW/test', 'zh-Hant-TW'),
+            array('/thi/en/test', ''), // lang code is not at the begining
+            array('/thai/en/test', ''), // has lang name instead of lang code
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
+        foreach ($testCases as [$requestUrl, $expectedLangCode]) {
+            $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('zh-CHT', $pathlang);
-    }
-
-    public function testPathLangWithPathPatternAndLangCodeNotAtBegining()
-    {
-        $settings = array('url_pattern_name' => 'path');
-        $env = array(
-            'SERVER_NAME' => 'wovn.io',
-            'REQUEST_URI' => '/thi/en/test'
-        );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
-
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
-
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('', $pathlang);
-    }
-
-    public function testPathLangWithPathPatternAndLangNameInsteadOfLangCode()
-    {
-        $settings = array('url_pattern_name' => 'path');
-        $env = array(
-            'SERVER_NAME' => 'wovn.io',
-            'REQUEST_URI' => '/thai/en/test'
-        );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
-
-        $this->assertEquals('path', $store->settings['url_pattern_name']);
-
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('', $pathlang);
+            $this->assertEquals('path', $store->settings['url_pattern_name']);
+            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+        };
     }
 
     public function testPathLangWithQueryPattern()
     {
         $settings = array('url_pattern_name' => 'query');
-        $env = array(
-            'SERVER_NAME' => 'wovn.io',
-            'REQUEST_URI' => '/test?wovn=zh-CHS'
+        $env = array('SERVER_NAME' => 'wovn.io');
+        $testCases = array(
+            array('/test?wovn=zh-CHS', 'zh-CHS'),
+            array('/test?wovn=en-US', 'en-US'),
+            array('/test?wovn=zh-Hant-TW', 'zh-Hant-TW')
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('zh-CHS', $pathlang);
+        foreach ($testCases as [$requestUrl, $expectedLangCode]) {
+            $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
+
+            $this->assertEquals('query', $store->settings['url_pattern_name']);
+            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+        };
     }
 
     public function testPathLangWithSubdomainPattern()
     {
+
         $settings = array('url_pattern_name' => 'subdomain');
-        $env = array(
-            'SERVER_NAME' => 'zh-cht.wovn.io',
-            'REQUEST_URI' => '/test'
+        $env = array('REQUEST_URI' => '/test');
+        $testCases = array(
+            array('zh-chs.wovn.io', 'zh-CHS'),
+            array('en-US.wovn.io', 'en-US'),
+            array('zh-Hant-TW.wovn.io', 'zh-Hant-TW'),
+            array('thai.wovn.io.wovn.io', '') // has lang name instead of lang code
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('zh-CHT', $pathlang);
-    }
+        foreach ($testCases as [$serverName, $expectedLangCode]) {
+            $mergedEnv = array_merge($env, array('SERVER_NAME' => $serverName));
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
-    public function testPathLangWithSubdomainPatternAndLangNameInsteadOfLangCode()
-    {
-        $settings = array('url_pattern_name' => 'subdomain');
-        $env = array(
-            'SERVER_NAME' => 'thai.wovn.io',
-            'REQUEST_URI' => '/test'
-        );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
-
-        $pathlang = $headers->computePathLang();
-        $this->assertEquals('', $pathlang);
+            $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
+            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+        };
     }
 
     public function testPathLangWithSubdomainAndUseProxyTrue()
