@@ -128,8 +128,13 @@ class Lang
         if (isset(LANG::$index[$lang_name])) {
             return $lang_name;
         }
-        foreach (LANG::$index as $lang) {
-            if (strtolower($lang_name) === strtolower($lang['name']) || strtolower($lang_name) === strtolower($lang['en']) || strtolower($lang_name) === strtolower($lang['code']) || strtolower($lang_name) === strtolower($lang['iso639-1'])) {
+        foreach (LANG::$index as $lang_code => $lang) {
+            $lower_lang_name = strtolower($lang_name);
+            if ($lower_lang_name === strtolower($lang['name']) ||
+                $lower_lang_name === strtolower($lang['en']) ||
+                $lower_lang_name === strtolower($lang['code']) ||
+                $lower_lang_name === strtolower(self::iso6391Normalization($lang_code))
+            ) {
                 return $lang['code'];
             }
         }
