@@ -577,10 +577,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('wovn.io/en-US', 'wovn.io/', 'en-US'),
             array('https://wovn.io/en-US', 'https://wovn.io/', 'en-US'),
             array('wovn.io/zh-Hant-TW', 'wovn.io/', 'zh-Hant-TW'),
-            array('https://wovn.io/zh-Hant-TW', 'https://wovn.io/', 'zh-Hant-TW'),
+            array('https://wovn.io/zh-Hant-TW', 'https://wovn.io/', 'zh-Hant-TW')
         );
 
-        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
@@ -600,10 +601,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('wovn.io?wovn=en-US', 'wovn.io', 'en-US'),
             array('https://wovn.io?wovn=en-US', 'https://wovn.io', 'en-US'),
             array('wovn.io?wovn=zh-Hant-TW', 'wovn.io', 'zh-Hant-TW'),
-            array('https://wovn.io?wovn=zh-Hant-TW', 'https://wovn.io', 'zh-Hant-TW'),
+            array('https://wovn.io?wovn=zh-Hant-TW', 'https://wovn.io', 'zh-Hant-TW')
         );
 
-        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('query', $store->settings['url_pattern_name']);
@@ -623,10 +625,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('en-US.wovn.io', 'wovn.io', 'en-US'),
             array('https://en-US.wovn.io', 'https://wovn.io', 'en-US'),
             array('zh-Hant-TW.wovn.io', 'wovn.io', 'zh-Hant-TW'),
-            array('https://zh-Hant-TW.wovn.io', 'https://wovn.io', 'zh-Hant-TW'),
+            array('https://zh-Hant-TW.wovn.io', 'https://wovn.io', 'zh-Hant-TW')
         );
 
-        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
@@ -644,10 +647,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('wovn.io/ja-test', 'wovn.io/', 'ja'),
             array('https://wovn.io/fr/', 'https://wovn.io/', 'fr'),
             array('https://wovn.io/us/', 'https://wovn.io/', 'en-US'),
-            array('https://wovn.io/cn/', 'https://wovn.io/', 'zh-Hant-TW'),
+            array('https://wovn.io/cn/', 'https://wovn.io/', 'zh-Hant-TW')
         );
 
-        foreach ($testCases as [$beforeRemoveUrl, $afterRemoveUrl, $removeLang]) {
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
@@ -665,10 +669,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('/en-US/test', 'en-US'),
             array('/zh-Hant-TW/test', 'zh-Hant-TW'),
             array('/thi/en/test', ''), // lang code is not at the begining
-            array('/thai/en/test', ''), // has lang name instead of lang code
+            array('/thai/en/test', '') // has lang name instead of lang code
         );
 
-        foreach ($testCases as [$requestUrl, $expectedLangCode]) {
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
@@ -687,7 +692,8 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('/test?wovn=zh-Hant-TW', 'zh-Hant-TW')
         );
 
-        foreach ($testCases as [$requestUrl, $expectedLangCode]) {
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
@@ -708,7 +714,8 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('thai.wovn.io.wovn.io', '') // has lang name instead of lang code
         );
 
-        foreach ($testCases as [$serverName, $expectedLangCode]) {
+        foreach ($testCases as $case) {
+            list($serverName, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('SERVER_NAME' => $serverName));
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
