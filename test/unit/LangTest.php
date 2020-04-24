@@ -67,14 +67,14 @@ class LangTest extends \PHPUnit_Framework_TestCase
         // iso6391 is same with lang code
         foreach (Lang::$index as $langCode => $lang) {
             if ($langCode == 'zh-CHS') {
-                $this->assertEquals('zh-Hans', Lang::iso639_1_normalization($langCode));
+                $this->assertEquals('zh-Hans', Lang::iso6391Normalization($langCode));
             } elseif ($langCode == 'zh-CHT') {
-                $this->assertEquals('zh-Hant', Lang::iso639_1_normalization($langCode));
+                $this->assertEquals('zh-Hant', Lang::iso6391Normalization($langCode));
             } else {
-                $this->assertEquals($langCode, Lang::iso639_1_normalization($langCode));
+                $this->assertEquals($langCode, Lang::iso6391Normalization($langCode));
             }
         }
-        $this->assertEquals(null, Lang::iso639_1_normalization('fake'));
-        $this->assertEquals(null, Lang::iso639_1_normalization(null));
+        $this->assertEquals(null, Lang::iso6391Normalization('fake'));
+        $this->assertEquals(null, Lang::iso6391Normalization(null));
     }
 }
