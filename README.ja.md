@@ -10,7 +10,7 @@
 ## 1. 必要条件
 
 WOVN.phpにはPHP 5.3以上が必要です。WOVN.phpにはサードパーティの依存関係はありません。
-設定によっては、Apacheモジュール `mod_rewrite` をインストールしたり有効化したりする必要があるかもしれません ( [2.3.2.項](#232-static-websites) や [3.2.項](#32-optional-parameters) を参照してください)。
+設定によっては、Apacheモジュール `mod_rewrite` をインストールしたり有効化したりする必要があるかもしれません ( [2.3.2.項](#232-静的ウェブサイト) や [3.2.項](#32-任意パラメータ) を参照してください)。
 
 WOVN.phpはApache 2とNginxで動作確認済みです。両方のインストール方法を提供しています。
 
@@ -37,7 +37,7 @@ WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定フ�
 $ cp WOVN.php/wovn.ini.sample wovn.ini
 ```
 
-このセクションでは、開始するための基本的な設定を説明します。WOVN.phpの設定の詳細については、[セクション3.](#3-configuration)を参照してください。 開始するには、少なくともWOVN.ioのプロジェクトトークン、ウェブサイトのオリジナル言語、そして、ウェブサイトがWOVN.ioによって翻訳可能な言語を知っている必要があります。プロジェクトトークンを取得するには、プロジェクトのダッシュボードにアクセスし、 "INTEGRATION METHODS" をクリックし、"PHP Library "のインストール方法を選択します。
+このセクションでは、開始するための基本的な設定を説明します。WOVN.phpの設定の詳細については、[セクション3.](#3-設定)を参照してください。 開始するには、少なくともWOVN.ioのプロジェクトトークン、ウェブサイトのオリジナル言語、そして、ウェブサイトがWOVN.ioによって翻訳可能な言語を知っている必要があります。プロジェクトトークンを取得するには、プロジェクトのダッシュボードにアクセスし、 "INTEGRATION METHODS" をクリックし、"PHP Library "のインストール方法を選択します。
 
 以下は、トークンが "TOKEN"、翻訳元言語が英語(`en`)、翻訳先言語が日本語(`ja`)とフランス語(`fr`)のプロジェクトの `wovn.ini` の例です。
 
@@ -80,7 +80,7 @@ $ cp WOVN.php/wovn_index_sample.php wovn_index.php
 
 **SSIユーザの方への注意:**サンプルの `wovn_index.php` を使用している場合は、コード内の `# SSI USER` の指示に従ってください。
 
-`wovn_index.php` を設定したら、HTMLページへのリクエストがすべて `wovn_index.php` にリダイレクトされるようにウェブサイトを設定する必要があります。Apacheサーバを使っている場合は、[Apacheの説明](#redirect-to-wovn_indexphp-with-apache)に従ってください。Nginx (Apacheなし) を使用している場合は、[instructions for Nginx](#redirect-to-wovn_indexphp-with-nginx) に従ってください。
+`wovn_index.php` を設定したら、HTMLページへのリクエストがすべて `wovn_index.php` にリダイレクトされるようにウェブサイトを設定する必要があります。Apacheサーバを使っている場合は、[Apacheの説明](#Apacheで-wovn_index.php-にリダイレクト)に従ってください。Nginx (Apacheなし) を使用している場合は、[Nginxの説明](#Nginxで-wovn_index.php-にリダイレクト) に従ってください。
 
 #### Apacheで `wovn_index.php` にリダイレクト
 
@@ -289,7 +289,7 @@ https://my-website.com/adminpage
 
 #### `ignore_regex`
 
-このパラメータは `ignore_paths` と似ています ( [上記](#ignore_paths を参照)）。
+このパラメータは `ignore_paths` と似ています ( [上記](#ignore_paths) を参照）。
 
 例えば、検索ページをローカライズしないようにしたい場合は、以下のようにWOVN.phpを設定します。
 WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` はローカライズしない。
