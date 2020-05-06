@@ -19,7 +19,7 @@ WOVN.phpはApache 2とNginxで動作確認済みです。両方のインスト�
 
 ### 2.1. WOVN.php ダウンロード
 
-WOVN.phpをインストールするには、当社のGithubリポジトリからWOVN.phpを手動でダウンロードする必要があります。WOVN.php のルートディレクトリは、ウェブサイトのディレクトリのルートに配置する必要があります。
+WOVN.phpをインストールするには、当社のGithubリポジトリからWOVN.phpを手動でダウンロードする必要があります。  WOVN.php のルートディレクトリは、ウェブサイトのディレクトリのルートに配置する必要があります。
 
 このドキュメントの残りの部分では、ウェブサイトのルートディレクトリを `/website/root/directory` とみなします。
 
@@ -70,7 +70,7 @@ supported_langs[] = fr
 
 ### 2.3. WOVN.phpの有効化
 
-WOVN.phpでウェブサイトをローカライズするためには、コンテンツインターセプトを有効にする必要があります。
+WOVN.phpでウェブサイトを翻訳するためには、コンテンツインターセプトを有効にする必要があります。
 
 ウェブページの生成方法に応じて、2つの有効化方法があります。
 
@@ -88,7 +88,7 @@ require_once('/website/root/directory/WOVN.php/src/wovn_interceptor.php');
 
 #### 2.3.2. 静的ウェブサイト
 
-Webページが純粋なHTMLである場合、HTMLページを提供しローカライズするために使用する `wovn_index.php` ファイルを作成する必要があります。
+Webページが純粋なHTMLである場合、HTMLページを提供し翻訳するために使用する `wovn_index.php` ファイルを作成する必要があります。
 
 私たちは、私たちが提供するサンプルから始めることをお勧めします。
 
@@ -96,13 +96,13 @@ Webページが純粋なHTMLである場合、HTMLページを提供しローカ
 $ cp WOVN.php/wovn_index_sample.php wovn_index.php
 ```
 
-**SSIユーザの方への注意:**サンプルの `wovn_index.php` を使用している場合は、コード内の `# SSI USER` の指示に従ってください。
+**SSIユーザの方への注意:** サンプルの `wovn_index.php` を使用している場合は、コード内の `# SSI USER` の指示に従ってください。
 
 `wovn_index.php` を設定したら、HTMLページへのリクエストがすべて `wovn_index.php` にリダイレクトされるようにウェブサイトを設定する必要があります。
 
-Apacheサーバを使っている場合は、[Apacheの説明](#Apacheで-wovn_index.php-にリダイレクト)に従ってください。
+Apacheサーバを使っている場合は、[Apacheの説明](#apacheで-wovn_indexphp-にリダイレクト)に従ってください。
 
-Nginx (Apacheなし) を使用している場合は、[Nginxの説明](#Nginxで-wovn_index.php-にリダイレクト) に従ってください。
+Nginx (Apacheなし) を使用している場合は、[Nginxの説明](#nginxで-wovn_indexphp-にリダイレクト) に従ってください。
 
 #### Apacheで `wovn_index.php` にリダイレクト
 
@@ -115,6 +115,9 @@ Nginx (Apacheなし) を使用している場合は、[Nginxの説明](#Nginxで
 ```
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # パスパターンの場合、言語コードを削除
+  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)($|/.*$) $1 [L]
 
   # .cgi ファイルは対象外
   RewriteCond %{THE_REQUEST} \.cgi
@@ -184,13 +187,15 @@ WOVN.phpの設定は `wovn.ini` ファイルから行うことができます。
 
 #### `url_pattern_name`
 
-このパラメータは、ウェブページのURLがどのように言語情報を含むように変更されるかを定義します。WOVN.php は 3 つのパターンをサポートしています。
+このパラメータは、ウェブページのURLがどのように言語情報を含むように変更されるかを定義します。
+
+WOVN.php は 3 つのパターンをサポートしています。
 
 | Option                               | URL Examples                               | Example's language |
 |--------------------------------------|--------------------------------------------|:------------------:|
-| `url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
-| `url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
-| `url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
+| クエリパターン<br>`url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
+| パスパターン<br>`url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
+| サブドメインパターン<br>`url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
 
 **パスパターンをお使いの方への注意事項:**
 
@@ -284,9 +289,11 @@ custom_lang_aliases[fr] = french
 WOVN.io上で特定のクエリパラメータを持つページを作成した場合は、それらのクエリパラメータをWOVN.phpの設定に追加する必要があります。
 
 例えば、WOVN.io上に
+
 - `https://my-website.com/index.php`
 - `https://my-website.com/index.php?login=1`
 - `https://my-website.com/index.php?forgot_password=1`
+
 の3つのページがある場合、以下のようにWOVN.phpを設定する必要があります。
 
 ```
@@ -326,9 +333,9 @@ https://my-website.com/adminpage
 
 このパラメータは `ignore_paths` と似ています ( [上記](#ignore_paths) を参照）。
 
-例えば、検索ページをローカライズしないようにしたい場合は、以下のようにWOVN.phpを設定します。
+例えば、検索ページを翻訳しないようにしたい場合は、以下のようにWOVN.phpを設定します。
 
-WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` はローカライズしない。
+WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` は翻訳しません。
 
 ```
 ignore_regex[] = /\/search\/\d\d\//

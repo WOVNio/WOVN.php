@@ -111,6 +111,9 @@ Bellow is the `.htaccess` configuration you should use.
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
+  # For path pattern, remove language code
+  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)($|/.*$) $1 [L]
+
   # Don't intercept .cgi files, as they would not execute
   RewriteCond %{THE_REQUEST} \.cgi
   RewriteRule .? - [L]
