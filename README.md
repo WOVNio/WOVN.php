@@ -9,12 +9,11 @@
 ## 1. Requirements
 WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
 Depending on your configuration, you might have to install and/or activate the
-PHP module `mod_rewrite` (see [Section 2.3.2.](#232-for-static-websites) and
+Apache module `mod_rewrite` (see [Section 2.3.2.](#232-for-static-websites) and
 [Section 3.2.](#32-optional-parameters)).
 
 WOVN.php has been tested with Apache 2 and Nginx. We provide installation
-instructions for both. If you use other technologies, we encourage you to
-[contact us](mailto:support@wovn.io) for support.
+instructions for both.
 
 ## 2. Getting Started
 ### 2.1. Download WOVN.php
@@ -189,7 +188,7 @@ You need to change your server settings to strip the language codes off of the
 URL before it is processed by you scripts.
 
 For Apache users, you can add the following rule at the top of your `.htaccess`.
-You will need to activate the `mod_rewrite` PHP module. Please follow the
+You will need to activate the `mod_rewrite` Apache module. Please follow the
 [official instructions](https://httpd.apache.org/docs/2.4/) for installing and
 activating `mod_rewrite` module (in some cases, `mod_rewrite` is already
 installed but not activated).
@@ -245,7 +244,7 @@ https://my-website.com/index.php?language=en
 #### `custom_lang_aliases`
 This parameter allows you to redefine the language codes used by WOVN.php. For
 instance, if you want to use "japanese" instead of "ja" and "french" instead of
-"fr", then you should configure WOVN.php as below.
+"fr", then you should configure `wovn.ini` as below.
 ```
 custom_lang_aliases[ja] = japanese
 custom_lang_aliases[fr] = french
@@ -353,9 +352,10 @@ answer from our API. If the API is too long to respond, the original content
 will be served. By default, the `api_timeout` is set to 1 second.
 
 For instance, if you want to increase the default timeout up to 2 seconds, you
-should configure WOVN.php as below.
+should configure `wovn.ini` as below.
+
 ```
-api_timeout = 1
+api_timeout = 2
 ```
 
 #### `disable_api_request_for_default_lang`
@@ -367,8 +367,8 @@ be translated. When this setting is set to `1`, you may notice more server
 resource being used. This is because WOVN.php has to do some HTML parsing that
 our localization API usually does (for instance, to insert `hreflang`
 information). However, it will save web page loading time since it does not send
-a request to our API. If you experience no resource issues, we recommand you to
-deactivate API requests for original language as below.
+a request to our API.
+
 ```
 disable_api_request_for_default_lang = 1
 ```
@@ -406,12 +406,11 @@ override_content_length = 1
 ```
 
 ## 4. Bug Report
-If you encounter problems installing WOVN.php, setting WOVN.php, or you just
-found a bug on your website that is related to WOVN.php, please contact us at
-[support@wovn.io](support@wovn.io). To help us finding a solution to your
-issue we will require some information. First we need to know on which web pages
-you encounter the issue, as well as steps to reproduce. If possible, we would
-also need test accounts if your issues occur on web pages behind authorization
+
+To help us finding a solution to your issue we will require some information. 
+First we need to know on which web pages you encounter the issue, as well as 
+steps to reproduce. If possible, we would also need test accounts if your 
+issues occur on web pages behind authorization 
 (we recommend you to use a staging server for that matter).
 
 If your problems are happening on your server side (widget `<script>` tag not
