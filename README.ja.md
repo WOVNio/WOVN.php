@@ -43,9 +43,11 @@ WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定フ�
 $ cp WOVN.php/wovn.ini.sample wovn.ini
 ```
 
-このセクションでは、開始するための基本的な設定を説明します。  WOVN.phpの設定の詳細については、[セクション3.](#3-設定)を参照してください。
+このセクションでは、開始するための基本的な設定を説明します。  
+WOVN.phpの設定の詳細については、[セクション3.](#3-設定)を参照してください。
 
-開始するには、少なくともWOVN.ioのプロジェクトトークン、ウェブサイトのオリジナル言語、そして、ウェブサイトがWOVN.ioによって翻訳可能な言語を知っている必要があります。  
+開始するには、少なくともWOVN.ioのプロジェクトトークン、ウェブサイトのオリジナル言語、そして、ウェブサイトがWOVN.ioによって翻訳可能な言語を知っている必要があります。
+
 プロジェクトトークンを取得するには、プロジェクトのダッシュボードにアクセスし、 "INTEGRATION METHODS" をクリックし、"PHP Library "のインストール方法を選択します。
 
 以下は、トークンが "TOKEN"、翻訳元言語が英語(`en`)、翻訳先言語が日本語(`ja`)とフランス語(`fr`)のプロジェクトの `wovn.ini` の例です。
@@ -94,7 +96,8 @@ Webページが純粋なHTMLである場合、HTMLページを提供し翻訳す
 $ cp WOVN.php/wovn_index_sample.php wovn_index.php
 ```
 
-**SSIユーザの方への注意:**  サンプルの `wovn_index.php` を使用している場合は、コード内の `# SSI USER` の指示に従ってください。
+**SSIユーザの方への注意:**  
+サンプルの `wovn_index.php` を使用している場合は、コード内の `# SSI USER` の指示に従ってください。
 
 `wovn_index.php` を設定したら、HTMLページへのリクエストがすべて `wovn_index.php` にリダイレクトされるようにウェブサイトを設定する必要があります。  
 Apacheサーバを使っている場合は、[Apacheの説明](#apacheで-wovn_indexphp-にリダイレクト)に従ってください。  
@@ -191,7 +194,8 @@ WOVN.php は 3 つのパターンをサポートしています。
 | パスパターン<br>`url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
 | サブドメインパターン<br>`url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
 
-**パスパターンをお使いの方への注意事項:**  PHPスクリプトで処理される前に、URLから言語コードを取り除くために、サーバーの設定を変更する必要があります。
+**パスパターンをお使いの方への注意事項:**  
+PHPスクリプトで処理される前に、URLから言語コードを取り除くために、サーバーの設定を変更する必要があります。
 
 Apacheユーザの場合は、`.htaccess`の先頭に以下のルールを追加することができます。  
 Apacheモジュール `mod_rewrite` を有効化する必要があります。  
@@ -269,8 +273,9 @@ custom_lang_aliases[fr] = french
 
 #### `query`
 
-このパラメータは、ページを一意にするクエリパラメータを WOVN.php に伝えます。  デフォルトでは、WOVN.ioはユニークなページを識別する際にクエリパラメータを無視します。  
-WOVN.io上で特定のクエリパラメータを持つページを作成した場合は、それらのクエリパラメータをWOVN.phpの設定に追加する必要があります。
+このパラメータは、ページを一意にするクエリパラメータを WOVN.php に伝えます。  
+デフォルトでは、WOVN.ioはユニークなページを識別する際にクエリパラメータを無視します。  
+WOVN.io上で特定のクエリパラメータを持つページを作成した場合は、それらのクエリパラメータを `wovn.ini` の設定に追加する必要があります。
 
 例えば、WOVN.io上に
 
@@ -316,7 +321,7 @@ https://my-website.com/adminpage
 
 このパラメータは `ignore_paths` と似ています ( [上記](#ignore_paths) を参照）。
 
-例えば、検索ページを翻訳しないようにしたい場合は、以下のようにWOVN.phpを設定します。  
+例えば、検索ページを翻訳しないようにしたい場合は、以下のように `wovn.ini` を設定します。  
 WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` は翻訳しません。
 
 ```
@@ -339,7 +344,8 @@ ignore_class[] = no-translate
 
 このパラメータは、ウェブクローラーによるインデックスを避けるために、どの言語のHTMLを `noindex` に設定すべきかをWOVN.phpに指示します。
 
-例えば、英語ページのインデックスを避けたい場合は、以下のように `en` を追加します。  `<meta name="robots" content="noindex">` タグは英語ページの場合、`head` タグの中に挿入されます。
+例えば、英語ページのインデックスを避けたい場合は、以下のように `en` を追加します。  
+`<meta name="robots" content="noindex">` タグは英語ページの場合、`head` タグの中に挿入されます。
 
 ```
 no_index_langs[] = en
@@ -350,7 +356,8 @@ no_index_langs[] = en
 このパラメータは、WOVN.php にファイルに使用するエンコーディングを指定します。
 
 WOVN.php は 8 つのエンコーディングをサポートしています。  
-`UTF-8`, `EUC-JP`, `SJIS`, `eucJP-win`, `SJIS-win`, `JIS`, `ISO-2022-JP` および `ASCII` です。  
+`UTF-8`, `EUC-JP`, `SJIS`, `eucJP-win`, `SJIS-win`, `JIS`, `ISO-2022-JP` および `ASCII` です。
+
 エンコーディングを設定しなければ、WOVN.phpが自動的にエンコーディングを検出してくれます。  
 ただし、エンコーディングの検出に時間がかかる場合がありますので、より良いパフォーマンスを得るためにはエンコーディングを設定することをお勧めします。
 
@@ -385,6 +392,8 @@ api_timeout = 2
 この設定を `1` にすると、サーバーリソースの使用量が増えることに気づくかもしれません。  
 これは、WOVN.phpで翻訳APIが通常行うHTMLのパースを行わなければならないからです(例えば、`hreflang`情報を挿入するなど)。  
 しかし、WOVN.phpはAPIにリクエストを送信しないので、ウェブページの読み込み時間を短縮することができます。
+
+リソースに問題がなければ、以下のように翻訳元言語のAPIリクエストを停止することをお勧めします。
 
 ```
 disable_api_request_for_default_lang = 1
@@ -446,7 +455,7 @@ override_content_length = 1
 | wovn.ini             | あなたの `wovn.ini`                                                                |
 | wovn_index.php       | 使用されている場合は、あたなの `wovn_index.php`                                    |
 | index.php            | あなたの `index.php`                                                               |
-| サーバ種別           | Nginx / Apache / both                                                              |
+| サーバ種別           | Nginx / Apache / 両方                                                              |
 | サーバ設定           | Nginxの設定ファイル / Apacheの`.htaccess`の設定ファイル                            |
 | ログ                 | エラー発生時のエラーログ                                                           |
 | リクエスト制限       | 443 ポートの `wovn.global.ssl.fastly.net` へのリクエストを許可する必要があります。 |

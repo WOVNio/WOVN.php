@@ -263,7 +263,7 @@ respectively in the expression
 This parameter tells WOVN.php which query parameters make pages unique. By
 default WOVN.io ignores query parameters when identifying unique pages. If
 you've created pages on WOVN.io with specific query parameters, you should add
-those query parameters to WOVN.php settings.
+those query parameters to `wovn.ini` settings.
 
 For instance, if you have all three pages `https://my-website.com/index.php`,
 `https://my-website.com/index.php?login=1` and
@@ -302,7 +302,7 @@ This parameter is similar to `ignore_paths` (see [above](#ignore_paths)) except
 that you can use regular expressions instead.
 
 For instance, if you want to not localize the search pages, you should configure
-WOVN.php as below. WOVN.php will localize
+`wovn.ini` as below. WOVN.php will localize
 `https://my-website.com/search/index.php` but not
 `https://my-website.com/search/01/` nor `https://my-website.com/search/02/`.
 ```
@@ -370,7 +370,8 @@ be translated. When this setting is set to `1`, you may notice more server
 resource being used. This is because WOVN.php has to do some HTML parsing that
 our localization API usually does (for instance, to insert `hreflang`
 information). However, it will save web page loading time since it does not send
-a request to our API.
+a request to our API. If you experience no resource issues, we recommand you to 
+deactivate API requests for original language as below. 
 
 ```
 disable_api_request_for_default_lang = 1
