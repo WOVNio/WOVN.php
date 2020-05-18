@@ -1,4 +1,4 @@
-DOCKER_COMPOSE_YML = docker/wp_apache.yml
+DOCKER_COMPOSE_YML = docker/apache.yml
 
 build:
 	docker-compose -f $(DOCKER_COMPOSE_YML) build

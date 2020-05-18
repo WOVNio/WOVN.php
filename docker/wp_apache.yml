@@ -15,9 +15,9 @@ services:
     working_dir: /var/www/html/wordpress_dir
     volumes:
       - ./apache/log:/var/log/apache2
-      - ./apache/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
+      - ./apache/apache2.conf:/etc/apache2/sites-enabled/apache2.conf
       - ./php.ini:/usr/local/etc/php/php.ini
-      - ./public:/var/www/html/
+      - ./public:/var/www/html
       - ../:/var/www/html/WOVN.php
       - ../wovn.ini.sample:/var/www/html/wovn.ini
       - ../wovn_index_sample.php:/var/www/html/wovn_index.php
