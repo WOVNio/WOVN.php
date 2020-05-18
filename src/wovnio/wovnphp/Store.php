@@ -56,6 +56,7 @@ class Store
             'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
             'query' => array(),
+            'widegt_url' => '//j.wovn.io/1',
             'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
             'api_error_host' => 'api.wovn.io',
             'api_error_port' => 443,
