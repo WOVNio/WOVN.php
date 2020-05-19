@@ -12,16 +12,16 @@ services:
       WORDPRESS_DB_PASSWORD: password
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DB_USER: wp_user
-    working_dir: /var/www/html/anywhere
+    working_dir: /var/www/html/wordpress_dir
     volumes:
-      - ./docker/apache/log:/var/log/apache2
-      - ./docker/apache/httpd.conf:/etc/apache2/sites-enabled/apache2.conf
-      - ./docker/php.ini:/usr/local/etc/php/php.ini
-      - ./docker/public:/var/www/html
-      - .:/var/www/html/WOVN.php
-      - ./wovn.ini.sample:/var/www/html/wovn.ini
-      - ./wovn_index_sample.php:/var/www/html/wovn_index.php
-      - ./htaccess_sample:/var/www/html/.htaccess
+      - ./apache/log:/var/log/apache2
+      - ./apache/apache2.conf:/etc/apache2/sites-enabled/apache2.conf
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ./public:/var/www/html
+      - ../:/var/www/html/WOVN.php
+      - ../wovn.ini.sample:/var/www/html/wovn.ini
+      - ../wovn_index_sample.php:/var/www/html/wovn_index.php
+      - ../htaccess_sample:/var/www/html/.htaccess
   mysql:
     container_name: mysql
     image: mysql:5.7
@@ -31,5 +31,5 @@ services:
       MYSQL_USER: wp_user
       MYSQL_PASSWORD: password
     volumes:
-      - ./docker/db:/var/lib/mysql
+      - ./mysql:/var/lib/mysql
 

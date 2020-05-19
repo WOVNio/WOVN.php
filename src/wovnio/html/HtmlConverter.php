@@ -196,13 +196,11 @@ class HtmlConverter
         $url_pattern = $this->store->settings['url_pattern_name'];
         $lang_param_name = $this->store->settings['lang_param_name'];
         $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
+        $widget_url = $this->store->settings['widget_url'];
+        $fallback_mark = $adds_backend_error_mark ? ' data-wovnio-type="fallback_snippet"' : '';
         $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&langParamName=$lang_param_name&version=WOVN.php");
 
-        if ($adds_backend_error_mark) {
-            return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" data-wovnio-type=\"fallback_snippet\" async></script>";
-        } else {
-            return "<script src=\"//j.wovn.io/1\" data-wovnio=\"$data_wovnio\" async></script>";
-        }
+        return "<script src=\"$widget_url\" data-wovnio=\"$data_wovnio\"$fallback_mark async></script>";
     }
 
     /**
