@@ -239,7 +239,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $html = '<html><head></head><body><h1>en</h1></body></html>';
-        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php"  async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
 
         $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
         $mock->expects($this->never())->method('sendRequest');
