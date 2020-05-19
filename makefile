@@ -1,4 +1,5 @@
 DOCKER_COMPOSE_YML = docker/apache.yml
+.PHONY: build stop start clean
 
 build:
 	docker-compose -f $(DOCKER_COMPOSE_YML) build
