@@ -41,13 +41,13 @@ class Url
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
 
-        $no_lang_uri = self::removeLangCode($uri, $pattern, $lang_code, $lang_param_name);
-        $no_lang_host = self::removeLangCode($headers->host, $pattern, $lang_code, $lang_param_name);
+        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
+        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
 
         if ($store->defaultLangAlias()) {
             $default_lang = $store->settings['default_lang'];
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $pattern, $default_lang, $lang_param_name);
-            $no_lang_host = self::removeLangCode($no_lang_host, $pattern, $default_lang, $lang_param_name);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $default_lang, $store->settings);
+            $no_lang_host = self::removeLangCode($no_lang_host, $default_lang, $store->settings);
         }
 
         // absolute urls
@@ -152,7 +152,7 @@ class Url
      * @param String $lang_code The lang to remove
      * @return array The url without the lang
      */
-    public static function removeLangCode($uri, $pattern, $lang_code, $lang_param_name)
+    public static function removeLangCode($uri, $lang_code, $settings)
     {
         if (!$lang_code || strlen($lang_code) == 0) {
             return $uri;
@@ -162,6 +162,10 @@ class Url
         if (preg_match('/^(#.*)?$/', $uri)) {
             return $uri;
         }
+
+        $pattern = $settings['url_pattern_name'];
+        $lang_param_name = $settings['lang_param_name'];
+        $site_prefix_path = $settings['site_prefix_path'];
 
         switch ($pattern) {
             case 'query':
@@ -174,7 +178,8 @@ class Url
             case 'path':
             default:
                 // limit to one replacement
-                return preg_replace('/\/' . $lang_code . '(\/|$)/i', '/', $uri, 1);
+                $prefix = empty($site_prefix_path) ? '' : '/' . $site_prefix_path;
+                return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
                 break;
         }
     }

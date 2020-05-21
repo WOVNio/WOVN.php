@@ -80,6 +80,7 @@ class Store
             'ignore_regex' => array(),
             'ignore_class' => array(),
             'no_index_langs' => array(),
+            'site_prefix_path' => '',
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
@@ -117,6 +118,11 @@ class Store
             sort($this->settings['query'], SORT_STRING);
         }
 
+        if (!empty($this->settings['site_prefix_path'])) {
+            $this->settings['site_prefix_path'] = str_replace('/^\/./', '', $this->settings['site_prefix_path']);
+            $this->settings['site_prefix_path'] = str_replace('/\/$./', '', $this->settings['site_prefix_path']);
+        }
+
         // getting the url pattern
         if ($this->settings['url_pattern_name'] === 'query') {
             $this->settings['url_pattern_reg'] = '((\?.*&)|\?)' . $this->settings['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
@@ -124,7 +130,8 @@ class Store
             $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {
             $this->settings['url_pattern_name'] = 'path';
-            $this->settings['url_pattern_reg'] = '\/(?P<lang>[^\/.]+)(\/|\?|$)';
+            $prefix = empty($this->settings['site_prefix_path']) ? '' : '\/' . $this->settings['site_prefix_path'];
+            $this->settings['url_pattern_reg'] = $prefix . '\/(?P<lang>[^\/.]+)(\/|\?|$)';
         }
 
         if (in_array($this->settings['encoding'], HtmlConverter::$supportedEncodings) == false) {

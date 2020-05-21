@@ -47,6 +47,7 @@ class API
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
             'lang_param_name' => $store->settings['lang_param_name'],
+            'site_prefix_path' => $store->settings['site_prefix_path'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_html

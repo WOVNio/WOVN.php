@@ -190,18 +190,37 @@ class HtmlConverter
 
     private function buildSnippetCode($adds_backend_error_mark)
     {
-        $token = $this->token;
-        $current_lang = $this->headers->lang();
-        $default_lang = $this->store->settings['default_lang'];
-        $url_pattern = $this->store->settings['url_pattern_name'];
-        $lang_param_name = $this->store->settings['lang_param_name'];
-        $lang_code_aliases_json = json_encode($this->store->settings['custom_lang_aliases']);
-        $widget_url = $this->store->settings['widget_url'];
-        $fallback_mark = $adds_backend_error_mark ? ' data-wovnio-type="fallback_snippet"' : '';
-        $data_wovnio = htmlentities("key=$token&backend=true&currentLang=$current_lang&defaultLang=$default_lang&urlPattern=$url_pattern&langCodeAliases=$lang_code_aliases_json&langParamName=$lang_param_name&version=WOVN.php");
+        $data_wovnio_params = array();
+        $data_wovnio_params['key'] = $this->token;
+        $data_wovnio_params['backend'] = 'true';
+        $data_wovnio_params['currentLang'] = $this->headers->lang();
+		$data_wovnio_params['defaultLang'] = $this->store->settings['default_lang'];
+		$data_wovnio_params['urlPattern'] = $this->store->settings['url_pattern_name'];
+		$data_wovnio_params['langCodeAliases'] = json_encode($this->store->settings['custom_lang_aliases']);
+        $data_wovnio_params['langParamName'] = $this->store->settings['lang_param_name'];
+        if (!empty($this->store->settings['site_prefix_path'])) {
+            $data_wovnio_params['sitePrefixPath'] = $this->store->settings['site_prefix_path'];
+        }
 
-        return "<script src=\"$widget_url\" data-wovnio=\"$data_wovnio\"$fallback_mark async></script>";
+        $data_wovnio_info_params = array();
+        $data_wovnio_info_params['version'] = 'WOVN.php';
+
+        $widget_url = $this->store->settings['widget_url'];
+        $data_wovnio = htmlentities($this->buildParamsStr($data_wovnio_params));
+        $data_wovnio_info = htmlentities($this->buildParamsStr($data_wovnio_info_params));
+        $fallback_mark = $adds_backend_error_mark ? ' data-wovnio-type="fallback_snippet"' : '';
+
+        return "<script src=\"$widget_url\" data-wovnio=\"$data_wovnio\" data-wovnio-info=\"$data_wovnio_info\"$fallback_mark async></script>";
     }
+
+    private function buildParamsStr($params_array) {
+		$params = array();
+		foreach( $params_array as $key => $value ){
+			$param_str = "$key=$value";
+			array_push($params, $param_str);
+		}
+		return implode('&', $params);
+	}
 
     /**
      * Insert hreflang tags for all supported_langs
