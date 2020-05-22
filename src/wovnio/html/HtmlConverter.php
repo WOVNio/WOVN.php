@@ -203,7 +203,9 @@ class HtmlConverter
         }
 
         $data_wovnio_info_params = array();
-        $data_wovnio_info_params['version'] = 'WOVN.php';
+        $wovn_php_name = defined('WOVN_PHP_NAME') ? WOVN_PHP_NAME : 'WOVN.php';
+		$wovn_php_version = defined('WOVN_PHP_VERSION') ? WOVN_PHP_VERSION : '';
+		$data_wovnio_info_params['version'] = "{$wovn_php_name}_{$wovn_php_version}";
 
         $widget_url = $this->store->settings['widget_url'];
         $data_wovnio = htmlentities($this->buildParamsStr($data_wovnio_params));
