@@ -194,9 +194,9 @@ class HtmlConverter
         $data_wovnio_params['key'] = $this->token;
         $data_wovnio_params['backend'] = 'true';
         $data_wovnio_params['currentLang'] = $this->headers->lang();
-		$data_wovnio_params['defaultLang'] = $this->store->settings['default_lang'];
-		$data_wovnio_params['urlPattern'] = $this->store->settings['url_pattern_name'];
-		$data_wovnio_params['langCodeAliases'] = json_encode($this->store->settings['custom_lang_aliases']);
+        $data_wovnio_params['defaultLang'] = $this->store->settings['default_lang'];
+        $data_wovnio_params['urlPattern'] = $this->store->settings['url_pattern_name'];
+        $data_wovnio_params['langCodeAliases'] = json_encode($this->store->settings['custom_lang_aliases']);
         $data_wovnio_params['langParamName'] = $this->store->settings['lang_param_name'];
         if (!empty($this->store->settings['site_prefix_path'])) {
             $data_wovnio_params['sitePrefixPath'] = $this->store->settings['site_prefix_path'];
@@ -204,8 +204,8 @@ class HtmlConverter
 
         $data_wovnio_info_params = array();
         $wovn_php_name = defined('WOVN_PHP_NAME') ? WOVN_PHP_NAME : 'WOVN.php';
-		$wovn_php_version = defined('WOVN_PHP_VERSION') ? WOVN_PHP_VERSION : '';
-		$data_wovnio_info_params['version'] = "{$wovn_php_name}_{$wovn_php_version}";
+        $wovn_php_version = defined('WOVN_PHP_VERSION') ? WOVN_PHP_VERSION : '';
+        $data_wovnio_info_params['version'] = "{$wovn_php_name}_{$wovn_php_version}";
 
         $widget_url = $this->store->settings['widget_url'];
         $data_wovnio = htmlentities($this->buildParamsStr($data_wovnio_params));
@@ -215,14 +215,15 @@ class HtmlConverter
         return "<script src=\"$widget_url\" data-wovnio=\"$data_wovnio\" data-wovnio-info=\"$data_wovnio_info\"$fallback_mark async></script>";
     }
 
-    private function buildParamsStr($params_array) {
-		$params = array();
-		foreach( $params_array as $key => $value ){
-			$param_str = "$key=$value";
-			array_push($params, $param_str);
-		}
-		return implode('&', $params);
-	}
+    private function buildParamsStr($params_array)
+    {
+        $params = array();
+        foreach ($params_array as $key => $value) {
+            $param_str = "$key=$value";
+                array_push($params, $param_str);
+        }
+        return implode('&', $params);
+    }
 
     /**
      * Insert hreflang tags for all supported_langs
