@@ -198,7 +198,7 @@ class Url
             "(/$site_prefix_path)" . // site prefix path
             '(/|\?|#|$)' . // path, query, hash or end-of-string
             '@',
-            $uri,
+            $uri
         );
     }
 
