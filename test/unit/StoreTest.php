@@ -309,4 +309,42 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         unlink($file_config);
         $this->assertEquals(array('en', 'fr'), $store->settings['no_index_langs']);
     }
+
+    public function testSitePrefixPath()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "en"',
+            'url_pattern_name = path',
+            'site_prefix_path = dir1'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals('dir1', $store->settings['site_prefix_path']);
+        $this->assertEquals('\/dir1\/(?P<lang>[^\/.]+)(\/|\?|$)', $store->settings['url_pattern_reg']);
+    }
+
+    public function testSitePrefixPathWithDeepDirectory()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "en"',
+            'url_pattern_name = path',
+            'site_prefix_path = /dir1/dir2/dir3/dir4/'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals('dir1/dir2/dir3/dir4', $store->settings['site_prefix_path']);
+        $this->assertEquals('\/dir1\/dir2\/dir3\/dir4\/(?P<lang>[^\/.]+)(\/|\?|$)', $store->settings['url_pattern_reg']);
+    }
 }

@@ -36,6 +36,11 @@ class Url
             return $uri;
         }
 
+        $site_prefix_path = $store->settings['site_prefix_path'];
+        if (!empty($site_prefix_path) && !self::matchSitePrefixPath($uri, $site_prefix_path)) {
+            return $uri;
+        }
+
         $new_uri = $uri;
         $pattern = $store->settings['url_pattern_name'];
         $lang_code = $store->convertToCustomLangCode($lang);
@@ -87,7 +92,7 @@ class Url
                         break;
                     default:
                         //path
-                        $new_uri = preg_replace('/([^\.]*\.[^?\/]*)(\?|\/|$)/', '${1}/' . self::formatForRegExp($lang_code) . '${2}', $no_lang_uri, 1);
+                        $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                 }
             }
         } else {
@@ -115,10 +120,10 @@ class Url
                         break;
                     default: // path
                         if (preg_match('/^\//', $no_lang_uri)) {
-                            $new_uri = '/' . $lang_code . $no_lang_uri;
+                            $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                         } else {
                             $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
-                            $new_uri = '/' . $lang_code . $current_dir . $no_lang_uri;
+                            $new_uri = self::addPathLangCode($current_dir . $no_lang_uri, $lang_code, $site_prefix_path);
                         }
                 }
             }
@@ -182,5 +187,36 @@ class Url
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
                 break;
         }
+    }
+
+    private static function matchSitePrefixPath($uri, $site_prefix_path)
+    {
+        return !!preg_match(
+            '@' .
+            '^(.*://|//)?' . // schema (optional)
+            '([^/?]*)?' . // host (optional)
+            "(/$site_prefix_path)" . // site prefix path
+            '(/|\?|#|$)' . // path, query, hash or end-of-string
+            '@',
+            $uri,
+        );
+    }
+
+    private static function addPathLangCode($no_lang_url, $lang, $site_prefix_path = '')
+    {
+        if (empty($lang)) {
+            return $no_lang_url;
+        }
+        $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
+        return preg_replace(
+            '@' .
+            '^(.*://|//)?' . // 1: schema (optional)
+            '([^/?]*)?' . // 2: host (optional)
+            "($prefix)?" . // 3: site prefix path
+            '(/|\?|#|$)' . // 4: path, query, hash or end-of-string
+            '@',
+            "$1$2$3/$lang$4",
+            $no_lang_url
+        );
     }
 }

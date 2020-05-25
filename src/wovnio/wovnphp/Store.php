@@ -119,8 +119,7 @@ class Store
         }
 
         if (!empty($this->settings['site_prefix_path'])) {
-            $this->settings['site_prefix_path'] = str_replace('/^\/./', '', $this->settings['site_prefix_path']);
-            $this->settings['site_prefix_path'] = str_replace('/\/$./', '', $this->settings['site_prefix_path']);
+            $this->settings['site_prefix_path'] = trim($this->settings['site_prefix_path'], '/');
         }
 
         // getting the url pattern
@@ -130,7 +129,7 @@ class Store
             $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
         } else {
             $this->settings['url_pattern_name'] = 'path';
-            $prefix = empty($this->settings['site_prefix_path']) ? '' : '\/' . $this->settings['site_prefix_path'];
+            $prefix = empty($this->settings['site_prefix_path']) ? '' : str_replace('/', '\/', '/' . $this->settings['site_prefix_path']);
             $this->settings['url_pattern_reg'] = $prefix . '\/(?P<lang>[^\/.]+)(\/|\?|$)';
         }
 
