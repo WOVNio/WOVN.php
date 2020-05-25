@@ -764,7 +764,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_noindex_langs.html');
 
-        $this->assertEquals($expected_html_text,  $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
     }
 
     public function testInsertHreflangWithMultiNoindexLangs()
