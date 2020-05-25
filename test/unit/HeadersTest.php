@@ -1259,7 +1259,6 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
 
-        error_log(json_encode($receivedHeaders));
         $this->assertEquals(1, count($receivedHeaders));
         $this->assertEquals('Location: /dir/fr/page.php', $receivedHeaders[0]);
     }

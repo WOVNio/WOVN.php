@@ -85,8 +85,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $lang_param_name = $store->settings['lang_param_name'];
         $default_lang = $store->settings['default_lang'];
         $current_lang = $headers->lang();
+        $version = WOVN_PHP_VERSION;
 
-        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>";
+        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name\" data-wovnio-info=\"version=WOVN.php_$version\" data-wovnio-type=\"fallback_snippet\" async></script>";
     }
 
     private function getExpectedData($store, $headers, $converted_body, $extra = array())
@@ -99,7 +100,8 @@ class APITest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
-            'body' => $converted_body
+            'body' => $converted_body,
+            'site_prefix_path' => ''
         );
 
         return array_merge($data, $extra);
@@ -239,14 +241,14 @@ class APITest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $html = '<html><head></head><body><h1>en</h1></body></html>';
-        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head><body><h1>en</h1></body></html>';
 
         $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
         $mock->expects($this->never())->method('sendRequest');
         RequestHandlerFactory::setInstance($mock);
 
         $result = API::translate($store, $headers, $html);
-        $this->assertEquals($expected_result, $result);
+        $this->assertEquals($expected_result, $this->removeVersion($result));
     }
 
     public function testTranslateWhenDefaultLangAndSettingIsOff()
@@ -292,5 +294,10 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $result = API::translate($store, $headers, $html);
         $this->assertEquals($expected_result, $result);
+    }
+
+    private function removeVersion($html, $replace_str = 'VERSION')
+    {
+        return preg_replace('/(version=WOVN.php_)([\d.]*)("|&)/', "version=WOVN.php_{$replace_str}\"", $html);
     }
 }

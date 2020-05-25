@@ -800,7 +800,6 @@ bye
             'site_prefix_path' => '/dir1/dir2/'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
-        error_log(json_encode($store));
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
