@@ -1241,6 +1241,29 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Location: /fr/index.php', $receivedHeaders[0]);
     }
 
+    public function testResponseOutWithSitePrefixPathAndRedirectLocationAndPathPattern()
+    {
+        \Wovnio\Wovnphp\mockHeadersSent(false);
+        \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
+            'Location' => '/dir/page.php'
+        ));
+        \Wovnio\Wovnphp\mockHeader();
+
+        $settings = array(
+            'url_pattern_name' => 'path',
+            'site_prefix_path' => 'dir'
+        );
+        $env = array( 'REQUEST_URI' => '/dir/fr/requested');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $headers->responseOut();
+        $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+
+        error_log(json_encode($receivedHeaders));
+        $this->assertEquals(1, count($receivedHeaders));
+        $this->assertEquals('Location: /dir/fr/page.php', $receivedHeaders[0]);
+    }
+
     public function testResponseOutWithNotDefaultLangAlreadyInRedirectLocationAndPathPattern()
     {
         \Wovnio\Wovnphp\mockHeadersSent(false);
