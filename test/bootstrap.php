@@ -4,7 +4,7 @@ require_once 'vendor/autoload.php';
 // TODO: create autoload instead of loading every files
 // TODO: not all files are loaded yet
 
-define('WOVN_DEVELOPMENT', true);
+$_ENV['WOVN_ENV'] = 'development';
 
 require_once 'src/version.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
