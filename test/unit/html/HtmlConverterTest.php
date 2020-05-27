@@ -27,7 +27,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
         $actual_html = $doc->saveHTML();
 
-        $this->assertEquals($expected_html, $this->removeVersion($actual_html));
+        $this->assertEquals($expected_html, $actual_html);
     }
 
     public function testConvertAndRevertAtYoutube()
@@ -48,7 +48,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
         $actual_html = $doc->saveHTML();
 
-        $this->assertEquals($expected_html, $this->removeVersion($actual_html));
+        $this->assertEquals($expected_html, $actual_html);
     }
 
     public function testConvertAndRevertAtYelp()
@@ -69,7 +69,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
         $actual_html = $doc->saveHTML();
 
-        $this->assertEquals($expected_html, $this->removeVersion($actual_html));
+        $this->assertEquals($expected_html, $actual_html);
     }
 
     public function testConvertAndRevertAtYahooJp()
@@ -90,7 +90,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $doc->loadHTML(mb_convert_encoding($actual_html_text, 'HTML-ENTITIES', "utf-8"));
         $actual_html = $doc->saveHTML();
 
-        $this->assertEquals($expected_html, $this->removeVersion($actual_html));
+        $this->assertEquals($expected_html, $actual_html);
     }
 
     public function testinsertSnippetAndHreflangTags()
@@ -105,7 +105,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
         $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testinsertSnippetAndHreflangTagsWithErrorMark()
@@ -120,7 +120,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->insertSnippetAndHreflangTags(true);
 
         $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApi()
@@ -135,7 +135,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiDoesNotFailForEmptyContent()
@@ -154,7 +154,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = '<html><body><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script><p>' . $long_string . '</p></body></html>';
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiDoesNotFailForContentOverDefaultSimpleHtmlDomMaxSize()
@@ -169,7 +169,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsWithEmptySupportedLangs()
@@ -180,7 +180,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsWithHead()
@@ -191,7 +191,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsWithoutBody()
@@ -206,7 +206,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsOnDefaultLangWithQuerySupportedLangs()
@@ -223,7 +223,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/?wovn=ja\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/?wovn=vi\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsOnDefaultLangWithPathSupportedLangs()
@@ -240,7 +240,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://my-site.com/ja/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://my-site.com/vi/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testInsertSnippetAndHreflangTagsOnDefaultLangWithSubdomainSupportedLangs()
@@ -257,7 +257,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://ja.my-site.com/\"><link rel=\"alternate\" hreflang=\"vi\" href=\"http://vi.my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithEmptySupportedLangs()
@@ -268,7 +268,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithHead()
@@ -279,7 +279,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><head><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script><title>TITLE</title></head><body><a>hello</a></body></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithoutBody()
@@ -294,7 +294,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
         $expected_html = "<html><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>hello<a>world</a></html>";
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithoutEncoding()
@@ -307,7 +307,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
         $expected_html = mb_convert_encoding($expected_html, 'SJIS');
 
-        $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithSupportedEncoding()
@@ -320,7 +320,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
             $expected_html = "<html><link rel=\"alternate\" hreflang=\"en\" href=\"http://my-site.com/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" data-wovnio-type=\"fallback_snippet\" async></script>こんにちは</html>";
             $expected_html = mb_convert_encoding($expected_html, $encoding);
-            $this->assertEquals($expected_html, $this->removeVersion($translated_html));
+            $this->assertEquals($expected_html, $translated_html);
         }
     }
 
@@ -503,7 +503,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithCustomLangCodes()
@@ -524,7 +524,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_custom_lang_codes_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangIntoHeadWithStyle()
@@ -544,7 +544,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_head_style_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangIntoBodyTag()
@@ -564,7 +564,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_body_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertSnippetForHtmlWithSnippetCode()
@@ -584,7 +584,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_snippet_when_already_exist_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangIntoHtmlTag()
@@ -604,7 +604,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_html_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangShouldRemoveExistHreflangTags()
@@ -623,7 +623,7 @@ bye
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_with_exist_hreflang_expected.html');
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangHtmlEntities()
@@ -643,7 +643,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_html_entities_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithCustomLangAliasAndChinese()
@@ -663,7 +663,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithCustomLangAlias()
@@ -683,7 +683,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_lang_alias.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithLangParamName()
@@ -702,7 +702,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_lang_param_name.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithDefaultCustomLangAlias()
@@ -722,7 +722,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithDefaultCustomLangAliasAndTrailingSlash()
@@ -743,7 +743,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias_trailing_slash.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithNoindexLangs()
@@ -764,7 +764,7 @@ bye
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_noindex_langs.html');
 
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithMultiNoindexLangs()
@@ -784,7 +784,7 @@ bye
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_multi_noindex_langs.html');
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     public function testInsertHreflangWithSitePrefixPath()
@@ -804,7 +804,7 @@ bye
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_site_prefix_path.html');
-        $this->assertEquals($expected_html_text, $this->removeVersion($translated_html));
+        $this->assertEquals($expected_html_text, $translated_html);
     }
 
     private function executeConvert($converter, $html, $charset, $name)
@@ -835,10 +835,5 @@ bye
         $converted_html = $method->invoke($converter, $html, $marker);
 
         return array($converted_html, $marker);
-    }
-
-    private function removeVersion($snippet, $replace_str = 'VERSION')
-    {
-        return preg_replace('/(version=WOVN.php_)([\d.]*)("|&)/', "version=WOVN.php_{$replace_str}\"", $snippet);
     }
 }

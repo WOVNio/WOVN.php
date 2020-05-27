@@ -52,7 +52,7 @@ docker kill $(docker ps -q) || true
 docker cp $(pwd)/htaccess_sample  $dummy_container:/var/www/html/.htaccess
 docker cp $(pwd)/wovn_index_sample.php $dummy_container:/var/www/html/wovn_index.php
 
-docker run -d --volumes-from $dummy_container $docker_name /bin/bash -c "${mod_rewrite_activation}"
+docker run -d -e WOVN_ENV=development --volumes-from $dummy_container $docker_name /bin/bash -c "${mod_rewrite_activation}"
 
 waitServerUp
 

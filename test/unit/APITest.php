@@ -248,7 +248,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         RequestHandlerFactory::setInstance($mock);
 
         $result = API::translate($store, $headers, $html);
-        $this->assertEquals($expected_result, $this->removeVersion($result));
+        $this->assertEquals($expected_result, $result);
     }
 
     public function testTranslateWhenDefaultLangAndSettingIsOff()
@@ -294,10 +294,5 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $result = API::translate($store, $headers, $html);
         $this->assertEquals($expected_result, $result);
-    }
-
-    private function removeVersion($html, $replace_str = 'VERSION')
-    {
-        return preg_replace('/(version=WOVN.php_)([\d.]*)("|&)/', "version=WOVN.php_{$replace_str}\"", $html);
     }
 }
