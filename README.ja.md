@@ -441,7 +441,7 @@ override_content_length = 1
 #### `check_amp`
 
 このパラメータは、AMP (Accelerated Mobile Pages) 準拠のページであれば WOVN.PHP がコンテンツを処理しないようにします。  
-このパラメータを有効にすると、WOVN.phpの内容は変更されません。  
+このパラメータを有効にすると、WOVN.phpはコンテンツの変更をしません。  
 そのため、WOVNスクリプトのタグを追加することはありません。
 
 ## 4. バグ報告
