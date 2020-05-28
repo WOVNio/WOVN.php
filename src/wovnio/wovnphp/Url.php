@@ -36,15 +36,15 @@ class Url
             return $uri;
         }
 
-        $site_prefix_path = $store->settings['site_prefix_path'];
-        if (!empty($site_prefix_path) && !self::matchSitePrefixPath($uri, $site_prefix_path)) {
-            return $uri;
-        }
-
         $new_uri = $uri;
         $pattern = $store->settings['url_pattern_name'];
+        $site_prefix_path = $store->settings['site_prefix_path'];
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
+
+        if ($pattern === 'path' && !empty($site_prefix_path) && !self::matchSitePrefixPath($uri, $site_prefix_path)) {
+            return $uri;
+        }
 
         $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
         $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
