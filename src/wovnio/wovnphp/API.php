@@ -47,7 +47,6 @@ class API
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
             'lang_param_name' => $store->settings['lang_param_name'],
-            'site_prefix_path' => $store->settings['site_prefix_path'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_html
@@ -58,6 +57,9 @@ class API
         }
         if (count($store->settings['no_index_langs']) > 0) {
             $data['no_index_langs'] = json_encode($store->settings['no_index_langs']);
+        }
+        if (!empty($store->settings['site_prefix_path'])) {
+            $data['site_prefix_path'] = $store->settings['site_prefix_path'];
         }
 
         try {
