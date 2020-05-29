@@ -410,13 +410,25 @@ override_content_length = 1
 ```
 
 #### `check_amp`
-This parameter tells WOVN.PHP not to process your content if it is 
+This parameter tells WOVN.php not to process your content if it is 
 an AMP (Accelerated Mobile Pages) compliant page.The default is disabled.
 If you enable this parameter, WOVN.php will not change the content.
 Therefore, we do not add any WOVN script tags.
 
 ```
 check_amp = 1
+```
+
+#### `site_prefix_path`
+This parameter tells WOVN.php to process under the path which is sepecified.  
+This parameter is valid when `url_pattern_name` is `path`.  
+
+For example, only `http://www.mysite.com/dir/*` is processed when `sitePrefixPath = dir` is set.  
+When `http://www.mysite.com/dir/index.html` is translated to English, language identifier will be added after specified path like `http://www.mysite.com/dir/en/index.html`.  
+URL which is not matched is not processed and snippet will not be inserted.
+
+```
+sitePrefixPath = dir1/dir2
 ```
 
 ## 4. Bug Report
