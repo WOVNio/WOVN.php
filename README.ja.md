@@ -438,6 +438,12 @@ RequestHeader    setifempty X-Forwarded-Request-Uri "expr=%{REQUEST_URI}"
 override_content_length = 1
 ```
 
+#### `check_amp`
+
+このパラメータは、AMP (Accelerated Mobile Pages) 準拠のページであれば WOVN.PHP がコンテンツを処理しないようにします。  
+このパラメータを有効にすると、WOVN.phpはコンテンツの変更をしません。  
+そのため、WOVNスクリプトのタグを追加することはありません。
+
 ## 4. バグ報告
 
 お客様の問題を解決するためには、いくつかの情報が必要です。  
