@@ -105,6 +105,18 @@ class Utils
         );
     }
 
+    public static function shouldIgnoreBySitePrefixPath($uri, $store)
+    {
+        if ($store &&
+            $store->settings['site_prefix_path'] &&
+            $store->settings['url_pattern_name'] &&
+            $store->settings['url_pattern_name'] === 'path'
+        ) {
+            return !Url::matchSitePrefixPath($uri, $store->settings['site_prefix_path']);
+        }
+        return false;
+    }
+
     /*
      * Return true if $uri path matches one or more values in `ignore_paths`, false otherwise.
      * An `ignore_path` is only matched at the beginning of the path, and it is always interpreted

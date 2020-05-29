@@ -189,7 +189,7 @@ class Url
         }
     }
 
-    private static function matchSitePrefixPath($uri, $site_prefix_path)
+    public static function matchSitePrefixPath($uri, $site_prefix_path)
     {
         return !!preg_match(
             '@' .

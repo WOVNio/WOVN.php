@@ -80,7 +80,7 @@ class Store
             'ignore_regex' => array(),
             'ignore_class' => array(),
             'no_index_langs' => array(),
-            'site_prefix_path' => '',
+            'site_prefix_path' => null,
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files

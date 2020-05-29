@@ -2,9 +2,10 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/EnvFactory.php';
-
 require_once 'src/wovnio/wovnphp/Utils.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 
+use Wovnio\test\Helpers\StoreAndHeadersFactory;
 use Wovnio\Test\Helpers\EnvFactory;
 
 use Wovnio\Wovnphp\Store;
@@ -182,5 +183,47 @@ XML;
         $this->assertEquals(true, Utils::isAmp($uncommented_amp));
         $this->assertEquals(true, Utils::isAmp($uncommented_amp_symbol));
         $this->assertEquals(true, Utils::isAmp($uncommented_amp_with_multiline_comment));
+    }
+
+    public function testShouldIgnoreBySitePrefixPath()
+    {
+        $env = EnvFactory::fromFixture('default');
+        list($store, $headers) = Utils::getStoreAndHeaders($env);
+
+        $testCases = array(
+            // should ignore when URL matches SitePrefixPath
+            array('path', 'dir', 'https://google.com', true),
+            array('path', 'dir', 'https://google.com/', true),
+
+            // should not ignore when URL pattern is not path
+            array('', '', 'https://google.com/', false),
+            array(null, '', 'https://google.com/', false),
+            array('subdomain', '', 'https://google.com/', false),
+            array('query', '', 'https://google.com/', false),
+
+            // should not ignore when SitePrefixPath is empty
+            array('path', null, 'https://google.com/', false),
+            array('path', '', 'https://google.com/', false),
+
+            // should not ignore when URL matches SitePrefixPath
+            array('path', 'dir', '//google.com/dir', false),
+            array('path', 'dir', '/dir', false),
+            array('path', 'dir', 'https://google.com/dir', false),
+            array('path', '/dir', 'https://google.com/dir', false),
+            array('path', 'dir/', 'https://google.com/dir', false),
+            array('path', 'dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', 'dir1/dir2/', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2/', 'https://google.com/dir1/dir2', false)
+        );
+        foreach ($testCases as $case) {
+            list($url_pattern_name, $site_prefix_path, $uri, $expected) = $case;
+            $settings = array(
+                'url_pattern_name' => $url_pattern_name,
+                'site_prefix_path' => $site_prefix_path
+            );
+            $store = new Store($settings);
+            $this->assertEquals($expected, Utils::shouldIgnoreBySitePrefixPath($uri, $store));
+        }
     }
 }
