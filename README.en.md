@@ -409,6 +409,16 @@ to `0` (false) by default. If you need to maintain the response header
 override_content_length = 1
 ```
 
+#### `check_amp`
+This parameter tells WOVN.PHP not to process your content if it is 
+an AMP (Accelerated Mobile Pages) compliant page.The default is disabled.
+If you enable this parameter, WOVN.php will not change the content.
+Therefore, we do not add any WOVN script tags.
+
+```
+check_amp = 1
+```
+
 ## 4. Bug Report
 
 To help us finding a solution to your issue we will require some information. 
