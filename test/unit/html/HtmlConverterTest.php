@@ -794,16 +794,37 @@ bye
         $settings = array(
             'default_lang' => 'en',
             'supported_langs' => array('en', 'zh-CHT', 'zh-CHS'),
-            'custom_lang_aliases' => array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct'),
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn',
             'site_prefix_path' => '/dir1/dir2/'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $env = array('REQUEST_URI' => '/dir1/dir2/');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_site_prefix_path.html');
+        $this->assertEquals($expected_html_text, $translated_html);
+    }
+
+    public function testInsertHreflangWithSitePrefixPathAndCustomLangAliases()
+    {
+        libxml_use_internal_errors(true);
+        $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+        $settings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'zh-CHT', 'zh-CHS'),
+            'url_pattern_name' => 'path',
+            'lang_param_name' => 'wovn',
+            'custom_lang_aliases' => array('en' => 'en', 'zh-CHS' => 'custom_simple'),
+            'site_prefix_path' => '/dir1/dir2/'
+        );
+        $env = array('REQUEST_URI' => '/dir1/dir2/');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_site_prefix_path_and_custom_lang_codes.html');
         $this->assertEquals($expected_html_text, $translated_html);
     }
 

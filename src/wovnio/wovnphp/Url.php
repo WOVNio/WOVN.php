@@ -42,7 +42,7 @@ class Url
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
 
-        if ($pattern === 'path' && !empty($site_prefix_path) && !self::matchSitePrefixPath($uri, $site_prefix_path)) {
+        if (self::shouldIgnoreBySitePrefixPath($uri, $store->settings)) {
             return $uri;
         }
 
@@ -189,17 +189,15 @@ class Url
         }
     }
 
-    public static function matchSitePrefixPath($uri, $site_prefix_path)
+    public static function shouldIgnoreBySitePrefixPath($uri, $settings)
     {
-        return !!preg_match(
-            '@' .
-            '^(.*://|//)?' . // schema (optional)
-            '([^/?]*)?' . // host (optional)
-            "(/$site_prefix_path)" . // site prefix path
-            '(/|\?|#|$)' . // path, query, hash or end-of-string
-            '@',
-            $uri
-        );
+        if ($settings['site_prefix_path'] &&
+            $settings['url_pattern_name'] &&
+            $settings['url_pattern_name'] === 'path'
+        ) {
+            return !preg_match(self::generateUrlRegex($settings['site_prefix_path']), $uri);
+        }
+        return false;
     }
 
     private static function addPathLangCode($no_lang_url, $lang, $site_prefix_path = '')
@@ -207,16 +205,23 @@ class Url
         if (empty($lang)) {
             return $no_lang_url;
         }
-        $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
         return preg_replace(
-            '@' .
-            '^(.*://|//)?' . // 1: schema (optional)
-            '([^/?]*)?' . // 2: host (optional)
-            "($prefix)?" . // 3: site prefix path
-            '(/|\?|#|$)' . // 4: path, query, hash or end-of-string
-            '@',
+            self::generateUrlRegex($site_prefix_path),
             "$1$2$3/$lang$4",
             $no_lang_url
+        );
+    }
+
+    private static function generateUrlRegex($site_prefix_path = '')
+    {
+        $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
+        return (
+            '@' .
+            '^(.*://|//)?' . // 1: schema (optional) like https://
+            '([^/?]*)?' . // 2: host (optional) like wovn.io
+            "($prefix)" . // 3: site prefix path like /dir1
+            '(/|\?|#|$)' . // 4: path, query, hash or end-of-string like /dir2/?a=b#hash
+            '@'
         );
     }
 }

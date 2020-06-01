@@ -851,7 +851,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
                 'REQUEST_URI' => $request_uri
             );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
-            $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "request_uri->[{$request_uri}] target_url->[{$target_url}]");
+            $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "target_url->[{$target_url}] expected_uri->[{$expected_uri}]");
         };
     }
 
@@ -1126,5 +1126,50 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
+    }
+
+    public function testshouldIgnoreBySitePrefixPath()
+    {
+        $testCases = array(
+            // should ignore when URL matches SitePrefixPath
+            array('path', 'dir', 'https://google.com', true),
+            array('path', 'dir', 'https://google.com/', true),
+
+            // should not ignore when URL pattern is not path
+            array('', '', 'https://google.com/', false),
+            array(null, '', 'https://google.com/', false),
+            array('subdomain', '', 'https://google.com/', false),
+            array('query', '', 'https://google.com/', false),
+
+            // should not ignore when SitePrefixPath is empty
+            array('path', null, 'https://google.com/', false),
+            array('path', '', 'https://google.com/', false),
+
+            // should not ignore when URL matches SitePrefixPath
+            array('path', 'dir', '//google.com/dir', false),
+            array('path', 'dir', '/dir', false),
+            array('path', 'dir', 'https://google.com/dir', false),
+            array('path', '/dir', 'https://google.com/dir', false),
+            array('path', 'dir/', 'https://google.com/dir', false),
+            array('path', 'dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', 'dir1/dir2/', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2/', 'https://google.com/dir1/dir2', false)
+        );
+
+        foreach ($testCases as $case) {
+            list($url_pattern_name, $site_prefix_path, $uri, $expected) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'en',
+                'url_pattern_name' => $url_pattern_name,
+                'site_prefix_path' => $site_prefix_path
+            );
+            $additional_env = array(
+                'REQUEST_URI' => "https://my-site.com/$site_prefix_path/fr"
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected, Url::shouldIgnoreBySitePrefixPath($uri, $store->settings));
+        }
     }
 }

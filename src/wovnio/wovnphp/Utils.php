@@ -102,20 +102,8 @@ class Utils
         return $uri && (
             self::checkIgnorePaths($uri, $store) ||
             self::checkIgnoreRegex($uri, $store) ||
-            self::shouldIgnoreBySitePrefixPath($uri, $store)
+            Url::shouldIgnoreBySitePrefixPath($uri, $store->settings)
         );
-    }
-
-    private static function shouldIgnoreBySitePrefixPath($uri, $store)
-    {
-        if ($store &&
-            $store->settings['site_prefix_path'] &&
-            $store->settings['url_pattern_name'] &&
-            $store->settings['url_pattern_name'] === 'path'
-        ) {
-            return !Url::matchSitePrefixPath($uri, $store->settings['site_prefix_path']);
-        }
-        return false;
     }
 
     /*
