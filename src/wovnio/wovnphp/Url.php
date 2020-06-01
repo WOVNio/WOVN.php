@@ -42,7 +42,7 @@ class Url
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
 
-        if (self::shouldIgnoreBySitePrefixPath($uri, $store->settings)) {
+        if (Utils::isIgnoredPath($uri, $store)) {
             return $uri;
         }
 
