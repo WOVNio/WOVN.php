@@ -420,8 +420,9 @@ check_amp = 1
 ```
 
 #### `site_prefix_path`
-This parameter tells WOVN.php to process under the path which is sepecified.  
-This parameter is valid when `url_pattern_name` is `path`.  
+This parameter tells WOVN.php to only process requests under the specified path. 
+When translating URLs, the language identifier will be inserted after this prefix path.
+This parameter is valid only when `url_pattern_name` is `path`.
 
 For example, only `http://www.mysite.com/dir/*` is processed when `sitePrefixPath = dir` is set.  
 When `http://www.mysite.com/dir/index.html` is translated to English, language identifier will be added after specified path like `http://www.mysite.com/dir/en/index.html`.  

@@ -216,6 +216,7 @@ XML;
             array('path', 'dir1/dir2/', 'https://google.com/dir1/dir2', false),
             array('path', '/dir1/dir2/', 'https://google.com/dir1/dir2', false)
         );
+
         foreach ($testCases as $case) {
             list($url_pattern_name, $site_prefix_path, $uri, $expected) = $case;
             $settings = array(
@@ -223,7 +224,13 @@ XML;
                 'site_prefix_path' => $site_prefix_path
             );
             $store = new Store($settings);
-            $this->assertEquals($expected, Utils::shouldIgnoreBySitePrefixPath($uri, $store));
+
+            $utils = new Utils();
+            $method = new \ReflectionMethod($utils, 'shouldIgnoreBySitePrefixPath');
+            $method->setAccessible(true);
+            $shouldIgnore = $method->invoke($utils, $uri, $store);
+
+            $this->assertEquals($expected, $shouldIgnore);
         }
     }
 }

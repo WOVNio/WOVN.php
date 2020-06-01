@@ -101,11 +101,12 @@ class Utils
     {
         return $uri && (
             self::checkIgnorePaths($uri, $store) ||
-            self::checkIgnoreRegex($uri, $store)
+            self::checkIgnoreRegex($uri, $store) ||
+            self::shouldIgnoreBySitePrefixPath($uri, $store)
         );
     }
 
-    public static function shouldIgnoreBySitePrefixPath($uri, $store)
+    private static function shouldIgnoreBySitePrefixPath($uri, $store)
     {
         if ($store &&
             $store->settings['site_prefix_path'] &&
