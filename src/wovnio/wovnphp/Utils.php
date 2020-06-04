@@ -11,7 +11,7 @@ class Utils
     // will return the store and headers objects
     public static function getStoreAndHeaders(&$env)
     {
-        $file = $_ENV['WOVN_CONFIG'] ? $_ENV['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
+        $file = isset($_ENV['WOVN_CONFIG']) ? $_ENV['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
         $store = Store::createFromFile($file);
         $headers = new Headers($env, $store);
         return array($store, $headers);
