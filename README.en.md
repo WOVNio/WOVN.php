@@ -423,10 +423,8 @@ check_amp = 1
 
 ### `WOVN_TARGET_LANG`
 
-This environment variable sets the language code to be translated from the HTTP 
-request. This environment variable sets the language code of the translation 
-target as retrieved from the HTTP request.
-
+This environment variable sets the language code of the translation target as 
+retrieved from the HTTP request.
 The user can get the target language code from this environment variable and 
 arbitrarily change the behavior of your program.
 
