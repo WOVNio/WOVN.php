@@ -12,12 +12,6 @@ class Store
     public $settings;
     // FIXME: could be private (unused outside this scope???)
     public $configLoaded = false;
-    // FIXME: could remove (unused???)
-    public static $configDir;
-    // FIXME: could remove (unused???)
-    public $returnValueOnErrorHandle = false;
-    // FIXME: wovnphp remaining code???
-    private $values = null;
 
     /**
      * @param string $settingFileName
