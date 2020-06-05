@@ -453,6 +453,8 @@ Or, users can use `.htaccess` to set it with `SetEnv`. in the following
 SetEnv WOVN_CONFIG /path/to/wovn.ini
 ```
 
+**Note on configuration file path:** The path to the configuration file must be an absolute path.
+
 ## 5. Bug Report
 
 To help us finding a solution to your issue we will require some information. 
