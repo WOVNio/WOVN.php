@@ -52,6 +52,7 @@ class Store
     {
         return (
             $this->settings['project_token']
+            && $this->settings['url_pattern_name']
             && $this->settings['default_lang']
             && $this->settings['supported_langs']
         );
