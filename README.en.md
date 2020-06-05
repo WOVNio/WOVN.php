@@ -426,7 +426,7 @@ check_amp = 1
 This environment variable sets the language code of the translation target as 
 retrieved from the HTTP request.
 The user can get the target language code from this environment variable and 
-arbitrarily change the behavior of your program.
+arbitrarily change the behavior of their program.
 
 For example.
 ```
