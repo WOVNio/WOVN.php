@@ -426,7 +426,7 @@ check_amp = 1
 This environment variable sets the language code of the translation target as 
 retrieved from the HTTP request.
 The user can get the target language code from this environment variable and 
-arbitrarily change the behavior of your program.
+arbitrarily change the behavior of their program.
 
 For example.
 ```
@@ -448,7 +448,7 @@ $_ENV['WOVN_CONFIG'] = ... your config path ...;
 require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
 ```
 
-Or, users can use `.htaccess` to set it with `SetEnv`. in the following
+Or, users can use `.htaccess` to set as follows.
 ```
 SetEnv WOVN_CONFIG /path/to/wovn.ini
 ```
