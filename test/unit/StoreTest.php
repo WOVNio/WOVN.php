@@ -37,6 +37,50 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(class_exists('\Wovnio\Wovnphp\Store'));
     }
 
+    public function testNotFoundConfigurationFile()
+    {
+        $file_config = dirname(__FILE__) . '/notfound.ini';
+
+        $store = Store::createFromFile($file_config);
+
+        $this->assertEquals('Wovnio\Wovnphp\Store', get_class($store));
+        $this->assertFalse($store->isValid());
+    }
+
+    public function testIsValidWithInvalidConfiguration()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = 'project_token = ""' . "\n" .
+              'default_lang = en' . "\n" .
+              'supported_langs[] = en' . "\n" .
+              'supported_langs[] = ja' . "\n";
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+
+        $this->assertFalse($store->isValid());
+    }
+
+    public function testIsValidWithValidConfiguration()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = 'project_token = Token' . "\n" .
+            'default_lang = en' . "\n" .
+            'supported_langs[] = en' . "\n" .
+            'supported_langs[] = ja' . "\n";
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+
+        $this->assertTrue($store->isValid());
+    }
+
     public function testQuerySettingOneParam()
     {
         $file_config = dirname(__FILE__) . '/test_config.ini';
