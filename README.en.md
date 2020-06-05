@@ -448,7 +448,7 @@ $_ENV['WOVN_CONFIG'] = ... your config path ...;
 require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
 ```
 
-Or, users can use `.htaccess` to set it with `SetEnv`. in the following
+Or, users can use `.htaccess` to set as follows.
 ```
 SetEnv WOVN_CONFIG /path/to/wovn.ini
 ```
