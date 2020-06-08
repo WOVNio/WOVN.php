@@ -441,9 +441,9 @@ This environment variable allows the user to change the default `wovn.ini` path 
 an arbitrary configuration file path.
 For example, you can make changes as follows
 
-Users can set `$_ENV['WOVN_CONFIG']` before loading `wovn_interceptor.php`.
+Users can set `$_SERVER['WOVN_CONFIG']` before loading `wovn_interceptor.php`.
 ```
-$_ENV['WOVN_CONFIG'] = ... your config path ...;
+$_SERVER['WOVN_CONFIG'] = ... your config path ...;
 
 require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
 ```

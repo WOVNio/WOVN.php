@@ -29,17 +29,16 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testGetStoreAndHeadersWithWovnConfigOfEnv()
     {
-        $_ENV['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteA.ini';
         $env = EnvFactory::fromFixture('default');
+        $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteA.ini';
         list($store, $headers) = Utils::getStoreAndHeaders($env);
         $this->assertEquals('SiteA', $store->settings['project_token']);
 
-        $_ENV['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteB.ini';
         $env = EnvFactory::fromFixture('default');
+        $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteB.ini';
         list($store, $headers) = Utils::getStoreAndHeaders($env);
         $this->assertEquals('SiteB', $store->settings['project_token']);
 
-        unset($_ENV['WOVN_CONFIG']);
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
         $this->assertEquals('', $store->settings['project_token']);
