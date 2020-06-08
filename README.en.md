@@ -419,7 +419,43 @@ Therefore, we do not add any WOVN script tags.
 check_amp = 1
 ```
 
-## 4. Bug Report
+## 4. Environment Variable
+
+### `WOVN_TARGET_LANG`
+
+This environment variable sets the language code of the translation target as 
+retrieved from the HTTP request.
+The user can get the target language code from this environment variable and 
+arbitrarily change the behavior of their program.
+
+For example.
+```
+if ($_ENV['WOVN_TARGET_LANG'] == 'fr') {
+    ... some kind of your code ...
+}
+```
+
+### `WOVN_CONFIG`
+
+This environment variable allows the user to change the default `wovn.ini` path to
+an arbitrary configuration file path.
+For example, you can make changes as follows
+
+Users can set `$_ENV['WOVN_CONFIG']` before loading `wovn_interceptor.php`.
+```
+$_ENV['WOVN_CONFIG'] = ... your config path ...;
+
+require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
+```
+
+Or, users can use `.htaccess` to set as follows.
+```
+SetEnv WOVN_CONFIG /path/to/wovn.ini
+```
+
+**Note on configuration file path:** The path to the configuration file must be an absolute path.
+
+## 5. Bug Report
 
 To help us finding a solution to your issue we will require some information. 
 First we need to know on which web pages you encounter the issue, as well as 

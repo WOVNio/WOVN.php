@@ -12,12 +12,6 @@ class Store
     public $settings;
     // FIXME: could be private (unused outside this scope???)
     public $configLoaded = false;
-    // FIXME: could remove (unused???)
-    public static $configDir;
-    // FIXME: could remove (unused???)
-    public $returnValueOnErrorHandle = false;
-    // FIXME: wovnphp remaining code???
-    private $values = null;
 
     /**
      * @param string $settingFileName
@@ -28,6 +22,7 @@ class Store
         if (file_exists($settingFileName)) {
             $userSettings = parse_ini_file($settingFileName, true);
         } else {
+            Logger::get()->warning('WOVN Configuration not found: {filename}.', array('filename' => $settingFileName));
             $userSettings = null;
         }
 
@@ -46,6 +41,21 @@ class Store
         if ($userSettings) {
             $this->updateSettings($userSettings);
         }
+    }
+
+    /**
+     *  Configuration validate
+     *
+     *  @return boolean
+     */
+    public function isValid()
+    {
+        return (
+            $this->settings['project_token']
+            && $this->settings['url_pattern_name']
+            && $this->settings['default_lang']
+            && $this->settings['supported_langs']
+        );
     }
 
     private function defaultSettings()
