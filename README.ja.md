@@ -463,9 +463,9 @@ if ($_ENV['WOVN_TARGET_LANG'] == 'fr') {
 この環境変数は、ユーザがデフォルトの `wovn.ini` のパスを任意の設定ファイルのパスに変更することを可能にします。  
 例えば、以下のように変更することができます。
 
-ユーザは `wovn_interceptor.php` を読み込む前に `$_ENV['WOVN_CONFIG']` を設定することができます。
+ユーザは `wovn_interceptor.php` を読み込む前に `$_SERVER['WOVN_CONFIG']` を設定することができます。
 ```
-$_ENV['WOVN_CONFIG'] = ... your config path ...;
+$_SERVER['WOVN_CONFIG'] = ... your config path ...;
 
 require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
 ```
