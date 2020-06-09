@@ -37,17 +37,67 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(class_exists('\Wovnio\Wovnphp\Store'));
     }
 
+    public function testNotFoundConfigurationFile()
+    {
+        $file_config = dirname(__FILE__) . '/notfound.ini';
+
+        $store = Store::createFromFile($file_config);
+
+        $this->assertEquals('Wovnio\Wovnphp\Store', get_class($store));
+        $this->assertFalse($store->isValid());
+    }
+
+    public function testIsValidWithInvalidConfiguration()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'project_token = ""',
+            'default_lang = en',
+            'supported_langs[] = en',
+            'supported_langs[] = ja'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+
+        $this->assertFalse($store->isValid());
+    }
+
+    public function testIsValidWithValidConfiguration()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'project_token = Token',
+            'default_lang = en',
+            'supported_langs[] = en',
+            'supported_langs[] = ja'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+
+        $this->assertTrue($store->isValid());
+    }
+
     public function testQuerySettingOneParam()
     {
         $file_config = dirname(__FILE__) . '/test_config.ini';
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'query[] = "a"' . "\n" .
-            'backend_host = "rs1.wovn.io"' . "\n" .
-            'backend_port = "6379"' . "\n" .
-            'default_lang = "English"' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'query[] = "a"',
+            'backend_host = "rs1.wovn.io"',
+            'backend_port = "6379"',
+            'default_lang = "English"'
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -60,12 +110,14 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'query[] = "a"' . "\n" .
-            'query[] = "b"' . "\n" .
-            'backend_host = "rs1.wovn.io"' . "\n" .
-            'backend_port = "6379"' . "\n" .
-            'default_lang = "English"' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'query[] = "a"',
+            'query[] = "b"',
+            'backend_host = "rs1.wovn.io"',
+            'backend_port = "6379"',
+            'default_lang = "English"'
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -78,12 +130,14 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'query[] = "b"' . "\n" .
-            'query[] = "a"' . "\n" .
-            'backend_host = "rs1.wovn.io"' . "\n" .
-            'backend_port = "6379"' . "\n" .
-            'default_lang = "English"' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'query[] = "b"',
+            'query[] = "a"',
+            'backend_host = "rs1.wovn.io"',
+            'backend_port = "6379"',
+            'default_lang = "English"'
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -96,9 +150,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'encoding = UTF-8' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'encoding = UTF-8',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -111,9 +167,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'encoding = INVALID_ENCODING' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'encoding = INVALID_ENCODING',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -126,8 +184,10 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -140,9 +200,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'use_proxy = 1' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'use_proxy = 1',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -157,9 +219,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'wovn_dev_mode = 1' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'wovn_dev_mode = 1',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -173,9 +237,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'wovn_dev_mode = 0' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'wovn_dev_mode = 0',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -189,8 +255,10 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -204,9 +272,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'wovn_dev_mode = 1' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'wovn_dev_mode = 1',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -219,9 +289,11 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'wovn_dev_mode = 0' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'wovn_dev_mode = 0',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -234,10 +306,12 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'api_url = "https://test-api.io"' . "\n" .
-            'wovn_dev_mode = 1' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'api_url = "https://test-api.io"',
+            'wovn_dev_mode = 1',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -250,10 +324,12 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'api_url = "https://test-api.io"' . "\n" .
-            'wovn_dev_mode = 0' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'api_url = "https://test-api.io"',
+            'wovn_dev_mode = 0',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -266,10 +342,12 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = 'project_token = "T0k3N"' . "\n" .
-            'default_lang = "English"' . "\n" .
-            'custom_lang_aliases["ja"] = "ja-test"' . "\n" .
-            'wovn_dev_mode = 0' . "\n";
+        $data = implode("\n", array(
+            'project_token = "T0k3N"',
+            'default_lang = "English"',
+            'custom_lang_aliases["ja"] = "ja-test"',
+            'wovn_dev_mode = 0',
+        ));
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);

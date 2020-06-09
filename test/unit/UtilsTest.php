@@ -28,6 +28,23 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Wovnio\Wovnphp\Headers', get_class($headers));
     }
 
+    public function testGetStoreAndHeadersWithWovnConfigOfEnv()
+    {
+        $env = EnvFactory::fromFixture('default');
+        $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteA.ini';
+        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        $this->assertEquals('SiteA', $store->settings['project_token']);
+
+        $env = EnvFactory::fromFixture('default');
+        $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteB.ini';
+        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        $this->assertEquals('SiteB', $store->settings['project_token']);
+
+        $env = EnvFactory::fromFixture('default');
+        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        $this->assertEquals('', $store->settings['project_token']);
+    }
+
     public function testIsFilePathURI()
     {
         $env = EnvFactory::fromFixture('default');

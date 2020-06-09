@@ -12,11 +12,17 @@ require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
+use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\API;
 
 // GET STORE AND HEADERS
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER);
+
+if (!$store->isValid()) {
+    Logger::get()->error('WOVN Invalid configuration');
+    return false;
+}
 
 // Make it available for user application
 $_ENV['WOVN_TARGET_LANG'] = $headers->lang();

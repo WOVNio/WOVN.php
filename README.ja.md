@@ -468,7 +468,40 @@ Furthermore, it is highly recommended to also configure your `web.xml` with a co
   ...
 </filter-mapping>
 
-## 4. バグ報告
+## 4. 環境変数
+
+### `WOVN_TARGET_LANG`
+
+この環境変数は、HTTPリクエストから取得した翻訳対象の言語コードを設定します。  
+ユーザーは、この環境変数からターゲット言語のコードを取得し、プログラムの動作を任意に変更することができます。
+
+例えば、以下のように
+```
+if ($_ENV['WOVN_TARGET_LANG'] == 'fr') {
+    ... some kind of your code ...
+}
+```
+
+### `WOVN_CONFIG`
+
+この環境変数は、ユーザがデフォルトの `wovn.ini` のパスを任意の設定ファイルのパスに変更することを可能にします。  
+例えば、以下のように変更することができます。
+
+ユーザは `wovn_interceptor.php` を読み込む前に `$_SERVER['WOVN_CONFIG']` を設定することができます。
+```
+$_SERVER['WOVN_CONFIG'] = ... your config path ...;
+
+require_once('/path/to/WOVN.php/src/wovn_interceptor.php');
+```
+
+あるいは、`.htaccess`で以下のように設定することもできる。
+```
+SetEnv WOVN_CONFIG /path/to/wovn.ini
+```
+
+**設定ファイルのパスに関する注意事項：** 設定ファイルのパスは絶対パスでなければなりません。
+
+## 5. バグ報告
 
 お客様の問題を解決するためには、いくつかの情報が必要です。  
 まず、どのウェブページで問題が発生したのか、再現するための手順を知る必要があります。  
