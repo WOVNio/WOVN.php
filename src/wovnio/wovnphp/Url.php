@@ -191,9 +191,7 @@ class Url
 
     public static function shouldIgnoreBySitePrefixPath($uri, $settings)
     {
-        if ($settings['site_prefix_path'] &&
-            $settings['url_pattern_name'] &&
-            $settings['url_pattern_name'] === 'path'
+        if ($settings['site_prefix_path'] && $settings['url_pattern_name'] === 'path'
         ) {
             return !preg_match(self::generateUrlRegex($settings['site_prefix_path']), $uri);
         }
