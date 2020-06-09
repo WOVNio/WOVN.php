@@ -453,7 +453,7 @@ override_content_length = 1
 該当しないパスの場合は、WOVNは処理せず、スクリプトも追加されません。
 
 ```
-sitePrefixPath = dir1/dir2
+site_prefix_path = dir1/dir2
 ```
 
 #### Requirements
