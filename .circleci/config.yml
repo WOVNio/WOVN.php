@@ -6,7 +6,8 @@ jobs:
       - image: circleci/php
     steps:
       - checkout
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 17.12.1-ce
       - restore_cache:
           keys:
             - vendor-{{ checksum "composer.lock" }}
