@@ -38,16 +38,21 @@ class Url
 
         $new_uri = $uri;
         $pattern = $store->settings['url_pattern_name'];
+        $site_prefix_path = $store->settings['site_prefix_path'];
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
 
-        $no_lang_uri = self::removeLangCode($uri, $pattern, $lang_code, $lang_param_name);
-        $no_lang_host = self::removeLangCode($headers->host, $pattern, $lang_code, $lang_param_name);
+        if (Utils::isIgnoredPath($uri, $store)) {
+            return $uri;
+        }
+
+        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
+        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
 
         if ($store->defaultLangAlias()) {
             $default_lang = $store->settings['default_lang'];
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $pattern, $default_lang, $lang_param_name);
-            $no_lang_host = self::removeLangCode($no_lang_host, $pattern, $default_lang, $lang_param_name);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $default_lang, $store->settings);
+            $no_lang_host = self::removeLangCode($no_lang_host, $default_lang, $store->settings);
         }
 
         // absolute urls
@@ -87,7 +92,7 @@ class Url
                         break;
                     default:
                         //path
-                        $new_uri = preg_replace('/([^\.]*\.[^?\/]*)(\?|\/|$)/', '${1}/' . self::formatForRegExp($lang_code) . '${2}', $no_lang_uri, 1);
+                        $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                 }
             }
         } else {
@@ -115,10 +120,10 @@ class Url
                         break;
                     default: // path
                         if (preg_match('/^\//', $no_lang_uri)) {
-                            $new_uri = '/' . $lang_code . $no_lang_uri;
+                            $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                         } else {
                             $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
-                            $new_uri = '/' . $lang_code . $current_dir . $no_lang_uri;
+                            $new_uri = self::addPathLangCode($current_dir . $no_lang_uri, $lang_code, $site_prefix_path);
                         }
                 }
             }
@@ -152,7 +157,7 @@ class Url
      * @param String $lang_code The lang to remove
      * @return array The url without the lang
      */
-    public static function removeLangCode($uri, $pattern, $lang_code, $lang_param_name)
+    public static function removeLangCode($uri, $lang_code, $settings)
     {
         if (!$lang_code || strlen($lang_code) == 0) {
             return $uri;
@@ -162,6 +167,10 @@ class Url
         if (preg_match('/^(#.*)?$/', $uri)) {
             return $uri;
         }
+
+        $pattern = $settings['url_pattern_name'];
+        $lang_param_name = $settings['lang_param_name'];
+        $site_prefix_path = $settings['site_prefix_path'];
 
         switch ($pattern) {
             case 'query':
@@ -174,8 +183,43 @@ class Url
             case 'path':
             default:
                 // limit to one replacement
-                return preg_replace('/\/' . $lang_code . '(\/|$)/i', '/', $uri, 1);
+                $prefix = empty($site_prefix_path) ? '' : '/' . $site_prefix_path;
+                return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
                 break;
         }
+    }
+
+    public static function shouldIgnoreBySitePrefixPath($uri, $settings)
+    {
+        if ($settings['site_prefix_path'] && $settings['url_pattern_name'] === 'path'
+        ) {
+            return !preg_match(self::generateUrlRegex($settings['site_prefix_path']), $uri);
+        }
+        return false;
+    }
+
+    private static function addPathLangCode($no_lang_url, $lang, $site_prefix_path = '')
+    {
+        if (empty($lang)) {
+            return $no_lang_url;
+        }
+        return preg_replace(
+            self::generateUrlRegex($site_prefix_path),
+            "$1$2$3/$lang$4",
+            $no_lang_url
+        );
+    }
+
+    private static function generateUrlRegex($site_prefix_path = '')
+    {
+        $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
+        return (
+            '@' .
+            '^(.*://|//)?' . // 1: schema (optional) like https://
+            '([^/?]*)?' . // 2: host (optional) like wovn.io
+            "($prefix)" . // 3: site prefix path like /dir1
+            '(/|\?|#|$)' . // 4: path, query, hash or end-of-string like /dir2/?a=b#hash
+            '@'
+        );
     }
 }

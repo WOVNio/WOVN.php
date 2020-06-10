@@ -444,6 +444,30 @@ override_content_length = 1
 このパラメータを有効にすると、WOVN.phpはコンテンツの変更をしません。  
 そのため、WOVNスクリプトのタグを追加することはありません。
 
+#### `site_prefix_path`
+このパラメータは、特定のパス以下のみWOVNで処理するように指定します。
+`url_pattern_name`が`path`の場合のみ有効です。
+
+例えば`sitePrefixPath = dir`を設定した場合、`http://www.mysite.com/dir/*`のみ処理します。
+`http://www.mysite.com/dir/index.html`を英語にした場合、`http://www.mysite.com/dir/en/index.html`のように、指定したディレクトリ以下に言語コードが追加されます。
+該当しないパスの場合は、WOVNは処理せず、スクリプトも追加されません。
+
+```
+site_prefix_path = dir1/dir2
+```
+
+#### Requirements
+
+This setting _must_ be used together with the `urlPattern = path` setting.
+
+Furthermore, it is highly recommended to also configure your `web.xml` with a corresponding filter-mapping for the wovnjava servlet filter. If prefix path is set to `city` as in the example above, the corresponding filter-mapping would look as follows.
+```
+<filter-mapping>
+  <filter-name>wovn</filter-name>
+  <url-pattern>/city/*</url-pattern>
+  ...
+</filter-mapping>
+
 ## 4. 環境変数
 
 ### `WOVN_TARGET_LANG`

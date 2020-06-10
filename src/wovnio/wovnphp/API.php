@@ -58,6 +58,9 @@ class API
         if (count($store->settings['no_index_langs']) > 0) {
             $data['no_index_langs'] = json_encode($store->settings['no_index_langs']);
         }
+        if (!empty($store->settings['site_prefix_path'])) {
+            $data['site_prefix_path'] = $store->settings['site_prefix_path'];
+        }
 
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();

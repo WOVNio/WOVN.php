@@ -274,7 +274,8 @@ class Headers
                 break;
             case 'path':
             default:
-                $location = preg_replace('/(\/|$)/', '/' . $lang . '/', $location, 1);
+                $prefix = empty($this->store->settings['site_prefix_path']) ? '' : '/' . $this->store->settings['site_prefix_path'];
+                $location = preg_replace("@$prefix(/|$)@", $prefix . '/' . $lang . '/', $location, 1);
         }
         return $this->protocol . '://' . $location;
     }
@@ -373,10 +374,10 @@ class Headers
         $default_lang = $this->store->settings['default_lang'];
         $aliases = $this->store->settings['custom_lang_aliases'];
         if (array_key_exists($default_lang, $aliases)) {
-            $no_lang_uri = Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code, $this->store->settings['lang_param_name']);
+            $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store->settings);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
-            return Url::removeLangCode($uri, $this->store->settings['url_pattern_name'], $lang_code, $this->store->settings['lang_param_name']);
+            return Url::removeLangCode($uri, $lang_code, $this->store->settings);
         }
     }
 
