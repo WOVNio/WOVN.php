@@ -24,5 +24,5 @@ function cleanup_container()
 }
 trap cleanup_container EXIT
 
-docker exec -w /opt/project ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; /opt/project/vendor/bin/phpunit --configuration phpunit_integration.xml"
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; /opt/project/vendor/bin/phpunit --configuration phpunit_integration.xml"
 
