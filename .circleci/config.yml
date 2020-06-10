@@ -1,92 +1,111 @@
 defaults: &defaults
   docker:
     - image: circleci/php
-  steps:
-    - checkout
-    - setup_remote_docker:
-        version: 17.12.1-ce
-    - restore_cache:
-        keys:
-          - vendor-{{ checksum "composer.lock" }}
-          - vendor-
-    - run: composer install
-    - save_cache:
-        key: vendor-{{ checksum "composer.lock" }}
-        paths: vendor
 
-version: 2
+common_steps: &common_steps
+  - checkout
+  - setup_remote_docker:
+      version: 17.12.1-ce
+  - restore_cache:
+      keys:
+        - vendor-{{ checksum "composer.lock" }}
+        - vendor-
+  - run: composer install
+  - save_cache:
+      key: vendor-{{ checksum "composer.lock" }}
+      paths: vendor
+
+version: 2.1
 jobs:
   build:
     <<: *defaults
     steps:
+      - *common_steps
       - run: ./vendor/bin/phpcs
   unit_test_php7.3:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
   unit_test_php7.2:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
   unit_test_php7.1:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
   unit_test_php7.0:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
   unit_test_php5.6:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
   unit_test_php5.5:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
   unit_test_php5.4:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
   unit_test_php5.3:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
   unit_test_phphhvm:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_phpunit_tests.sh vectorface/hhvm
   integration_test_php7.3:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:7.3-apache
   integration_test_php7.2:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:7.2-apache
   integration_test_php7.1:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:7.1-apache
   integration_test_php7.0:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:7.0-apache
   integration_test_php5.6:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:5.6-apache
   integration_test_php5.5:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:5.5-apache
   integration_test_php5.4:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:5.4-apache
   integration_test_php5.3:
     <<: *defaults
     steps:
+      - *common_steps
       - run: scripts/run_integration_tests.sh php:5.3-apache
 workflows:
   version: 2
