@@ -18,54 +18,88 @@ jobs:
           paths: vendor
       - run: ./vendor/bin/phpcs
   unit_test_php7.3:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
   unit_test_php7.2:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
   unit_test_php7.1:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
   unit_test_php7.0:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
   unit_test_php5.6:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
   unit_test_php5.5:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
   unit_test_php5.4:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
   unit_test_php5.3:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
   unit_test_phphhvm:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_phpunit_tests.sh vectorface/hhvm
   integration_test_php7.3:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:7.3-apache
   integration_test_php7.2:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:7.2-apache
   integration_test_php7.1:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:7.1-apache
   integration_test_php7.0:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:7.0-apache
   integration_test_php5.6:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:5.6-apache
   integration_test_php5.5:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:5.5-apache
   integration_test_php5.4:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:5.4-apache
   integration_test_php5.3:
+    docker:
+      - image: circleci/php
     steps:
       - run: scripts/run_integration_tests.sh php:5.3-apache
 workflows:
