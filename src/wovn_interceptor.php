@@ -28,8 +28,10 @@ if (!$store->isValid()) {
 $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 $headers->requestOut();
 
-if (!Utils::isFilePathURI($headers->getDocumentURI(), $store) &&
-    !Utils::isIgnoredPath($headers->getDocumentURI(), $store)) {
+$uri = $headers->getDocumentURI();
+if (!Utils::isFilePathURI($uri, $store) &&
+    !Utils::isIgnoredPath($uri, $store)
+    ) {
     // use the callback of ob_start to modify the content and return
     ob_start(function ($buffer) use ($headers, $store) {
         $headers->responseOut();

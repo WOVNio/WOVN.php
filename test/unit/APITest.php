@@ -85,8 +85,10 @@ class APITest extends \PHPUnit_Framework_TestCase
         $lang_param_name = $store->settings['lang_param_name'];
         $default_lang = $store->settings['default_lang'];
         $current_lang = $headers->lang();
+        $version = WOVN_PHP_VERSION;
+        $site_prefix_path = empty($store->settings['site_prefix_path']) ? '' : '&amp;sitePrefixPath=' . $store->settings['site_prefix_path'];
 
-        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name&amp;version=WOVN.php\" data-wovnio-type=\"fallback_snippet\" async></script>";
+        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name$site_prefix_path\" data-wovnio-info=\"version=WOVN.php_$version\" data-wovnio-type=\"fallback_snippet\" async></script>";
     }
 
     private function getExpectedData($store, $headers, $converted_body, $extra = array())
@@ -99,7 +101,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
-            'body' => $converted_body
+            'body' => $converted_body,
         );
 
         return array_merge($data, $extra);
@@ -239,7 +241,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $html = '<html><head></head><body><h1>en</h1></body></html>';
-        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head><body><h1>en</h1></body></html>';
 
         $mock = $this->getMockAndRegister('Wovnio\Utils\RequestHandlers\CurlRequestHandler', array('sendRequest'));
         $mock->expects($this->never())->method('sendRequest');
@@ -286,6 +288,26 @@ class APITest extends \PHPUnit_Framework_TestCase
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html = "<html><head>$expected_head_content</head><body><h1 wovn-ignore>ignore content</h1></body></html>";
         $expected_data = $this->getExpectedData($store, $headers, $expected_html);
+        $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
+
+        $this->mockApiResponse($expected_api_url, $expected_data, $response);
+
+        $result = API::translate($store, $headers, $html);
+        $this->assertEquals($expected_result, $result);
+    }
+
+    public function testTranslateWithSitePrefixPath()
+    {
+        $settings = array('site_prefix_path' => 'dir1/dir2');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+        $html = '<html><head></head><body><h1>content</h1></body></html>';
+        $response = '{"body":"\u003Chtml\u003E\u003Chead\u003E\u003C/head\u003E\u003Cbody\u003E\u003Ch1\u003Efr\u003C/h1\u003E\u003C/body\u003E\u003C/html\u003E"}';
+
+        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $html);
+        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
+        $expected_html = "<html><head>$expected_head_content</head><body><h1>content</h1></body></html>";
+        $expected_data = $this->getExpectedData($store, $headers, $expected_html, $settings);
         $expected_result = '<html><head></head><body><h1>fr</h1></body></html>';
 
         $this->mockApiResponse($expected_api_url, $expected_data, $response);
