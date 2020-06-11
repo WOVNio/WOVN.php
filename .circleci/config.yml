@@ -9,6 +9,7 @@ commands:
     steps:
       - checkout
       - setup_remote_docker:
+          docker_layer_caching: true
           version: 17.12.1-ce
       - restore_cache:
           keys:
