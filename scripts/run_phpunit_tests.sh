@@ -32,8 +32,11 @@ docker cp $dummy_container:"${WORK_DIR}/${PHPUNIT_OUTDIR}" ${PWD}/${PHPUNIT_OUTD
 # Replace for Integration test
 if [ "${docker_name}" == "vectorface/php5.4" ]; then
     docker_name="php:5.4-apache"
+    docker pull $docker_name
 elif [ "${docker_name}" == "vectorface/php5.3" ]; then
     docker_name="php:5.3-apache"
+    # FIX: Unable to find image 'php:5.3-apache' locally
+    docker pull $docker_name
 elif [ "${docker_name}" == "vectorface/hhvm" ]; then
     # TODO: Not supported yet.
     echo Not supported integration test for hhvm
