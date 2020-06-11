@@ -17,12 +17,12 @@ docker run --rm -t -w /opt/project --volumes-from $dummy_container $docker_name 
 # Run unit test
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
     docker run -t -w /opt/project --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; mkdir /tmp/phpunit; phpdbg -qrr /opt/project/vendor/bin/phpunit --log-junit /tmp/phpunit/junit.xml -d memory_limit=1024M --coverage-html /tmp/phpunit/coverage-report"
-    docker cp $docker_name:/tmp/phpunit /tmp/phpunit
+           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit phpunit/junit.xml -d memory_limit=1024M --coverage-html phpunit/coverage-report"
+    docker cp $dummy_container:/opt/project/phpunit /tmp/phpunit
 else
     docker run -t -w /opt/project --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; mkdir /tmp/phpunit; /opt/project/vendor/bin/phpunit --log-junit /tmp/phpunit/junit.xml"
-    docker cp $docker_name:/tmp/phpunit /tmp/phpunit
+           /bin/bash -c "set -e; vendor/bin/phpunit --log-junit phpunit/junit.xml"
+    docker cp $dummy_container:/opt/project/phpunit /tmp/phpunit
 fi
 
 # Replace for Integration test
@@ -59,6 +59,6 @@ trap cleanup_container EXIT
 
 # Run integration test
 docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-       /bin/bash -c "set -e; mkdir /tmp/phpunit; ln -s /var/www/html /opt/project/test/docroot && /opt/project/vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit /tmp/phpunit/junit.integration.xml"
-docker cp ${APACHE_CONTAINER_ID}:/tmp/phpunit/junit.integration.xml /tmp/phpunit/junit.integration.xml
+       /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit phpunit/junit.integration.xml"
+docker cp ${APACHE_CONTAINER_ID}:/opt/project/phpunit/junit.integration.xml /tmp/phpunit/junit.integration.xml
 
