@@ -23,34 +23,27 @@ class Utils
         $return->body = null;
         $return->error = null;
         $return->statusCode = null;
-        $return->curl_errno = null;
 
-        $curl_session = curl_init($url);
-
-        curl_setopt_array($curl_session, array(
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => $timeout,
-            CURLOPT_HEADER => true,
-            CURLOPT_HTTPHEADER => array(),
-            CURLOPT_PATH_AS_IS => true,
+        $http_context = stream_context_create(array(
+            'http' => array(
+                'method' => 'GET',
+                'timeout' => $timeout,
+                'ignore_errors' => true,
+            )
         ));
 
-        $response = curl_exec($curl_session);
-        $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
-        $return->headers = $response ? explode("\r\n", substr($response, 0, $header_size)) : array();
-        $return->statusCode = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
+        $return->body = @file_get_contents($url, false, $http_context);
+        $response_headers = $http_response_header;
 
-        if (curl_error($curl_session) !== '') {
-            $return->curl_errno = curl_errno($curl_session);
-
-            curl_close($curl_session);
-
-            return $return;
+        if (preg_match('{HTTP\/\S*\s(\d{3})}', $response_headers[0], $match)) {
+            $return->statusCode = $match[1];
         }
 
-        $return->body = substr($response, $header_size);
-
-        curl_close($curl_session);
+        foreach ($response_headers as $value) {
+            if (preg_match('{([^:]+): (.+)}', $value, $match)) {
+                $return->headers[ $match[0] ] = $match[1];
+            }
+        }
 
         return $return;
     }
