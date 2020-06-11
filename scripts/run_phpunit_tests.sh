@@ -63,8 +63,11 @@ trap cleanup_container EXIT
 
 # Run integration test
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
+# NOTE: On php7.1 and above, the segmentation fault is occured, so the coverage I don't do reports.
+#    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
+#           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
     docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
+           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
 else
     docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
            /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
