@@ -25,7 +25,16 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - common-steps
+      - checkout
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "composer.lock" }}
+            - vendor-
+      - run: composer install
+      - save_cache:
+          key: vendor-{{ checksum "composer.lock" }}
+          paths:
+            - ./vendor
       - run: ./vendor/bin/phpcs
   test_php73:
     <<: *defaults
