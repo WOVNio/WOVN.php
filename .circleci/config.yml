@@ -25,42 +25,42 @@ jobs:
     steps:
       - common-steps
       - run: ./vendor/bin/phpcs
-  unit_test_php7.3:
+  unit_test_php73:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
-  unit_test_php7.2:
+  unit_test_php72:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
-  unit_test_php7.1:
+  unit_test_php71:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
-  unit_test_php7.0:
+  unit_test_php70:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
-  unit_test_php5.6:
+  unit_test_php56:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
-  unit_test_php5.5:
+  unit_test_php55:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
-  unit_test_php5.4:
+  unit_test_php54:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
-  unit_test_php5.3:
+  unit_test_php53:
     <<: *defaults
     steps:
       - common-steps
@@ -70,42 +70,42 @@ jobs:
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/hhvm
-  integration_test_php7.3:
+  integration_test_php73:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:7.3-apache
-  integration_test_php7.2:
+  integration_test_php72:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:7.2-apache
-  integration_test_php7.1:
+  integration_test_php71:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:7.1-apache
-  integration_test_php7.0:
+  integration_test_php70:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:7.0-apache
-  integration_test_php5.6:
+  integration_test_php56:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:5.6-apache
-  integration_test_php5.5:
+  integration_test_php55:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:5.5-apache
-  integration_test_php5.4:
+  integration_test_php54:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_integration_tests.sh php:5.4-apache
-  integration_test_php5.3:
+  integration_test_php53:
     <<: *defaults
     steps:
       - common-steps
@@ -116,54 +116,54 @@ workflows:
   build:
     jobs:
       - build
-      - unit_test_php7.3:
+      - unit_test_php73:
           requires:
             - build
-      - unit_test_php7.2:
+      - unit_test_php72:
           requires:
             - build
-      - unit_test_php7.1:
+      - unit_test_php71:
           requires:
             - build
-      - unit_test_php7.0:
+      - unit_test_php70:
           requires:
             - build
-      - unit_test_php5.6:
+      - unit_test_php56:
           requires:
             - build
-      - unit_test_php5.5:
+      - unit_test_php55:
           requires:
             - build
-      - unit_test_php5.4:
+      - unit_test_php54:
           requires:
             - build
-      - unit_test_php5.3:
+      - unit_test_php53:
           requires:
             - build
       - unit_test_phphhvm:
           requires:
             - build
-      - integration_test_php7.3:
+      - integration_test_php73:
           requires:
             - build
-      - integration_test_php7.2:
+      - integration_test_php72:
           requires:
             - build
-      - integration_test_php7.1:
+      - integration_test_php71:
           requires:
             - build
-      - integration_test_php7.0:
+      - integration_test_php70:
           requires:
             - build
-      - integration_test_php5.6:
+      - integration_test_php56:
           requires:
             - build
-      - integration_test_php5.4:
+      - integration_test_php55:
           requires:
             - build
-      - integration_test_php5.3:
+      - integration_test_php54:
           requires:
             - build
-      - integration_test_php5.3:
+      - integration_test_php53:
           requires:
             - build
