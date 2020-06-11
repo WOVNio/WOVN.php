@@ -20,8 +20,8 @@ docker run --rm -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
 # Run unit test
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
     docker run -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit ${PHPUNIT_OUTDIR}/phpunit/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
-    docker cp $dummy_container:"${WORK_DIR}/${PHPUNIT_OUTDIR}" ${PWD}/
+           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
+    docker cp $dummy_container:"${WORK_DIR}/${PHPUNIT_OUTDIR}" ${PWD}/phpunit
 else
     docker run -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
            /bin/bash -c "set -e; vendor/bin/phpunit --log-junit ${PHPUNIT_OUTDIR}/phpunit/results.xml"
@@ -61,7 +61,12 @@ function cleanup_container()
 trap cleanup_container EXIT
 
 # Run integration test
-docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-       /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
+    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
+           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
+else
+    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
+           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+fi
 mkdir -p ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration
-docker cp ${APACHE_CONTAINER_ID}:${WORK_DIR}/${PHPUNIT_OUTDIR}/results.xml ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration/results.xml
+docker cp ${APACHE_CONTAINER_ID}:${WORK_DIR}/${PHPUNIT_OUTDIR} ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration
