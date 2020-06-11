@@ -20,13 +20,12 @@ docker run -d -w /var/www/html \
 
 APACHE_CONTAINER_ID=$(docker ps -q)
 
-function cleanup_container()
-{
-    docker stop ${APACHE_CONTAINER_ID} && docker rm ${APACHE_CONTAINER_ID}
-    docker rm $dummy_container
-}
-trap cleanup_container EXIT
+# function cleanup_container()
+# {
+#     docker stop ${APACHE_CONTAINER_ID} && docker rm ${APACHE_CONTAINER_ID}
+#     docker rm $dummy_container
+# }
+# trap cleanup_container EXIT
 
-docker exec -w /opt/project ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot"
-docker exec -w /opt/project ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; /opt/project/vendor/bin/phpunit --configuration phpunit_integration.xml"
+docker exec -w /opt/project ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && /opt/project/vendor/bin/phpunit --configuration phpunit_integration.xml"
 
