@@ -28,6 +28,10 @@ if [ "${docker_name}" == "vectorface/php5.4" ]; then
     docker_name="php:5.4-apache"
 elif [ "${docker_name}" == "vectorface/php5.3" ]; then
     docker_name="php:5.3-apache"
+elif [ "${docker_name}" == "vectorface/hhvm" ]; then
+    # TODO: Not supported yet.
+    echo Not supported integration test for hhvm
+    exit 0
 fi
 
 # Run Apache for integration test
