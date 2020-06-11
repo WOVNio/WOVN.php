@@ -63,4 +63,5 @@ trap cleanup_container EXIT
 # Run integration test
 docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
        /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+mkdir -p ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration
 docker cp ${APACHE_CONTAINER_ID}:${WORK_DIR}/${PHPUNIT_OUTDIR}/results.xml ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration/results.xml
