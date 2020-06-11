@@ -8,7 +8,7 @@ dummy_container="dummy_$(date +%s)"
 docker create -v /opt --name $dummy_container $docker_name /bin/true
 
 # Copy source to dummy container
-docker cp $(pwd)  $dummy_container:/opt/project
+docker cp $(pwd) $dummy_container:/opt/project
 
 # Check syntax
 docker run --rm -t -w /opt/project --volumes-from $dummy_container $docker_name \
@@ -21,6 +21,13 @@ if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
 else
     docker run --rm -t -w /opt/project -v /tmp:/tmp --volumes-from $dummy_container $docker_name \
            /bin/bash -c "set -e; /opt/project/vendor/bin/phpunit --log-junit /tmp/phpunit/junit.xml"
+fi
+
+# Replace for Integration test
+if [ "${docker_name}" == "vectorface/php5.4" ]; then
+    docker_name="php:5.4-apache"
+elif [ "${docker_name}" == "vectorface/php5.3" ]; then
+    docker_name="php:5.3-apache"
 fi
 
 # Run Apache for integration test
