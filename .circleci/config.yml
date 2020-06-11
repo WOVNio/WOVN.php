@@ -50,56 +50,48 @@ jobs:
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
-      - run: scripts/run_integration_tests.sh php:7.3-apache
       - store-steps
   test_php72:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
-      - run: scripts/run_integration_tests.sh php:7.2-apache
       - store-steps
   test_php71:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
-      - run: scripts/run_integration_tests.sh php:7.1-apache
       - store-steps
   test_php70:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
-      - run: scripts/run_integration_tests.sh php:7.0-apache
       - store-steps
   test_php56:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
-      - run: scripts/run_integration_tests.sh php:5.6-apache
       - store-steps
   test_php55:
     <<: *defaults
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
-      - run: scripts/run_integration_tests.sh php:5.5-apache
       - store-steps
   test_php54:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh vectorface/php5.4
-      - run: scripts/run_integration_tests.sh php:5.4-apache
+      - run: scripts/run_phpunit_tests.sh php:5.4-apache
       - store-steps
   test_php53:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh vectorface/php5.3
-      - run: scripts/run_integration_tests.sh php:5.3-apache
+      - run: scripts/run_phpunit_tests.sh php:5.3-apache
       - store-steps
   test_phphhvm:
     <<: *defaults
