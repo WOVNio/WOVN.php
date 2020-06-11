@@ -18,7 +18,7 @@ commands:
       - store_test_results:
           path: .phpunit/junit.xml
       - store_artifacts:
-          path: .phpunit/coverage-report
+          path: .phpunit/
 
 jobs:
   build:
