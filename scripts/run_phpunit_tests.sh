@@ -8,6 +8,8 @@ VOLUME=/opt
 WORK_DIR=${VOLUME}/project
 PHPUNIT_OUTDIR=.phpunit
 
+mkdir -p ${PWD}/${PHPUNIT_OUTDIR}
+
 # Create a dummy container which will hold a volume with source
 docker create -v /opt --name $dummy_container $docker_name /bin/true
 # Copy source to dummy container
