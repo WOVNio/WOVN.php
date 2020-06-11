@@ -6,28 +6,34 @@ dummy_container="dummy_$(date +%s)"
 
 VOLUME=/opt
 WORK_DIR=${VOLUME}/project
-PHPUNIT_OUTDIR=.phpunit
 
-mkdir -p ${PWD}/${PHPUNIT_OUTDIR}
+UNITTEST_REPORT_DIR=.phpunit/phpunit
+INTGTEST_REPORT_DIR=.phpunit/phpunit.integration
+
+mkdir -p ${PWD}/${UNITTEST_REPORT_DIR}
+mkdir -p ${PWD}/${INTGTEST_REPORT_DIR}
 
 # Create a dummy container which will hold a volume with source
-docker create -v /opt --name $dummy_container $docker_name /bin/true
+docker create -v ${VOLUME} --name $dummy_container $docker_name /bin/true
 # Copy source to dummy container
 docker cp $(pwd) $dummy_container:${WORK_DIR}
+
 
 # Check syntax
 docker run --rm -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
        /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
 
+
 # Run unit test
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
     docker run -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
+           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit ${UNITTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${UNITTEST_REPORT_DIR}/coverage-report"
 else
     docker run -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; vendor/bin/phpunit --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+           /bin/bash -c "set -e; vendor/bin/phpunit --log-junit ${UNITTEST_REPORT_DIR}/results.xml"
 fi
-docker cp $dummy_container:"${WORK_DIR}/${PHPUNIT_OUTDIR}" ${PWD}/${PHPUNIT_OUTDIR}/phpunit
+docker cp $dummy_container:"${WORK_DIR}/${UNITTEST_REPORT_DIR}" ${PWD}/${UNITTEST_REPORT_DIR}
+
 
 # Replace for Integration test
 if [ "${docker_name}" == "vectorface/php5.4" ]; then
@@ -68,11 +74,11 @@ trap cleanup_container EXIT
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
 # NOTE: On php7.1 and above, the segmentation fault is occured, so the coverage I don't do reports.
 #    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-#           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml -d memory_limit=1024M --coverage-html ${PHPUNIT_OUTDIR}/coverage-report"
+#           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${INTGTEST_REPORT_DIR}/coverage-report"
     docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
 else
     docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${PHPUNIT_OUTDIR}/results.xml"
+           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
 fi
-docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${PHPUNIT_OUTDIR}" ${PWD}/${PHPUNIT_OUTDIR}/phpunit.integration
+docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${INTGTEST_REPORT_DIR}" ${PWD}/${INTGTEST_REPORT_DIR}
