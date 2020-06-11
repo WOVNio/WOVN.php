@@ -36,9 +36,9 @@ jobs:
             - ./vendor
       - run: ./vendor/bin/phpcs
       - persist_to_workspace:
-          root: ~/
+          root: ./project
           paths:
-            - ./project/*
+            - ./*
   test_php73:
     <<: *defaults
     steps:
