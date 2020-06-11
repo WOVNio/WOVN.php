@@ -29,6 +29,7 @@ commands:
           path: /tmp/phpunit
       - store_artifacts:
           path: /tmp/phpunit
+
 jobs:
   build:
     <<: *defaults
