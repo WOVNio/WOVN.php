@@ -78,6 +78,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->fetchURL('/index.html');
 
+        $this->assertEquals(404, $response->statusCode);
         $this->assertEquals('Page Not Found', $response->body);
     }
 
@@ -85,6 +86,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
     {
         $response = $this->fetchURL('/');
 
+        $this->assertEquals(404, $response->statusCode);
         $this->assertEquals('Page Not Found', $response->body);
     }
 
