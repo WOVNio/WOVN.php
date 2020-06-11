@@ -26,9 +26,9 @@ commands:
   store-steps:
     steps:
       - store_test_results:
-          path: /tmp/phpunit
+          path: /tmp/phpunit/junit.xml
       - store_artifacts:
-          path: /tmp/phpunit
+          path: /tmp/phpunit/coverage-report
 
 jobs:
   build:
