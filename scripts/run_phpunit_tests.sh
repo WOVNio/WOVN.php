@@ -6,7 +6,6 @@ dummy_container="dummy_$(date +%s)"
 
 # Create a dummy container which will hold a volume with source
 docker create -v /opt --name $dummy_container $docker_name /bin/true
-
 # Copy source to dummy container
 docker cp $(pwd) $dummy_container:/opt/project
 
@@ -17,12 +16,12 @@ docker run --rm -t -w /opt/project --volumes-from $dummy_container $docker_name 
 # Run unit test
 if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
     docker run -t -w /opt/project --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit phpunit/junit.xml -d memory_limit=1024M --coverage-html phpunit/coverage-report"
-    docker cp $dummy_container:/opt/project/phpunit /tmp/phpunit
+           /bin/bash -c "set -e; phpdbg -qrr vendor/bin/phpunit --log-junit .phpunit/junit.xml -d memory_limit=1024M --coverage-html .phpunit/coverage-report"
+    docker cp $dummy_container:/opt/project/.phpunit ${PWD}/
 else
     docker run -t -w /opt/project --volumes-from $dummy_container $docker_name \
-           /bin/bash -c "set -e; vendor/bin/phpunit --log-junit phpunit/junit.xml"
-    docker cp $dummy_container:/opt/project/phpunit /tmp/phpunit
+           /bin/bash -c "set -e; vendor/bin/phpunit --log-junit .phpunit/junit.xml"
+    docker cp $dummy_container:/opt/project/.phpunit ${PWD}/
 fi
 
 # Replace for Integration test
@@ -59,6 +58,6 @@ trap cleanup_container EXIT
 
 # Run integration test
 docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-       /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit phpunit/junit.integration.xml"
-docker cp ${APACHE_CONTAINER_ID}:/opt/project/phpunit/junit.integration.xml /tmp/phpunit/junit.integration.xml
+       /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit .phpunit/junit.integration.xml"
+docker cp ${APACHE_CONTAINER_ID}:/opt/project/.phpunit/junit.integration.xml ${PWD}/.phpunit/junit.integration.xml
 
