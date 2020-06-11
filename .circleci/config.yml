@@ -12,7 +12,6 @@ commands:
           at: ~/project
       - setup_remote_docker:
           docker_layer_caching: true
-          version: 17.12.1-ce
   store-steps:
     steps:
       - store_test_results:
