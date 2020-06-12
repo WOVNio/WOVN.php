@@ -90,6 +90,77 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Page Not Found', $response->body);
     }
 
+
+    public function testIncludedSnippetAndHreflang()
+    {
+        $index_php_content = <<<CONTENT
+<?php require_once('WOVN.php/src/wovn_interceptor.php'); ?>
+<html><head><link rel="alternate" hreflang="en" href="http://ja.AAAAA.com/" /></head><body>test</body></html>
+CONTENT;
+        $mock_api_response = <<<JSON
+{"body": "<html lang=\"en\"><head><script src=\"//j.wovn.io/1\" async=\"true\" data-wovnio=\"key=zwBmtA&amp;backend=true&amp;currentLang=ja&amp;defaultLang=ja&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=0.0.1\"> </script><link rel=\"alternate\" hreflang=\"en\" href=\"http://localhost/en/index.php\"><link rel=\"alternate\" hreflang=\"ja\" href=\"http://localhost/index.php\"></head><body>test</body></html>"}
+JSON;
+        $expected = <<<EXPECTED
+<html lang="en"><head><script src="//j.wovn.io/1" async="true" data-wovnio="key=zwBmtA&amp;backend=true&amp;currentLang=ja&amp;defaultLang=ja&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=0.0.1"> </script><link rel="alternate" hreflang="en" href="http://localhost/en/index.php"><link rel="alternate" hreflang="ja" href="http://localhost/index.php"></head><body>test</body></html>
+EXPECTED;
+
+        $this->writeFile('index.php', $index_php_content);
+
+        $this->setWovnIni($this->getWovnIni());
+        $this->setMockApiResponse($mock_api_response);
+
+        $response = $this->fetchURL('/index.php?wovn=ja');
+
+        $this->assertEquals($expected, $response->body);
+    }
+
+    public function testCheckAmpOption()
+    {
+        $amp_php_content = <<<CONTENT
+<?php require_once('WOVN.php/src/wovn_interceptor.php'); ?>
+<html ⚡><head></head><body>test</body></html>
+CONTENT;
+
+        $expected = <<<EXPECTED
+<html ⚡><head></head><body>test</body></html>
+EXPECTED;
+
+        $this->writeFile('amp.php', $amp_php_content);
+        $this->setWovnIni($this->getWovnIni(array('check_amp' => 1)));
+
+        $response = $this->fetchURL('/amp.php');
+
+        $this->assertEquals($expected, $response->body);
+    }
+
+    public function testStaticHtml()
+    {
+        $static_html_content = <<<CONTENT
+<html>
+  <head></head>
+  <body>
+    <h1>Static Content</h1>
+  </body>
+</html>
+CONTENT;
+
+        $expected = <<<EXPECTED
+<html>
+  <head><link rel="alternate" hreflang="ja" href="http://localhost/static.html?a=b&amp;wovn=ja"><link rel="alternate" hreflang="fr" href="http://localhost/static.html?a=b&amp;wovn=fr"><link rel="alternate" hreflang="bg" href="http://localhost/static.html?a=b&amp;wovn=bg"><link rel="alternate" hreflang="en" href="http://localhost/static.html?a=b"><script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;version=WOVN.php" async></script></head>
+  <body>
+    <h1>Static Content</h1>
+  </body>
+</html>
+EXPECTED;
+
+        $this->writeFile('static.html', $static_html_content);
+        $this->setWovnIni($this->getWovnIni());
+
+        $response = $this->fetchURL('/static.html?a=b');
+
+        $this->assertEquals($expected, $response->body);
+    }
+
     // public function testWithHtaccessSample()
     // {
     //     copy($this->sourceDir . '/htaccess_sample', $this->docRoot . '/.htaccess');
