@@ -142,7 +142,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
         foreach ($options as $name => $value) {
             if (is_array($value)) {
                 foreach ($value as $v) {
-                    $contents[] = "$name = $v";
+                    $contents[] = "${name}[] = $v";
                 }
             } else {
                 $contents[] = "$name = $value";
