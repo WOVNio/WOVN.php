@@ -168,13 +168,6 @@ EXPECTED;
         $this->assertEquals($expected, $response->body);
     }
 
-    // public function testWithHtaccessSample()
-    // {
-    //     copy($this->sourceDir . '/htaccess_sample', $this->docRoot . '/.htaccess');
-    //     $this->writeFile('index.html', 'This is index.html');
-    //     $this->assertEquals('This is index.html', $this->fetchURL('/index.html'));
-    // }
-
     private function fetchURL($path)
     {
         return Utils::fetchURL('http://localhost' . $path);
