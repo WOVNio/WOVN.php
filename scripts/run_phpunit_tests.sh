@@ -65,8 +65,8 @@ APACHE_CONTAINER_ID=$(docker ps -q)
 
 function cleanup_container()
 {
-    docker stop ${APACHE_CONTAINER_ID} && docker rm ${APACHE_CONTAINER_ID}
-    docker rm $dummy_container
+    docker stop ${APACHE_CONTAINER_ID} && docker rm -v ${APACHE_CONTAINER_ID}
+    docker rm -v $dummy_container
 }
 trap cleanup_container EXIT
 
