@@ -58,6 +58,7 @@ else
 fi
 
 docker run -d -w /var/www/html \
+       -e WOVN_ENV=development \
        --volumes-from $dummy_container \
        $docker_name /bin/bash -c "${mod_rewrite_activation}"
 
