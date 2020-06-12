@@ -2,9 +2,10 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/EnvFactory.php';
-
 require_once 'src/wovnio/wovnphp/Utils.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 
+use Wovnio\test\Helpers\StoreAndHeadersFactory;
 use Wovnio\Test\Helpers\EnvFactory;
 
 use Wovnio\Wovnphp\Store;

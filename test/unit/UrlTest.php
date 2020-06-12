@@ -712,18 +712,163 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("$uri?wovn=fr-test", Url::AddLangCode($uri, $store, $lang, $headers));
     }
 
+    public function testAddLangCodeWithSubdomainPattern()
+    {
+        $testCases = array(
+            // path
+            array('/req_uri/', '/dir/index.php', 'ja', 'http://ja.my-site.com/dir/index.php'),
+            array('/req_uri/', '/', 'en', 'http://en.my-site.com/'),
+            array('/req_uri/', '/dir', 'en', 'http://en.my-site.com/dir'),
+            array('/req_uri/', '/dir/', 'en', 'http://en.my-site.com/dir/'),
+            array('/req_uri/', '/index.php', 'en', 'http://en.my-site.com/index.php'),
+            array('/req_uri/', '/dir/index.php', 'en', 'http://en.my-site.com/dir/index.php'),
+            array('/req_uri/', '/dir/index.php?a=b', 'en', 'http://en.my-site.com/dir/index.php?a=b'),
+            array('/req_uri/', '/dir/index.php#hash', 'en', 'http://en.my-site.com/dir/index.php#hash'),
+
+            // schema
+            // PHP 5.3 has issue of parse_url which can't parse the following URL.
+            // array('/req_uri/', '//my-site.com/dir/index.php', 'en', '//en.my-site.com/dir/index.php'),
+            array('/req_uri/', 'http://my-site.com/dir/index.php', 'en', 'http://en.my-site.com/dir/index.php'),
+            array('/req_uri/', 'https://my-site.com/dir/index.php', 'en', 'https://en.my-site.com/dir/index.php'),
+
+            // TODO: There are existing issues.
+            // // relative url
+            // array('/req_uri/', './dir/index.php', 'en', 'http://en.my-site.com/req_uri/dir/index.php'),
+            // array('/req_uri/', '../dir/index.php', 'en', 'http://en.my-site.com/dir/index.php'),
+            // array('/req_uri/index.php', './dir/index.php', 'en', 'http://en.my-site.com/req_uri/dir/index.php'),
+            // array('/req_uri/index.php', '../dir/index.php', 'en', 'http://en.my-site.com/dir/index.php'),
+            // array('/req_uri/sub_dir/', './dir/index.php', 'en', 'http://en.my-site.com/req_uri/sub_dir/dir/index.php'),
+            // array('/req_uri/sub_dir/', '../dir/index.php', 'en', 'http://en.my-site.com/req_uri/dir/index.php'),
+        );
+
+        foreach ($testCases as $case) {
+            list($request_uri, $target_url, $lang, $expected_uri) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'ja',
+                'supported_langs' => array('en'),
+                'url_pattern_name' => 'subdomain',
+            );
+            $additional_env = array(
+                'REQUEST_URI' => $request_uri
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "request_uri->[{$request_uri}] target_url->[{$target_url}]");
+        };
+    }
+
+    public function testAddLangCodeWithPathPattern()
+    {
+        $testCases = array(
+            // path
+            array('/req_uri/', '/dir/index.php', 'ja', '/ja/dir/index.php'),
+            array('/req_uri/', '/', 'en', '/en/'),
+            array('/req_uri/', '/index.php', 'en', '/en/index.php'),
+            array('/req_uri/', '/dir/', 'en', '/en/dir/'),
+            array('/req_uri/', '/dir/index.php', 'en', '/en/dir/index.php'),
+            array('/req_uri/', '/dir/index.php?a=b', 'en', '/en/dir/index.php?a=b'),
+            array('/req_uri/', '/dir/index.php#hash', 'en', '/en/dir/index.php#hash'),
+
+            // schema
+            // PHP 5.3 has issue of parse_url which can't parse the following URL.
+            // array('/req_uri/', '//my-site.com/dir/index.php', 'en', '//my-site.com/en/dir/index.php'),
+            array('/req_uri/', 'http://my-site.com/dir/index.php', 'en', 'http://my-site.com/en/dir/index.php'),
+            array('/req_uri/', 'https://my-site.com/dir/index.php', 'en', 'https://my-site.com/en/dir/index.php'),
+
+            // TODO: There are existing issues.
+            // // relative url
+            // array('/req_uri/', './dir/index.php', 'en', '/req_uri/dir/index.php'),
+            // array('/req_uri/', '../dir/index.php', 'en', '/dir/index.php'),
+            // array('/req_uri/index.php', './dir/index.php', 'en', '/req_uri/dir/index.php'),
+            // array('/req_uri/index.php', '../dir/index.php', 'en', '/dir/index.php'),
+            // array('/req_uri/sub_dir/', './dir/index.php', 'en', '/req_uri/sub_dir/dir/index.php'),
+            // array('/req_uri/sub_dir/', '../dir/index.php', 'en', '/req_uri/dir/index.php'),
+        );
+
+        foreach ($testCases as $case) {
+            list($request_uri, $target_url, $lang, $expected_uri) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'ja',
+                'supported_langs' => array('en'),
+                'url_pattern_name' => 'path'
+            );
+            $additional_env = array(
+                'REQUEST_URI' => $request_uri
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "request_uri->[{$request_uri}] target_url->[{$target_url}]");
+        };
+    }
+
+    public function testAddLangCodeWithSitePrefixPathAndPathPattern()
+    {
+        $testCases = array(
+            // path
+            array('/req_uri/', '/dir/', 'en', 'dir', '/dir/en/'),
+            array('/req_uri/', '/dir/?a=b', 'en', 'dir', '/dir/en/?a=b'),
+            array('/req_uri/', '/dir/#hash', 'en', 'dir', '/dir/en/#hash'),
+            array('/req_uri/', '/dir/index.php', 'en', 'dir', '/dir/en/index.php'),
+            array('/req_uri/', '/dir/index.php', 'ja', 'dir', '/dir/ja/index.php'),
+            array('/req_uri/', '/dir/dir2/', 'en', 'dir', '/dir/en/dir2/'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', 'dir', '/dir/en/dir2/index.php'),
+            array('/req_uri/', '/dir/dir2/index.php?a=b', 'en', 'dir', '/dir/en/dir2/index.php?a=b'),
+            array('/req_uri/', '/dir/dir2/index.php#hash', 'en', 'dir', '/dir/en/dir2/index.php#hash'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', 'dir', '/dir/en/dir2/index.php'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', 'dir', '/dir/en/dir2/index.php'),
+
+            // schema
+            // PHP 5.3 has issue of parse_url which can't parse the following URL.
+            // array('/req_uri/', '//my-site.com/dir/', 'en', 'dir', '//my-site.com/dir/en/'),
+            array('/req_uri/', 'http://my-site.com/dir/', 'en', 'dir', 'http://my-site.com/dir/en/'),
+            array('/req_uri/', 'https://my-site.com/dir/', 'en', 'dir', 'https://my-site.com/dir/en/'),
+
+            // site prefix path
+            array('/req_uri/', '/dir/dir2/', 'en', 'dir/dir2', '/dir/dir2/en/'),
+            array('/req_uri/', '/dir/dir2/', 'en', '/dir/dir2', '/dir/dir2/en/'),
+            array('/req_uri/', '/dir/dir2/', 'en', '/dir/dir2/', '/dir/dir2/en/'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', 'dir/dir2', '/dir/dir2/en/index.php'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', '/dir/dir2', '/dir/dir2/en/index.php'),
+            array('/req_uri/', '/dir/dir2/index.php', 'en', '/dir/dir2/', '/dir/dir2/en/index.php'),
+
+            // should not add
+            array('/req_uri/', '/', 'en', 'dir', '/'),
+            array('/req_uri/', '/index.php', 'en', 'dir', '/index.php'),
+            array('/req_uri/', '/dir', 'en', 'dir/dir2', '/dir'),
+            array('/req_uri/', '/dir/index.php', 'en', 'dir/dir2', '/dir/index.php')
+        );
+
+        foreach ($testCases as $case) {
+            list($request_uri, $target_url, $lang, $site_prefix_path, $expected_uri) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'ja',
+                'supported_langs' => array('en'),
+                'url_pattern_name' => 'path',
+                'site_prefix_path' => $site_prefix_path
+            );
+            $additional_env = array(
+                'REQUEST_URI' => $request_uri
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "target_url->[{$target_url}] expected_uri->[{$expected_uri}]");
+        };
+    }
+
     public function testRemoveLangCodeRelativePathWithPathPattern()
     {
-        $lang = 'fr';
+        $lang = 'en';
         $expected_uri = '/index.php';
         $uri = "/$lang$expected_uri";
-        $pattern = 'path';
-        $lang_param_name = 'wovn';
-        list($store, $headers) = $this->getStarted($pattern, array(
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(
+            'default_lang' => 'ja',
+            'supported_langs' => array('en'),
+            'url_pattern_name' => 'path',
+        ), array(
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndPathPattern()
@@ -737,7 +882,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function tesRemoveLangCodeRelativePathWithQueryPattern()
@@ -751,7 +896,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function tesRemoveLangCodeRelativePathWithQueryPatternAndCustomLangParamName()
@@ -765,7 +910,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/test?language=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndQueryPattern()
@@ -779,7 +924,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithSubdomainPattern()
@@ -788,12 +933,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = "http://$lang.my-site.com/index.php";
         $pattern = 'subdomain';
-        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -802,12 +946,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_uri = 'http://my-site.com/index.php';
         $uri = $expected_uri;
         $pattern = 'subdomain';
-        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithPathPattern()
@@ -816,12 +959,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_url = 'http://my-site.com/index.php';
         $uri = 'http://my-site.com/fr/index.php';
         $pattern = 'path';
-        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndPathPattern()
@@ -830,12 +972,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $expected_url = 'http://my-site.com/index.php';
         $uri = $expected_url;
         $pattern = 'path';
-        $lang_param_name = 'wovn';
         list($store, $headers) = $this->getStarted($pattern, array(
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithQueryPattern()
@@ -849,7 +990,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndQueryPattern()
@@ -863,7 +1004,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
@@ -877,7 +1018,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -891,7 +1032,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithPathPattern()
@@ -905,7 +1046,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndPathPattern()
@@ -919,7 +1060,44 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
+    }
+
+    public function testRemoveLangCodeWithSitePrefixPathAndPathPattern()
+    {
+        $pattern = 'path';
+        $testCases = array(
+            // should remove
+            array('/dir/ja/index.php', 'ja', 'dir', '/dir/index.php'),
+            array('/dir/en/index.php', 'en', 'dir', '/dir/index.php'),
+            array('/dir/en/test/index.php', 'en', 'dir', '/dir/test/index.php'),
+            array('/dir/en/test/index.php?a=b', 'en', 'dir', '/dir/test/index.php?a=b'),
+            array('/dir/en/test/index.php#hash', 'en', 'dir', '/dir/test/index.php#hash'),
+            array('http://testsite.com/dir/en/index.php', 'en', 'dir', 'http://testsite.com/dir/index.php'),
+            array('https://testsite.com/dir/en/index.php', 'en', 'dir', 'https://testsite.com/dir/index.php'),
+            array('https://testsite.com/dir1/dir2/en/index.php', 'en', 'dir1/dir2', 'https://testsite.com/dir1/dir2/index.php'),
+
+            // should not remove
+            array('/index.php', 'en', 'dir', '/index.php'),
+            array('/dir/index.php', 'en', 'dir', '/dir/index.php'),
+            array('/ja/index.php', 'ja', 'dir', '/ja/index.php'),
+            array('/ja/dir/index.php', 'ja', 'dir', '/ja/dir/index.php'),
+        );
+
+        foreach ($testCases as $case) {
+            list($target_url, $remove_lang, $site_prefix_path, $expected_uri) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'en',
+                'url_pattern_name' => $pattern,
+                'site_prefix_path' => $site_prefix_path
+            );
+            $additional_env = array(
+                'REQUEST_URI' => "https://my-site.com/$site_prefix_path/en"
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected_uri, Url::removeLangCode($target_url, $remove_lang, $store->settings));
+        };
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithQueryPattern()
@@ -933,7 +1111,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndQueryPattern()
@@ -947,6 +1125,51 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/test?wovn=fr$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $pattern, $lang, $lang_param_name));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
+    }
+
+    public function testshouldIgnoreBySitePrefixPath()
+    {
+        $testCases = array(
+            // should ignore when URL matches SitePrefixPath
+            array('path', 'dir', 'https://google.com', true),
+            array('path', 'dir', 'https://google.com/', true),
+
+            // should not ignore when URL pattern is not path
+            array('', '', 'https://google.com/', false),
+            array(null, '', 'https://google.com/', false),
+            array('subdomain', '', 'https://google.com/', false),
+            array('query', '', 'https://google.com/', false),
+
+            // should not ignore when SitePrefixPath is empty
+            array('path', null, 'https://google.com/', false),
+            array('path', '', 'https://google.com/', false),
+
+            // should not ignore when URL matches SitePrefixPath
+            array('path', 'dir', '//google.com/dir', false),
+            array('path', 'dir', '/dir', false),
+            array('path', 'dir', 'https://google.com/dir', false),
+            array('path', '/dir', 'https://google.com/dir', false),
+            array('path', 'dir/', 'https://google.com/dir', false),
+            array('path', 'dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2', 'https://google.com/dir1/dir2', false),
+            array('path', 'dir1/dir2/', 'https://google.com/dir1/dir2', false),
+            array('path', '/dir1/dir2/', 'https://google.com/dir1/dir2', false)
+        );
+
+        foreach ($testCases as $case) {
+            list($url_pattern_name, $site_prefix_path, $uri, $expected) = $case;
+            $settings = array(
+                'project_token' => 'T0k3N',
+                'default_lang' =>  'en',
+                'url_pattern_name' => $url_pattern_name,
+                'site_prefix_path' => $site_prefix_path
+            );
+            $additional_env = array(
+                'REQUEST_URI' => "https://my-site.com/$site_prefix_path/fr"
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            $this->assertEquals($expected, Url::shouldIgnoreBySitePrefixPath($uri, $store->settings));
+        }
     }
 }
