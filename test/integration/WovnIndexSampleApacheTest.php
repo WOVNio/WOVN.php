@@ -28,6 +28,13 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
         Utils::cleanUpDirectory($this->docRoot);
     }
 
+    public function testNoneConfigurationDoNotChangeWovn()
+    {
+        $this->writeFile('index.html', '<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>');
+        $response = $this->fetchURL('/index.html')->body;
+        $this->assertEquals('<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>', $response);
+    }
+
     public function testWithFile()
     {
         $this->writeFile('index.html', 'This is index.html');
