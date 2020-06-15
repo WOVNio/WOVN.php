@@ -1,12 +1,29 @@
-version: 2
+version: 2.1
+
+defaults: &defaults
+  working_directory: ~/project
+  docker:
+    - image: circleci/php
+
+commands:
+  common-steps:
+    steps:
+      - attach_workspace:
+          at: ~/project
+      - setup_remote_docker:
+          docker_layer_caching: true
+  store-steps:
+    steps:
+      - store_test_results:
+          path: .phpunit/
+      - store_artifacts:
+          path: .phpunit/
 
 jobs:
   build:
-    docker:
-      - image: circleci/php
+    <<: *defaults
     steps:
       - checkout
-      - setup_remote_docker
       - restore_cache:
           keys:
             - vendor-{{ checksum "composer.lock" }}
@@ -14,22 +31,106 @@ jobs:
       - run: composer install
       - save_cache:
           key: vendor-{{ checksum "composer.lock" }}
-          paths: vendor
+          paths:
+            - ./vendor
       - run: ./vendor/bin/phpcs
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./*
+  test_php73:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
+      - run: scripts/run_integration_tests.sh php:7.3-apache
+      - store-steps
+  test_php72:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
+      - run: scripts/run_integration_tests.sh php:7.2-apache
+      - store-steps
+  test_php71:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
+      - run: scripts/run_integration_tests.sh php:7.1-apache
+      - store-steps
+  test_php70:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
+      - run: scripts/run_integration_tests.sh php:7.0-apache
+      - store-steps
+  test_php56:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
+      - run: scripts/run_integration_tests.sh php:5.6-apache
+      - store-steps
+  test_php55:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
+      - run: scripts/run_integration_tests.sh php:5.5-apache
+      - store-steps
+  test_php54:
+    <<: *defaults
+    steps:
+      - common-steps
+      # php:5.4-apache does not included mbstring extention
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
+      - run: scripts/run_integration_tests.sh php:5.4-apache
+      - store-steps
+  test_php53:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
+      - run: scripts/run_integration_tests.sh php:5.3-apache
+      - store-steps
+  test_phphhvm:
+    <<: *defaults
+    steps:
+      - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/hhvm
-      - run: scripts/run_server_tests.sh php:7.3-apache
-      - run: scripts/run_server_tests.sh php:7.2-apache
-      - run: scripts/run_server_tests.sh php:7.1-apache
-      - run: scripts/run_server_tests.sh php:7.0-apache
-      - run: scripts/run_server_tests.sh php:5.6-apache
-      - run: scripts/run_server_tests.sh php:5.5-apache
-      - run: scripts/run_server_tests.sh php:5.4-apache
-      - run: scripts/run_server_tests.sh php:5.3-apache
+      - store-steps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+      - test_php73:
+          requires:
+            - build
+      - test_php72:
+          requires:
+            - build
+      - test_php71:
+          requires:
+            - build
+      - test_php70:
+          requires:
+            - build
+      - test_php56:
+          requires:
+            - build
+      - test_php55:
+          requires:
+            - build
+      - test_php54:
+          requires:
+            - build
+      - test_php53:
+          requires:
+            - build
+      - test_phphhvm:
+          requires:
+            - build
