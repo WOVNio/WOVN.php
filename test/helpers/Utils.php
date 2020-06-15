@@ -16,6 +16,12 @@ class Utils
         }
     }
 
+    public static function writeFile($filePath, $contents)
+    {
+        $content = is_array($contents) ? implode("\n", $contents) : $contents;
+        file_put_contents($filePath, $content);
+    }
+
     public static function fetchURL($url, $timeout = 3)
     {
         $return = new stdClass;

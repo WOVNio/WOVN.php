@@ -32,33 +32,33 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testNoneConfigurationDoNotChangeWovn()
     {
-        $this->writeFile('index.html', '<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>');
+        Utils::writeFile($this->docRoot . '/' . 'index.html', '<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>');
         $response = $this->fetchURL('/index.html')->body;
         $this->assertEquals('<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>', $response);
     }
 
     public function testWithFile()
     {
-        $this->writeFile('index.html', 'This is index.html');
+        Utils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
         $this->assertEquals('This is index.html', $this->fetchURL('/index.html')->body);
     }
 
     public function testDetectIndexPhp()
     {
-        $this->writeFile('index.php', 'This is index.php');
+        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
         $this->assertEquals('This is index.php', $this->fetchURL('/')->body);
     }
 
     public function testDetectMultipleFiles()
     {
-        $this->writeFile('index.html', 'This is index.html');
-        $this->writeFile('index.php', 'This is index.php');
+        Utils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
+        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
         $this->assertEquals('This is index.html', $this->fetchURL('/')->body);
     }
 
     public function testLeadingDoubleDotsBad()
     {
-        $this->writeFile('index.php', 'This is index.php');
+        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/../../index.php');
 
@@ -67,7 +67,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testTrailingDoubleDotsOk()
     {
-        $this->writeFile('index.php', 'This is index.php');
+        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/bird/..');
 
@@ -76,7 +76,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testSingleDotsOk()
     {
-        $this->writeFile('index.php', 'This is index.php');
+        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/./././././');
 
@@ -113,9 +113,9 @@ JSON;
 <html lang="en"><head><script src="//j.wovn.io/1" async="true" data-wovnio="key=zwBmtA&amp;backend=true&amp;currentLang=ja&amp;defaultLang=ja&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=0.0.1"> </script><link rel="alternate" hreflang="en" href="http://localhost/en/index.php"><link rel="alternate" hreflang="ja" href="http://localhost/index.php"></head><body>test</body></html>
 EXPECTED;
 
-        $this->writeFile('index.php', $index_php_content);
+        Utils::writeFile($this->docRoot . '/' . 'index.php', $index_php_content);
 
-        $this->setWovnIni($this->getWovnIni());
+        $this->setWovnIni();
         $this->setMockApiResponse($mock_api_response);
 
         $response = $this->fetchURL('/index.php?wovn=ja');
@@ -134,8 +134,8 @@ CONTENT;
 <html ⚡><head></head><body>test</body></html>
 EXPECTED;
 
-        $this->writeFile('amp.php', $amp_php_content);
-        $this->setWovnIni($this->getWovnIni(array('check_amp' => 1)));
+        Utils::writeFile($this->docRoot . '/' . 'amp.php', $amp_php_content);
+        $this->setWovnIni(array('check_amp' => 1));
 
         $response = $this->fetchURL('/amp.php');
 
@@ -162,8 +162,8 @@ CONTENT;
 </html>
 EXPECTED;
 
-        $this->writeFile('static.html', $static_html_content);
-        $this->setWovnIni($this->getWovnIni());
+        Utils::writeFile($this->docRoot . '/' . 'static.html', $static_html_content);
+        $this->setWovnIni(array());
 
         $response = $this->fetchURL('/static.html?a=b');
 
@@ -177,28 +177,10 @@ EXPECTED;
 
     private function setMockApiResponse($contents)
     {
-        $this->writeFile('v0/translation', $contents);
+        Utils::writeFile($this->docRoot . '/' . 'v0/translation', $contents);
     }
 
-    private function setWovnIni($contents)
-    {
-        $this->writeFile('wovn.ini', $contents);
-    }
-
-    private function setHtaccess($contents)
-    {
-        $this->writeFile('.htaccess', $contents);
-    }
-
-    private function writeFile($file, $contents)
-    {
-        $filePath = $this->docRoot . '/' . $file;
-
-        $content = is_array($contents) ? implode("\n", $contents) : $contents;
-        file_put_contents($filePath, $content);
-    }
-
-    private function getWovnIni($options = array())
+    private function setWovnIni($options = array())
     {
         $defaultOptions = array(
             'project_token' => 'Tek3n',
@@ -222,6 +204,11 @@ EXPECTED;
             }
         }
 
-        return implode("\n", $contents);
+        Utils::writeFile($this->docRoot . '/' . 'wovn.ini', $contents);
+    }
+
+    private function setHtaccess($contents)
+    {
+        Utils::writeFile($this->docRoot . '/' . '.htaccess', $contents);
     }
 }
