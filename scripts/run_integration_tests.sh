@@ -45,9 +45,9 @@ if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
 #    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
 #           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${INTGTEST_REPORT_DIR}/coverage-report"
     docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
+           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
 else
     docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot && vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
+           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
 fi
 docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${INTGTEST_REPORT_DIR}" ${PWD}/${INTGTEST_REPORT_DIR}
