@@ -429,7 +429,7 @@ When `http://www.mysite.com/dir/index.html` is translated to English, language i
 URL which is not matched is not processed and snippet will not be inserted.
 
 ```
-sitePrefixPath = dir1/dir2
+site_prefix_path = dir1/dir2
 ```
 
 ## 4. Environment Variable
