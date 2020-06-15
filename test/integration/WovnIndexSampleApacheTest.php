@@ -196,8 +196,12 @@ EXPECTED;
         $contents = array();
         foreach ($options as $name => $value) {
             if (is_array($value)) {
-                foreach ($value as $v) {
-                    $contents[] = "${name}[] = $v";
+                foreach ($value as $key => $v) {
+                    if (is_string($key)) {
+                        $contents[] = "${name}[$key] = $v";
+                    } else {
+                        $contents[] = "${name}[] = $v";
+                    }
                 }
             } else {
                 $contents[] = "$name = $value";
