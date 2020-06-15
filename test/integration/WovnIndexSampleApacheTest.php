@@ -7,11 +7,11 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        Utils::cleanUpDirectory($this->docRoot);
-
         $this->sourceDir  = dirname(__FILE__) . '/../..';
         $this->docRoot    = dirname(__FILE__) . '/../docroot';
         $this->installDir = $this->docRoot . '/WOVN.php';
+
+        Utils::cleanUpDirectory($this->docRoot);
 
         mkdir($this->installDir);
         exec(sprintf('cp -rf %s %s', $this->sourceDir . '/src', $this->installDir . '/src'));
