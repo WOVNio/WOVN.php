@@ -421,7 +421,7 @@ class HtmlConverter
      */
     function _removeScript($node, $marker)
     {
-        if (strtolower($node->tag) === 'script') {
+        if (strtolower($node->tag) === 'script' && !preg_match('/type=["|\']application\/ld\+json["\']/', $node->attribute)) {
             $this->putReplaceMarker($node, $marker);
         }
     }
