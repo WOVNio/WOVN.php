@@ -2,6 +2,7 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
+require_once 'test/helpers/AbstractRequestHandlerTrait.php';
 
 require_once 'src/wovnio/wovnphp/API.php';
 require_once 'src/wovnio/wovnphp/Utils.php';
@@ -24,18 +25,6 @@ use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-trait TraitAbstractRequestHandler
-{
-    public $arguments = array();
-    public function sendRequest($method, $url, $data, $timeout = null)
-    {
-        array_push($this->arguments, array($method, $url, $data, $timeout));
-        return $this->abstractSendRequest();
-    }
-
-    public abstract function abstractSendRequest();
-}
-
 class APITest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
@@ -48,8 +37,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         RequestHandlerFactory::setInstance(null);
     }
 
-    private function mockTranslationApi($response, $header = null, $error = null) {
-        $mock = $this->getMockForTrait(TraitAbstractRequestHandler::class);
+    private function mockTranslationApi($response, $header = null, $error = null)
+    {
+        $mock = $this->getMockForTrait(AbstractRequestHandlerTrait::class);
         $mock->expects($this->any())
             ->method('abstractSendRequest')
             ->will($this->returnValue(array($response, $header, $error)));
