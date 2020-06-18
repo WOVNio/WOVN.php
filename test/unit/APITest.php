@@ -24,7 +24,7 @@ use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-trait TraitTest
+trait TraitAbstractRequestHandler
 {
     public $arguments = array();
     public function sendRequest($method, $url, $data, $timeout = null)
@@ -49,7 +49,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     }
 
     private function mockTranslationApi($response, $header = null, $error = null) {
-        $mock = $this->getMockForTrait(TraitTest::class);
+        $mock = $this->getMockForTrait(TraitAbstractRequestHandler::class);
         $mock->expects($this->any())
             ->method('abstractSendRequest')
             ->will($this->returnValue(array($response, $header, $error)));
