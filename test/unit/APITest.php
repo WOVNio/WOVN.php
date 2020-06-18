@@ -2,7 +2,7 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
-require_once 'test/helpers/AbstractRequestHandlerTrait.php';
+require_once 'test/helpers/RequestHandlerMock.php';
 
 require_once 'src/wovnio/wovnphp/API.php';
 require_once 'src/wovnio/wovnphp/Utils.php';
@@ -39,10 +39,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     private function mockTranslationApi($response, $header = null, $error = null)
     {
-        $mock = $this->getMockForTrait(AbstractRequestHandlerTrait::class);
-        $mock->expects($this->any())
-            ->method('abstractSendRequest')
-            ->will($this->returnValue(array($response, $header, $error)));
+        $mock = new RequestHandlerMock($response, $header, $error);
         RequestHandlerFactory::setInstance($mock);
         return $mock;
     }
