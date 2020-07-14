@@ -336,6 +336,19 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
     }
 
+    public function testConvertToAppropriateBodyForApiWithDataWovnIgnore()
+    {
+        $html = '<html><body><a data-wovn-ignore>hello</a></body></html>';
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
+        $keys = $marker->keys();
+
+        $this->assertEquals(1, count($keys));
+        $this->assertEquals('<!-- __wovn-backend-ignored-key-0 -->', $keys[0]);
+        $this->assertEquals("<html><body><a data-wovn-ignore>$keys[0]</a></body></html>", $translated_html);
+    }
+
     public function testConvertToAppropriateBodyForApiWithCustomIgnoreClass()
     {
         $html = "<html><body><a class=\"random    \n\f\rignore\tvalid custom\">hello</a></body></html>";

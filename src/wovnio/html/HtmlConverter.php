@@ -364,7 +364,7 @@ class HtmlConverter
      */
     function _removeWovnIgnore($node, $marker)
     {
-        if ($node->getAttribute('wovn-ignore')) {
+        if ($node->getAttribute('wovn-ignore') || $node->getAttribute('data-wovn-ignore')) {
             $this->putReplaceMarker($node, $marker);
         }
     }
