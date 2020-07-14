@@ -342,13 +342,13 @@ class Headers
                 return apache_response_headers();
             }
 
-            $arh = array();
+            $result = array();
             $headers = headers_list();
             foreach ($headers as $header) {
                 $header = explode(":", $header);
-                $arh[array_shift($header)] = trim(implode(":", $header));
+                $result[array_shift($header)] = trim(implode(":", $header));
             }
-            return $arh;
+            return $result;
         }
 
         $lang = $this->computePathLang();
