@@ -337,12 +337,26 @@ class Headers
      */
     public function responseOut()
     {
+        function get_response_headers () {
+            if (function_exists('apache_response_headers')) {
+                return apache_response_headers();
+            }
+
+            $arh = array();
+            $headers = headers_list();
+            foreach ($headers as $header) {
+                $header = explode(":", $header);
+                $arh[array_shift($header)] = trim(implode(":", $header));
+            }
+            return $arh;
+        }
+
         $lang = $this->computePathLang();
 
         if ($lang && strlen($lang) > 0) {
-            if (function_exists('apache_response_headers') && !headers_sent()) {
+            if (!headers_sent()) {
                 $locationHeaders = array('location', 'Location');
-                $responseHeaders = apache_response_headers();
+                $responseHeaders = get_response_headers();
 
                 foreach ($locationHeaders as $locationHeader) {
                     if (array_key_exists($locationHeader, $responseHeaders)) {
