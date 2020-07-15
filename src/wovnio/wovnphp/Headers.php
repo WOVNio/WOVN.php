@@ -337,26 +337,12 @@ class Headers
      */
     public function responseOut()
     {
-        function get_response_headers () {
-            if (function_exists('apache_response_headers')) {
-                return apache_response_headers();
-            }
-
-            $result = array();
-            $headers = headers_list();
-            foreach ($headers as $header) {
-                $header = explode(":", $header);
-                $result[array_shift($header)] = trim(implode(":", $header));
-            }
-            return $result;
-        }
-
         $lang = $this->computePathLang();
 
         if ($lang && strlen($lang) > 0) {
             if (!headers_sent()) {
                 $locationHeaders = array('location', 'Location');
-                $responseHeaders = get_response_headers();
+                $responseHeaders = $this->getResponseHeaders();
 
                 foreach ($locationHeaders as $locationHeader) {
                     if (array_key_exists($locationHeader, $responseHeaders)) {
@@ -368,6 +354,20 @@ class Headers
                 }
             }
         }
+    }
+
+    private function getResponseHeaders () {
+        if (function_exists('apache_response_headers')) {
+            return apache_response_headers();
+        }
+
+        $result = array();
+        $headers = headers_list();
+        foreach ($headers as $header) {
+            $header = explode(":", $header);
+            $result[array_shift($header)] = trim(implode(":", $header));
+        }
+        return $result;
     }
 
     /**
