@@ -356,7 +356,8 @@ class Headers
         }
     }
 
-    private function getResponseHeaders() {
+    private function getResponseHeaders()
+    {
         if (function_exists('apache_response_headers')) {
             return apache_response_headers();
         }
