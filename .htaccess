@@ -1,2 +1,8 @@
+Order Deny,Allow
 # Block direct access to WOVN.php directory
 Deny from all
+
+# Uncomment lines below to enable WOVN.php diagnostics
+# <Files ~ "^(diagnostics\.php)$">
+#   Allow from all
+# </Files>
