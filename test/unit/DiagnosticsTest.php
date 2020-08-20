@@ -2,8 +2,6 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once('src/diagnostics.php');
-use Wovnio\Test\Helpers\StoreAndHeadersFactory;
-use \Wovnio\Wovnphp\Lang;
 
 class DiagnosticsTest extends \PHPUnit_Framework_TestCase
 {
