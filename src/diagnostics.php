@@ -206,7 +206,7 @@ if (auth(getAuthUser(), getAuthPassword())) {
                 });
                 echo getAll(getAuthUser(), getAuthPassword());
             } else {
-                echo '<span style="color: #ff5f5f;">The file ' . $filename . ' does not exist! <a href="/wovnphp/diagnostics.php">Try again</a></span>';
+                echo '<span style="color: #ff5f5f;">The file ' . $filename . ' does not exist! <a href="/WOVN.php/diagnostics.php">Try again</a></span>';
             }
         }
     } else {
