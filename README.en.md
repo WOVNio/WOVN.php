@@ -505,9 +505,17 @@ as possible, we would need to know information like the followings.
 
 WOVN.php ships with a diagnostics tool that automatically gathers information for debugging purposes. This tool is shippped disabled by default.
 
-This diagnostics tool is meant for clients running WOVN.php with Apache. To enable the Wovn Diagnostics Tool, please uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
+This diagnostics tool is meant for clients running WOVN.php with Apache. To enable the Wovn Diagnostics Tool, please do the following tasks:
 
-The diagnotics tool can then be accessed at `yourwebsite.com/WOVN.php/diagnostics.php`.
+1. Uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
+
+2. Create a `.htpasswd` file by running the command `htpasswd -cB .htpasswd wovn_diagnostics` inside the WOVN.php folder. This will create a password for username `wovn_diagnostics`.
+
+3. Create an empty `wovnphp_diagnostics.html` file inside the WOVN.php folder.
+
+4. Access the diagnostic tool at `yourwebsite.com/WOVN.php/diagnostics.php`. You will need to login using the password created in step 2.
+
+5. Follow the on screen instructions to get the diagnostic report, which will be written to the `wovnphp_diagnostics.html`.
 
 Please only enable the diagnostics tool when it is necessary to do so.
 
@@ -526,7 +534,7 @@ If you are upgrading from an older version of WOVN.php, please manually add the 
   RewriteCond %{QUERY_STRING} !^off_wovn_php=1$
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
-  
+
   # Uncomment lines below to allow the use of WOVN.PHP diagnostics
   RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
   RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
