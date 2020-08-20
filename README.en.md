@@ -518,6 +518,15 @@ If you are upgrading from an older version of WOVN.php, please manually add the 
 ```
 <IfModule mod_rewrite.c>
   RewriteEngine On
+
+  # Intercept only static content: html and htm urls
+  # Warning: do not remove this line or other content could be loaded
+  RewriteCond %{REQUEST_URI} /$ [OR]
+  RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
+  RewriteCond %{QUERY_STRING} !^off_wovn_php=1$
+  # Use the wovn_index.php to handle static pages
+  RewriteRule .? wovn_index.php [L]
+  
   # Uncomment lines below to allow the use of WOVN.PHP diagnostics
   RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
   RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
