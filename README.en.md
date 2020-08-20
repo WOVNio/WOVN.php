@@ -122,6 +122,7 @@ Bellow is the `.htaccess` configuration you should use.
   # Warning: do not remove this line or other content could be loaded
   RewriteCond %{REQUEST_URI} /$ [OR]
   RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
+  RewriteCond %{QUERY_STRING} !^off_wovn_php=1$
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
   
@@ -504,8 +505,21 @@ as possible, we would need to know information like the followings.
 
 WOVN.php ships with a diagnostics tool that automatically gathers information for debugging purposes. This tool is shippped disabled by default.
 
-To enable the Wovn Diagnostics Tool, please uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
+This diagnostics tool is meant for clients running WOVN.php with Apache. To enable the Wovn Diagnostics Tool, please uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
 
 The diagnotics tool can then be accessed at `yourwebsite.com/WOVN.php/diagnostics.php`.
 
 Please only enable the diagnostics tool when it is necessary to do so.
+
+#### If you are upgrading
+If you are upgrading from an older version of WOVN.php, please manually add the following lines to your `.htaccess` files:
+
+**Inside your documents root**
+```
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # Uncomment lines below to allow the use of WOVN.PHP diagnostics
+  RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
+  RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
+</IfModule>
+```
