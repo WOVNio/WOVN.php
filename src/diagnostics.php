@@ -9,6 +9,7 @@ function getVersion()
 
 function getPhpInfo()
 {
+    date_default_timezone_set('Asia/Tokyo');
     ob_start();
     phpinfo();
     return ob_get_clean();
