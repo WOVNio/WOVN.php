@@ -124,11 +124,16 @@ Bellow is the `.htaccess` configuration you should use.
   RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
+  
+  # Uncomment lines below to allow the use of WOVN.PHP diagnostics
+  # RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
+  # RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
 </IfModule>
 ```
 
 Alternatively, you can also copy the file `htaccess_sample` from `WOVN.php`
-directory.
+directory. We suggest that you use this file as a starting point of your customized `.htaccess` file.
+
 ```
 $ cp WOVN.php/htaccess_sample .htaccess
 ```
@@ -494,3 +499,13 @@ as possible, we would need to know information like the followings.
 | Log                  | Error log when an error occurs                                        |
 | Request restriction  | Request to `wovn.global.ssl.fastly.net` with 443 port must be allowed |
 | Using SSI            | Whether you are using SSI(Server Side Includes)                       |
+
+### Wovn Diagnostics Tool
+
+WOVN.php ships with a diagnostics tool that automatically gathers information for debugging purposes. This tool is shippped disabled by default.
+
+To enable the Wovn Diagnostics Tool, please uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
+
+The diagnotics tool can then be accessed at `yourwebsite.com/WOVN.php/diagnostics.php`.
+
+Please only enable the diagnostics tool when it is necessary to do so.
