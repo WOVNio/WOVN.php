@@ -21,17 +21,11 @@ class DiagnosticsTest extends \PHPUnit_Framework_TestCase
     {
         $dirs = getDir();
         $this->assertNotEmpty($dirs);
-        $lines = explode('<br>', $dir);
+        $lines = explode('<br>', $dirs);
         foreach ($lines as $line) {
-            $this->assertNotContains("WOVN.php", trim($dirs));
-            $this->assertNotEquals(".", trim($dirs));
-            $this->assertNotEquals("..", trim($dirs));
+            $this->assertNotContains("WOVN.php", trim($line));
+            $this->assertNotEquals(".", trim($line));
+            $this->assertNotEquals("..", trim($line));
         }
-    }
-
-    public function testGetBaseUrl()
-    {
-        $base_url = getBaseUrl();
-        $this->assertNotEmpty($base_url);
     }
 }
