@@ -35,6 +35,7 @@ In order for WOVN.php to work with your WOVN.io project, you need to fill a
 configuration file. The configuration file must be named `wovn.ini` and be
 placed at the root of your website's directory. You can start from the sample
 file at `WOVN.php/wovn.ini.sample`.
+
 ```
 $ cp WOVN.php/wovn.ini.sample wovn.ini
 ```
@@ -86,6 +87,7 @@ require_once('/website/root/directory/WOVN.php/src/wovn_interceptor.php');
 When your web pages are pure HTML, you need to create a `wovn_index.php` file
 that you will use to serve and localize your HTML pages. We recommend you to
 start with the sample that we provide.
+
 ```
 $ cp WOVN.php/wovn_index_sample.php wovn_index.php
 ```
@@ -110,11 +112,10 @@ Bellow is the `.htaccess` configuration you should use.
 ```
 <IfModule mod_rewrite.c>
   RewriteEngine On
-
   # For path pattern, remove language code
-  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)($|/.*$) $1 [L]
+  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi|km)($|/.*$) $1 [L]
 
-  # Don't intercept .cgi files, as they would not execute
+  # Don't intercept .cgi files, as they won't execute
   RewriteCond %{THE_REQUEST} \.cgi
   RewriteRule .? - [L]
 
@@ -122,14 +123,9 @@ Bellow is the `.htaccess` configuration you should use.
   # Warning: do not remove this line or other content could be loaded
   RewriteCond %{REQUEST_URI} /$ [OR]
   RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
-  RewriteCond %{QUERY_STRING} !^off_wovn_php=1$
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
-  
-  # Uncomment lines below to allow the use of WOVN.PHP diagnostics
-  # RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
-  # RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
-</IfModule>
+</IfModule>>
 ```
 
 Alternatively, you can also copy the file `htaccess_sample` from `WOVN.php`
@@ -438,6 +434,36 @@ URL which is not matched is not processed and snippet will not be inserted.
 site_prefix_path = dir1/dir2
 ```
 
+#### `enable_wovn_diagnostics`
+
+This parameter tells WOVN.php if it should turn on the included WOVN.php diagnostics tool. The default value is `false`. Please do not set this parameter unless you were told to do so.
+
+If you set this parameter to `true`, you must also set the `wovn_diagnostics_username` and `wovn_diagnostics_password` parameters.
+
+For more details, please refer to the Wovn Diagnostics Tool section.
+
+```
+enable_wovn_diagnostics = true
+```
+
+#### `wovn_diagnostics_username`
+
+This parameter is required when you set `enable_wovn_diagnostics` to `true`. This will be the username WOVN will use to gain access to the WOVN.php diagnostics tools.
+
+```
+wovn_diagnostics_username = wovn_diagnostics_username
+```
+
+#### `wovn_diagnostics_password`
+
+This parameter is required when you set `enable_wovn_diagnostics` to `true`. This will be the password WOVN will use to gain access to the WOVN.php diagnostics tools.
+
+```
+wovn_diagnostics_password = wovn_diagnostics_password
+```
+
+
+
 ## 4. Environment Variable
 
 ### `WOVN_TARGET_LANG`
@@ -505,38 +531,12 @@ as possible, we would need to know information like the followings.
 
 WOVN.php ships with a diagnostics tool that automatically gathers information for debugging purposes. This tool is shippped disabled by default.
 
-This diagnostics tool is meant for clients running WOVN.php with Apache. To enable the Wovn Diagnostics Tool, please do the following tasks:
+To enable the Wovn Diagnostics Tool, please do the following tasks:
 
-1. Uncomment the relevant lines in the `.htaccess` files in your documents root *and* the WOVN.php folder.
+1. Add `enable_wovn_diagnostics` parameter in your `wovn.ini` configuration file, and set it to `true`.
+2. Add `wovn_diagnostics_username`  in your `wovn.ini` conifguration file, and set it to a username of your choice. The diagnostics tool cannot be used if a username is not set.
+3. Add `wovn_diagnostics_password`  in your `wovn.ini` conifguration file, and set it to a password of your choice. The diagnostics tool cannot be used if a password is not set.
 
-2. Create a `.htpasswd` file by running the command `htpasswd -cB .htpasswd wovn_diagnostics` inside the WOVN.php folder. This will create a password for username `wovn_diagnostics`.
-
-3. Create an empty `wovnphp_diagnostics.html` file inside the WOVN.php folder.
-
-4. Access the diagnostic tool at `yourwebsite.com/WOVN.php/diagnostics.php`. You will need to login using the password created in step 2.
-
-5. Follow the on screen instructions to get the diagnostic report, which will be written to the `wovnphp_diagnostics.html`.
+The conifguration will take effect immediately. 
 
 Please only enable the diagnostics tool when it is necessary to do so.
-
-#### If you are upgrading
-If you are upgrading from an older version of WOVN.php, please manually add the following lines to your `.htaccess` files:
-
-**Inside your documents root**
-```
-<IfModule mod_rewrite.c>
-  RewriteEngine On
-
-  # Intercept only static content: html and htm urls
-  # Warning: do not remove this line or other content could be loaded
-  RewriteCond %{REQUEST_URI} /$ [OR]
-  RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
-  RewriteCond %{QUERY_STRING} !^off_wovn_php=1$
-  # Use the wovn_index.php to handle static pages
-  RewriteRule .? wovn_index.php [L]
-
-  # Uncomment lines below to allow the use of WOVN.PHP diagnostics
-  RewriteCond %{QUERY_STRING} ^enable_wovn_trace_htaccess=1$
-  RewriteRule . WOVN.php/diagnostics\.php?lookahead=%{LA-U:SCRIPT_FILENAME} [NS,NC,QSA,L]
-</IfModule>
-```

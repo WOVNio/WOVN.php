@@ -55,7 +55,7 @@ class Diagnostics
 
     public function renderResults()
     {
-        $buffer = '<h1>WOVN.php Diagnostics Page</h1>';
+        $buffer = '<html wovn-ignore><body style="margin-left:20px;"><h1>WOVN.php Diagnostics Page</h1>';
         if (!$this->authenticate($_COOKIE["wovn_diagnostics_name"], $_COOKIE["wovn_diagnostics_hash"])) {
             $buffer .= '<p>You are not authorized to view this page.</p>';
             return $buffer;
@@ -83,6 +83,7 @@ class Diagnostics
                 $buffer .= '</tbody></table>';
             }
         }
+        $buffer .= '</body></html>';
         return $buffer;
     }
 

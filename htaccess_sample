@@ -1,4 +1,3 @@
-  
 # Don't allow access to wovn.ini directly
 <Files ~ "^(wovn\.ini)$">
   deny from all
