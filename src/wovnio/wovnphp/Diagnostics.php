@@ -6,7 +6,7 @@ require_once(__DIR__ . '/../../version.php');
 
 /**
  * The Diagnostics class contains utilities for debugging live environments
- * 
+ *
  * To enable the diagnostics function, 'enable_wovn_diagnostics' in wovn.ini must be set to true.
  * 'wovn_diagnostics_username' and 'wovn_diagnostics_password' options in wovn.ini must be set accordingly as well.
  */
@@ -60,7 +60,7 @@ class Diagnostics
             $buffer .= '<p>You are not authorized to view this page.</p>';
             return $buffer;
         }
-        foreach ($this->results as $item=>$result) {
+        foreach ($this->results as $item => $result) {
             $title = strtoupper(implode(' ', explode('_', $item)));
             $buffer .= "<h2>{$title}</h2>";
 
@@ -74,7 +74,7 @@ class Diagnostics
 
             if (is_array($result)) {
                 $buffer .= '<table border="solid"><tbody>';
-                foreach($result as $subItem=>&$subResult) {
+                foreach ($result as $subItem => &$subResult) {
                     if (is_array($subResult)) {
                         $subResult = implode(', ', $subResult);
                     }
@@ -87,15 +87,18 @@ class Diagnostics
         return $buffer;
     }
 
-    public function logPerformance($startTime, $endTime) {
+    public function logPerformance($startTime, $endTime)
+    {
         $this->results['performance_info'] = array('Swapping Time (ms)' => $endTime - $startTime);
     }
 
-    public function logSwappedPage($swappedPage) {
+    public function logSwappedPage($swappedPage)
+    {
         $this->results['swapped_page'] = $swappedPage;
     }
 
-    public function logOriginalPage($originalPage) {
+    public function logOriginalPage($originalPage)
+    {
         $this->results['original_page'] = $originalPage;
     }
 

@@ -161,8 +161,7 @@ class Utils
         if (null === $store || !isset($store->settings['enable_wovn_diagnostics'])) {
             return false;
         }
-        if ($store->settings['enable_wovn_diagnostics'])
-        {
+        if ($store->settings['enable_wovn_diagnostics']) {
             return true;
         }
         return false;
