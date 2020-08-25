@@ -155,7 +155,7 @@ class Utils
 
     public static function wovnDiagnosticsEnabled($store, $header)
     {
-        if (strpos($header->url, '?wovn_diagnostics=1') == false) {
+        if (strpos($header->url, 'wovn_diagnostics=1') == false) {
             return false;
         }
         if (null === $store || !isset($store->settings['enable_wovn_diagnostics'])) {
