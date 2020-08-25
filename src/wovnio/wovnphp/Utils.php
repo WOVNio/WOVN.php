@@ -153,6 +153,21 @@ class Utils
         return false;
     }
 
+    public static function wovnDiagnosticsEnabled($store, $header)
+    {
+        if (strpos($header->url, '?wovn_diagnostics=1') == false) {
+            return false;
+        }
+        if (null === $store || !isset($store->settings['enable_wovn_diagnostics'])) {
+            return false;
+        }
+        if ($store->settings['enable_wovn_diagnostics'])
+        {
+            return true;
+        }
+        return false;
+    }
+
     private static function getEnv($env, $keys)
     {
         foreach ($keys as $key) {
