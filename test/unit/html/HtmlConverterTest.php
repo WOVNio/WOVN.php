@@ -108,6 +108,280 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testinsertSnippetAndHreflangTagsWithCustomAlias()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('fr'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
+    /**
+     * Call protected/private method of a class.
+     *
+     * @param object &$object    Instantiated object that we will run method on.
+     * @param string $methodName Method name to call
+     * @param array  $parameters Array of parameters to pass into method.
+     *
+     * @return mixed Method return.
+     */
+    public function invokeMethod(&$object, $methodName, array $parameters = array())
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
+    public function testBuildHrefLangPath()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/ja/';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAliasSwapDefaultLang()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/custom_en/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('en'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAliasSwapDefaultLang2()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/custom_en/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/custom_en/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('en'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAliasSwapDefaultLang3()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/news/blog/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/custom_en/news/blog/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('en'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAlias()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/custom_en/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/ja/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAlias2()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/ja/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/custom_en/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('en'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangPathDefaultLangAlias3()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/custom_en/blog/news/pages.html'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/ja/blog/news/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangQuery()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'query'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/?wovn=ja';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangQueryDefaultLangAlias()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'query'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/?wovn=ja';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangQueryCustomLangParamName()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'url_pattern_name' => 'query',
+            'lang_param_name' => 'lan'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://my-site.com/?lan=ja';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangSubdomain()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'subdomain'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://ja.my-site.com/';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
+    public function testBuildHrefLangSubdomainDefaultLangAlias()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('ja'),
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'custom_en'),
+            'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'subdomain'
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/pages.html',
+            'HTTP_HOST' => 'custom_en.my-site.com'
+        );
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        $this->assertEquals('/pages.html', $headers->pathname);
+        $this->assertEquals('en', $headers->lang());
+        $this->assertEquals('custom_en.my-site.com', $headers->host);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        $expected_href = 'http://ja.my-site.com/pages.html';
+        $generated_href = $this->invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $this->assertEquals($expected_href, $generated_href);
+    }
+
     public function testinsertSnippetAndHreflangTagsWithErrorMark()
     {
         $html = '<html><body><a>hello</a></body></html>';
@@ -300,6 +574,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithoutEncoding()
     {
         $html = mb_convert_encoding('<html>こんにちは</html>', 'SJIS');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
