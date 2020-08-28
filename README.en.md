@@ -125,7 +125,7 @@ Bellow is the `.htaccess` configuration you should use.
   RewriteCond %{REQUEST_URI} \.(html|htm|shtml|php|php3|phtml)
   # Use the wovn_index.php to handle static pages
   RewriteRule .? wovn_index.php [L]
-</IfModule>>
+</IfModule>
 ```
 
 Alternatively, you can also copy the file `htaccess_sample` from `WOVN.php`
