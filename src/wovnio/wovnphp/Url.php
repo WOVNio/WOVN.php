@@ -180,7 +180,7 @@ class Url
     private static function addSubdomainLangCode($parsed_url, $lang_code, $no_lang_uri)
     {
         // check if subdomain already exists
-        if (preg_match('/.*\..*\..*/', $parsed_url['host'])) {
+        if (preg_match('/\./', $parsed_url['host'])) {
             $explodedSubDomain= explode('.', $parsed_url['host']);
             $subDomain = $explodedSubDomain[0];
             $sub_do_lang = Lang::getCode($subDomain);
