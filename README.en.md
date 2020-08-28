@@ -534,9 +534,9 @@ WOVN.php ships with a diagnostics tool that automatically gathers information fo
 To enable the Wovn Diagnostics Tool, please do the following tasks:
 
 1. Add `enable_wovn_diagnostics` parameter in your `wovn.ini` configuration file, and set it to `true`.
-2. Add `wovn_diagnostics_username`  in your `wovn.ini` conifguration file, and set it to a username of your choice. The diagnostics tool cannot be used if a username is not set.
-3. Add `wovn_diagnostics_password`  in your `wovn.ini` conifguration file, and set it to a password of your choice. The diagnostics tool cannot be used if a password is not set.
+2. Add `wovn_diagnostics_username`  in your `wovn.ini` configuration file, and set it to a username of your choice. The diagnostics tool cannot be used if a username is not set.
+3. Add `wovn_diagnostics_password`  in your `wovn.ini` configuration file, and set it to a password of your choice. The diagnostics tool cannot be used if a password is not set.
 
-The conifguration will take effect immediately. 
+The configuration will take effect immediately. 
 
 Please only enable the diagnostics tool when it is necessary to do so.
