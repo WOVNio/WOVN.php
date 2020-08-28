@@ -35,6 +35,7 @@ In order for WOVN.php to work with your WOVN.io project, you need to fill a
 configuration file. The configuration file must be named `wovn.ini` and be
 placed at the root of your website's directory. You can start from the sample
 file at `WOVN.php/wovn.ini.sample`.
+
 ```
 $ cp WOVN.php/wovn.ini.sample wovn.ini
 ```
@@ -86,6 +87,7 @@ require_once('/website/root/directory/WOVN.php/src/wovn_interceptor.php');
 When your web pages are pure HTML, you need to create a `wovn_index.php` file
 that you will use to serve and localize your HTML pages. We recommend you to
 start with the sample that we provide.
+
 ```
 $ cp WOVN.php/wovn_index_sample.php wovn_index.php
 ```
@@ -110,11 +112,10 @@ Bellow is the `.htaccess` configuration you should use.
 ```
 <IfModule mod_rewrite.c>
   RewriteEngine On
-
   # For path pattern, remove language code
-  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi)($|/.*$) $1 [L]
+  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi|km)($|/.*$) $1 [L]
 
-  # Don't intercept .cgi files, as they would not execute
+  # Don't intercept .cgi files, as they won't execute
   RewriteCond %{THE_REQUEST} \.cgi
   RewriteRule .? - [L]
 
@@ -128,7 +129,8 @@ Bellow is the `.htaccess` configuration you should use.
 ```
 
 Alternatively, you can also copy the file `htaccess_sample` from `WOVN.php`
-directory.
+directory. We suggest that you use this file as a starting point of your customized `.htaccess` file.
+
 ```
 $ cp WOVN.php/htaccess_sample .htaccess
 ```
@@ -432,6 +434,36 @@ URL which is not matched is not processed and snippet will not be inserted.
 site_prefix_path = dir1/dir2
 ```
 
+#### `enable_wovn_diagnostics`
+
+This parameter tells WOVN.php if it should turn on the included WOVN.php diagnostics tool. The default value is `false`. Please do not set this parameter unless you were told to do so.
+
+If you set this parameter to `true`, you must also set the `wovn_diagnostics_username` and `wovn_diagnostics_password` parameters.
+
+For more details, please refer to the Wovn Diagnostics Tool section.
+
+```
+enable_wovn_diagnostics = true
+```
+
+#### `wovn_diagnostics_username`
+
+This parameter is required when you set `enable_wovn_diagnostics` to `true`. This will be the username WOVN will use to gain access to the WOVN.php diagnostics tools.
+
+```
+wovn_diagnostics_username = wovn_diagnostics_username
+```
+
+#### `wovn_diagnostics_password`
+
+This parameter is required when you set `enable_wovn_diagnostics` to `true`. This will be the password WOVN will use to gain access to the WOVN.php diagnostics tools.
+
+```
+wovn_diagnostics_password = wovn_diagnostics_password
+```
+
+
+
 ## 4. Environment Variable
 
 ### `WOVN_TARGET_LANG`
@@ -494,3 +526,17 @@ as possible, we would need to know information like the followings.
 | Log                  | Error log when an error occurs                                        |
 | Request restriction  | Request to `wovn.global.ssl.fastly.net` with 443 port must be allowed |
 | Using SSI            | Whether you are using SSI(Server Side Includes)                       |
+
+### Wovn Diagnostics Tool
+
+WOVN.php ships with a diagnostics tool that automatically gathers information for debugging purposes. This tool is shippped disabled by default.
+
+To enable the Wovn Diagnostics Tool, please do the following tasks:
+
+1. Add `enable_wovn_diagnostics` parameter in your `wovn.ini` configuration file, and set it to `true`.
+2. Add `wovn_diagnostics_username`  in your `wovn.ini` configuration file, and set it to a username of your choice. The diagnostics tool cannot be used if a username is not set.
+3. Add `wovn_diagnostics_password`  in your `wovn.ini` configuration file, and set it to a password of your choice. The diagnostics tool cannot be used if a password is not set.
+
+The configuration will take effect immediately. 
+
+Please only enable the diagnostics tool when it is necessary to do so.
