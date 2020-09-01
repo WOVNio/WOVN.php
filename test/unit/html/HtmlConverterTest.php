@@ -108,7 +108,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
-    public function testinsertSnippetAndHreflangTagsWithCustomAlias()
+    public function testInsertSnippetAndHreflangTagsWithCustomAlias()
     {
         $html = '<html><body><a>hello</a></body></html>';
         $settings = array(
