@@ -44,6 +44,7 @@ function remove_dots_from_path($path)
     return implode('/', $tmp_out);
 }
 
+// TODO: Make this a user configurable option?
 function wovn_helper_default_index_files()
 {
     return array(
