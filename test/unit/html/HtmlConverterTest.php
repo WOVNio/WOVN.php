@@ -815,6 +815,48 @@ bye
         $this->assertEquals($expected_html_text, $translated_html);
     }
 
+    public function testInsertHreflangWithDefaultLangAliasWithPathPattern()
+    {
+        libxml_use_internal_errors(true);
+        $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias.html');
+        $settings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'vi'),
+            'disable_api_request_for_default_lang' => true,
+            'url_pattern_name' => 'path',
+            'custom_lang_aliases' => array('en' => 'english'),
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias_expected.html');
+
+        $this->assertEquals($expected_html_text, $translated_html);
+    }
+
+    public function testInsertHreflangWithDefaultLangAliasWithSubdomainPattern()
+    {
+        libxml_use_internal_errors(true);
+        $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias.html');
+        $settings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'vi'),
+            'disable_api_request_for_default_lang' => true,
+            'url_pattern_name' => 'subdomain',
+            'custom_lang_aliases' => array('en' => 'english'),
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias_expected_subdomain.html');
+
+        $this->assertEquals($expected_html_text, $translated_html);
+    }
+
     public function testInsertHreflangIntoHeadWithStyle()
     {
         libxml_use_internal_errors(true);
