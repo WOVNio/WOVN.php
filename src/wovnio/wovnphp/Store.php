@@ -260,15 +260,4 @@ class Store
     {
         return $this->settings['default_lang'];
     }
-
-    /**
-     * Tests if a lang code is a valid lang code or lang alias.
-     *
-     * @param $code String the lang code to be tested
-     * @return bool if code is a valid Lang or Lang alias
-     */
-    public function isLangOrLangAlias($code)
-    {
-        return (in_array($code, $this->settings['supported_langs']) || in_array($code, array_values($this->settings['custom_lang_aliases'])));
-    }
 }
