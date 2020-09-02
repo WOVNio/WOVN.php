@@ -249,7 +249,7 @@ class Store
         return $lang_code;
     }
 
-    public function defaultLangAlias()
+    public function hasDefaultLangAlias()
     {
         $defaultLang = $this->defaultLang();
         return array_key_exists($defaultLang, $this->settings['custom_lang_aliases']) &&

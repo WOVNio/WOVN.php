@@ -17,7 +17,7 @@ use Wovnio\Wovnphp\Lang;
 
 class UrlTest extends \PHPUnit_Framework_TestCase
 {
-    private function getStarted($pattern = 'path', $additional_env = array())
+    private function getStarted($pattern = 'path', $additional_env = array(), $additional_settings = array())
     {
         $settings = array(
             'default_lang' => 'ja',
@@ -26,7 +26,84 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn'
         );
 
+        array_merge($settings, $additional_settings);
+
         return StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+    }
+
+    private function invokeMethod(&$object, $methodName, array $parameters = array())
+    {
+        $reflection = new \ReflectionClass(get_class($object));
+        $method = $reflection->getMethod($methodName);
+        $method->setAccessible(true);
+
+        return $method->invokeArgs($object, $parameters);
+    }
+
+    public function testAddPathLangCode()
+    {
+        $testCases = array(
+            // no_lang_url, lang, path_prefix, expected_url
+            array('https://example.com', 'en', '', 'https://example.com/en'),
+            array('https://example.com/index.php', 'en', '', 'https://example.com/en/index.php'),
+            array('https://example.com/a/b/index.html', 'en', '', 'https://example.com/en/a/b/index.html'),
+            array('https://example.com/a/b/index.html', 'en', 'a/b', 'https://example.com/a/b/en/index.html'),
+            array('/', 'en', '', '/en/'),
+            array('/index.php', 'en', '', '/en/index.php'),
+            array('/a/b/index.html', 'en', '', '/en/a/b/index.html'),
+            array('/a/b/index.html', 'en', 'a/b', '/a/b/en/index.html'),
+        );
+
+        $url = new Url;
+        foreach ($testCases as $case) {
+            list($no_lang_url, $lang, $path_prefix, $expected_url) = $case;
+            $this->assertEquals($expected_url, $this->invokeMethod($url, 'addPathLangCode', array($no_lang_url, $lang, $path_prefix)));
+        }
+    }
+
+    public function testAddQueryLangCode()
+    {
+        $testCases = array(
+            // no_lang_url, lang, lang_param, expected_url
+            array('https://example.com', 'en', 'wovn', 'https://example.com?wovn=en'),
+            array('https://example.com/index.php', 'en', 'wovn', 'https://example.com/index.php?wovn=en'),
+            array('https://example.com/a/b/index.html', 'en', 'wovn', 'https://example.com/a/b/index.html?wovn=en'),
+            array('/', 'en', 'wovn', '/?wovn=en'),
+            array('/index.php', 'en', 'wovn', '/index.php?wovn=en'),
+            array('/a/b/index.html', 'en', 'wovn', '/a/b/index.html?wovn=en')
+        );
+
+        list($store, $headers) = $this->getStarted('query', array(
+            'REQUEST_URI' => "https://example.com"
+        ));
+
+        $url = new Url;
+        foreach ($testCases as $case) {
+            list($no_lang_url, $lang, $lang_param, $expected_url) = $case;
+            $this->assertEquals($expected_url, $this->invokeMethod($url, 'addQueryLangCode', array($no_lang_url, $lang, $lang_param)));
+        }
+    }
+
+    public function testAddSubdomainLangCode()
+    {
+        $testCases = array(
+            // no_lang_url, lang, lang_param, expected_url
+            array('https://example.com', 'en', 'wovn', 'https://en.example.com'),
+            array('https://example.com/index.php', 'en', 'wovn', 'https://en.example.com/index.php'),
+            array('https://example.com/a/b/index.html', 'en', 'wovn', 'https://en.example.com/a/b/index.html'),
+        );
+
+        list($store, $headers) = $this->getStarted('subdomain', array(
+            'REQUEST_URI' => "https://example.com",
+            'HOST' => 'example.com'
+        ));
+
+        $url = new Url;
+        foreach ($testCases as $case) {
+            list($no_lang_url, $lang, $lang_param, $expected_url) = $case;
+            $parsed_url = parse_url($no_lang_url);
+            $this->assertEquals($expected_url, $this->invokeMethod($url, 'addSubdomainLangCode', array($parsed_url, $lang, $no_lang_url)));
+        }
     }
 
     public function testAddLangCodeRelativePathWithPathPattern()
@@ -39,6 +116,30 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals("/$lang$uri", Url::addLangCode($uri, $store, $lang, $headers));
+    }
+
+    public function testAddLangCodeCustomDefaultLangAlias()
+    {
+        $settings = array(
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'english', 'ja' => 'japanese'),
+            'url_pattern_name' => 'path',
+            'supported_langs' => array('jp', 'fr')
+        );
+
+        $testCases = array(
+            //uri, expected_uri, $lang, pattern
+            array('https://my-site.com/', 'https://my-site.com/fr/', 'fr', 'path'),
+            array('https://my-site.com/', 'https://my-site.com/english/', 'en', 'path'),
+            array('https://my-site.com/', 'https://my-site.com/japanese/', 'ja', 'path'),
+        );
+
+        foreach ($testCases as $case) {
+            list($uri, $expected_uri, $lang, $pattern) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            $this->assertTrue($store->hasDefaultLangAlias());
+            $this->assertEquals($expected_uri, Url::addLangCode($uri, $store, $lang, $headers));
+        }
     }
 
     public function testAddLangCodeRelativePathWithLangCodeInsideAndPathPattern()
@@ -1126,6 +1227,26 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         ));
 
         $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
+    }
+
+    public function testRemoveLangCodeCustomDefaultLangAlias()
+    {
+        $testCases = array(
+            // lang, expected_uri, uri, pattern
+            array('custom-en', 'https://my-site.com/', 'https://my-site.com/custom-en/', 'path'),
+            array('custom-en', 'https://my-site.com/', 'https://my-site.com/', 'path'),
+            array('en', 'https://my-site.com/', 'https://my-site.com/', 'path'),
+            array('en', 'https://my-site.com/', 'https://my-site.com/', 'query'),
+            array('en', 'https://my-site.com/', 'https://my-site.com/', 'subdomain'),
+            array('en', 'https://my-site.com', 'https://my-site.com', 'path'),
+            array('en', 'https://my-site.com', 'https://my-site.com', 'query'),
+            array('en', 'https://my-site.com', 'https://my-site.com', 'subdomain'),
+        );
+        foreach ($testCases as $case) {
+            list($lang, $expected_uri, $uri, $pattern) = $case;
+            list($store, $headers) = $this->getStarted($pattern);
+            $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store->settings));
+        }
     }
 
     public function testshouldIgnoreBySitePrefixPath()

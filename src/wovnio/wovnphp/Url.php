@@ -16,10 +16,11 @@ class Url
     }
 
     /**
-     * Adds a language code to a uri.
+     * Adds a language code to a uri, converts to custom lang code if necessary.
+     * Only urls from the same host as the request are processed.
      *
      * @param String  $uri     The uri to modify.
-     * @param Store $store
+     * @param Store $store     The Store object.
      * @param String  $lang    The language code to add to the uri.
      * @param Headers $headers The headers.
      *
@@ -27,12 +28,7 @@ class Url
      */
     public static function addLangCode($uri, $store, $lang, $headers)
     {
-        if (!$lang || strlen($lang) == 0) {
-            return $uri;
-        }
-
-        // anchor links case, do nothing
-        if (preg_match('/^(#.*)?$/', $uri)) {
+        if (!$lang || strlen($lang) == 0 || self::isAnchorLink($uri)) {
             return $uri;
         }
 
@@ -49,87 +45,90 @@ class Url
         $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
         $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
 
-        if ($store->defaultLangAlias()) {
+        if ($store->hasDefaultLangAlias()) {
             $default_lang = $store->settings['default_lang'];
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $default_lang, $store->settings);
-            $no_lang_host = self::removeLangCode($no_lang_host, $default_lang, $store->settings);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store->settings);
+            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store->settings);
         }
 
         // absolute urls
         if (preg_match('/^(https?:)?\/\//i', $no_lang_uri)) {
-            // only to use with absolute urls!!
             $parsed_url = parse_url($no_lang_uri);
-            // On seriously malformed URLs, parse_url() may return FALSE. (php doc)
-            if (!$parsed_url) {
-                return $uri;
-            }
-
-            $parsed_host = array_key_exists('host', $parsed_url) ? $parsed_url['host'] : null;
-            if ($parsed_host !== null && array_key_exists('port', $parsed_url)) {
-                $parsed_host = $parsed_host . ':' . $parsed_url['port'];
-            }
-
             // only continue if the host of the url is the same as the headers host
-            if ($parsed_host !== null && strtolower($parsed_host) === strtolower($no_lang_host)) {
-                switch ($pattern) {
-                    case 'subdomain':
-                        // check if subdomain already exists
-                        if (preg_match('/\./', $parsed_url['host'])) {
-                            $sub_do_a = explode('.', $parsed_url['host']);
-                            $sub_do = $sub_do_a[0];
-                            $sub_do_lang = Lang::getCode($sub_do);
-                            if ($sub_do_lang && strtolower($sub_do_lang) === strtolower($lang_code)) {
-                                $new_uri = preg_replace('/' . $lang_code . '/i', strtolower($lang_code), $no_lang_uri, 1);
-                            } else {
-                                $new_uri = preg_replace('/(\/\/)([^\.]*)/', '${1}' . self::formatForRegExp(strtolower($lang_code)) . '.' . '${2}', $no_lang_uri, 1);
-                            }
-                        } else {
-                            $new_uri = preg_replace('/(\/\/)([^\.]*)/', '${1}' . self::formatForRegExp(strtolower($lang_code)) . '.' . '${2}', $no_lang_uri, 1);
-                        }
-                        break;
-                    case 'query':
-                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
-                        break;
-                    default:
-                        //path
-                        $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
-                }
+            if (!self::uriFromSameHost($no_lang_uri, $no_lang_host)) {
+                return $new_uri;
+            }
+            switch ($pattern) {
+                case 'subdomain':
+                    $new_uri = self::addSubdomainLangCode($parsed_url, $lang_code, $no_lang_uri);
+                    break;
+                case 'query':
+                    $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
+                    break;
+                case 'path':
+                    $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
+                    break;
+                default:
+                    $new_uri = $uri;
             }
         } else {
-            if (!preg_match('/:/', $no_lang_uri)) { // do nothing for protocols other than http and https (e.g. tel)
-                // relative links
-                switch ($pattern) {
-                    case 'subdomain':
-                        $lang_url = $headers->protocol . '://' . strtolower($lang_code) . '.' . $headers->host;
+            // relative urls
+
+            if (preg_match('/:/', $no_lang_uri)) {
+                // do nothing for protocols other than http and https (e.g. tel)
+                return $new_uri;
+            }
+
+            switch ($pattern) {
+                case 'subdomain':
+                    $lang_url = $headers->protocol . '://' . strtolower($lang_code) . '.' . $headers->host;
+                    $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
+                    if (preg_match('/^\.\..*$/', $no_lang_uri)) {
+                        // ../path
+                        $new_uri = $lang_url . '/' . preg_replace('/^\.\.\//', '', $no_lang_uri);
+                    } elseif (preg_match('/^\..*$/', $no_lang_uri)) {
+                        // ./path
+                        $new_uri = $lang_url . $current_dir . preg_replace('/^\.\//', '', $no_lang_uri);
+                    } elseif (preg_match('/^\/.*$/', $no_lang_uri)) {
+                        // /path
+                        $new_uri = $lang_url . $no_lang_uri;
+                    } else {
+                        $new_uri = $lang_url . $current_dir . $no_lang_uri;
+                    }
+                    break;
+                case 'query':
+                    $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
+                    break;
+                default: // path
+                    if (preg_match('/^\//', $no_lang_uri)) {
+                        $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
+                    } else {
                         $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
-                        if (preg_match('/^\.\..*$/', $no_lang_uri)) {
-                            // ../path
-                            $new_uri = $lang_url . '/' . preg_replace('/^\.\.\//', '', $no_lang_uri);
-                        } elseif (preg_match('/^\..*$/', $no_lang_uri)) {
-                            // ./path
-                            $new_uri = $lang_url . $current_dir . preg_replace('/^\.\//', '', $no_lang_uri);
-                        } elseif (preg_match('/^\/.*$/', $no_lang_uri)) {
-                            // /path
-                            $new_uri = $lang_url . $no_lang_uri;
-                        } else {
-                            $new_uri = $lang_url . $current_dir . $no_lang_uri;
-                        }
-                        break;
-                    case 'query':
-                        $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
-                        break;
-                    default: // path
-                        if (preg_match('/^\//', $no_lang_uri)) {
-                            $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
-                        } else {
-                            $current_dir = preg_replace('/[^\/]*\.[^\.]{2,6}$/', '', $headers->pathname, 1);
-                            $new_uri = self::addPathLangCode($current_dir . $no_lang_uri, $lang_code, $site_prefix_path);
-                        }
-                }
+                        $new_uri = self::addPathLangCode($current_dir . $no_lang_uri, $lang_code, $site_prefix_path);
+                    }
             }
         }
-
         return $new_uri;
+    }
+
+    /**
+     * @param $no_lang_uri String URI without lang code
+     * @param $no_lang_host String Host without lang code
+     * @return bool if the URI is from the same host
+     */
+    private static function uriFromSameHost($no_lang_uri, $no_lang_host)
+    {
+        $parsed_url = parse_url($no_lang_uri);
+        // On seriously malformed URLs, parse_url() may return FALSE. (php doc)
+        if (!$parsed_url) {
+            return false;
+        }
+
+        $parsed_host = array_key_exists('host', $parsed_url) ? $parsed_url['host'] : null;
+        if ($parsed_host !== null && array_key_exists('port', $parsed_url)) {
+            $parsed_host = $parsed_host . ':' . $parsed_url['port'];
+        }
+        return $parsed_host !== null && strtolower($parsed_host) === strtolower($no_lang_host);
     }
 
     /**
@@ -150,21 +149,64 @@ class Url
     }
 
     /**
-     * Public function removing the lang of the url
+     * Adds a lang code to a URL with no lang code, using path pattern.
+     * Supports both absolute and relative paths.
+     * @param $no_lang_url
+     * @param $lang
+     * @param string $site_prefix_path
+     * @return string|string[]|null
+     */
+    private static function addPathLangCode($no_lang_url, $lang, $site_prefix_path = '')
+    {
+        if (empty($lang)) {
+            return $no_lang_url;
+        }
+        return preg_replace(
+            self::generateUrlRegex($site_prefix_path),
+            "$1$2$3/$lang$4",
+            $no_lang_url
+        );
+    }
+
+    /**
+     * Adds lang code to a URI following the subdomain pattern.
+     * No custom lang alias conversion happens here.
+     *
+     * @param $parsed_url array parse_url output array
+     * @param $lang_code String language code
+     * @param $no_lang_uri String URI without language code
+     * @return string|string[]|null
+     */
+    private static function addSubdomainLangCode($parsed_url, $lang_code, $no_lang_uri)
+    {
+        // check if subdomain already exists
+        if (preg_match('/\./', $parsed_url['host'])) {
+            $explodedSubDomain= explode('.', $parsed_url['host']);
+            $subDomain = $explodedSubDomain[0];
+            $sub_do_lang = Lang::getCode($subDomain);
+            if ($sub_do_lang && strtolower($sub_do_lang) === strtolower($lang_code)) {
+                $new_uri = preg_replace('/' . $lang_code . '/i', strtolower($lang_code), $no_lang_uri, 1);
+            } else {
+                $new_uri = preg_replace('/(\/\/)([^\.]*)/', '${1}' . self::formatForRegExp(strtolower($lang_code)) . '.' . '${2}', $no_lang_uri, 1);
+            }
+        } else {
+            $new_uri = preg_replace('/(\/\/)([^\.]*)/', '${1}' . self::formatForRegExp(strtolower($lang_code)) . '.' . '${2}', $no_lang_uri, 1);
+        }
+        return $new_uri;
+    }
+
+    /**
+     * Removing the lang of the url, literally.
+     * No lang code to custom lang alias conversion happens here.
      *
      * @param String $uri The url with the lang
-     * @param String $pattern
-     * @param String $lang_code The lang to remove
-     * @return array The url without the lang
+     * @param String $lang_code The literal lang code to remove
+     * @param String $settings The settings object
+     * @return String The url without the lang
      */
     public static function removeLangCode($uri, $lang_code, $settings)
     {
-        if (!$lang_code || strlen($lang_code) == 0) {
-            return $uri;
-        }
-
-        // anchor links case, do nothing
-        if (preg_match('/^(#.*)?$/', $uri)) {
+        if (!$lang_code || strlen($lang_code) == 0 || self::isAnchorLink($uri)) {
             return $uri;
         }
 
@@ -175,17 +217,15 @@ class Url
         switch ($pattern) {
             case 'query':
                 return preg_replace('/(\?|&)$/', '', preg_replace('/(^|\?|&)' . $lang_param_name . '=' . $lang_code . '(&|$)/i', '\1', $uri));
-                break;
             case 'subdomain':
                 // limit to one replacement
                 return preg_replace('/(\/\/|^)' . $lang_code . '\./i', '\1', $uri, 1);
-                break;
             case 'path':
-            default:
                 // limit to one replacement
                 $prefix = empty($site_prefix_path) ? '' : '/' . $site_prefix_path;
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
-                break;
+            default:
+                return $uri;
         }
     }
 
@@ -198,16 +238,9 @@ class Url
         return false;
     }
 
-    private static function addPathLangCode($no_lang_url, $lang, $site_prefix_path = '')
+    private static function isAnchorLink($uri)
     {
-        if (empty($lang)) {
-            return $no_lang_url;
-        }
-        return preg_replace(
-            self::generateUrlRegex($site_prefix_path),
-            "$1$2$3/$lang$4",
-            $no_lang_url
-        );
+        return preg_match('/^(#.*)?$/', $uri);
     }
 
     private static function generateUrlRegex($site_prefix_path = '')

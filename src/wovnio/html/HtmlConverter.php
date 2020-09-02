@@ -4,6 +4,8 @@ namespace Wovnio\Html;
 
 use Wovnio\Wovnphp\Url;
 use Wovnio\Wovnphp\Lang;
+use Wovnio\Wovnphp\Store;
+use Wovnio\Wovnphp\Headers;
 use Wovnio\ModifiedVendor\SimpleHtmlDom;
 use Wovnio\ModifiedVendor\SimpleHtmlDomNode;
 
@@ -264,9 +266,8 @@ class HtmlConverter
     {
         $url = $this->headers->urlKeepTrailingSlash;
 
-        $defaultLangAlias = $this->store->defaultLangAlias();
-        if ($defaultLangAlias) {
-            $url = $this->headers->removeLang($url);
+        if ($this->store->hasDefaultLangAlias()) {
+            $url = $this->headers->removeLang($url, $this->store->defaultLang());
             $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
         } else {
             if ($lang_code !== $this->store->defaultLang()) {
