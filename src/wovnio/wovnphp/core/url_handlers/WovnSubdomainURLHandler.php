@@ -3,7 +3,6 @@
 
 namespace Wovnio\Wovnphp\Core\UrlHandler;
 
-
 use Wovnio\Wovnphp\Core\WovnLangException;
 
 class WovnSubdomainURLHandler extends WovnURLHandler

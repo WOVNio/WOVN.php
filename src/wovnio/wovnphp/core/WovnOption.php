@@ -5,7 +5,6 @@ namespace Wovnio\Wovnphp\Core;
 
 use Wovnio\Wovnphp\Logger;
 
-
 class WovnOption
 {
     // TODO: PHP doesn't have support for enums, but it would be nice to have a enum type here.
@@ -55,7 +54,7 @@ class WovnOption
         self::OPT_USE_PROXY => array('name' => 'use_proxy', 'dependency' => array(), 'required' => false, 'type' => self::BOOLEAN_TYPE, 'default' => false),
         self::OPT_OVERRIDE_CONTENT_LENGTH => array('name' => 'override_content_length', 'dependency' => array(), 'required' => false, 'type' => self::BOOLEAN_TYPE, 'default' => false),
         self::OPT_BYPASS_AMP => array('name' => 'check_amp', 'dependency' => array(), 'required' => false, 'type' => self::BOOLEAN_TYPE, 'default' => false),
-        self::OPT_SITE_PREFIX_PATH => array('name' => 'site_prefix_path', 'dependency' => array('url_pattern_name' => 'path'), 'required' => false, 'type' => self::STRING_TYPE, 'default' => null),
+        self::OPT_SITE_PREFIX_PATH => array('name' => 'site_prefix_path', 'dependency' => array('url_pattern_name' => 'path'), 'required' => false, 'type' => self::STRING_TYPE, 'default' => ''),
         self::OPT_ENABLE_WOVN_DIAGNOSTICS => array('name' => 'enable_wovn_diagnostics', 'dependency' => array(), 'required' => false, 'type' => self::BOOLEAN_TYPE, 'default' => false),
         self::OPT_WOVN_DIAGNOSTICS_PASSWORD => array('name' => 'wovn_diagnostics_password', 'dependency' => array(), 'required' => false, 'type' => self::STRING_TYPE, 'default' => null),
         self::OPT_WOVN_DIAGNOSTICS_USERNAME => array('name' => 'wovn_diagnostics_username', 'dependency' => array(), 'required' => false, 'type' => self::STRING_TYPE, 'default' => null)
@@ -89,7 +88,6 @@ class WovnOption
 
     public function getMD5Hash()
     {
-
     }
 
     /**
@@ -114,9 +112,9 @@ class WovnOption
             }
             $this->_options[$name] = $validatedValue;
         }
+        $this->checkDependency();
         $this->loadDefaults();
         $this->checkRequired();
-        $this->checkDependency();
     }
 
     /**
@@ -158,7 +156,7 @@ class WovnOption
     {
         foreach ($this->_options as $name => $value) {
             foreach (self::$OPTIONS[$name]['dependency'] as $dependency => $dependencyValue) {
-                if (!array_key_exists($dependency, $this->_options)){
+                if (!array_key_exists($dependency, $this->_options)) {
                     throw new WovnConfigurationException("Option {$name} requires dependency option {$dependency} to be set!");
                 } else {
                     if ($dependencyValue !== $this->_options[$dependency]) {
@@ -177,7 +175,7 @@ class WovnOption
      */
     private function validateOption($name, $value)
     {
-        switch(self::$OPTIONS[$name]['type']) {
+        switch (self::$OPTIONS[$name]['type']) {
             case self::INTEGER_TYPE:
                 $newValue = intval($value, 10);
                 if ($newValue === 0) {

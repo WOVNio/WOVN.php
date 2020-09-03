@@ -5,7 +5,6 @@ namespace Wovnio\Wovnphp\Core;
 
 use Wovnio\Wovnphp\Logger;
 
-
 class WovnLangDirectory
 {
     private static $LANGUAGES = array(
@@ -146,7 +145,7 @@ class WovnLangDirectory
     private function addTargetLangs($targetLangs)
     {
         foreach ($targetLangs as $targetLang) {
-            try{
+            try {
                 $newLang = $this->getLang($targetLang);
                 $newLang->enable();
                 $this->_targetLangs[] = $newLang;
@@ -160,7 +159,7 @@ class WovnLangDirectory
     private function addAliases($langAliases)
     {
         foreach ($langAliases as $langCode => $alias) {
-            try{
+            try {
                 $lang = $this->getLang($langCode);
                 $lang->setAlias($alias);
                 $this->_langAliases[$alias] = $lang;
@@ -172,7 +171,7 @@ class WovnLangDirectory
 
     private function addDefaultLang($defaultLang)
     {
-        try{
+        try {
             $newLang = $this->getLang($defaultLang);
             $newLang->enable();
             $this->_defaultLang = $newLang;

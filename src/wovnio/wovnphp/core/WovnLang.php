@@ -3,7 +3,6 @@
 
 namespace Wovnio\Wovnphp\Core;
 
-
 class WovnLang
 {
     private $_name;
@@ -20,7 +19,7 @@ class WovnLang
      * @param mixed $alias The alias of this language, defaults to null.
      * @param bool $active If the language is a valid choice in the current project.
      */
-    public function __construct($code, $name, $englishName, $alias=null, $active=false)
+    public function __construct($code, $name, $englishName, $alias = null, $active = false)
     {
         $this->_name = $name;
         $this->_code = $code;

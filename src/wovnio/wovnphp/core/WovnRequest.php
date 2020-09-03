@@ -3,7 +3,6 @@
 
 namespace Wovnio\Wovnphp\Core;
 
-
 class WovnRequest
 {
     private $_scheme; // e.g. HTTP
@@ -29,7 +28,8 @@ class WovnRequest
         $this->langDirectory = new WovnLangDirectory(
             $this->options->get(WovnOption::OPT_SUPPORTED_LANGS),
             $this->options->get(WovnOption::OPT_DEFAULT_LANG),
-            $this->options->get(WovnOption::OPT_CUSTOM_LANG_ALIASES));
+            $this->options->get(WovnOption::OPT_CUSTOM_LANG_ALIASES)
+        );
         $this->_wovnUrl = new WovnURL($this->_url, $this->langDirectory, $this->options);
         $this->_lang = $this->_wovnUrl->lang();
     }
@@ -37,15 +37,17 @@ class WovnRequest
     /**
      * Swaps the HTML either locally or via API, depending on the situation
      */
-    public function swap() {
-
+    public function swap()
+    {
     }
 
-    public function wovnUrl() {
+    public function wovnUrl()
+    {
         return $this->_wovnUrl;
     }
 
-    public function lang() {
+    public function lang()
+    {
         return $this->_lang;
     }
 
@@ -68,7 +70,7 @@ class WovnRequest
             return $serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI'];
         }
         if (!isset($serverSuperGlobal['REQUEST_URI'])) {
-           return $serverSuperGlobal['PATH_INFO'] . (strlen($serverSuperGlobal['QUERY_STRING']) === 0 ? '' : '?' . $serverSuperGlobal['QUERY_STRING']);
+            return $serverSuperGlobal['PATH_INFO'] . (strlen($serverSuperGlobal['QUERY_STRING']) === 0 ? '' : '?' . $serverSuperGlobal['QUERY_STRING']);
         } else {
             return $serverSuperGlobal['REQUEST_URI'];
         }
@@ -81,6 +83,5 @@ class WovnRequest
 
     private function updateHeaderContentLength()
     {
-
     }
 }

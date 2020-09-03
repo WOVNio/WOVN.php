@@ -5,7 +5,6 @@ namespace Wovnio\Wovnphp\Core;
 
 use Wovnio\Wovnphp\Core\RequestHandlers\RequestHandlerFactory;
 
-
 class WovnAPICaller
 {
     private $option; // The WovnOption object
@@ -14,12 +13,10 @@ class WovnAPICaller
 
     public function __constructor($option, $originalHTML, $request)
     {
-
     }
 
     public function translate()
     {
-
     }
 
     private function constructApiCallUrl()

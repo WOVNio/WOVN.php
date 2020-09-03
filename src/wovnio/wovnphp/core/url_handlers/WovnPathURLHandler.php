@@ -3,7 +3,6 @@
 
 namespace Wovnio\Wovnphp\Core\UrlHandler;
 
-
 use Wovnio\Wovnphp\Core\WovnLangException;
 use Wovnio\Wovnphp\Core\WovnOption;
 
@@ -17,11 +16,15 @@ class WovnPathURLHandler extends WovnURLHandler
     protected function detectLang()
     {
         $path = strval($this->components['path']);
-        $prefix = '/' . strval($this->options->get(WovnOption::OPT_SITE_PREFIX_PATH));
-        if ($prefix) {
-            $path = preg_replace("@$prefix(/|$)@", '', $prefix, 1);
+        $prefix = strval($this->options->get(WovnOption::OPT_SITE_PREFIX_PATH)) . '/';
+        $match = strpos($path, $prefix);
+        if ($match !== false) {
+            $path = substr($path, $match + strlen($prefix));
         }
         $exploded  = explode('/', $path);
+        if (count($exploded) === 1) {
+            return $this->langDirectory->defaultLang();
+        }
         $langCandidate = $exploded[0];
         try {
             $lang = $this->langDirectory->getLang($langCandidate);

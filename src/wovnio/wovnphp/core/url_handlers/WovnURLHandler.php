@@ -25,16 +25,23 @@ abstract class WovnURLHandler
         $this->pattern = $options->get(WovnOption::OPT_URL_PATTERN_NAME);
         $this->langDirectory = $langDirectory;
         $this->components = parse_url($original);
+        $this->addDefaultComponentValues();
         $this->options = $options;
         $this->baseUrl = null;
         $this->baseComponents = null;
-        $this->components = null;
         $this->_lang = $this->detectLang();
     }
 
     public function lang()
     {
         return $this->_lang;
+    }
+
+    private function addDefaultComponentValues()
+    {
+        if (!array_key_exists('path', $this->components)) {
+            $this->components['path'] = '/';
+        }
     }
 
     abstract protected function detectLang();
