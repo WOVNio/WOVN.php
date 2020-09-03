@@ -8,7 +8,7 @@ use Wovnio\Wovnphp\Logger;
 
 class WovnLangDirectory
 {
-    static $LANGUAGES = array(
+    private static $LANGUAGES = array(
         'ar' => array('name' => 'العربية', 'code' => 'ar', 'en' => 'Arabic'),
         'eu' => array('name' => 'Euskara', 'code' => 'eu', 'en' => 'Basque'),
         'bn' => array('name' => 'বাংলা ভাষা', 'code' => 'bn', 'en' => 'Bengali'),
@@ -114,7 +114,7 @@ class WovnLangDirectory
     /**
      * Returns an instance of WovnLang for the requested language code.
      *
-     * @param $code string The language code, IETF language tag format.
+     * @param $code string The language code, IETF language tag format, or the alias.
      * @return mixed an instance of WovnLang for the language code.
      * @throws WovnLangException When the language code is invalid.
      */
@@ -123,8 +123,16 @@ class WovnLangDirectory
         if (array_key_exists($code, WovnLangDirectory::$LANGUAGES)) {
             return $this->langs[$code];
         } else {
+            if (array_key_exists($code, $this->_langAliases)) {
+                return $this->_langAliases[$code];
+            }
             throw new WovnLangException('Invalid language code.');
         }
+    }
+
+    public function defaultLang()
+    {
+        return $this->_defaultLang;
     }
 
     private function buildAllLangs()
