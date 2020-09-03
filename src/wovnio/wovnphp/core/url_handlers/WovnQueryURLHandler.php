@@ -1,0 +1,49 @@
+<?php
+
+
+namespace Wovnio\Wovnphp\Core\UrlHandler;
+
+
+use Wovnio\Wovnphp\Core\WovnLangException;
+use Wovnio\Wovnphp\Core\WovnOption;
+
+class WovnQueryURLHandler extends WovnURLHandler
+{
+    public function __construct($original, $langDirectory, $options)
+    {
+        parent::__construct($original, $langDirectory, $options);
+    }
+
+    protected function detectLang()
+    {
+        parse_str(strval($this->components['query']), $queries);
+        if (isset($queries[$this->pattern])) {
+            try {
+                $lang = $this->langDirectory->getLang($queries[$this->options->get(WovnOption::OPT_LANG_PARAM_NAME)]);
+                if (!$lang->isValidLang()) {
+                    $lang = $this->langDirectory->defaultLang();
+                }
+            } catch (WovnLangException $e) {
+                $lang = $this->langDirectory->defaultLang();
+            }
+        } else {
+            $lang = $this->langDirectory->defaultLang();
+        }
+        return $lang;
+    }
+
+    protected function removeLang()
+    {
+        // TODO: Implement removeLang() method.
+    }
+
+    protected function getFullyQualifiedUrl()
+    {
+        // TODO: Implement getFullyQualifiedUrl() method.
+    }
+
+    protected function addLang()
+    {
+        // TODO: Implement addLang() method.
+    }
+}
