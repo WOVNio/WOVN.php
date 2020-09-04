@@ -45,7 +45,7 @@ abstract class WovnURLHandler
     }
 
     abstract protected function detectLang();
-    abstract protected function removeLang();
+    abstract protected function toDefaultLang();
     abstract protected function getFullyQualifiedUrl();
-    abstract protected function addLang();
+    abstract protected function toTargetLang();
 }

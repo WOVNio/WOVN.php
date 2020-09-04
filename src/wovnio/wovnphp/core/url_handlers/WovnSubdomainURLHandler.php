@@ -29,7 +29,7 @@ class WovnSubdomainURLHandler extends WovnURLHandler
         return $lang;
     }
 
-    protected function removeLang()
+    protected function toDefaultLang()
     {
         // TODO: Implement removeLang() method.
     }
@@ -39,7 +39,7 @@ class WovnSubdomainURLHandler extends WovnURLHandler
         // TODO: Implement getFullyQualifiedUrl() method.
     }
 
-    protected function addLang()
+    protected function toTargetLang()
     {
         // TODO: Implement addLang() method.
     }
