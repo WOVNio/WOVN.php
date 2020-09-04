@@ -4,7 +4,6 @@ namespace Wovnio\Wovnphp\Core\UrlHandler;
 
 use Wovnio\Wovnphp\Core\WovnOption;
 
-
 abstract class WovnURLHandler
 {
     protected $original; // The original fully qualified URL, as-is, or reconstructed.

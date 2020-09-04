@@ -22,7 +22,7 @@ class WovnRequest
     private $langDirectory;
     private $options;
 
-    public function __construct($serverSuperGlobal, $optionConfig, $useStrictMode=true)
+    public function __construct($serverSuperGlobal, $optionConfig, $useStrictMode = true)
     {
         $this->options = new WovnOption($optionConfig, $useStrictMode); // Do Not handle exceptions here, let them fail.
         $this->scheme = $this->parseScheme($serverSuperGlobal);

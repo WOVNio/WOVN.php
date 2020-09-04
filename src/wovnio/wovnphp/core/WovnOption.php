@@ -72,7 +72,7 @@ class WovnOption
      * @param $useStrictMode bool If option dependency should be checked.
      * @throws WovnConfigurationException Thrown when a required option is not set correctly.
      */
-    public function __construct($configurations, $useStrictMode=true)
+    public function __construct($configurations, $useStrictMode = true)
     {
         $this->useStrictMode = $useStrictMode;
         $this->options = array();
