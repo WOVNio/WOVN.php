@@ -3,6 +3,12 @@
 
 namespace Wovnio\Wovnphp\Core;
 
+require_once(__DIR__ . '/WovnLangDirectory.php');
+require_once(__DIR__ . '/WovnLang.php');
+require_once(__DIR__ . '/WovnOption.php');
+require_once(__DIR__ . '/WovnURL.php');
+
+
 class WovnRequest
 {
     private $scheme; // e.g. HTTP
@@ -16,9 +22,9 @@ class WovnRequest
     private $langDirectory;
     private $options;
 
-    public function __constructor($serverSuperGlobal, $optionConfig)
+    public function __construct($serverSuperGlobal, $optionConfig, $useStrictMode=true)
     {
-        $this->options = new WovnOption($optionConfig); // Do Not handle exceptions here, let them fail.
+        $this->options = new WovnOption($optionConfig, $useStrictMode); // Do Not handle exceptions here, let them fail.
         $this->scheme = $this->parseScheme($serverSuperGlobal);
         $this->host = $serverSuperGlobal['HTTP_HOST'];
         $this->path = $this->parseURI($serverSuperGlobal);

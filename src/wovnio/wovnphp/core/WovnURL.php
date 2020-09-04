@@ -7,6 +7,10 @@ use Wovnio\Wovnphp\Core\UrlHandler\WovnPathURLHandler;
 use Wovnio\Wovnphp\Core\UrlHandler\WovnQueryURLHandler;
 use Wovnio\Wovnphp\Core\UrlHandler\WovnSubdomainURLHandler;
 
+require_once(__DIR__ . '/url_handlers/WovnSubdomainURLHandler.php');
+require_once(__DIR__ . '/url_handlers/WovnPathURLHandler.php');
+require_once(__DIR__ . '/url_handlers/WovnQueryURLHandler.php');
+
 class WovnURL
 {
     private $urlHandler;

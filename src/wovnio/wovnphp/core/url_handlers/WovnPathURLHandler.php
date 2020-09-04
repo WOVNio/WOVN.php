@@ -6,6 +6,8 @@ namespace Wovnio\Wovnphp\Core\UrlHandler;
 use Wovnio\Wovnphp\Core\WovnLangException;
 use Wovnio\Wovnphp\Core\WovnOption;
 
+require_once(__DIR__ . '/WovnURLHandler.php');
+
 class WovnPathURLHandler extends WovnURLHandler
 {
     public function __construct($original, $langDirectory, $options)

@@ -5,6 +5,9 @@ namespace Wovnio\Wovnphp\Core;
 
 use Wovnio\Wovnphp\Logger;
 
+require_once(__DIR__ . '/exceptions/WovnConfigurationException.php');
+
+
 class WovnOption
 {
     // TODO: PHP doesn't have support for enums, but it would be nice to have a enum type here.
@@ -61,14 +64,17 @@ class WovnOption
     );
 
     private $options;
+    private $useStrictMode;
 
     /**
      * WovnOption constructor.
      * @param $configurations array An associative array of configurations.
+     * @param $useStrictMode bool If option dependency should be checked.
      * @throws WovnConfigurationException Thrown when a required option is not set correctly.
      */
-    public function __construct($configurations)
+    public function __construct($configurations, $useStrictMode=true)
     {
+        $this->useStrictMode = $useStrictMode;
         $this->options = array();
         $this->loadOptions($configurations);
     }
@@ -112,7 +118,9 @@ class WovnOption
             }
             $this->options[$name] = $validatedValue;
         }
-        $this->checkDependency();
+        if ($this->useStrictMode) {
+            $this->checkDependency();
+        }
         $this->loadDefaults();
         $this->checkRequired();
     }
