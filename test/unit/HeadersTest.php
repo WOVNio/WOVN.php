@@ -1126,7 +1126,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         ));
         \Wovnio\Wovnphp\mockHeader();
 
-        $settings = array('url_pattern_name' => 'subdomain');
+        $settings = array('url_pattern_name' => 'subdomain', 'supported_langs' => array('fr'));
         $env = array(
             'HTTP_HOST' => 'fr.my-site.com',
             'SERVER_NAME' => 'fr.my-site.com',

@@ -1,6 +1,10 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+use Wovnio\Wovnphp\Core\WovnRequest;
+
+require_once(__DIR__ . '/core/WovnRequest.php');
+
 /**
  *  The Headers class contains the server variable environnement _SERVER
  *  It is used to store environment and modify it
@@ -23,6 +27,7 @@ class Headers
     private $pathLang;
     private $query;
     private $browserLang;
+    private $wovnRequest;
 
     /**
      * Constructor of the Headers class
@@ -33,6 +38,7 @@ class Headers
      */
     public function __construct(&$env, &$store)
     {
+        $this->wovnRequest = new WovnRequest($env, $store->settings, false);
         $this->env =& $env;
         $this->store =& $store;
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
@@ -60,6 +66,7 @@ class Headers
         if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
             $this->unmaskedPathname .= '/';
         }
+
         $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
         $this->host = $this->unmaskedHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
@@ -175,7 +182,7 @@ class Headers
      */
     public function lang()
     {
-        return ($this->computePathLang() && strlen($this->computePathLang()) > 0) ? $this->computePathLang() : $this->store->settings['default_lang'];
+        return $this->wovnRequest->lang()->code();
     }
 
     /**
