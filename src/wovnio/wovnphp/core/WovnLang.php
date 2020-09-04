@@ -97,7 +97,7 @@ class WovnLang
     /**
      * Marks the language as in-use in the project.
      */
-    public function enable()
+    public function setActive()
     {
         $this->active = true;
     }

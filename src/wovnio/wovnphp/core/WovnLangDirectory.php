@@ -147,7 +147,7 @@ class WovnLangDirectory
         foreach ($targetLangs as $targetLang) {
             try {
                 $newLang = $this->getLang($targetLang);
-                $newLang->enable();
+                $newLang->setActive();
                 $this->targetLangs[] = $newLang;
                 $this->validLangs[] = $newLang;
             } catch (WovnLangException $e) {
@@ -173,7 +173,7 @@ class WovnLangDirectory
     {
         try {
             $newLang = $this->getLang($defaultLang);
-            $newLang->enable();
+            $newLang->setActive();
             $this->defaultLang = $newLang;
             $this->validLangs[] = $newLang;
         } catch (WovnLangException $e) {
