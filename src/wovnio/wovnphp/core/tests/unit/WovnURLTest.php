@@ -44,7 +44,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithQueryPatternInvalidLang()
+    public function testWithQueryPatternInvalidLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions();
@@ -53,7 +53,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithQueryPatternNonDefaultLang()
+    public function testWithQueryPatternNonDefaultLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions();
@@ -62,7 +62,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('fr', $url->lang()->code());
     }
 
-    public function testConstructorWithQueryPatternNonDefaultLangAlias()
+    public function testWithQueryPatternNonDefaultLangAlias()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions();
@@ -71,7 +71,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('fr', $url->lang()->code());
     }
 
-    public function testConstructorWithQueryPatternNonDefaultLangVariation1()
+    public function testWithQueryPatternNonDefaultLangVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions();
@@ -80,7 +80,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('fr', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomainPatternDefaultLang()
+    public function testWithSubdomainPatternDefaultLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -89,7 +89,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomanPatternInvalidLang()
+    public function testWithSubdomainPatternInvalidLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -98,7 +98,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomainPatternNonDefaultLang()
+    public function testWithSubdomainPatternNonDefaultLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -107,7 +107,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomainPatternNonDefaultLangAlias()
+    public function testWithSubdomainPatternNonDefaultLangAlias()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -116,7 +116,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomainPatternNonDefaultLangVariation1()
+    public function testWithSubdomainPatternNonDefaultLangVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -125,7 +125,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithSubdomainPatternNonDefaultLangVariation2()
+    public function testWithSubdomainPatternNonDefaultLangVariation2()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
@@ -134,7 +134,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLang()
+    public function testWithPathPatternDefaultLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -143,7 +143,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLangVariation1()
+    public function testWithPathPatternDefaultLangVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -152,7 +152,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLangVariation2()
+    public function testWithPathPatternDefaultLangVariation2()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -161,7 +161,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLang()
+    public function testWithPathPatternNonDefaultLang()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -170,7 +170,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangVariation1()
+    public function testWithPathPatternNonDefaultLangVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -179,7 +179,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangVariation2()
+    public function testWithPathPatternNonDefaultLangVariation2()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path'));
@@ -188,7 +188,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLangWithPathPrefix()
+    public function testWithPathPatternDefaultLangWithPathPrefix()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -197,7 +197,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLangWithPathPrefixVariation1()
+    public function testWithPathPatternDefaultLangWithPathPrefixVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -206,7 +206,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternDefaultLangWithPathPrefixVariation2()
+    public function testWithPathPatternDefaultLangWithPathPrefixVariation2()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -215,7 +215,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangWithPathPrefix()
+    public function testWithPathPatternNonDefaultLangWithPathPrefix()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -224,7 +224,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangWithPathPrefixVariation1()
+    public function testWithPathPatternNonDefaultLangWithPathPrefixVariation1()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -233,7 +233,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangWithPathPrefixVariation2()
+    public function testWithPathPatternNonDefaultLangWithPathPrefixVariation2()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -242,7 +242,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangWithPathPrefixVariation3()
+    public function testWithPathPatternNonDefaultLangWithPathPrefixVariation3()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
@@ -251,7 +251,7 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('ja', $url->lang()->code());
     }
 
-    public function testConstructorWithPathPatternNonDefaultLangWithPathPrefixVariation4()
+    public function testWithPathPatternNonDefaultLangWithPathPrefixVariation4()
     {
         $directory = $this->getLangDirectory();
         $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_SITE_PREFIX_PATH => 'news/blog'));
