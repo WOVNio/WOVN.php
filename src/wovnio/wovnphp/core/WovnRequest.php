@@ -5,13 +5,13 @@ namespace Wovnio\Wovnphp\Core;
 
 class WovnRequest
 {
-    private $_scheme; // e.g. HTTP
-    private $_host; // e.g. 20.18.166.31, news.network.com, news.com
-    private $_path; // e.g. /books/bestseller/1.html, /
-    private $_url; // The fully qualified request URL, as-is, e.g. https://www.new.com/breaking/top.html?start=1&wovn=en
-    private $_wovnUrl; // The WovnURL object
-    private $_query; // The request's query, as an associative array
-    private $_lang; // The request's target language code
+    private $scheme; // e.g. HTTP
+    private $host; // e.g. 20.18.166.31, news.network.com, news.com
+    private $path; // e.g. /books/bestseller/1.html, /
+    private $url; // The fully qualified request URL, as-is, e.g. https://www.new.com/breaking/top.html?start=1&wovn=en
+    private $wovnUrl; // The WovnURL object
+    private $query; // The request's query, as an associative array
+    private $lang; // The request's target language code
 
     private $langDirectory;
     private $options;
@@ -19,19 +19,18 @@ class WovnRequest
     public function __constructor($serverSuperGlobal, $optionConfig)
     {
         $this->options = new WovnOption($optionConfig); // Do Not handle exceptions here, let them fail.
-        $this->_scheme = $this->parseScheme($serverSuperGlobal);
-        $this->_host = $serverSuperGlobal['HTTP_HOST'];
-        $this->_path = $this->parseURI($serverSuperGlobal);
-        $this->_query = isset($serverSuperGlobal['QUERY_STRING']) ? $serverSuperGlobal['QUERY_STRING'] : '';
-        $this->_url = $this->_scheme . '://' . $this->_host . $this->_path . $this->_query;
-        $this->_lang = $this->detectLang();
+        $this->scheme = $this->parseScheme($serverSuperGlobal);
+        $this->host = $serverSuperGlobal['HTTP_HOST'];
+        $this->path = $this->parseURI($serverSuperGlobal);
+        $this->query = isset($serverSuperGlobal['QUERY_STRING']) ? $serverSuperGlobal['QUERY_STRING'] : '';
+        $this->url = $this->scheme . '://' . $this->host . $this->path . $this->query;
         $this->langDirectory = new WovnLangDirectory(
             $this->options->get(WovnOption::OPT_SUPPORTED_LANGS),
             $this->options->get(WovnOption::OPT_DEFAULT_LANG),
             $this->options->get(WovnOption::OPT_CUSTOM_LANG_ALIASES)
         );
-        $this->_wovnUrl = new WovnURL($this->_url, $this->langDirectory, $this->options);
-        $this->_lang = $this->_wovnUrl->lang();
+        $this->wovnUrl = new WovnURL($this->url, $this->langDirectory, $this->options);
+        $this->lang = $this->wovnUrl->lang();
     }
 
     /**
@@ -43,12 +42,12 @@ class WovnRequest
 
     public function wovnUrl()
     {
-        return $this->_wovnUrl;
+        return $this->wovnUrl;
     }
 
     public function lang()
     {
-        return $this->_lang;
+        return $this->lang;
     }
 
     private function parseScheme($serverSuperGlobal)

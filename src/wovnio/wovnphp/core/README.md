@@ -27,3 +27,4 @@ The library makes extensive use of exceptions to communicate errors, and does no
 - `WovnOptions.php` The class that represents user configurations and settings, with built-in data validation.
 - `WovnRequest.php` The entry point of Wovn PHP Core.
 - `WovnURL.php` The class that represents URLs, contains all URL related operations.
+

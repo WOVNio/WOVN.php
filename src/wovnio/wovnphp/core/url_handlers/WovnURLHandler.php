@@ -12,7 +12,7 @@ abstract class WovnURLHandler
     protected $components; // The original URL's components, as-is, or reconstructed.
     protected $baseUrl; // The fully qualified URL, without language (in default language).
     protected $baseComponents; // The fully qualified URL's components, without language (in default language).
-    protected $_lang; // The URL's original language.
+    protected $lang; // The URL's original language.
     protected $defaultLang; // The webpage's default language.
     protected $pattern; // The webpage's wovn url pattern name.
     protected $langDirectory; // The WovnLangDirectory object
@@ -29,12 +29,12 @@ abstract class WovnURLHandler
         $this->options = $options;
         $this->baseUrl = null;
         $this->baseComponents = null;
-        $this->_lang = $this->detectLang();
+        $this->lang = $this->detectLang();
     }
 
     public function lang()
     {
-        return $this->_lang;
+        return $this->lang;
     }
 
     private function addDefaultComponentValues()

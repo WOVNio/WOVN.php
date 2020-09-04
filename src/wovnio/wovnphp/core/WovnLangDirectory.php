@@ -86,9 +86,9 @@ class WovnLangDirectory
     );
 
     private $validLangs;
-    private $_targetLangs;
-    private $_defaultLang;
-    private $_langAliases;
+    private $targetLangs;
+    private $defaultLang;
+    private $langAliases;
     private $langs;
 
     /**
@@ -100,10 +100,10 @@ class WovnLangDirectory
     public function __construct($targetLangs, $defaultLang, $langAliases)
     {
         $this->langs = array();
-        $this->_targetLangs = array();
-        $this->_langAliases = array();
+        $this->targetLangs = array();
+        $this->langAliases = array();
         $this->validLangs = array();
-        $this->_defaultLang = null;
+        $this->defaultLang = null;
         $this->buildAllLangs();
         $this->addTargetLangs($targetLangs);
         $this->addDefaultLang($defaultLang);
@@ -122,8 +122,8 @@ class WovnLangDirectory
         if (array_key_exists($code, WovnLangDirectory::$LANGUAGES)) {
             return $this->langs[$code];
         } else {
-            if (array_key_exists($code, $this->_langAliases)) {
-                return $this->_langAliases[$code];
+            if (array_key_exists($code, $this->langAliases)) {
+                return $this->langAliases[$code];
             }
             throw new WovnLangException('Invalid language code.');
         }
@@ -131,7 +131,7 @@ class WovnLangDirectory
 
     public function defaultLang()
     {
-        return $this->_defaultLang;
+        return $this->defaultLang;
     }
 
     private function buildAllLangs()
@@ -148,7 +148,7 @@ class WovnLangDirectory
             try {
                 $newLang = $this->getLang($targetLang);
                 $newLang->enable();
-                $this->_targetLangs[] = $newLang;
+                $this->targetLangs[] = $newLang;
                 $this->validLangs[] = $newLang;
             } catch (WovnLangException $e) {
                 Logger::get()->error("Invalid target language: {$targetLang}");
@@ -162,7 +162,7 @@ class WovnLangDirectory
             try {
                 $lang = $this->getLang($langCode);
                 $lang->setAlias($alias);
-                $this->_langAliases[$alias] = $lang;
+                $this->langAliases[$alias] = $lang;
             } catch (WovnLangException $e) {
                 Logger::get()->error("Invalid language code: {$langCode}");
             }
@@ -174,7 +174,7 @@ class WovnLangDirectory
         try {
             $newLang = $this->getLang($defaultLang);
             $newLang->enable();
-            $this->_defaultLang = $newLang;
+            $this->defaultLang = $newLang;
             $this->validLangs[] = $newLang;
         } catch (WovnLangException $e) {
             Logger::get()->error("Invalid default language: {$defaultLang}");

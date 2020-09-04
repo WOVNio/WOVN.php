@@ -5,11 +5,11 @@ namespace Wovnio\Wovnphp\Core;
 
 class WovnLang
 {
-    private $_name;
-    private $_code;
-    private $_englishName;
-    private $_alias;
-    private $_active;
+    private $name;
+    private $code;
+    private $englishName;
+    private $alias;
+    private $active;
 
     /**
      * WovnLang constructor.
@@ -21,11 +21,11 @@ class WovnLang
      */
     public function __construct($code, $name, $englishName, $alias = null, $active = false)
     {
-        $this->_name = $name;
-        $this->_code = $code;
-        $this->_englishName = $englishName;
-        $this->_alias = $alias;
-        $this->_active = $active;
+        $this->name = $name;
+        $this->code = $code;
+        $this->englishName = $englishName;
+        $this->alias = $alias;
+        $this->active = $active;
     }
 
     /**
@@ -35,7 +35,7 @@ class WovnLang
      */
     public function name()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -45,7 +45,7 @@ class WovnLang
      */
     public function code()
     {
-        return $this->_code;
+        return $this->code;
     }
 
     /**
@@ -61,7 +61,7 @@ class WovnLang
         // Source: https://support.google.com/webmasters/answer/189077?hl=en
         $wovnCode = array('zh-CHT', 'zh-CHS');
         $iso6391 = array('zh-Hant', 'zh-Hans');
-        return str_replace($wovnCode, $iso6391, $this->_code);
+        return str_replace($wovnCode, $iso6391, $this->code);
     }
 
     /**
@@ -71,7 +71,7 @@ class WovnLang
      */
     public function englishName()
     {
-        return $this->_englishName;
+        return $this->englishName;
     }
 
     /**
@@ -81,7 +81,7 @@ class WovnLang
      */
     public function alias()
     {
-        return $this->_alias;
+        return $this->alias;
     }
 
     /**
@@ -91,7 +91,7 @@ class WovnLang
      */
     public function setAlias($alias)
     {
-        $this->_alias = $alias;
+        $this->alias = $alias;
     }
 
     /**
@@ -99,7 +99,7 @@ class WovnLang
      */
     public function enable()
     {
-        $this->_active = true;
+        $this->active = true;
     }
 
     /**
@@ -109,6 +109,6 @@ class WovnLang
      */
     public function isValidLang()
     {
-        return $this->_active;
+        return $this->active;
     }
 }

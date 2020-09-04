@@ -60,7 +60,7 @@ class WovnOption
         self::OPT_WOVN_DIAGNOSTICS_USERNAME => array('name' => 'wovn_diagnostics_username', 'dependency' => array(), 'required' => false, 'type' => self::STRING_TYPE, 'default' => null)
     );
 
-    private $_options;
+    private $options;
 
     /**
      * WovnOption constructor.
@@ -69,7 +69,7 @@ class WovnOption
      */
     public function __construct($configurations)
     {
-        $this->_options = array();
+        $this->options = array();
         $this->loadOptions($configurations);
     }
 
@@ -81,7 +81,7 @@ class WovnOption
     public function get($name)
     {
         if (array_key_exists($name, self::$OPTIONS)) {
-            return $this->_options[$name];
+            return $this->options[$name];
         }
         throw new WovnConfigurationException("Invalid option name: {$name}");
     }
@@ -110,7 +110,7 @@ class WovnOption
                 Logger::get()->error("Invalid option: {$e->getMessage()}");
                 continue;
             }
-            $this->_options[$name] = $validatedValue;
+            $this->options[$name] = $validatedValue;
         }
         $this->checkDependency();
         $this->loadDefaults();
@@ -124,8 +124,8 @@ class WovnOption
     {
         foreach (self::$OPTIONS as $name => $option) {
             if ($option['default'] !== null) {
-                if (!array_key_exists($name, $this->_options)) {
-                    $this->_options[$name] = $option['default'];
+                if (!array_key_exists($name, $this->options)) {
+                    $this->options[$name] = $option['default'];
                 }
             }
         }
@@ -140,7 +140,7 @@ class WovnOption
     {
         foreach (self::$OPTIONS as $name => $option) {
             if ($option['required'] === true) {
-                if (!array_key_exists($name, $this->_options)) {
+                if (!array_key_exists($name, $this->options)) {
                     throw new WovnConfigurationException("Option {$name} is required by WOVN.php core.");
                 }
             }
@@ -154,12 +154,12 @@ class WovnOption
      */
     private function checkDependency()
     {
-        foreach ($this->_options as $name => $value) {
+        foreach ($this->options as $name => $value) {
             foreach (self::$OPTIONS[$name]['dependency'] as $dependency => $dependencyValue) {
-                if (!array_key_exists($dependency, $this->_options)) {
+                if (!array_key_exists($dependency, $this->options)) {
                     throw new WovnConfigurationException("Option {$name} requires dependency option {$dependency} to be set!");
                 } else {
-                    if ($dependencyValue !== $this->_options[$dependency]) {
+                    if ($dependencyValue !== $this->options[$dependency]) {
                         throw new WovnConfigurationException("Option {$name} requires dependency option {$dependency} to be set to {$dependencyValue}!");
                     }
                 }
