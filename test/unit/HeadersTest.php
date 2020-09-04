@@ -659,6 +659,49 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         };
     }
 
+    public function testRemoveLangWithCustomDefaultLangAliasesPath()
+    {
+        $settings = array(
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'english', 'ja' => 'japanese'),
+            'url_pattern_name' => 'path'
+        );
+        $testCases = array(
+            array('https://my-site.com/japanese/', 'https://my-site.com/english/', 'ja'),
+            array('https://my-site.com/english/', 'https://my-site.com/english/', 'en'),
+            array('/japanese/pages.html', '/english/pages.html', 'ja'),
+            array('/english/pages.html', '/english/pages.html', 'en')
+        );
+
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals('path', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
+    }
+
+    public function testRemoveLangWithCustomDefaultLangAliasesSubDomain()
+    {
+        $settings = array(
+            'default_lang' => 'en',
+            'custom_lang_aliases' => array('en' => 'english'),
+            'supported_langs' => array('en', 'jp'),
+            'url_pattern_name' => 'subdomain'
+        );
+        $testCases = array(
+            array('https://english.my-site.com/index.html', 'https://english.my-site.com/index.html', 'en'),
+        );
+
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
+    }
+
     public function testPathLangWithPathPattern()
     {
         $settings = array('url_pattern_name' => 'path');

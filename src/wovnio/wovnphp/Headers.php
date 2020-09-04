@@ -63,7 +63,8 @@ class Headers
         $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
         $this->host = $this->unmaskedHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
-            $this->host = $this->removeLang($this->host, $this->lang());
+            $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
+            $this->host = $intermediateHost[1];
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
@@ -71,7 +72,11 @@ class Headers
             $clientRequestUri = $env['REQUEST_URI'];
         }
         $exploded = explode('?', $clientRequestUri);
-        $this->pathname = $this->removeLang($exploded[0], $this->lang());
+        if ($store->settings['url_pattern_name'] === 'subdomain') {
+            $this->pathname = $exploded[0];
+        } else {
+            $this->pathname = $this->removeLang($exploded[0], $this->lang());
+        }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
         $urlQuery = $this->removeLang($this->query, $this->lang());
         $urlQuery = strlen($urlQuery) > 0 ? '?' . $urlQuery : '';
@@ -372,12 +377,12 @@ class Headers
     }
 
     /**
-     * Public function removing the lang of the url
+     * Public function reverts the URL to its base form (no lang code)
      * Notice: if there is default language code in custom language code, keep language code url
      *
      * @param String $uri The url with the lang
      * @param String $lang The lang to remove
-     * @return array The url without the lang
+     * @return String The url without the lang
      */
     public function removeLang($uri, $lang = null)
     {
@@ -387,8 +392,7 @@ class Headers
 
         $lang_code = $this->store->convertToCustomLangCode($lang);
         $default_lang = $this->store->settings['default_lang'];
-        $aliases = $this->store->settings['custom_lang_aliases'];
-        if (array_key_exists($default_lang, $aliases)) {
+        if ($this->store->hasDefaultLangAlias()) {
             $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store->settings);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
