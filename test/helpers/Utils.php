@@ -23,6 +23,11 @@ class Utils
         file_put_contents($filePath, $content);
     }
 
+    public static function addHost($host)
+    {
+        file_put_contents('/etc/hosts', "\n127.0.0.1 {$host}", FILE_APPEND);
+    }
+
     public static function fetchURL($url, $timeout = 3)
     {
         $return = new stdClass;
@@ -72,5 +77,54 @@ class Utils
         $method->setAccessible(true);
 
         return $method->invokeArgs($object, $parameters);
+    }
+
+    public static function setWovnIni($filePath, $options = array())
+    {
+        $defaultOptions = array(
+            'project_token' => 'Tek3n',
+            'url_pattern_name' => 'query',
+            'default_lang' => 'en',
+            'encoding' => 'UTF-8',
+            'disable_api_request_for_default_lang' => 'true',
+            'supported_langs' => array('en', 'ja'),
+            'api_url' => 'http://localhost/v0/'
+        );
+        $options = array_merge($defaultOptions, $options);
+
+        $contents = array();
+        foreach ($options as $name => $param) {
+            if (is_array($param)) {
+                foreach ($param as $k => $v) {
+                    $key = is_string($k) ? $k : '';
+                    $contents[] = "{$name}[{$key}] = {$v}";
+                }
+            } else {
+                $contents[] = "{$name} = {$param}";
+            }
+        }
+
+        Utils::writeFile($filePath, $contents);
+    }
+
+    public static function disableRewriteToWovnIndex($htaccessFilePath) {
+        // Remove rewrite rule to wovn_index.php
+        if (file_exists($htaccessFilePath)) {
+            $htaccess = file_get_contents($htaccessFilePath);
+            file_put_contents($htaccessFilePath, str_replace('RewriteRule .? wovn_index.php [L]', '', $htaccess));
+        }
+    }
+
+    public static function enableRewritePathPattern($htaccessFilePath, $langIdentifieres) {
+        if (file_exists($htaccessFilePath)) {
+            $htaccess = file_get_contents($htaccessFilePath);
+            $langs = implode("|", $langIdentifieres);
+            $replacedHtaccess = preg_replace(
+                '/# RewriteRule.+\((.+|)+\).+$/m',
+                'RewriteRule ^/?(?:'.$langs.')($|/.*$) \$1 [L]',
+                $htaccess
+            );
+            file_put_contents($htaccessFilePath, $replacedHtaccess);
+        }
     }
 }

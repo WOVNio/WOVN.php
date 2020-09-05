@@ -1,28 +1,29 @@
 <?php
 namespace Wovnio\Wovnphp\Tests\Integration;
 
+require_once(__DIR__ . '/../helpers/Utils.php');
 use Wovnio\Test\Helpers\Utils;
 
 class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->sourceDir  = dirname(__FILE__) . '/../..';
-        $this->docRoot    = dirname(__FILE__) . '/../docroot';
-        $this->installDir = $this->docRoot . '/WOVN.php';
+        $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
+        $this->docRoot    = "/var/www/html";
 
         Utils::cleanUpDirectory($this->docRoot);
 
-        mkdir($this->installDir);
-        exec(sprintf('cp -rf %s %s', $this->sourceDir . '/src', $this->installDir . '/src'));
+        // Copy WOVN.php
+        mkdir("{$this->docRoot}/WOVN.php");
+        exec("cp -rf {$this->sourceDir}/src {$this->docRoot}/WOVN.php/src");
 
+        // Set .htaccess and wovn_index.php
+        copy("{$this->sourceDir}/htaccess_sample", "{$this->docRoot}/.htaccess");
         copy($this->sourceDir . '/wovn_index_sample.php', $this->docRoot . '/wovn_index.php');
-        copy($this->sourceDir . '/htaccess_sample', $this->docRoot . '/.htaccess');
 
-        mkdir($this->docRoot . '/v0');
-        copy($this->sourceDir . '/test/fixtures/integration/v0/translation', $this->docRoot . '/v0/translation');
-
-        chdir($this->docRoot);
+        // Set html-swapper mock
+        mkdir("{$this->docRoot}/v0");
+        copy("{$this->sourceDir}/test/fixtures/integration/v0/translation", "{$this->docRoot}/v0/translation");
     }
 
     protected function tearDown()
