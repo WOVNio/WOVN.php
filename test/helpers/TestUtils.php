@@ -4,7 +4,7 @@ namespace Wovnio\Test\Helpers;
 use ReflectionException;
 use stdClass;
 
-class Utils
+class TestUtils
 {
     public static function cleanUpDirectory($path)
     {
@@ -104,10 +104,11 @@ class Utils
             }
         }
 
-        Utils::writeFile($filePath, $contents);
+        TestUtils::writeFile($filePath, $contents);
     }
 
-    public static function disableRewriteToWovnIndex($htaccessFilePath) {
+    public static function disableRewriteToWovnIndex($htaccessFilePath)
+    {
         // Remove rewrite rule to wovn_index.php
         if (file_exists($htaccessFilePath)) {
             $htaccess = file_get_contents($htaccessFilePath);
@@ -115,7 +116,8 @@ class Utils
         }
     }
 
-    public static function enableRewritePathPattern($htaccessFilePath, $langIdentifieres) {
+    public static function enableRewritePathPattern($htaccessFilePath, $langIdentifieres)
+    {
         if (file_exists($htaccessFilePath)) {
             $htaccess = file_get_contents($htaccessFilePath);
             $langs = implode("|", $langIdentifieres);

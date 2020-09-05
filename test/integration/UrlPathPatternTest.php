@@ -1,8 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp\Tests\Integration;
 
-require_once(__DIR__ . '/../helpers/Utils.php');
-use Wovnio\Test\Helpers\Utils;
+require_once(__DIR__ . '/../helpers/TestUtils.php');
+use Wovnio\Test\Helpers\TestUtils;
 
 class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
 {
@@ -11,7 +11,7 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
         $this->docRoot    = '/var/www/html';
 
-        Utils::cleanUpDirectory($this->docRoot);
+        TestUtils::cleanUpDirectory($this->docRoot);
 
         // Copy WOVN.php
         mkdir("{$this->docRoot}/WOVN.php");
@@ -25,14 +25,14 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        Utils::cleanUpDirectory($this->docRoot);
+        TestUtils::cleanUpDirectory($this->docRoot);
     }
 
     public function testPathPatternNotFoundPage()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        Utils::writeFile("{$this->docRoot}/404.html", '<html><head></head><body>Page Not Found</body></html>');
-        Utils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+        TestUtils::writeFile("{$this->docRoot}/404.html", '<html><head></head><body>Page Not Found</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
@@ -47,16 +47,16 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '</head>'.
         '<body>Page Not Found</body>'.
         '</html>';
-        $this->assertEquals($not_found_page, Utils::fetchURL('http://localhost/no.html')->body);
+        $this->assertEquals($not_found_page, TestUtils::fetchURL('http://localhost/no.html')->body);
     }
 
     public function testPathPatternRootDir()
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        Utils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
-        Utils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
-        Utils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
             'supported_langs' => $langs
         ));
@@ -72,24 +72,24 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/index.html')->body);
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/en/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/ja/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/en-US/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/zh-Hant-HK/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/en/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/ja/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/en-US/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.html')->body);
     }
 
     public function testPathPatternRootDirWithIntercepter()
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
-        Utils::disableRewriteToWovnIndex("{$this->docRoot}/.htaccess");
-        Utils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
+        TestUtils::disableRewriteToWovnIndex("{$this->docRoot}/.htaccess");
+        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
 
         $content =
             "<?php require_once('{$this->docRoot}/WOVN.php/src/wovn_interceptor.php'); ?>\n".
             '<html><head></head><body>test</body></html>';
-        Utils::writeFile("{$this->docRoot}/index.php", $content);
-        Utils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+        TestUtils::writeFile("{$this->docRoot}/index.php", $content);
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
             'supported_langs' => $langs
         ));
@@ -105,21 +105,21 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/index.php')->body);
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/en/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/ja/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/en-US/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/zh-Hant-HK/index.php')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.php')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/en/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/ja/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/en-US/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.php')->body);
     }
 
     public function testPathPatternSubDir()
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        Utils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
+        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         mkdir("{$this->docRoot}/sub");
-        Utils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
-        Utils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+        TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
             'supported_langs' => $langs
         ));
@@ -135,24 +135,24 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/sub/index.html')->body);
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/en/sub/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/ja/sub/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/en-US/sub/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/zh-Hant-HK/sub/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/sub/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/en/sub/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/ja/sub/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/en-US/sub/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/zh-Hant-HK/sub/index.html')->body);
     }
 
     public function testPathPatternSubDirWithIntercepter()
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
-        Utils::disableRewriteToWovnIndex("{$this->docRoot}/.htaccess");
-        Utils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
+        TestUtils::disableRewriteToWovnIndex("{$this->docRoot}/.htaccess");
+        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         $content =
             "<?php require_once('{$this->docRoot}/WOVN.php/src/wovn_interceptor.php'); ?>\n".
             '<html><head></head><body>test</body></html>';
         mkdir("{$this->docRoot}/sub");
-        Utils::writeFile("{$this->docRoot}/sub/index.php", $content);
-        Utils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+        TestUtils::writeFile("{$this->docRoot}/sub/index.php", $content);
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
             'supported_langs' => $langs
         ));
@@ -168,10 +168,10 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/sub/index.php')->body);
-        $this->assertEquals($content_without_html_swapper, Utils::fetchURL('http://localhost/en/sub/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/ja/sub/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/en-US/sub/index.php')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', Utils::fetchURL('http://localhost/zh-Hant-HK/sub/index.php')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/sub/index.php')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/en/sub/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/ja/sub/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/en-US/sub/index.php')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/zh-Hant-HK/sub/index.php')->body);
     }
 }
