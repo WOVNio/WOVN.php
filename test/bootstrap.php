@@ -21,7 +21,7 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'src/wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
-require_once 'test/helpers/Utils.php';
+require_once 'test/helpers/TestUtils.php';
 
 // disable error logging
 \Wovnio\Wovnphp\Logger::get()->setQuiet(true);

@@ -16,7 +16,6 @@ docker create -v ${VOLUME} --name $dummy_container $docker_name /bin/true
 # Copy source to dummy container
 docker cp $(pwd) $dummy_container:${WORK_DIR}
 
-
 # Check syntax
 docker run --rm -t -w ${WORK_DIR} --volumes-from $dummy_container $docker_name \
        /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" !  -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
