@@ -13,6 +13,10 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
         TestUtils::addHost('ja.testsite.com');
         TestUtils::addHost('en-us.testsite.com');
         TestUtils::addHost('zh-hant-hk.testsite.com');
+        TestUtils::addHost('custom-en.testsite.com');
+        TestUtils::addHost('custom-ja.testsite.com');
+        TestUtils::addHost('custom-en-us.testsite.com');
+        TestUtils::addHost('custom-zh-hant-hk.testsite.com');
     }
 
     protected function setUp()
@@ -205,15 +209,11 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
     public function testSubdomainPatternWithCustomLangAliases()
     {
         $langs = array(
-            'en' => 'custom_en',
-            'ja' => 'custom_ja',
-            'en-US' => 'custom_en_us',
-            'zh-Hant-HK' => 'custom_zh_hant_hk'
+            'en' => 'custom-en',
+            'ja' => 'custom-ja',
+            'en-US' => 'custom-en-us',
+            'zh-Hant-HK' => 'custom-zh-hant-hk'
         );
-        foreach (array_values($langs) as $langIdentifier) {
-            $lowerCaseLang = strtolower($langIdentifier);
-            TestUtils::addHost("{$lowerCaseLang}.testsite.com");
-        }
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
@@ -224,12 +224,12 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
 
         $content_without_html_swapper = '<html>'.
         '<head>'.
-        '<link rel="alternate" hreflang="en" href="http://custom_en.testsite.com/index.html">'.
-        '<link rel="alternate" hreflang="ja" href="http://custom_ja.testsite.com/index.html">'.
-        '<link rel="alternate" hreflang="en-US" href="http://custom_en_us.testsite.com/index.html">'.
-        '<link rel="alternate" hreflang="zh-Hant-HK" href="http://custom_zh_hant_hk.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="en" href="http://custom-en.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="ja" href="http://custom-ja.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="en-US" href="http://custom-en-us.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="zh-Hant-HK" href="http://custom-zh-hant-hk.testsite.com/index.html">'.
         '<script src="//j.wovn.io/1" '.
-        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;,&quot;ja&quot;:&quot;custom_ja&quot;,&quot;en-US&quot;:&quot;custom_en_us&quot;,&quot;zh-Hant-HK&quot;:&quot;custom_zh_hant_hk&quot;}&amp;langParamName=wovn" '.
+        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases={&quot;en&quot;:&quot;custom-en&quot;,&quot;ja&quot;:&quot;custom-ja&quot;,&quot;en-US&quot;:&quot;custom-en-us&quot;,&quot;zh-Hant-HK&quot;:&quot;custom-zh-hant-hk&quot;}&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
         'async></script>'.
         '</head>'.
@@ -237,10 +237,10 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
         '</html>';
 
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://testsite.com/index.html')->body);
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://custom_en.testsite.com/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom_ja.testsite.com/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom_en_us.testsite.com/index.html')->body);
-        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom_zh_hant_hk.testsite.com/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://custom-en.testsite.com/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-ja.testsite.com/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-en-us.testsite.com/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-zh-hant-hk.testsite.com/index.html')->body);
     }
 
     public function testSubdomainPatternWithIgnorePaths()
