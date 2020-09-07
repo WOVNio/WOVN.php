@@ -202,7 +202,7 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
             'api_url' => 'http://localhost/not_exist_html_swapper_url/'
         ));
 
-        $not_found_page = '<html>'.
+        $content_without_html_swapper = '<html>'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
@@ -211,12 +211,12 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
-        'data-wovnio-type="fallback_snippet" '. // Sould inslude fallback snippet
+        'data-wovnio-type="fallback_snippet" '. // Sould include fallback snippet
         'async></script>'.
         '</head>'.
         '<body>test</body>'.
         '</html>';
-        $this->assertEquals($not_found_page, TestUtils::fetchURL('http://localhost/ja/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/ja/index.html')->body);
     }
 
     public function testPathPatternWithCustomLangAliases()
