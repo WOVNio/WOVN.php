@@ -200,42 +200,41 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html?wovn=ja')->body);
     }
 
-    // TODO: There are issue in this case
-    // public function testQueryPatternWithCustomLangAliases()
-    // {
-    //     $langs = array(
-    //         'en' => 'custom_en',
-    //         'ja' => 'custom_ja',
-    //         'en-US' => 'custom_en_US',
-    //         'zh-Hant-HK' => 'custom_zh_Hant_HK'
-    //     );
-    //     copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-    //     TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
-    //     TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
-    //         'url_pattern_name' => 'query',
-    //         'supported_langs' => array_keys($langs),
-    //         'custom_lang_aliases' => $langs
-    //     ));
+    public function testQueryPatternWithCustomLangAliases()
+    {
+        $langs = array(
+            'en' => 'custom_en',
+            'ja' => 'custom_ja',
+            'en-US' => 'custom_en_US',
+            'zh-Hant-HK' => 'custom_zh_Hant_HK'
+        );
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'query',
+            'supported_langs' => array_keys($langs),
+            'custom_lang_aliases' => $langs
+        ));
 
-    //     $content_without_html_swapper = '<html>'.
-    //     '<head>'.
-    //     '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
-    //     '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
-    //     '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=custom_en_US">'.
-    //     '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/index.html?wovn=custom_zh_Hant_HK">'.
-    //     '<script src="//j.wovn.io/1" '.
-    //     'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;,&quot;ja&quot;:&quot;custom_ja&quot;,&quot;en-US&quot;:&quot;custom_en_US&quot;,&quot;zh-Hant-HK&quot;:&quot;custom_zh_Hant_HK&quot;}&amp;langParamName=wovn" '.
-    //     'data-wovnio-info="version=WOVN.php_VERSION" '.
-    //     'async></script>'.
-    //     '</head>'.
-    //     '<body>test</body>'.
-    //     '</html>';
-    //     $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
-    //     $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html?wovn=en')->body);
-    //     $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=ja')->body);
-    //     $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=en-US')->body);
-    //     $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=zh-Hant-HK')->body);
-    // }
+        $content_without_html_swapper = '<html>'.
+        '<head>'.
+        '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
+        '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
+        '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=custom_en_US">'.
+        '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/index.html?wovn=custom_zh_Hant_HK">'.
+        '<script src="//j.wovn.io/1" '.
+        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;,&quot;ja&quot;:&quot;custom_ja&quot;,&quot;en-US&quot;:&quot;custom_en_US&quot;,&quot;zh-Hant-HK&quot;:&quot;custom_zh_Hant_HK&quot;}&amp;langParamName=wovn" '.
+        'data-wovnio-info="version=WOVN.php_VERSION" '.
+        'async></script>'.
+        '</head>'.
+        '<body>test</body>'.
+        '</html>';
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_ja')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en_US')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_zh_Hant_HK')->body);
+    }
 
     public function testQueryPatternWithLangParamName()
     {
