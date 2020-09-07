@@ -102,6 +102,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testIncludedSnippetAndHreflang()
     {
+        $this->markTestSkipped("Test does not make sense.");
         $index_php_content = <<<CONTENT
 <?php require_once('WOVN.php/src/wovn_interceptor.php'); ?>
 <html><head><link rel="alternate" hreflang="en" href="http://ja.AAAAA.com/" /></head><body>test</body></html>
