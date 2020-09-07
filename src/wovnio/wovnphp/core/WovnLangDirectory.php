@@ -5,6 +5,8 @@ namespace Wovnio\Wovnphp\Core;
 
 use Wovnio\Wovnphp\Logger;
 
+require_once(__DIR__ . '/exceptions/WovnLangException.php');
+
 class WovnLangDirectory
 {
     private static $LANGUAGES = array(
