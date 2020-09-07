@@ -211,7 +211,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-Hant-HK' => 'custom_zh_hant_hk'
         );
         foreach (array_values($langs) as $langIdentifier) {
-            $lowerCaseLang = mb_strtolower($langIdentifier);
+            $lowerCaseLang = strtolower($langIdentifier);
             TestUtils::addHost("{$lowerCaseLang}.testsite.com");
         }
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
