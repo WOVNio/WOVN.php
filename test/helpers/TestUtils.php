@@ -82,7 +82,7 @@ class TestUtils
     public static function setWovnIni($filePath, $options = array())
     {
         $defaultOptions = array(
-            'project_token' => 'Tek3n',
+            'project_token' => 'TOKEN',
             'url_pattern_name' => 'query',
             'default_lang' => 'en',
             'encoding' => 'UTF-8',

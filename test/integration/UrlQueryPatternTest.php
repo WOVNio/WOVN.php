@@ -51,7 +51,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/no.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/no.html?wovn=en-US">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/no.html?wovn=zh-Hant-HK">'.
-        '<script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>Page Not Found</body>'.
         '</html>';
@@ -73,7 +73,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=en-US">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/index.html?wovn=zh-Hant-HK">'.
-        '<script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
         '</html>';
@@ -104,7 +104,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.php?wovn=en-US">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/index.php?wovn=zh-Hant-HK">'.
-        '<script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
         '</html>';
@@ -132,7 +132,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.html?wovn=en-US">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/sub/index.html?wovn=zh-Hant-HK">'.
-        '<script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
         '</html>';
@@ -162,7 +162,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.php?wovn=en-US">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/sub/index.php?wovn=zh-Hant-HK">'.
-        '<script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
         '</html>';
