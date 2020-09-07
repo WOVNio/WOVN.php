@@ -98,6 +98,18 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
+    public function testWithSubdomainPatternInvalidLangVariation1()
+    {
+        $target = array('en');
+        $default = 'en';
+        $alias = array();
+        $directory = new WovnLangDirectory($target, $default, $alias);
+        $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'subdomain'));
+        $originalUrl = 'http://fr-test.my-site.com/index.php';
+        $url = new WovnURL($originalUrl, $directory, $options);
+        self::assertEquals('en', $url->lang()->code());
+    }
+
     public function testWithSubdomainPatternNonDefaultLang()
     {
         $directory = $this->getLangDirectory();
