@@ -1,64 +1,65 @@
 <?php
 namespace Wovnio\Wovnphp\Tests\Integration;
 
-use Wovnio\Test\Helpers\Utils;
+require_once(__DIR__ . '/../helpers/TestUtils.php');
+use Wovnio\Test\Helpers\TestUtils;
 
 class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 {
     protected function setUp()
     {
-        $this->sourceDir  = dirname(__FILE__) . '/../..';
-        $this->docRoot    = dirname(__FILE__) . '/../docroot';
-        $this->installDir = $this->docRoot . '/WOVN.php';
+        $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
+        $this->docRoot    = "/var/www/html";
 
-        Utils::cleanUpDirectory($this->docRoot);
+        TestUtils::cleanUpDirectory($this->docRoot);
 
-        mkdir($this->installDir);
-        exec(sprintf('cp -rf %s %s', $this->sourceDir . '/src', $this->installDir . '/src'));
+        // Copy WOVN.php
+        mkdir("{$this->docRoot}/WOVN.php");
+        exec("cp -rf {$this->sourceDir}/src {$this->docRoot}/WOVN.php/src");
 
+        // Set .htaccess and wovn_index.php
+        copy("{$this->sourceDir}/htaccess_sample", "{$this->docRoot}/.htaccess");
         copy($this->sourceDir . '/wovn_index_sample.php', $this->docRoot . '/wovn_index.php');
-        copy($this->sourceDir . '/htaccess_sample', $this->docRoot . '/.htaccess');
 
-        mkdir($this->docRoot . '/v0');
-        copy($this->sourceDir . '/test/fixtures/integration/v0/translation', $this->docRoot . '/v0/translation');
-
-        chdir($this->docRoot);
+        // Set html-swapper mock
+        mkdir("{$this->docRoot}/v0");
+        copy("{$this->sourceDir}/test/fixtures/integration/v0/translation", "{$this->docRoot}/v0/translation");
     }
 
     protected function tearDown()
     {
-        Utils::cleanUpDirectory($this->docRoot);
+        TestUtils::cleanUpDirectory($this->docRoot);
     }
 
     public function testNoneConfigurationDoNotChangeWovn()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.html', '<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.html', '<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>');
         $response = $this->fetchURL('/index.html')->body;
         $this->assertEquals('<html><head><title>Hello World</title></head><body>Welcome Start Page!!</body></html>', $response);
     }
 
     public function testWithFile()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
         $this->assertEquals('This is index.html', $this->fetchURL('/index.html')->body);
     }
 
     public function testDetectIndexPhp()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
         $this->assertEquals('This is index.php', $this->fetchURL('/')->body);
     }
 
     public function testDetectMultipleFiles()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
-        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.html', 'This is index.html');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
         $this->assertEquals('This is index.html', $this->fetchURL('/')->body);
     }
 
     public function testLeadingDoubleDotsBad()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/../../index.php');
 
@@ -67,7 +68,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testTrailingDoubleDotsOk()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/bird/..');
 
@@ -76,7 +77,7 @@ class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
 
     public function testSingleDotsOk()
     {
-        Utils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', 'This is index.php');
 
         $response = $this->fetchURL('/./././././');
 
@@ -113,7 +114,7 @@ JSON;
 <html lang="en"><head><script src="//j.wovn.io/1" async="true" data-wovnio="key=zwBmtA&amp;backend=true&amp;currentLang=ja&amp;defaultLang=ja&amp;urlPattern=path&amp;langCodeAliases={}&amp;langParamName=wovn&amp;version=0.0.1"> </script><link rel="alternate" hreflang="en" href="http://localhost/en/index.php"><link rel="alternate" hreflang="ja" href="http://localhost/index.php"></head><body>test</body></html>
 EXPECTED;
 
-        Utils::writeFile($this->docRoot . '/' . 'index.php', $index_php_content);
+        TestUtils::writeFile($this->docRoot . '/' . 'index.php', $index_php_content);
 
         $this->setWovnIni();
         $this->setMockApiResponse($mock_api_response);
@@ -134,7 +135,7 @@ CONTENT;
 <html ⚡><head></head><body>test</body></html>
 EXPECTED;
 
-        Utils::writeFile($this->docRoot . '/' . 'amp.php', $amp_php_content);
+        TestUtils::writeFile($this->docRoot . '/' . 'amp.php', $amp_php_content);
         $this->setWovnIni(array('check_amp' => 1));
 
         $response = $this->fetchURL('/amp.php');
@@ -162,7 +163,7 @@ CONTENT;
 </html>
 EXPECTED;
 
-        Utils::writeFile($this->docRoot . '/' . 'static.html', $static_html_content);
+        TestUtils::writeFile($this->docRoot . '/' . 'static.html', $static_html_content);
         $this->setWovnIni(array());
 
         $response = $this->fetchURL('/static.html?a=b');
@@ -172,12 +173,12 @@ EXPECTED;
 
     private function fetchURL($path)
     {
-        return Utils::fetchURL('http://localhost' . $path);
+        return TestUtils::fetchURL('http://localhost' . $path);
     }
 
     private function setMockApiResponse($contents)
     {
-        Utils::writeFile($this->docRoot . '/' . 'v0/translation', $contents);
+        TestUtils::writeFile($this->docRoot . '/' . 'v0/translation', $contents);
     }
 
     private function setWovnIni($options = array())
@@ -208,11 +209,11 @@ EXPECTED;
             }
         }
 
-        Utils::writeFile($this->docRoot . '/' . 'wovn.ini', $contents);
+        TestUtils::writeFile($this->docRoot . '/' . 'wovn.ini', $contents);
     }
 
     private function setHtaccess($contents)
     {
-        Utils::writeFile($this->docRoot . '/' . '.htaccess', $contents);
+        TestUtils::writeFile($this->docRoot . '/' . '.htaccess', $contents);
     }
 }

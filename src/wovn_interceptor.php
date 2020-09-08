@@ -55,7 +55,7 @@ if (!Utils::isFilePathURI($uri, $store) &&
         }
 
         $translatedBuffer = API::translate($store, $headers, $buffer);
-        
+
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
             $diagnostics->logPerformance($benchmarkStart, $benchmarkEnd);

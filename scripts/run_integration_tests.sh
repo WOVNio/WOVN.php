@@ -24,7 +24,6 @@ if [ "${docker_name}" == "php:5.3-apache" ]; then
 else
     mod_rewrite_activation="${mod_rewrite_activation}; apache2-foreground"
 fi
-
 docker run -d -w /var/www/html \
        -e WOVN_ENV=development \
        --volumes-from $dummy_container \
@@ -40,14 +39,7 @@ function cleanup_container
 trap cleanup_container EXIT
 
 # Run integration test
-if [[ "${docker_name}" =~ ^php:7.*$ ]]; then
-# NOTE: On php7.1 and above, the segmentation fault is occured, so the coverage I don't do reports.
-#    docker exec -w /opt/project ${APACHE_CONTAINER_ID} \
-#           /bin/bash -c "set -e; ln -s /var/www/html /opt/project/test/docroot && phpdbg -qrr vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${INTGTEST_REPORT_DIR}/coverage-report"
-    docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
-else
-    docker exec ${APACHE_CONTAINER_ID} \
-           /bin/bash -c "set -e; cd /opt/project; ln -s /var/www/html /opt/project/test/docroot; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
-fi
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; cd /opt/project; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
+
+# Copy test results to host OS
 docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${INTGTEST_REPORT_DIR}" ${PWD}/${INTGTEST_REPORT_DIR}

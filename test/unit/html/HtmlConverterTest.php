@@ -2,7 +2,7 @@
 namespace Wovnio\Wovnphp\Tests\Unit;
 
 use \Wovnio\Html\HtmlConverter;
-use Wovnio\Test\Helpers\Utils;
+use Wovnio\Test\Helpers\TestUtils;
 use \Wovnio\Html\HtmlReplaceMarker;
 use \Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use \Wovnio\ModifiedVendor\SimpleHtmlDom;
@@ -138,7 +138,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -160,7 +160,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('en'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -182,7 +182,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('en'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -204,7 +204,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/news/blog/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('en'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -225,7 +225,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -247,7 +247,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('en'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -269,7 +269,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/blog/news/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -285,7 +285,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?wovn=ja';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -302,7 +302,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?wovn=ja';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -318,7 +318,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?lan=ja';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -334,7 +334,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://ja.my-site.com/';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
@@ -360,7 +360,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('custom_en.my-site.com', $headers->host);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://ja.my-site.com/pages.html';
-        $generated_href = Utils::invokeMethod($converter, 'buildHrefLang', array('ja'));
+        $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
         $this->assertEquals($expected_href, $generated_href);
     }
 
