@@ -32,7 +32,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
@@ -100,7 +99,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
@@ -194,7 +192,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
@@ -227,7 +224,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
             'zh-Hant-HK' => 'custom_zh_Hant_HK'
         );
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", array_values($langs));
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
@@ -257,7 +253,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     public function testPathPatternWithCustomLangAliasesWithDefaultLang()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", array('ja', 'custom_en'));
         mkdir("{$this->docRoot}/custom_en");
         TestUtils::writeFile("{$this->docRoot}/custom_en/index.html", '<html><head></head><body>under custom_en</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
@@ -286,7 +281,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'path',
@@ -305,7 +299,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>root</body></html>');
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>sub</body></html>');
@@ -327,9 +320,10 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
         "<body>sub</body>".
         '</html>';
 
-        // WOVN.php should work under sub directory with site_prefix_path
+        // Should not work
         $this->assertEquals('<html><head></head><body>root</body></html>', TestUtils::fetchURL('http://localhost/index.html')->body);
         $this->assertEquals('Page Not Found', TestUtils::fetchURL('http://localhost/ja/index.html')->body);
+        // Should work under sub directory
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/sub/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/sub/ja/index.html')->body);
     }
@@ -338,7 +332,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>root</body></html>');
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>sub</body></html>');
@@ -370,7 +363,6 @@ class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
     {
         $langs = array('en', 'ja');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::enableRewritePathPattern("{$this->docRoot}/.htaccess", $langs);
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>root</body></html>');
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>sub</body></html>');
