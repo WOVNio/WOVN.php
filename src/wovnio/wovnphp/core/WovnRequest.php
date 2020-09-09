@@ -40,9 +40,9 @@ class WovnRequest
     }
 
     /**
-     * Swaps the HTML either locally or via API, depending on the situation
+     * Translates the HTML either locally or via API, depending on the situation
      */
-    public function swap()
+    public function translate()
     {
     }
 
