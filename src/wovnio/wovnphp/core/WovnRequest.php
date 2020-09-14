@@ -29,7 +29,10 @@ class WovnRequest
         $this->host = $serverSuperGlobal['HTTP_HOST'];
         $this->path = $this->parseURI($serverSuperGlobal);
         $this->query = isset($serverSuperGlobal['QUERY_STRING']) ? $serverSuperGlobal['QUERY_STRING'] : '';
-        $this->url = $this->scheme . '://' . $this->host . $this->path . $this->query;
+        $this->url = $this->scheme . '://' . $this->host . $this->path;
+        if ($this->query) {
+            $this->url = $this->url . '?' . $this->query;
+        }
         $this->langDirectory = new WovnLangDirectory(
             $this->options->get(WovnOption::OPT_SUPPORTED_LANGS),
             $this->options->get(WovnOption::OPT_DEFAULT_LANG),
@@ -72,13 +75,11 @@ class WovnRequest
     private function parseURI($serverSuperGlobal)
     {
         if ($this->options->get(WovnOption::OPT_USE_PROXY) && isset($serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            return $serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI'];
+            $components = explode('?', $serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI']);
+            return $components[0];
         }
-        if (!isset($serverSuperGlobal['REQUEST_URI'])) {
-            return $serverSuperGlobal['PATH_INFO'] . (strlen($serverSuperGlobal['QUERY_STRING']) === 0 ? '' : '?' . $serverSuperGlobal['QUERY_STRING']);
-        } else {
-            return $serverSuperGlobal['REQUEST_URI'];
-        }
+
+        return $serverSuperGlobal['PATH_INFO'];
     }
 
     private function shouldUseAPITranslation()
