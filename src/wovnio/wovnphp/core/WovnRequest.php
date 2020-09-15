@@ -75,11 +75,13 @@ class WovnRequest
     private function parseURI($serverSuperGlobal)
     {
         if ($this->options->get(WovnOption::OPT_USE_PROXY) && isset($serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $components = explode('?', $serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI']);
-            return $components[0];
+            $uri = $serverSuperGlobal['HTTP_X_FORWARDED_REQUEST_URI'];
+        } else {
+            $uri = $serverSuperGlobal['REQUEST_URI'];
         }
 
-        return $serverSuperGlobal['PATH_INFO'];
+        $components = explode('?', $uri);
+        return $components[0];
     }
 
     private function shouldUseAPITranslation()

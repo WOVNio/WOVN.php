@@ -173,6 +173,15 @@ class WovnURLTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('en', $url->lang()->code());
     }
 
+    public function testWithPathPatternDefaultLangWithDefaultLangAlias()
+    {
+        $directory = $this->getLangDirectory();
+        $options = $this->getOptions(array(WovnOption::OPT_URL_PATTERN_NAME => 'path', WovnOption::OPT_CUSTOM_LANG_ALIASES => array('en' => 'custom_en')));
+        $originalUrl = 'https://www.example.com/custom_en';
+        $url = new WovnURL($originalUrl, $directory, $options);
+        self::assertEquals('en', $url->lang()->code());
+    }
+
     public function testWithPathPatternNonDefaultLang()
     {
         $directory = $this->getLangDirectory();
