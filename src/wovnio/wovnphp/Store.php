@@ -138,6 +138,8 @@ class Store
             $this->settings['url_pattern_reg'] = '((\?.*&)|\?)' . $this->settings['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
         } elseif ($this->settings['url_pattern_name'] === 'subdomain') {
             $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
+        } elseif ($this->settings['url_pattern_name'] === 'custom_domain') {
+            // not use regex
         } else {
             $this->settings['url_pattern_name'] = 'path';
             $prefix = empty($this->settings['site_prefix_path']) ? '' : str_replace('/', '\/', '/' . $this->settings['site_prefix_path']);
