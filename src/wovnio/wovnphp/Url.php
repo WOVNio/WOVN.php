@@ -37,6 +37,8 @@ class Url
         $site_prefix_path = $store->settings['site_prefix_path'];
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
+        $default_lang = $store->settings['default_lang'];
+        $custom_domain_langs = $store->settings['custom_domain_langs'];
 
         if (Utils::isIgnoredPath($uri, $store)) {
             return $uri;
@@ -46,7 +48,6 @@ class Url
         $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
 
         if ($store->hasDefaultLangAlias()) {
-            $default_lang = $store->settings['default_lang'];
             $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store->settings);
             $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store->settings);
         }
@@ -67,6 +68,9 @@ class Url
                     break;
                 case 'path':
                     $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
+                    break;
+                case 'custom_domain':
+                    $new_uri = self::addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang, $custom_domain_langs);
                     break;
                 default:
                     $new_uri = $uri;
@@ -195,6 +199,15 @@ class Url
         return $new_uri;
     }
 
+    private static function addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang, $custom_domain_langs)
+    {
+        $target_lang_domain = array_search($lang_code, $custom_domain_langs);
+        $default_lang_domain = array_search($default_lang, $custom_domain_langs);
+        error_log('--------1111:' . $target_lang_domain . "|" . $default_lang_domain . "|" . $no_lang_uri);
+
+        return str_replace($default_lang_domain, $target_lang_domain, $no_lang_uri);
+    }
+
     /**
      * Removing the lang of the url, literally.
      * No lang code to custom lang alias conversion happens here.
@@ -236,6 +249,28 @@ class Url
             return !preg_match(self::generateUrlRegex($settings['site_prefix_path']), $uri);
         }
         return false;
+    }
+
+    public static function parseUrlStr($url)
+    {
+        $regex = '@' .
+            '^(.*://|//)?' . // 1: schema (optional) like https://
+            '([^/?]*)' . // 2: host like wovn.io
+            '(/[\w\-\.]+[^#?\s]+)?' . // 3: path like /path/index.html
+            '(.*)' . // 4: query, hash or end-of-string like /dir2/?a=b#hash
+            '@';
+        preg_match($regex, $url, $match);
+        return array(
+            'host' => $match[2],
+            'path' => substr($match[3], -1) === '/' ? $match[3] : $match[3].'/'
+        );
+        // $hasSchema = preg_match($regex, $url) === 1;
+        // $absolutePathUrl = preg_match('/^\//', $url) === 1;
+        // $absoluteUrl = $url;
+        // if (!$hasSchema && !$absolutePathUrl) {
+        //     $absoluteUrl = "http://".$url;
+        // }
+        // return parse_url($absoluteUrl);
     }
 
     private static function isAnchorLink($uri)

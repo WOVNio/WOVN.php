@@ -106,6 +106,39 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testAddCustomDomainLangCode()
+    {
+        $custom_domain_langs = array(
+            'example.com' => 'en', // default lang
+            'en-us.example.com' => 'en-US', // subdomain pattern
+            'example.com/ja' => 'ja', // path pattern
+            'example.com/zh/chs' => 'zh-CHS', // deep path pattern
+            'zh-hant-hk.example.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+        );
+        $testCases = array(
+            // no_lang_uri, lang_code, default_lang, expected_url
+            array('https://example.com', 'ja', 'en', 'https://example.com/ja'),
+            array('https://example.com/index.php', 'ja', 'en', 'https://example.com/ja/index.php'),
+            array('https://example.com/a/b/', 'ja', 'en', 'https://example.com/ja/a/b/'),
+            array('https://example.com/a/b/index.php', 'ja', 'en', 'https://example.com/ja/a/b/index.php'),
+            array('https://example.com/index.php', 'en-US', 'en', 'https://en-us.example.com/index.php'),
+            array('https://example.com/index.php', 'zh-CHS', 'en', 'https://example.com/zh/chs/index.php'),
+            array('https://example.com/index.php', 'zh-Hant-HK', 'en', 'https://zh-hant-hk.example.com/zh/index.php')
+        );
+
+        list($store, $headers) = $this->getStarted('customDomain', array(
+            'REQUEST_URI' => "https://example.com",
+            'HOST' => 'example.com'
+        ));
+
+        $url = new Url;
+        foreach ($testCases as $case) {
+            list($no_lang_url, $lang_code, $default_lang, $expected_url) = $case;
+            $parsed_url = parse_url($no_lang_url);
+            $this->assertEquals($expected_url, $this->invokeMethod($url, 'addCustomDomainLangCode', array($no_lang_url, $lang_code, $default_lang, $custom_domain_langs)));
+        }
+    }
+
     public function testAddLangCodeRelativePathWithPathPattern()
     {
         $uri = '/index.php';

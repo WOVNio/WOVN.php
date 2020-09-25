@@ -25,7 +25,9 @@ class TestUtils
 
     public static function addHost($host)
     {
-        file_put_contents('/etc/hosts', "\n127.0.0.1 {$host}", FILE_APPEND);
+        $hostFile = file_get_contents('/etc/hosts');
+        $hostFile = $hostFile . "\n127.0.0.1 {$host}";
+        file_put_contents('/etc/hosts', $hostFile);
     }
 
     public static function fetchURL($url, $timeout = 3)

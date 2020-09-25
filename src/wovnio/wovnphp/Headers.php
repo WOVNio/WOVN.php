@@ -198,16 +198,26 @@ class Headers
             } else {
                 $request_uri = $this->env['REQUEST_URI'];
             }
-            preg_match($rp, $server_name . $request_uri, $match);
-            if (isset($match['lang'])) {
-                $lang_code = Lang::formatLangCode($match['lang'], $this->store);
-                if (!is_null($lang_code)) {
-                    $this->pathLang = $lang_code;
+
+            $full_url = $server_name . $request_uri;
+            $lang_identifier = null;
+            if ($this->store->settings['url_pattern_name'] == 'custom_domain') {
+                foreach ($this->store->settings['custom_domain_langs'] as $lang_url => $lang) {
+                    if (strpos($full_url, $lang_url) !== false) {
+                        $lang_identifier = $lang;
+                        break;
+                    }
                 }
+            } else {
+                $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
+                preg_match($rp, $full_url, $match);
+                if (isset($match['lang'])) {
+                    $lang_identifier = $match['lang'];
+                }
+
             }
-            if ($this->pathLang === null) {
-                $this->pathLang = '';
-            }
+            $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
+            $this->pathLang = is_null($lang_code) ? '' : $lang_code;
         }
         return $this->pathLang;
     }
@@ -392,6 +402,15 @@ class Headers
 
         $lang_code = $this->store->convertToCustomLangCode($lang);
         $default_lang = $this->store->settings['default_lang'];
+        $url_pattern_name = $this->store->settings['url_pattern_name'];
+        $custom_domain_langs = $this->store->settings['custom_domain_langs'];
+        if ($url_pattern_name == 'custom_domain' && isset($custom_domain_langs)) {
+            $current_lang_domain = array_search($lang_code, $custom_domain_langs);
+            $default_lang_domain = array_search($default_lang, $custom_domain_langs);
+            $current_lang_path = URL::parseUrlStr($current_lang_domain)['path'];
+            $default_lang_path = URL::parseUrlStr($default_lang_domain)['path'];
+            return str_replace($current_lang_path, $default_lang_path, $uri);
+        }
         if ($this->store->hasDefaultLangAlias()) {
             $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store->settings);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);

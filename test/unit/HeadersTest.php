@@ -637,6 +637,41 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         };
     }
 
+    public function testRemoveLangWithCustomDomainPattern()
+    {
+        $settings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'testsite.com' => 'en',
+                'en-us.testsite.com' => 'en-US',
+                'testsite.com/ja' => 'ja',
+                'testsite.com/zh/chs' => 'zh-CHS',
+                'zh-hant-hk.testsite.com/zh' => 'zh-Hant-HK'
+            ),
+        );
+        $testCases = array(
+            // beforeRemoveUrl, afterRemoveUrl, removeLang
+            array('testsite.com', 'testsite.com', 'en'),
+            array('http://en-us.testsite.io', 'http://testsite.io', 'en-US'),
+            // array('en-us.testsite.io', 'testsite.io', 'en-US'),
+            // array('https://en.wovn.io', 'https://wovn.io', 'en'),
+            // array('zh-cht.wovn.io', 'wovn.io', 'zh-CHT'),
+            // array('https://zh-cht.wovn.io', 'https://wovn.io', 'zh-CHT'),
+            // array('en-US.wovn.io', 'wovn.io', 'en-US'),
+            // array('https://en-US.wovn.io', 'https://wovn.io', 'en-US'),
+            // array('zh-Hant-TW.wovn.io', 'wovn.io', 'zh-Hant-TW'),
+            // array('https://zh-Hant-TW.wovn.io', 'https://wovn.io', 'zh-Hant-TW')
+        );
+
+        foreach ($testCases as $case) {
+            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
+    }
+
     public function testRemoveLangWithCustomLangAliases()
     {
         $settings = array(
@@ -1339,6 +1374,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+        error_log(json_encode($receivedHeaders));
 
         $this->assertEquals(0, count($receivedHeaders));
     }

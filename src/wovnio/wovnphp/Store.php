@@ -133,11 +133,19 @@ class Store
             $this->settings['site_prefix_path'] = trim($this->settings['site_prefix_path'], '/');
         }
 
+        if (!empty($this->settings['custom_domain_langs']) && is_array($this->settings['custom_domain_langs'])) {
+            uksort($this->settings['custom_domain_langs'], function ($left, $right) {
+                return strlen(Url::parseUrlStr($left)['path']) <= strlen(Url::parseUrlStr($right)['path']);
+            });
+        }
+
         // getting the url pattern
         if ($this->settings['url_pattern_name'] === 'query') {
             $this->settings['url_pattern_reg'] = '((\?.*&)|\?)' . $this->settings['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
         } elseif ($this->settings['url_pattern_name'] === 'subdomain') {
             $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
+        } elseif ($this->settings['url_pattern_name'] === 'custom_domain') {
+            // not use regex
         } else {
             $this->settings['url_pattern_name'] = 'path';
             $prefix = empty($this->settings['site_prefix_path']) ? '' : str_replace('/', '\/', '/' . $this->settings['site_prefix_path']);

@@ -203,6 +203,9 @@ class HtmlConverter
         if (!empty($this->store->settings['site_prefix_path'])) {
             $data_wovnio_params['sitePrefixPath'] = $this->store->settings['site_prefix_path'];
         }
+        if (!empty($this->store->settings['custom_domain_langs'])) {
+            $data_wovnio_params['customDomainLangs'] = json_encode($this->store->settings['custom_domain_langs']);
+        }
 
         $data_wovnio_info_params = array();
         $wovn_php_name = defined('WOVN_PHP_NAME') ? WOVN_PHP_NAME : 'WOVN.php';
