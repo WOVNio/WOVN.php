@@ -91,6 +91,7 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'site_prefix_path' => null,
+            'custom_domain_langs' => '',
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
@@ -184,6 +185,8 @@ class Store
         if ($this->settings['api_timeout'] === '') {
             $this->settings['api_timeout'] = $defaultSettings['api_timeout'];
         }
+
+        $this->custom_domain_langs = new CustomDomainLangs($this->settings['custom_domain_langs']);
 
         $this->configLoaded = true;
 

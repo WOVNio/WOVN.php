@@ -202,11 +202,8 @@ class Headers
             $lang_identifier = null;
             // get the lang
             if ($this->store->settings['url_pattern_name'] == 'custom_domain') {
-                foreach ($this->store->settings['custom_domain_langs'] as $lang_url => $lang) {
-                    if (strpos($url, $lang_url) !== false) {
-                        $lang_identifier = $lang;
-                    }
-                }
+                // TODO: convert to php
+                _store.CustomDomainLanguages.get_custom_domain_lang_by_url($url);
             } else {
                 $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
                 preg_match($rp, $url, $match);
@@ -404,11 +401,14 @@ class Headers
         $url_pattern_name = $this->store->settings['url_pattern_name'];
         $custom_domain_langs = $this->store->settings['custom_domain_langs'];
         if ($url_pattern_name == 'custom_domain' && isset($custom_domain_langs)) {
-            $current_lang_domain = array_search($lang_code, $custom_domain_langs);
-            $default_lang_domain = array_search($default_lang, $custom_domain_langs);
-            $current_lang_path = parse_url('http://' . $current_lang_domain . '/')['path'];
-            $default_lang_path = parse_url('http://' . $default_lang_domain . '/')['path'];
-            return str_replace($current_lang_path, $default_lang_path, $uri);
+            // TODO: convert to php
+            $customDomainLanguageToRemove = $this->store->custom_domain_languages.get_custom_domain_lang_by_lang(languageToRemove);
+            if ($customDomainLanguageToRemove != null && customDomainLanguageToRemove.Language != _store.DefaultLang)
+            {
+                $defaultCustomDomainLanguage = $this->store->custom_domain_languages.get_custom_domain_lang_by_lang(_store.DefaultLang);
+                return CustomDomainLanguageUrlHandler->ChangeToNewCustomDomainLanguage(uri, customDomainLanguageToRemove, defaultCustomDomainLanguage);
+            }
+            return $uri;
         }
 
 

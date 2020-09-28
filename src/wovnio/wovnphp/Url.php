@@ -68,6 +68,12 @@ class Url
                 case 'path':
                     $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                     break;
+                case 'custom_domain':
+                    // TODO: convert to php
+                    $new_uri = CustomDomainLanguageUrlHandler->AddCustomDomainLanguageToAbsoluteUrl(uri, lang, $store->customDomainLanguages);
+
+                    break;
+
                 default:
                     $new_uri = $uri;
             }
@@ -99,6 +105,10 @@ class Url
                 case 'query':
                     $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
                     break;
+                case 'custom_domain':
+                    // TODO: convert to PHP
+                    $absoluteUrl = 'TODO' // Convert relative URL to absolute
+                    $new_uri = CustomDomainLanguageUrlHandler->AddCustomDomainLanguageToAbsoluteUrl(uri, lang, $store->customDomainLanguages);
                 default: // path
                     if (preg_match('/^\//', $no_lang_uri)) {
                         $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
