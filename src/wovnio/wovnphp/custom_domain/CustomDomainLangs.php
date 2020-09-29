@@ -44,7 +44,8 @@ class CustomDomainLangs
     }
 
     // parse_url needs protocol to parse URL.
-    private function addProtocolIfNeeded($url) {
+    private function addProtocolIfNeeded($url)
+    {
         return preg_match("/https?:\/\//", $url, $matches) ? $url : 'http://' . $url;
     }
 }

@@ -216,7 +216,6 @@ class Headers
                     $lang_identifier = $match['lang'];
                     $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
                 }
-
             }
             $this->pathLang = is_null($lang_code) ? '' : $lang_code;
         }
