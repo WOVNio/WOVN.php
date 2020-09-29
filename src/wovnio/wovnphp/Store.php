@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+require_once 'custom_domain/CustomDomainLangs.php';
+
 use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
 
@@ -12,6 +14,7 @@ class Store
     public $settings;
     // FIXME: could be private (unused outside this scope???)
     public $configLoaded = false;
+    private $customDomainLangs;
 
     /**
      * @param string $settingFileName
@@ -91,6 +94,7 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'site_prefix_path' => null,
+            'custom_domain_langs' => array(),
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
@@ -134,9 +138,7 @@ class Store
         }
 
         if (!empty($this->settings['custom_domain_langs']) && is_array($this->settings['custom_domain_langs'])) {
-            uksort($this->settings['custom_domain_langs'], function ($left, $right) {
-                return strlen(Url::parseUrlStr($left)['path']) <= strlen(Url::parseUrlStr($right)['path']);
-            });
+            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs']);
         }
 
         // getting the url pattern
@@ -267,5 +269,10 @@ class Store
     public function defaultLang()
     {
         return $this->settings['default_lang'];
+    }
+
+    public function getCustomDomainLangs()
+    {
+        return $this->customDomainLangs;
     }
 }

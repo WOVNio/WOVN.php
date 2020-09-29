@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+require_once 'custom_domain/CustomDomainLanguageUrlHandler.php';
+
 class Url
 {
     /**
@@ -38,22 +40,21 @@ class Url
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
         $default_lang = $store->settings['default_lang'];
-        $custom_domain_langs = $store->settings['custom_domain_langs'];
 
         if (Utils::isIgnoredPath($uri, $store)) {
             return $uri;
         }
 
-        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
-        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
+        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store);
+        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store);
 
         if ($store->hasDefaultLangAlias()) {
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store->settings);
-            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store->settings);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store);
+            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store);
         }
 
         // absolute urls
-        if (preg_match('/^(https?:)?\/\//i', $no_lang_uri)) {
+        if (self::isAbsoluteUri($no_lang_uri)) {
             $parsed_url = parse_url($no_lang_uri);
             // only continue if the host of the url is the same as the headers host
             if (!self::uriFromSameHost($no_lang_uri, $no_lang_host)) {
@@ -70,7 +71,7 @@ class Url
                     $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                     break;
                 case 'custom_domain':
-                    $new_uri = self::addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang, $custom_domain_langs);
+                    $new_uri = CustomDomainLanguageUrlHandler::addCustomDomainLanguageToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
                     break;
                 default:
                     $new_uri = $uri;
@@ -102,6 +103,9 @@ class Url
                     break;
                 case 'query':
                     $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
+                    break;
+                case 'custom_domain':
+                    $new_uri = CustomDomainLanguageUrlHandler::addCustomDomainLanguageToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
                     break;
                 default: // path
                     if (preg_match('/^\//', $no_lang_uri)) {
@@ -199,13 +203,13 @@ class Url
         return $new_uri;
     }
 
-    private static function addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang, $custom_domain_langs)
+    private static function addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang)
     {
-        $target_lang_domain = array_search($lang_code, $custom_domain_langs);
-        $default_lang_domain = array_search($default_lang, $custom_domain_langs);
-        error_log('--------1111:' . $target_lang_domain . "|" . $default_lang_domain . "|" . $no_lang_uri);
-
-        return str_replace($default_lang_domain, $target_lang_domain, $no_lang_uri);
+        $customDomainLangs = $store->getCustomDomainLangs();
+        $targetLangDomain = $customDomainLangs->getCustomDomainLangByLang($lang_code);
+        $defaultLangDomain = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+        $new_uri = str_replace($defaultLangDomain, $targetLangDomain, $no_lang_uri);
+        return $new_uri;
     }
 
     /**
@@ -217,12 +221,13 @@ class Url
      * @param String $settings The settings object
      * @return String The url without the lang
      */
-    public static function removeLangCode($uri, $lang_code, $settings)
+    public static function removeLangCode($uri, $lang_code, $store)
     {
         if (!$lang_code || strlen($lang_code) == 0 || self::isAnchorLink($uri)) {
             return $uri;
         }
 
+        $settings = $store->settings;
         $pattern = $settings['url_pattern_name'];
         $lang_param_name = $settings['lang_param_name'];
         $site_prefix_path = $settings['site_prefix_path'];
@@ -237,6 +242,13 @@ class Url
                 // limit to one replacement
                 $prefix = empty($site_prefix_path) ? '' : '/' . $site_prefix_path;
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
+            case 'custom_domain':
+                $customDomainLangs = $store->getCustomDomainLangs();
+                $default_lang = $settings['default_lang'];
+                $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
+                $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+                $newUri = CustomDomainLanguageUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
+                return $newUri;
             default:
                 return $uri;
         }
@@ -251,34 +263,12 @@ class Url
         return false;
     }
 
-    public static function parseUrlStr($url)
-    {
-        $regex = '@' .
-            '^(.*://|//)?' . // 1: schema (optional) like https://
-            '([^/?]*)' . // 2: host like wovn.io
-            '(/[\w\-\.]+[^#?\s]+)?' . // 3: path like /path/index.html
-            '(.*)' . // 4: query, hash or end-of-string like /dir2/?a=b#hash
-            '@';
-        preg_match($regex, $url, $match);
-        return array(
-            'host' => $match[2],
-            'path' => substr($match[3], -1) === '/' ? $match[3] : $match[3].'/'
-        );
-        // $hasSchema = preg_match($regex, $url) === 1;
-        // $absolutePathUrl = preg_match('/^\//', $url) === 1;
-        // $absoluteUrl = $url;
-        // if (!$hasSchema && !$absolutePathUrl) {
-        //     $absoluteUrl = "http://".$url;
-        // }
-        // return parse_url($absoluteUrl);
-    }
-
     private static function isAnchorLink($uri)
     {
         return preg_match('/^(#.*)?$/', $uri);
     }
 
-    private static function generateUrlRegex($site_prefix_path = '')
+    public static function generateUrlRegex($site_prefix_path = '')
     {
         $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
         return (
@@ -289,5 +279,10 @@ class Url
             '(/|\?|#|$)' . // 4: path, query, hash or end-of-string like /dir2/?a=b#hash
             '@'
         );
+    }
+
+    private static function isAbsoluteUri($uri)
+    {
+        return preg_match('/^(https?:)?\/\//i', $uri);
     }
 }

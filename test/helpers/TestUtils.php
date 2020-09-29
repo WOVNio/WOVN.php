@@ -81,9 +81,9 @@ class TestUtils
         return $method->invokeArgs($object, $parameters);
     }
 
-    public static function setWovnIni($filePath, $options = array())
+    public static function generateSettings($settings = array())
     {
-        $defaultOptions = array(
+        $defaultSettings = array(
             'project_token' => 'TOKEN',
             'url_pattern_name' => 'query',
             'default_lang' => 'en',
@@ -92,10 +92,14 @@ class TestUtils
             'supported_langs' => array('en', 'ja'),
             'api_url' => 'http://localhost/v0/'
         );
-        $options = array_merge($defaultOptions, $options);
+        return array_merge($defaultSettings, $settings);
+    }
 
+    public static function setWovnIni($filePath, $settings = array())
+    {
+        $mergedSettings = self::generateSettings($settings);
         $contents = array();
-        foreach ($options as $name => $param) {
+        foreach ($mergedSettings as $name => $param) {
             if (is_array($param)) {
                 foreach ($param as $k => $v) {
                     $key = is_string($k) ? $k : '';

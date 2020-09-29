@@ -126,6 +126,32 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testInsertSnippetAndHreflangTagsWithCustomDomainLangs()
+    {
+        $html = '<html><body><a>hello</a></body></html>';
+        $settings = array(
+            'supported_langs' => array('fr'),
+            'default_lang' => 'en',
+            'custom_domain_langs' => array('testsite.com' => 'en', 'testsite.com/fr' => 'fr'),
+            'url_pattern_name' => 'custom_domain'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, array('HTTP_HOST' => 'testsite.com'));
+        $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
+        list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
+
+        $expected_html = '<html>'.
+        '<body>'.
+        '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/">'.
+        '<script src="//j.wovn.io/1"'.
+        ' data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs={&quot;testsite.com&quot;:&quot;en&quot;,&quot;testsite.com\/fr&quot;:&quot;fr&quot;}"'.
+        ' data-wovnio-info="version=WOVN.php_VERSION"'.
+        ' async></script>'.
+        '<a>hello</a>'.
+        '</body>'.
+        '</html>';
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
     public function testBuildHrefLangPath()
     {
         $html = '<html><body><a>hello</a></body></html>';
