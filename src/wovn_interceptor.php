@@ -12,6 +12,8 @@ require_once 'wovnio/html/HtmlConverter.php';
 require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDomNode.php';
+require_once 'wovn_helper.php';
+
 
 use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
@@ -31,9 +33,13 @@ $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
-if (!Utils::isFilePathURI($uri, $store) &&
-    !Utils::isIgnoredPath($uri, $store)
-    ) {
+if (!Utils::isIgnoredPath($uri, $store)) {
+    $filePath = wovn_helper_detect_paths(__DIR__ . '/../..', $uri);
+    $mimeType = false;
+    if (!empty($filePath)) {
+        $mimeType = mime_content_type($filePath[0]);
+    }
+
     $diagnostics = null;
     $benchmarkStart = 0;
     if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
@@ -42,11 +48,11 @@ if (!Utils::isFilePathURI($uri, $store) &&
         $diagnostics = new Diagnostics($store);
     }
     // use the callback of ob_start to modify the content and return
-    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
+    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart, $mimeType) {
 
         $headers->responseOut();
 
-        if (empty($buffer) || !Utils::isHtml(headers_list(), $buffer)) {
+        if (empty($buffer) || !Utils::isHtml($mimeType, $buffer)) {
             return $buffer;
         }
 

@@ -45,32 +45,6 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('', $store->settings['project_token']);
     }
 
-    public function testIsFilePathURI()
-    {
-        $env = EnvFactory::fromFixture('default');
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
-
-        $this->assertEquals(false, Utils::isFilePathURI('https://google.com', $store));
-        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/mp3', $store));
-        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/#mp3', $store));
-        $this->assertEquals(false, Utils::isFilePathURI('https://google.com/?mp3', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('/test.mp3', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('/lvl1/lvl2/file.pdf', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.zip', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.7zip', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.7z', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.gzip', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.rar', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.tar.gz', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.jpg', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.pdf', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.doc', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.docx', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xls', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xlsx', $store));
-        $this->assertEquals(true, Utils::isFilePathURI('https://google.com/coucou.xlsm', $store));
-    }
-
     public function testIsIgnoredPathUsingIgnorePathSetting()
     {
         $env = EnvFactory::fromFixture('default');
@@ -124,15 +98,16 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testIsHtml()
     {
-        $this->assertEquals(false, Utils::isHtml(array(), 'this is not html, even tho it contains < and >'));
+        $this->assertEquals(false, Utils::isHtml(false, 'this is not html, even tho it contains < and >'));
 
-        $this->assertEquals(true, Utils::isHtml(array(), '<html><head></head><body><p>this is html</p></body></html>'));
-        $this->assertEquals(true, Utils::isHtml(array(), '<p>this is html</p>'));
+        $this->assertEquals(true, Utils::isHtml(false, '<html><head></head><body><p>this is html</p></body></html>'));
+        $this->assertEquals(true, Utils::isHtml(false, '<p>this is html</p>'));
 
-        $this->assertEquals(true, Utils::isHtml(array('Content-Type: text/html'), '<p>this is html</p>'));
-        $this->assertEquals(true, Utils::isHtml(array('Content-Type: application/xhtml+xml'), '<p>this is xhtml</p>'));
-        $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/json'), '<p>this is json</p>'));
-        $this->assertEquals(false, Utils::isHtml(array('Content-Type: application/pdf'), '<p>this is pdf</p>'));
+        $this->assertEquals(true, Utils::isHtml('text/html', '<p>this is html</p>'));
+        $this->assertEquals(true, Utils::isHtml('Text/Html', '<p>this is html</p>'));
+        $this->assertEquals(true, Utils::isHtml('application/xhtml+xml', '<p>this is xhtml</p>'));
+        $this->assertEquals(false, Utils::isHtml('application/json', '<p>this is json</p>'));
+        $this->assertEquals(false, Utils::isHtml('application/pdf', '<p>this is pdf</p>'));
     }
 
     public function testIsAmp()
