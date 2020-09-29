@@ -36,7 +36,9 @@ class Utils
     public static function isHtml($contentType, $buffer)
     {
         if ($contentType) {
-            if (!preg_match('/html/', strtolower($contentType))) {
+            if (preg_match('/html/', strtolower($contentType))) {
+                return true;
+            } else {
                 return false;
             }
         }
