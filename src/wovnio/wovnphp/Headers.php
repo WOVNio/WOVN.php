@@ -9,8 +9,6 @@ class Headers
 {
     public $protocol;
     public $unmaskedHost;
-    public $unmaskedPathname;
-    public $unmaskedUrl;
     public $host;
     public $pathname;
     public $url;
@@ -49,15 +47,6 @@ class Headers
         if (!isset($env['REQUEST_URI'])) {
             $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
         }
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->unmaskedPathname = $env['HTTP_X_FORWARDED_REQUEST_URI'];
-        } elseif (isset($env['REDIRECT_URL'])) {
-            $this->unmaskedPathname = $env['REDIRECT_URL'];
-        }
-        if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
-            $this->unmaskedPathname .= '/';
-        }
-        $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
         $this->host = $this->unmaskedHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
