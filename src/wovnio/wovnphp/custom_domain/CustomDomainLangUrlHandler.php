@@ -1,11 +1,9 @@
 <?php
 namespace Wovnio\Wovnphp;
 
-// require_once 'CustomDomainLangs.php';
-
-class CustomDomainLanguageUrlHandler
+class CustomDomainLangUrlHandler
 {
-    public static function addCustomDomainLanguageToAbsoluteUrl($url, $targetlang, $customDomainLangs)
+    public static function addCustomDomainLangToAbsoluteUrl($url, $targetlang, $customDomainLangs)
     {
         $currentCustomDomain = $customDomainLangs->getCustomDomainLangByUrl($url);
         $newLangCustomDomain = $customDomainLangs->getCustomDomainLangByLang($targetlang);
@@ -21,7 +19,7 @@ class CustomDomainLanguageUrlHandler
             $regex = '@'.
                 '^(.*://|//)?'. // 1. schema
                 "(${currentHostAndPath})". // 2. host and path
-                '(/|\?|#|$)' . // 3: path, query, hash or end-of-string like /dir2/?a=b#hash
+                '((?:/|\?|#|$).*)' . // 3: other
                 '@';
 
             return  preg_replace($regex, "$1${newHostAndPath}$3", $uri);

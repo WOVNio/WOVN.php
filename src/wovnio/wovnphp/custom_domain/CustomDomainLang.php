@@ -43,9 +43,10 @@ class CustomDomainLang
         $path1Segments = array_filter(array_map('trim', explode($this->delimiter, $path1)), 'strlen');
         $path2Segments = array_filter(array_map('trim', explode($this->delimiter, $path2)), 'strlen');
 
+        $length = count($path1Segments);
         $diff = array_diff_assoc(
-            array_slice($path1Segments, 0, count($path1Segments), false),
-            array_slice($path2Segments, 0, count($path1Segments), false)
+            array_slice($path1Segments, 0, $length, false),
+            array_slice($path2Segments, 0, $length, false)
         );
         return empty($diff);
     }

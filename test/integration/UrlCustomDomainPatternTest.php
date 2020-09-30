@@ -86,7 +86,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://zh-hant-hk.testsite.com/zh/index.html')->body);
     }
 
-    public function estCustomDomainPatternRootDirWithIntercepter()
+    public function testCustomDomainPatternRootDirWithIntercepter()
     {
         $langPaths = array('ja', 'zh\/chs', 'zh');
         TestUtils::disableRewriteToWovnIndex("{$this->docRoot}/.htaccess");

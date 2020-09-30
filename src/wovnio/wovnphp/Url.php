@@ -1,7 +1,7 @@
 <?php
 namespace Wovnio\Wovnphp;
 
-require_once 'custom_domain/CustomDomainLanguageUrlHandler.php';
+require_once 'custom_domain/CustomDomainLangUrlHandler.php';
 
 class Url
 {
@@ -71,7 +71,7 @@ class Url
                     $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
                     break;
                 case 'custom_domain':
-                    $new_uri = CustomDomainLanguageUrlHandler::addCustomDomainLanguageToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
+                    $new_uri = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
                     break;
                 default:
                     $new_uri = $uri;
@@ -105,7 +105,7 @@ class Url
                     $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
                     break;
                 case 'custom_domain':
-                    $new_uri = CustomDomainLanguageUrlHandler::addCustomDomainLanguageToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
+                    $new_uri = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
                     break;
                 default: // path
                     if (preg_match('/^\//', $no_lang_uri)) {
@@ -247,7 +247,7 @@ class Url
                 $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
                 $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
-                $newUri = CustomDomainLanguageUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
+                $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
                 return $newUri;
             default:
                 return $uri;

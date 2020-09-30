@@ -25,18 +25,22 @@ class CustomDomainLangTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo.com', $this->customDomainRootPath->getHost());
         $this->assertEquals('/', $this->customDomainRootPath->getPath());
         $this->assertEquals('fr', $this->customDomainRootPath->getLang());
+        $this->assertEquals('foo.com', $this->customDomainRootPath->getHostAndPathWithoutTrailingSlash());
 
         $this->assertEquals('foo.com', $this->customDomainWithPathNoTrailingSlash->getHost());
         $this->assertEquals('/path/', $this->customDomainWithPathNoTrailingSlash->getPath());
         $this->assertEquals('fr', $this->customDomainWithPathNoTrailingSlash->getLang());
+        $this->assertEquals('foo.com/path', $this->customDomainWithPathNoTrailingSlash->getHostAndPathWithoutTrailingSlash());
 
         $this->assertEquals('foo.com', $this->customDomainWithPathTrailingSlash->getHost());
         $this->assertEquals('/path/', $this->customDomainWithPathTrailingSlash->getPath());
         $this->assertEquals('fr', $this->customDomainWithPathTrailingSlash->getLang());
+        $this->assertEquals('foo.com/path', $this->customDomainWithPathTrailingSlash->getHostAndPathWithoutTrailingSlash());
 
         $this->assertEquals('foo.com', $this->customDomainPathEncodedSpaces->getHost());
         $this->assertEquals('/dir%20path/', $this->customDomainPathEncodedSpaces->getPath());
         $this->assertEquals('fr', $this->customDomainPathEncodedSpaces->getLang());
+        $this->assertEquals('foo.com/dir%20path', $this->customDomainPathEncodedSpaces->getHostAndPathWithoutTrailingSlash());
     }
 
     public function testIsMatchWithDifferentDomain()
