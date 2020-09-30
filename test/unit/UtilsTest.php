@@ -13,13 +13,6 @@ use Wovnio\Wovnphp\Utils;
 
 class UtilsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testFunctionsExists()
-    {
-        $this->assertTrue(class_exists('Wovnio\Wovnphp\Utils'));
-        $this->assertTrue(method_exists('Wovnio\Wovnphp\Utils', 'getStoreAndHeaders'));
-        $this->assertFalse(method_exists('Wovnio\Wovnphp\Utils', 'dispatchRequest'));
-    }
-
     public function testGetStoreAndHeaders()
     {
         $env = EnvFactory::fromFixture('default');
