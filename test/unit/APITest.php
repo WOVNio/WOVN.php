@@ -87,11 +87,6 @@ class APITest extends \PHPUnit_Framework_TestCase
         return array_merge($data, $extra);
     }
 
-    public function testAPIExists()
-    {
-        $this->assertTrue(class_exists('Wovnio\Wovnphp\API'));
-    }
-
     public function testTranslationURL()
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');

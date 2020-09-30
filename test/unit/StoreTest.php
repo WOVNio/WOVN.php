@@ -32,11 +32,6 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         return $mockObject;
     }
 
-    public function testStoreExists()
-    {
-        $this->assertTrue(class_exists('\Wovnio\Wovnphp\Store'));
-    }
-
     public function testNotFoundConfigurationFile()
     {
         $file_config = dirname(__FILE__) . '/notfound.ini';
