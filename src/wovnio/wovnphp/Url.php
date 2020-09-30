@@ -105,7 +105,11 @@ class Url
                     $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
                     break;
                 case 'custom_domain':
-                    $new_uri = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
+                    if (self::isAbsolutePath($no_lang_uri)) { // absolute path
+                        $absoluteUrl = $headers->protocol . '://' . $headers->host . $no_lang_uri;
+                        $absoluteUrlWithLang = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($absoluteUrl, $lang_code, $store->getCustomDomainLangs());
+                        $new_uri = self::makeAbsolutePathFromAbsoluteUrl($absoluteUrlWithLang);
+                    }
                     break;
                 default: // path
                     if (preg_match('/^\//', $no_lang_uri)) {
@@ -247,8 +251,14 @@ class Url
                 $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
                 $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
-                $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
-                return $newUri;
+                if (self::isAbsoluteUri($uri)) {
+                    return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
+                } elseif (self::isAbsolutePath($uri)) {
+                    $absoluteUrl = 'http://' . $customDomainLangToRemove->getHost() . $uri;
+                    $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
+                    return self::makeAbsolutePathFromAbsoluteUrl($absoluteUrlWithLang);
+                }
+                return $uri;
             default:
                 return $uri;
         }
@@ -284,5 +294,23 @@ class Url
     private static function isAbsoluteUri($uri)
     {
         return preg_match('/^(https?:)?\/\//i', $uri);
+    }
+
+    private static function isAbsolutePath($uri)
+    {
+        return preg_match('/^\//', $uri);
+    }
+
+    private static function makeAbsolutePathFromAbsoluteUrl($absoluteUrl)
+    {
+        return preg_replace(
+            '@' .
+            '^(.*://|//)?' . // 1: schema (optional) like https://
+            '([^/?]*)?' . // 2: host (optional) like wovn.io
+            '((?:/|\?|#|$).*?)' . // 3: path with query and hash
+            '@',
+            "$3",
+            $absoluteUrl
+        );
     }
 }

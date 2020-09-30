@@ -33,7 +33,7 @@ class CustomDomainLangs
             return strlen($left->getPath()) <= strlen($right->getPath());
         });
         $parsedUrl = parse_url($this->addProtocolIfNeeded($url));
-        if (!array_key_exists('path', $parsedUrl)) {
+        if ($parsedUrl && !array_key_exists('path', $parsedUrl)) {
             $parsedUrl['path'] = '/';
         }
 

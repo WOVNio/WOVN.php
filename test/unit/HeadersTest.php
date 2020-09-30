@@ -593,6 +593,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     {
         $settings = array('url_pattern_name' => 'query');
         $testCases = array(
+            array('wovn=ja', '', 'ja'),
             array('wovn.io/?wovn=ja', 'wovn.io/', 'ja'),
             array('http://wovn.io?wovn=en', 'http://wovn.io', 'en'),
             array('https://wovn.io?wovn=en', 'https://wovn.io', 'en'),

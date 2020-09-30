@@ -950,7 +950,8 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.my-site.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
         );
         $testCases = array(
-            // target_url, lang_code, expected_url
+            // no_lang_url, lang_code, expected_url
+            // absolute URL
             array('https://my-site.com', 'en', 'https://my-site.com'),
             array('https://my-site.com', 'ja', 'https://my-site.com/ja'),
             array('https://my-site.com/index.php', 'ja', 'https://my-site.com/ja/index.php'),
@@ -958,25 +959,113 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             array('https://my-site.com/a/b/index.php', 'ja', 'https://my-site.com/ja/a/b/index.php'),
             array('https://my-site.com/index.php', 'en-US', 'https://en-us.my-site.com/index.php'),
             array('https://my-site.com/index.php', 'zh-CHS', 'https://my-site.com/zh/chs/index.php'),
-            array('https://my-site.com/index.php', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php')
+            array('https://my-site.com/index.php', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php'),
+            array('https://my-site.com/index.php?a=1&b=2', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2'),
+            array('https://my-site.com/index.php#hash', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php#hash'),
+            array('https://my-site.com/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash'),
+
+            // absolute path
+            array('/', 'en', '/'),
+            array('/', 'ja', '/ja/'),
+            array('/index.php', 'ja', '/ja/index.php'),
+            array('/a/b/', 'ja', '/ja/a/b/'),
+            array('/a/b/index.php', 'ja', '/ja/a/b/index.php'),
+            array('/index.php', 'en-US', '/index.php'),
+            array('/index.php', 'zh-CHS', '/zh/chs/index.php'),
+            array('/index.php', 'zh-Hant-HK', '/zh/index.php'),
+            array('/index.php?a=1&b=2', 'zh-Hant-HK', '/zh/index.php?a=1&b=2'),
+            array('/index.php#hash', 'zh-Hant-HK', '/zh/index.php#hash'),
+            array('/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/zh/index.php?a=1&b=2#hash'),
+
+            // other patterns should be keep original
+            array('a=1&b=2', 'zh-Hant-HK', 'a=1&b=2'),
+            array('#hash', 'zh-Hant-HK', '#hash')
         );
 
-        // $url = new Url;
+        $settings = array(
+            'project_token' => 'T0k3N',
+            'default_lang' =>  'en',
+            'supported_langs' => array('en'),
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => $custom_domain_langs
+        );
+        $additional_env = array(
+            'HTTP_HOST' => 'my-site.com',
+            'REQUEST_URI' => '/req_uri/'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+        $this->assertEquals('en', $headers->lang());
+        $this->assertEquals('my-site.com', $headers->host);
+        $this->assertEquals('/req_uri', $headers->pathname);
+
         foreach ($testCases as $case) {
-            list($target_url, $lang, $expected_uri) = $case;
-            $settings = array(
-                'project_token' => 'T0k3N',
-                'default_lang' =>  'en',
-                'supported_langs' => array('en'),
-                'url_pattern_name' => 'custom_domain',
-                'custom_domain_langs' => $custom_domain_langs
-            );
-            $additional_env = array(
-                'REQUEST_URI' => '/req_uri/'
-            );
+            list($no_lang_url, $lang, $expected_uri) = $case;
+            $this->assertEquals($expected_uri, Url::addLangCode($no_lang_url, $store, $lang, $headers), "no_lang_url->[{$no_lang_url}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
+        }
+    }
+
+    public function testRemoveLangCodeWithCustomDomainLangs()
+    {
+        $custom_domain_langs = array(
+            'my-site.com' => 'en', // default lang
+            'en-us.my-site.com' => 'en-US', // subdomain pattern
+            'my-site.com/ja' => 'ja', // path pattern
+            'my-site.com/zh/chs' => 'zh-CHS', // deep path pattern
+            'zh-hant-hk.my-site.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+        );
+        $testCases = array(
+            // $target_uri, $lang, $expected_uri, $env
+            // absolute URL
+            array('https://my-site.com', 'en', 'https://my-site.com'),
+            array('https://my-site.com/ja', 'ja', 'https://my-site.com'),
+            array('https://my-site.com/ja/index.php', 'ja', 'https://my-site.com/index.php'),
+            array('https://my-site.com/ja/a/b/', 'ja', 'https://my-site.com/a/b/'),
+            array('https://my-site.com/ja/a/b/index.php', 'ja', 'https://my-site.com/a/b/index.php'),
+            array('https://en-us.my-site.com/index.php', 'en-US', 'https://my-site.com/index.php'),
+            array('https://my-site.com/zh/chs/index.php', 'zh-CHS', 'https://my-site.com/index.php'),
+            array('https://zh-hant-hk.my-site.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php'),
+            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2'),
+            array('https://zh-hant-hk.my-site.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash'),
+            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash'),
+
+            // absolute path
+            array('/', 'en', '/'),
+            array('/ja/', 'ja', '/'),
+            array('/ja/index.php', 'ja', '/index.php'),
+            array('/ja/a/b/', 'ja', '/a/b/'),
+            array('/ja/a/b/index.php', 'ja', '/a/b/index.php'),
+            array('/index.php', 'en-US', '/index.php', array('HTTP_HOST' => 'en-us.my-site.com')),
+            array('/zh/chs/index.php', 'zh-CHS', '/index.php'),
+            array('/zh/index.php', 'zh-Hant-HK', '/index.php', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
+            array('/zh/index.php?a=1&b=2', 'zh-Hant-HK', '/index.php?a=1&b=2', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
+            array('/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
+            array('/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
+
+            // other patterns should be keep original
+            array('a=1&b=2', 'zh-Hant-HK', 'a=1&b=2'),
+            array('#hash', 'zh-Hant-HK', '#hash')
+        );
+
+        $settings = array(
+            'project_token' => 'T0k3N',
+            'default_lang' =>  'en',
+            'supported_langs' => array('en'),
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => $custom_domain_langs
+        );
+        $base_env = array(
+            'HTTP_HOST' => 'my-site.com',
+            'REQUEST_URI' => '/req_uri/'
+        );
+
+        foreach ($testCases as $case) {
+            list($target_uri, $lang, $expected_uri, $env) = $case;
+            $additional_env = empty($env) ? $base_env : array_merge($base_env, $env);
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+
             $this->assertEquals('en', $headers->lang());
-            $this->assertEquals($expected_uri, Url::addLangCode($target_url, $store, $lang, $headers), "target_url->[{$target_url}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
+            $this->assertEquals('/req_uri', $headers->pathname);
+            $this->assertEquals($expected_uri, Url::removeLangCode($target_uri, $lang, $store), "target_url->[{$target_uri}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
         }
     }
 

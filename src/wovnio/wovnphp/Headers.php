@@ -62,7 +62,7 @@ class Headers
         }
         $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
         $this->host = $this->unmaskedHost;
-        if ($store->settings['url_pattern_name'] === 'subdomain') {
+        if (in_array($store->settings['url_pattern_name'], array('subdomain', 'custom_domain'))) {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
             $this->host = $intermediateHost[1];
         }
@@ -74,9 +74,6 @@ class Headers
         $exploded = explode('?', $clientRequestUri);
         if ($store->settings['url_pattern_name'] === 'subdomain') {
             $this->pathname = $exploded[0];
-        } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
-            $parsedUrl = parse_url($this->removeLang($this->protocol . '://' . $this->host . $exploded[0], $this->lang()));
-            $this->pathname = (!empty($parsedUrl) && array_key_exists('path', $parsedUrl)) ? $parsedUrl['path'] : $exploded[0];
         } else {
             $this->pathname = $this->removeLang($exploded[0], $this->lang());
         }
@@ -328,6 +325,23 @@ class Headers
                 }
                 $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
                 $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+                break;
+
+            case 'custom_domain':
+                if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
+                    $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
+                }
+                $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
+                $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+                if (isset($this->env['REQUEST_URI'])) {
+                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
+                }
+                if (isset($this->env['REDIRECT_URL'])) {
+                    $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
+                }
+                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
+                }
                 break;
 
             case 'path':
