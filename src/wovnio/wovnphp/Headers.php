@@ -14,9 +14,6 @@ class Headers
     public $host;
     public $pathname;
     public $url;
-    public $redisUrl;
-    // PHP ONLY
-    public $maskedRequestURI;
 
     private $env;
     private $store;
@@ -102,46 +99,6 @@ class Headers
         $this->pathname = preg_replace('/\/$/', '', $this->pathname);
         $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
         $this->urlKeepTrailingSlash = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash . $urlQuery;
-        if (isset($store->settings['query']) && !empty($store->settings['query'])) {
-            $this->redisUrl = $this->host . $this->pathname . $this->matchQuery($urlQuery, $store->settings['query']);
-        } else {
-            $this->redisUrl = $this->host . $this->pathname;// . $urlQuery;
-        }
-        // PHP ONLY
-        $this->maskedRequestURI = $this->removeLang(preg_replace('/\?.*$/', '', $env['REQUEST_URI']));
-    }
-
-    /**
-     * Public function matching the query in the url with the query params in the settings
-     *  - Will remove query params not include in the settings
-     *  - Will sort the query params in order and deliver a valid string
-     *
-     * @return String A valid query params string with '?' and separators '&'
-     */
-    public function matchQuery($urlQuery, $querySettings)
-    {
-        if (empty($urlQuery) || empty($querySettings)) {
-            return '';
-        }
-
-        $urlQuery = preg_replace('/^\?/', '', $urlQuery);
-        $queryArray = explode('&', $urlQuery);
-
-        sort($queryArray, SORT_STRING);
-        foreach ($queryArray as $k => $q) {
-            $keep = false;
-            foreach ($querySettings as $qs) {
-                if (strpos($q, $qs) !== false) {
-                    $keep = true;
-                }
-            }
-            if (!$keep) {
-                unset($queryArray[$k]);
-            }
-        }
-        if (!empty($queryArray)) {
-            return '?' . implode('&', $queryArray);
-        }
     }
 
     /**
