@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+use finfo;
+
 class Utils
 {
     // will return the store and headers objects
@@ -33,10 +35,19 @@ class Utils
         }
     }
 
-    public static function isHtml($contentType, $buffer)
+    public static function isHtml($buffer)
     {
+        $finfo = new finfo(FILEINFO_MIME);
+        $contentType = $finfo->buffer($buffer);
+
         if ($contentType) {
-            return preg_match('/html|php/', strtolower($contentType));
+            if (preg_match('/html|php/', strtolower($contentType))) {
+                return true;
+            } elseif (preg_match('/text/', strtolower($contentType))) {
+                return $buffer != strip_tags($buffer);
+            } else {
+                return false;
+            }
         }
         return $buffer != strip_tags($buffer);
     }

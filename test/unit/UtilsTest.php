@@ -98,16 +98,11 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
 
     public function testIsHtml()
     {
-        $this->assertEquals(false, Utils::isHtml(false, 'this is not html, even tho it contains < and >'));
+        $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
 
-        $this->assertEquals(true, Utils::isHtml(false, '<html><head></head><body><p>this is html</p></body></html>'));
-        $this->assertEquals(true, Utils::isHtml(false, '<p>this is html</p>'));
-
-        $this->assertEquals(true, Utils::isHtml('text/html', '<p>this is html</p>'));
-        $this->assertEquals(true, Utils::isHtml('Text/Html', '<p>this is html</p>'));
-        $this->assertEquals(true, Utils::isHtml('application/xhtml+xml', '<p>this is xhtml</p>'));
-        $this->assertEquals(false, Utils::isHtml('application/json', '<p>this is json</p>'));
-        $this->assertEquals(false, Utils::isHtml('application/pdf', '<p>this is pdf</p>'));
+        $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
+        $this->assertEquals(true, Utils::isHtml('<?php require_once(\'{$this->docRoot}/WOVN.php/src/wovn_interceptor.php\'); ?><html><head></head><body>test</body></html>'));
+        $this->assertEquals(false, Utils::isHtml('this is json'));
     }
 
     public function testIsAmp()

@@ -34,12 +34,6 @@ $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
 if (!Utils::isIgnoredPath($uri, $store)) {
-    $filePath = wovn_helper_detect_paths(__DIR__ . '/../..', $uri);
-    $mimeType = false;
-    if (!empty($filePath)) {
-        $mimeType = mime_content_type($filePath[0]);
-    }
-
     $diagnostics = null;
     $benchmarkStart = 0;
     if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
@@ -48,11 +42,11 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         $diagnostics = new Diagnostics($store);
     }
     // use the callback of ob_start to modify the content and return
-    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart, $mimeType) {
+    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
 
         $headers->responseOut();
 
-        if (empty($buffer) || !Utils::isHtml($mimeType, $buffer)) {
+        if (empty($buffer) || !Utils::isHtml($buffer)) {
             return $buffer;
         }
 
