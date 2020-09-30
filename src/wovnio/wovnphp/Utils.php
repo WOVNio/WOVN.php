@@ -39,11 +39,10 @@ class Utils
             if (preg_match('/html/', strtolower($contentType))) {
                 return true;
             } else {
-                return false;
+                // fallback check
+                return $buffer != strip_tags($buffer);
             }
         }
-
-        // fallback check
         return $buffer != strip_tags($buffer);
     }
 
