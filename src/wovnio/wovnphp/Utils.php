@@ -36,12 +36,7 @@ class Utils
     public static function isHtml($contentType, $buffer)
     {
         if ($contentType) {
-            if (preg_match('/html/', strtolower($contentType))) {
-                return true;
-            } else {
-                // fallback check
-                return $buffer != strip_tags($buffer);
-            }
+            return preg_match('/html|php/', strtolower($contentType));
         }
         return $buffer != strip_tags($buffer);
     }
