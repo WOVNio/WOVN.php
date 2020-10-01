@@ -23,8 +23,8 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
 
     public static function tearDownAfterClass()
     {
-        if (!empty($orgHostFile)) {
-            file_put_contents('/etc/hosts', $orgHostFile);
+        if (!empty(self::$orgHostFile)) {
+            file_put_contents('/etc/hosts', self::$orgHostFile);
         }
     }
 

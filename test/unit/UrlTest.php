@@ -989,17 +989,17 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'custom_domain',
             'custom_domain_langs' => $custom_domain_langs
         );
-        $additional_env = array(
+        $base_env = array(
             'HTTP_HOST' => 'my-site.com',
             'REQUEST_URI' => '/req_uri/'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
-        $this->assertEquals('en', $headers->lang());
-        $this->assertEquals('my-site.com', $headers->host);
-        $this->assertEquals('/req_uri', $headers->pathname);
 
         foreach ($testCases as $case) {
-            list($no_lang_url, $lang, $expected_uri) = $case;
+            list($no_lang_url, $lang, $expected_uri, $env) = $case;
+            $additional_env = empty($env) ? $base_env : array_merge($base_env, $env);
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+
+            $this->assertEquals('en', $headers->lang());
             $this->assertEquals($expected_uri, Url::addLangCode($no_lang_url, $store, $lang, $headers), "no_lang_url->[{$no_lang_url}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
         }
     }
@@ -1064,8 +1064,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
 
             $this->assertEquals('en', $headers->lang());
-            $this->assertEquals('/req_uri', $headers->pathname);
-            $this->assertEquals($expected_uri, Url::removeLangCode($target_uri, $lang, $store), "target_url->[{$target_uri}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
+            $this->assertEquals($expected_uri, Url::removeLangCode($target_uri, $lang, $store, $headers), "target_url->[{$target_uri}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
         }
     }
 
@@ -1082,7 +1081,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndPathPattern()
@@ -1096,7 +1095,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeRelativePathWithQueryPattern()
@@ -1111,7 +1110,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             array('REQUEST_URI' => "/test?wovn=$lang")
         );
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeRelativePathWithQueryPatternAndCustomLangParamName()
@@ -1128,7 +1127,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEquals('fr', $headers->lang());
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeRelativePathWithLangCodeNotInsideAndQueryPattern()
@@ -1142,7 +1141,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($expected_uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithSubdomainPattern()
@@ -1155,7 +1154,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -1168,7 +1167,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithPathPattern()
@@ -1181,7 +1180,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndPathPattern()
@@ -1194,7 +1193,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_url, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithQueryPattern()
@@ -1208,7 +1207,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPURLWithLangCodeNotInsideAndQueryPattern()
@@ -1222,7 +1221,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "http://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithSubdomainPattern()
@@ -1236,7 +1235,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndSubdomainPattern()
@@ -1250,7 +1249,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://$lang.my-site.com/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithPathPattern()
@@ -1264,7 +1263,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndPathPattern()
@@ -1278,7 +1277,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/$lang/test"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeWithSitePrefixPathAndPathPattern()
@@ -1314,7 +1313,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
                 'REQUEST_URI' => "https://my-site.com/$site_prefix_path/en"
             );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
-            $this->assertEquals($expected_uri, Url::removeLangCode($target_url, $remove_lang, $store));
+            $this->assertEquals($expected_uri, Url::removeLangCode($target_url, $remove_lang, $store, $headers));
         };
     }
 
@@ -1329,7 +1328,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/test?wovn=$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeAbsoluteHTTPSURLWithLangCodeNotInsideAndQueryPattern()
@@ -1343,7 +1342,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => "https://my-site.com/test?wovn=fr$lang"
         ));
 
-        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+        $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
     }
 
     public function testRemoveLangCodeCustomDefaultLangAlias()
@@ -1362,7 +1361,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($lang, $expected_uri, $uri, $pattern) = $case;
             list($store, $headers) = $this->getStarted($pattern);
-            $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store));
+            $this->assertEquals($expected_uri, Url::removeLangCode($uri, $lang, $store, $headers));
         }
     }
 

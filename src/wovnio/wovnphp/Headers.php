@@ -417,10 +417,10 @@ class Headers
         $lang_code = $this->store->convertToCustomLangCode($lang);
         $default_lang = $this->store->settings['default_lang'];
         if ($this->store->hasDefaultLangAlias()) {
-            $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store);
+            $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store, $this);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
-            return Url::removeLangCode($uri, $lang_code, $this->store);
+            return Url::removeLangCode($uri, $lang_code, $this->store, $this);
         }
     }
 

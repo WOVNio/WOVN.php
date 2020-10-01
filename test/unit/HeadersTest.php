@@ -640,31 +640,38 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
     public function testRemoveLangWithCustomDomainPattern()
     {
+        $custom_domain_langs = array(
+            'testsite.com' => 'en',
+            'en-us.testsite.com' => 'en-US',
+            'testsite.com/ja' => 'ja',
+            'testsite.com/zh/chs' => 'zh-CHS',
+            'zh-hant-hk.testsite.com/zh' => 'zh-Hant-HK'
+        );
         $settings = array(
             'url_pattern_name' => 'custom_domain',
-            'custom_domain_langs' => array(
-                'testsite.com' => 'en',
-                'en-us.testsite.com' => 'en-US',
-                'testsite.com/ja' => 'ja',
-                'testsite.com/zh/chs' => 'zh-CHS',
-                'zh-hant-hk.testsite.com/zh' => 'zh-Hant-HK'
-            ),
+            'custom_domain_langs' => $custom_domain_langs
         );
         $testCases = array(
             // beforeRemoveUrl, afterRemoveUrl, removeLang
-            array('testsite.com', 'testsite.com', 'en'),
+            array('http://testsite.com', 'http://testsite.com', 'en'),
             array('http://en-us.testsite.com', 'http://testsite.com', 'en-US'),
-            // array('en-us.testsite.com', 'testsite.com', 'en-US'),
-            // array('https://en.wovn.com', 'https://wovn.com', 'en'),
-            // array('zh-cht.wovn.com', 'wovn.com', 'zh-CHT'),
-            // array('https://zh-cht.wovn.com', 'https://wovn.com', 'zh-CHT'),
-            // array('en-US.wovn.com', 'wovn.com', 'en-US'),
-            // array('https://en-US.wovn.com', 'https://wovn.com', 'en-US'),
-            // array('zh-Hant-TW.wovn.com', 'wovn.com', 'zh-Hant-TW'),
-            // array('https://zh-Hant-TW.wovn.com', 'https://wovn.com', 'zh-Hant-TW')
+            array('http://testsite.com/ja', 'http://testsite.com', 'ja'),
+            array('http://testsite.com/zh/chs', 'http://testsite.com', 'zh-CHS'),
+            array('http://zh-hant-hk.testsite.com/zh', 'http://testsite.com', 'zh-Hant-HK'),
+
+            array('http://zh-hant-hk.testsite.com', 'http://zh-hant-hk.testsite.com', 'zh-Hant-HK'), // don't change, if request uri is not match custom domain langs rule.
+            array('http://zh-hant-hk.testsite.com/zh/', 'http://testsite.com/', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/index.html', 'http://testsite.com/index.html', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path', 'http://testsite.com/path', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path/', 'http://testsite.com/path/', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path/index.html', 'http://testsite.com/path/index.html', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path/index.html?query=1', 'http://testsite.com/path/index.html?query=1', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path/index.html#hash', 'http://testsite.com/path/index.html#hash', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.testsite.com/zh/path/index.html?query=1#hash', 'http://testsite.com/path/index.html?query=1#hash', 'zh-Hant-HK'),
         );
         $env = array(
             'HTTP_HOST' => 'testsite.com',
+            'REQUEST_URI' => '/req_uri/'
         );
 
         foreach ($testCases as $case) {
@@ -672,14 +679,8 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
-            $this->assertEquals(array(
-                'testsite.com' => 'en',
-                'en-us.testsite.com' => 'en-US',
-                'testsite.com/ja' => 'ja',
-                'testsite.com/zh/chs' => 'zh-CHS',
-                'zh-hant-hk.testsite.com/zh' => 'zh-Hant-HK'
-            ), $store->settings['custom_domain_langs']);
-            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+            $this->assertEquals($custom_domain_langs, $store->settings['custom_domain_langs']);
+            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang), "beforeRemoveUrl->[{$beforeRemoveUrl}] afterRemoveUrl->[{$afterRemoveUrl}] removeLang->[{$removeLang}]");
         };
     }
 
@@ -1031,6 +1032,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $settings = array('url_pattern_name' => 'subdomain');
         $env = array(
             'HTTP_REFERER' => 'ja.minimaltech.co',
+            'SERVER_NAME' => 'ja.minimaltech.co',
             'REQUEST_URI' => '/dummy'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
@@ -1041,6 +1043,32 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $he = $headers->getEnv();
         $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
+        $this->assertEquals('minimaltech.co', $he['SERVER_NAME']);
+    }
+
+    public function testRequestOutCustomDomainPattern()
+    {
+        $settings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'minimaltech.co' => 'en',
+                'ja.minimaltech.co' => 'ja'
+            )
+        );
+        $env = array(
+            'HTTP_REFERER' => 'ja.minimaltech.co',
+            'SERVER_NAME' => 'ja.minimaltech.co',
+            'REQUEST_URI' => '/dummy'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
+
+        $this->assertEquals('ja', $headers->computePathLang());
+
+        $headers->requestOut();
+
+        $he = $headers->getEnv();
+        $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
+        $this->assertEquals('minimaltech.co', $he['SERVER_NAME']);
     }
 
     public function testRequestOutPathPatternWithHttpReferer()

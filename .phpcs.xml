@@ -18,6 +18,8 @@
     <exclude name="Generic.Files.LineLength.TooLong" />
     <!-- TODO: Fix at last (probably fixed after autoloading setup) -->
     <exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />
+
+    <exclude name="Generic.ControlStructures.InlineControlStructure.NotAllowed" />
   </rule>
 
   <!-- use camelCase everywhere (PSR2 forces it for class members only) -->

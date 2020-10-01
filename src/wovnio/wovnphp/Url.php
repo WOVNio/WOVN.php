@@ -45,12 +45,12 @@ class Url
             return $uri;
         }
 
-        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store);
-        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store);
+        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store, $headers);
+        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store, $headers);
 
         if ($store->hasDefaultLangAlias()) {
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store);
-            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store, $headers);
+            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store, $headers);
         }
 
         // absolute urls
@@ -108,7 +108,8 @@ class Url
                     if (self::isAbsolutePath($no_lang_uri)) { // absolute path
                         $absoluteUrl = $headers->protocol . '://' . $headers->host . $no_lang_uri;
                         $absoluteUrlWithLang = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($absoluteUrl, $lang_code, $store->getCustomDomainLangs());
-                        $new_uri = self::makeAbsolutePathFromAbsoluteUrl($absoluteUrlWithLang);
+                        $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                        $new_uri = $segments['others'];
                     }
                     break;
                 default: // path
@@ -225,7 +226,7 @@ class Url
      * @param String $settings The settings object
      * @return String The url without the lang
      */
-    public static function removeLangCode($uri, $lang_code, $store)
+    public static function removeLangCode($uri, $lang_code, $store, $headers)
     {
         if (!$lang_code || strlen($lang_code) == 0 || self::isAnchorLink($uri)) {
             return $uri;
@@ -251,14 +252,21 @@ class Url
                 $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
                 $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+                $newUri = $uri;
                 if (self::isAbsoluteUri($uri)) {
-                    return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
+                    $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
                 } elseif (self::isAbsolutePath($uri)) {
-                    $absoluteUrl = 'http://' . $customDomainLangToRemove->getHost() . $uri;
+                    $absoluteUrl = $headers->protocol . '://' . $headers->unmaskedHost . $uri;
                     $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
-                    return self::makeAbsolutePathFromAbsoluteUrl($absoluteUrlWithLang);
+                    $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                    $newUri = $segments['others'];
+                } elseif ($uri === $customDomainLangToRemove->getHost()) {
+                    $absoluteUrl = $headers->protocol . '://' . $uri . $headers->unmaskedPathname;
+                    $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
+                    $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                    $newUri = $segments['host'];
                 }
-                return $uri;
+                return $newUri;
             default:
                 return $uri;
         }
@@ -301,16 +309,21 @@ class Url
         return preg_match('/^\//', $uri);
     }
 
-    private static function makeAbsolutePathFromAbsoluteUrl($absoluteUrl)
+    private static function makeSegmentsFromAbsoluteUrl($absoluteUrl)
     {
-        return preg_replace(
+        preg_match(
             '@' .
             '^(.*://|//)?' . // 1: schema (optional) like https://
             '([^/?]*)?' . // 2: host (optional) like wovn.io
-            '((?:/|\?|#|$).*?)' . // 3: path with query and hash
+            '((?:/|\?|#).*)?$' . // 3: path with query or hash
             '@',
-            "$3",
-            $absoluteUrl
+            $absoluteUrl,
+            $matches
+        );
+        return array(
+            'schema' => $matches[1],
+            'host' => $matches[2],
+            'others' => $matches[3]
         );
     }
 }
