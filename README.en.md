@@ -261,21 +261,6 @@ example above, `|ja|` and `|fr|` would become `|japanese|` and `|french|`
 respectively in the expression
 `ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`.
 
-#### `query`
-This parameter tells WOVN.php which query parameters make pages unique. By
-default WOVN.io ignores query parameters when identifying unique pages. If
-you've created pages on WOVN.io with specific query parameters, you should add
-those query parameters to `wovn.ini` settings.
-
-For instance, if you have all three pages `https://my-website.com/index.php`,
-`https://my-website.com/index.php?login=1` and
-`https://my-website.com/index.php?forgot_password=1` on WOVN.io, then you should
-configure WOVN.php as below.
-```
-query[] = login
-query[] = forgot_password
-```
-
 #### `ignore_paths`
 This parameter tells WOVN.php to not localize content withing given directories.
 
@@ -325,11 +310,11 @@ ignore_class[] = no-translate
 ```
 
 #### `no_index_langs`
-This parameter tells WOVN.php which languages's HTML should be set `noindex` 
+This parameter tells WOVN.php which languages's HTML should be set `noindex`
 to avoid index by web crawler.
 
-For instance, if you want to avoid index for English pages, add `en` as below. 
-`<meta name="robots" content="noindex">` tag will be inserted inside `head` tag 
+For instance, if you want to avoid index for English pages, add `en` as below.
+`<meta name="robots" content="noindex">` tag will be inserted inside `head` tag
 for English pages.
 ```
 no_index_langs[] = en
@@ -372,8 +357,8 @@ be translated. When this setting is set to `1`, you may notice more server
 resource being used. This is because WOVN.php has to do some HTML parsing that
 our localization API usually does (for instance, to insert `hreflang`
 information). However, it will save web page loading time since it does not send
-a request to our API. If you experience no resource issues, we recommand you to 
-deactivate API requests for original language as below. 
+a request to our API. If you experience no resource issues, we recommand you to
+deactivate API requests for original language as below.
 
 ```
 disable_api_request_for_default_lang = 1
@@ -412,7 +397,7 @@ override_content_length = 1
 ```
 
 #### `check_amp`
-This parameter tells WOVN.php not to process your content if it is 
+This parameter tells WOVN.php not to process your content if it is
 an AMP (Accelerated Mobile Pages) compliant page.The default is disabled.
 If you enable this parameter, WOVN.php will not change the content.
 Therefore, we do not add any WOVN script tags.
@@ -422,12 +407,12 @@ check_amp = 1
 ```
 
 #### `site_prefix_path`
-This parameter tells WOVN.php to only process requests under the specified path. 
+This parameter tells WOVN.php to only process requests under the specified path.
 When translating URLs, the language identifier will be inserted after this prefix path.
 This parameter is valid only when `url_pattern_name` is `path`.
 
-For example, only `http://www.mysite.com/dir/*` is processed when `sitePrefixPath = dir` is set.  
-When `http://www.mysite.com/dir/index.html` is translated to English, language identifier will be added after specified path like `http://www.mysite.com/dir/en/index.html`.  
+For example, only `http://www.mysite.com/dir/*` is processed when `sitePrefixPath = dir` is set.
+When `http://www.mysite.com/dir/index.html` is translated to English, language identifier will be added after specified path like `http://www.mysite.com/dir/en/index.html`.
 URL which is not matched is not processed and snippet will not be inserted.
 
 ```
@@ -468,9 +453,9 @@ wovn_diagnostics_password = wovn_diagnostics_password
 
 ### `WOVN_TARGET_LANG`
 
-This environment variable sets the language code of the translation target as 
+This environment variable sets the language code of the translation target as
 retrieved from the HTTP request.
-The user can get the target language code from this environment variable and 
+The user can get the target language code from this environment variable and
 arbitrarily change the behavior of their program.
 
 For example.
@@ -502,10 +487,10 @@ SetEnv WOVN_CONFIG /path/to/wovn.ini
 
 ## 5. Bug Report
 
-To help us finding a solution to your issue we will require some information. 
-First we need to know on which web pages you encounter the issue, as well as 
-steps to reproduce. If possible, we would also need test accounts if your 
-issues occur on web pages behind authorization 
+To help us finding a solution to your issue we will require some information.
+First we need to know on which web pages you encounter the issue, as well as
+steps to reproduce. If possible, we would also need test accounts if your
+issues occur on web pages behind authorization
 (we recommend you to use a staging server for that matter).
 
 If your problems are happening on your server side (widget `<script>` tag not
@@ -537,6 +522,6 @@ To enable the Wovn Diagnostics Tool, please do the following tasks:
 2. Add `wovn_diagnostics_username`  in your `wovn.ini` configuration file, and set it to a username of your choice. The diagnostics tool cannot be used if a username is not set.
 3. Add `wovn_diagnostics_password`  in your `wovn.ini` configuration file, and set it to a password of your choice. The diagnostics tool cannot be used if a password is not set.
 
-The configuration will take effect immediately. 
+The configuration will take effect immediately.
 
 Please only enable the diagnostics tool when it is necessary to do so.
