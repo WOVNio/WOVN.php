@@ -989,14 +989,13 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'custom_domain',
             'custom_domain_langs' => $custom_domain_langs
         );
-        $base_env = array(
+        $additional_env = array(
             'HTTP_HOST' => 'my-site.com',
             'REQUEST_URI' => '/req_uri/'
         );
 
         foreach ($testCases as $case) {
-            list($no_lang_url, $lang, $expected_uri, $env) = $case;
-            $additional_env = empty($env) ? $base_env : array_merge($base_env, $env);
+            list($no_lang_url, $lang, $expected_uri) = $case;
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
 
             $this->assertEquals('en', $headers->lang());
@@ -1016,34 +1015,34 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $testCases = array(
             // $target_uri, $lang, $expected_uri, $env
             // absolute URL
-            array('https://my-site.com', 'en', 'https://my-site.com'),
-            array('https://my-site.com/ja', 'ja', 'https://my-site.com'),
-            array('https://my-site.com/ja/index.php', 'ja', 'https://my-site.com/index.php'),
-            array('https://my-site.com/ja/a/b/', 'ja', 'https://my-site.com/a/b/'),
-            array('https://my-site.com/ja/a/b/index.php', 'ja', 'https://my-site.com/a/b/index.php'),
-            array('https://en-us.my-site.com/index.php', 'en-US', 'https://my-site.com/index.php'),
-            array('https://my-site.com/zh/chs/index.php', 'zh-CHS', 'https://my-site.com/index.php'),
-            array('https://zh-hant-hk.my-site.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php'),
-            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2'),
-            array('https://zh-hant-hk.my-site.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash'),
-            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash'),
+            array('https://my-site.com', 'en', 'https://my-site.com', array()),
+            array('https://my-site.com/ja', 'ja', 'https://my-site.com', array()),
+            array('https://my-site.com/ja/index.php', 'ja', 'https://my-site.com/index.php', array()),
+            array('https://my-site.com/ja/a/b/', 'ja', 'https://my-site.com/a/b/', array()),
+            array('https://my-site.com/ja/a/b/index.php', 'ja', 'https://my-site.com/a/b/index.php', array()),
+            array('https://en-us.my-site.com/index.php', 'en-US', 'https://my-site.com/index.php', array()),
+            array('https://my-site.com/zh/chs/index.php', 'zh-CHS', 'https://my-site.com/index.php', array()),
+            array('https://zh-hant-hk.my-site.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php', array()),
+            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2', array()),
+            array('https://zh-hant-hk.my-site.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash', array()),
+            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash', array()),
 
             // absolute path
-            array('/', 'en', '/'),
-            array('/ja/', 'ja', '/'),
-            array('/ja/index.php', 'ja', '/index.php'),
-            array('/ja/a/b/', 'ja', '/a/b/'),
-            array('/ja/a/b/index.php', 'ja', '/a/b/index.php'),
+            array('/', 'en', '/', array()),
+            array('/ja/', 'ja', '/', array()),
+            array('/ja/index.php', 'ja', '/index.php', array()),
+            array('/ja/a/b/', 'ja', '/a/b/', array()),
+            array('/ja/a/b/index.php', 'ja', '/a/b/index.php', array()),
             array('/index.php', 'en-US', '/index.php', array('HTTP_HOST' => 'en-us.my-site.com')),
-            array('/zh/chs/index.php', 'zh-CHS', '/index.php'),
+            array('/zh/chs/index.php', 'zh-CHS', '/index.php', array()),
             array('/zh/index.php', 'zh-Hant-HK', '/index.php', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
             array('/zh/index.php?a=1&b=2', 'zh-Hant-HK', '/index.php?a=1&b=2', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
             array('/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
             array('/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
 
             // other patterns should be keep original
-            array('a=1&b=2', 'zh-Hant-HK', 'a=1&b=2'),
-            array('#hash', 'zh-Hant-HK', '#hash')
+            array('a=1&b=2', 'zh-Hant-HK', 'a=1&b=2', array()),
+            array('#hash', 'zh-Hant-HK', '#hash', array())
         );
 
         $settings = array(

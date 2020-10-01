@@ -58,7 +58,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         );
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'custom_domain',
-            'default_lang' => en,
+            'default_lang' => 'en',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
@@ -143,7 +143,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         );
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'custom_domain',
-            'default_lang' => en,
+            'default_lang' => 'en',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
@@ -190,7 +190,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         );
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'custom_domain',
-            'default_lang' => en,
+            'default_lang' => 'en',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
