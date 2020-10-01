@@ -42,7 +42,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        // TestUtils::cleanUpDirectory($this->docRoot);
+        TestUtils::cleanUpDirectory($this->docRoot);
     }
 
     public function testCustomDomainPatternRootDir()
