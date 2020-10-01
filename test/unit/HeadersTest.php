@@ -923,7 +923,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $env = array( 'REQUEST_URI' => '/en/path?page=1&wovn=vi');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('/en/path', $headers->getDocumentURI());
+        $this->assertEquals('/en/path?page=1&wovn=vi', $headers->getDocumentURI());
     }
 
     public function testGetDocumentURIWithPathPattern()
@@ -932,7 +932,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $env = array( 'REQUEST_URI' => '/en/path?page=1');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('/path', $headers->getDocumentURI());
+        $this->assertEquals('/path?page=1', $headers->getDocumentURI());
     }
 
     public function testUrlKeepTrailingSlashWithoutProxy()
