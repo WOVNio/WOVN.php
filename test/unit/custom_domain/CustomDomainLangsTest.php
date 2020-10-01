@@ -23,14 +23,19 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting);
     }
 
+    private function getLang($customDomainlang)
+    {
+        return $customDomainlang->getLang();
+    }
+
     public function testGetCustomDomainLangByLang()
     {
         $this->assertEquals(null, $this->customDomainLangs->getCustomDomainLangByLang('unknown'));
 
-        $this->assertEquals('fr', ($this->customDomainLangs->getCustomDomainLangByLang('fr'))->getLang());
-        $this->assertEquals('ja', ($this->customDomainLangs->getCustomDomainLangByLang('ja'))->getLang());
-        $this->assertEquals('zh-CHS', ($this->customDomainLangs->getCustomDomainLangByLang('zh-CHS'))->getLang());
-        $this->assertEquals('en', ($this->customDomainLangs->getCustomDomainLangByLang('en'))->getLang());
+        $this->assertEquals('fr', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('fr')));
+        $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('ja')));
+        $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('zh-CHS')));
+        $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('en')));
     }
 
     public function testGetCustomDomainLangByUrl()
@@ -39,23 +44,23 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $this->customDomainLangs->getCustomDomainLangByUrl('http://otherdomain.com/path/test.html'));
         $this->assertEquals(null, $this->customDomainLangs->getCustomDomainLangByUrl('http://otherdomain.com/dir/path/test.html'));
 
-        $this->assertEquals('fr', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com'))->getLang());
-        $this->assertEquals('fr', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/'))->getLang());
-        $this->assertEquals('fr', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/test.html'))->getLang());
+        $this->assertEquals('fr', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com')));
+        $this->assertEquals('fr', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/')));
+        $this->assertEquals('fr', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/test.html')));
 
-        $this->assertEquals('ja', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path'))->getLang());
-        $this->assertEquals('ja', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/'))->getLang());
-        $this->assertEquals('ja', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/dir'))->getLang());
-        $this->assertEquals('ja', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/test.html'))->getLang());
+        $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path')));
+        $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/')));
+        $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/dir')));
+        $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/test.html')));
 
-        $this->assertEquals('zh-CHS', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path'))->getLang());
-        $this->assertEquals('zh-CHS', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/'))->getLang());
-        $this->assertEquals('zh-CHS', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/dir'))->getLang());
-        $this->assertEquals('zh-CHS', ($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/test.html'))->getLang());
+        $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path')));
+        $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/')));
+        $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/dir')));
+        $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://foo.com/dir/path/test.html')));
 
-        $this->assertEquals('en', ($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path'))->getLang());
-        $this->assertEquals('en', ($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path/'))->getLang());
-        $this->assertEquals('en', ($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path/test.html'))->getLang());
+        $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path')));
+        $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path/')));
+        $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByUrl('http://english.foo.com/dir/path/test.html')));
     }
 
     public function testGetCustomDomainLangByUrlWithNestedPaths()
@@ -66,8 +71,8 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
             'foo.com/path/fr' => 'fr'
         );
         $customDomainLangs = new CustomDomainLangs($customDomainLangsSetting);
-        $this->assertEquals('ja', ($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path'))->getLang());
-        $this->assertEquals('en', ($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/en'))->getLang());
-        $this->assertEquals('fr', ($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/fr'))->getLang());
+        $this->assertEquals('ja', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path')));
+        $this->assertEquals('en', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/en')));
+        $this->assertEquals('fr', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/fr')));
     }
 }
