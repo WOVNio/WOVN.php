@@ -31,7 +31,7 @@ $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
-$uriWithQuery = $headers->getDocumentURI(true);
+$uriWithQuery = $headers->getDocumentURIWithQuery();
 if (!Utils::isFilePathURI($uri, $store) &&
     !Utils::isIgnoredPath($uriWithQuery, $store)
     ) {

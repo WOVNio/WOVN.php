@@ -309,12 +309,12 @@ class Headers
         }
     }
 
-    public function getDocumentURI($withQuery = false)
+    public function getDocumentURI()
     {
         $url = $this->env['REQUEST_URI'];
         $url_arr = parse_url($url);
 
-        if (!$withQuery && $url_arr && array_key_exists('query', $url_arr)) {
+        if ($url_arr && array_key_exists('query', $url_arr)) {
             $query = $url_arr['query'];
             $uri = str_replace(array($query,'?'), '', $url);
         } else {
@@ -322,5 +322,12 @@ class Headers
         }
 
         return $this->removeLang($uri, $this->lang());
+    }
+
+    public function getDocumentURIWithQuery()
+    {
+        $url = $this->env['REQUEST_URI'];
+
+        return $this->removeLang($url, $this->lang());
     }
 }
