@@ -64,26 +64,9 @@ class Headers
             $this->pathname = $this->removeLang($exploded[0], $this->lang());
         }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
-        $urlQuery = $this->removeLang($this->query, $this->lang());
-        $urlQuery = strlen($urlQuery) > 0 ? '?' . $urlQuery : '';
-        $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
-        if (count($store->settings['query']) > 0) {
-            $queryVals = array();
-            foreach ($store->settings['query'] as $qv) {
-                $rp = '/(^|&)(?P<queryVal>' . $qv . '[^&]+)(&|$)/';
-                preg_match($rp, $this->query, $match);
-                if (isset($match['queryVal'])) {
-                    array_push($queryVals, $match['queryVal']);
-                }
-            }
-            if (count($queryVals) > 0) {
-                asort($queryVals);
-                $this->query = '?' . implode('&', $queryVals);
-            }
-        } else {
-            $this->query = '';
-        }
         $this->query = $this->removeLang($this->query, $this->lang());
+        $urlQuery = strlen($this->query) > 0 ? '?' . $this->query : '';
+
         $this->pathnameKeepTrailingSlash = $this->pathname;
         $this->pathname = preg_replace('/\/$/', '', $this->pathname);
         $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
@@ -312,15 +295,7 @@ class Headers
     public function getDocumentURI()
     {
         $url = $this->env['REQUEST_URI'];
-        $url_arr = parse_url($url);
 
-        if ($url_arr && array_key_exists('query', $url_arr)) {
-            $query = $url_arr['query'];
-            $uri = str_replace(array($query,'?'), '', $url);
-        } else {
-            $uri = $url;
-        }
-
-        return $this->removeLang($uri, $this->lang());
+        return $this->removeLang($url, $this->lang());
     }
 }
