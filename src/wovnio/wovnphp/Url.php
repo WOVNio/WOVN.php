@@ -38,7 +38,7 @@ class Url
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
 
-        if (Utils::isIgnoredPath($uri, $uri, $store)) {
+        if (Utils::isIgnoredPath($uri, $store)) {
             return $uri;
         }
 

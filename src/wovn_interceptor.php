@@ -33,7 +33,7 @@ $headers->requestOut();
 $uri = $headers->getDocumentURI();
 $uriWithQuery = $headers->getDocumentURI(true);
 if (!Utils::isFilePathURI($uri, $store) &&
-    !Utils::isIgnoredPath($uri, $uriWithQuery, $store)
+    !Utils::isIgnoredPath($uriWithQuery, $store)
     ) {
     $diagnostics = null;
     $benchmarkStart = 0;
