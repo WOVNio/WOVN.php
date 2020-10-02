@@ -314,11 +314,7 @@ class Headers
         $url = $this->env['REQUEST_URI'];
         $url_arr = parse_url($url);
 
-        if ($withQuery) {
-            return $url;
-        }
-
-        if ($url_arr && array_key_exists('query', $url_arr)) {
+        if (!$withQuery && $url_arr && array_key_exists('query', $url_arr)) {
             $query = $url_arr['query'];
             $uri = str_replace(array($query,'?'), '', $url);
         } else {
