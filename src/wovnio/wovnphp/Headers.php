@@ -309,10 +309,14 @@ class Headers
         }
     }
 
-    public function getDocumentURI()
+    public function getDocumentURI($withQuery=false)
     {
         $url = $this->env['REQUEST_URI'];
         $url_arr = parse_url($url);
+
+        if ($withQuery) {
+            return $url;
+        }
 
         if ($url_arr && array_key_exists('query', $url_arr)) {
             $query = $url_arr['query'];

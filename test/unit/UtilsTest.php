@@ -70,49 +70,50 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = Utils::getStoreAndHeaders($env);
         $store->settings['ignore_paths'] = array('coucou.html', '/assets/img/', '/admin');
 
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', '', $store));
 
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/boop', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html?foo', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html#foo', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/page/coucou.html', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou.htmlx', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html/boop', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html?foo', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/coucou.html#foo', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/page/coucou.html', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou.htmlx', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/coucou', '', $store));
 
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img/', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img/boop', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/assets/img.png', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/other/assets/img', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/other/assets/img/', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img/', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/assets/img/boop', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/assets/img.png', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/other/assets/img', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/other/assets/img/', '', $store));
 
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin/', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin/user', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/admins', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/user/admin', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin/', '', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/admin/user', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/admins', '', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/user/admin', '', $store));
     }
 
     public function testIsIgnoredPathUsingIgnoreRegexSetting()
     {
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
-        $store->settings['ignore_regex'] = array("/img\/assets$/i", "/\/dog.png$/i");
+        $store->settings['ignore_regex'] = array("/img\/assets$/i", "/\/dog.png$/i", "/\?page_id=[0-9]*&qq_builder$/i");
 
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', 'https://google.com', $store));
 
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/img/assets', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/IMG/ASSETS', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/global/img/assets', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/global/img/assets/', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/global/img/assets/cat.png', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/img/assets', 'https://google.com/img/assets', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/IMG/ASSETS', 'https://google.com/IMG/ASSETS', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/global/img/assets', 'https://google.com/global/img/assets', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/global/img/assets/', 'https://google.com/global/img/assets/', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/global/img/assets/cat.png', 'https://google.com/global/img/assets/cat.png', $store));
 
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/global/img/assets/dog.png', $store));
-        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/dog.png', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/dog.png/', $store));
-        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/stray_dog.png', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/global/img/assets/dog.png', 'https://google.com/global/img/assets/dog.png', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/dog.png', 'https://google.com/dog.png', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/dog.png/', 'https://google.com/dog.png/', $store));
+        $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/stray_dog.png', 'https://google.com/stray_dog.png', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('/?page_id=2412232&qq_builder', '/?page_id=2412232&qq_builder', $store));
     }
 
     public function testIsHtml()
