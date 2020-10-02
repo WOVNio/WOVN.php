@@ -298,11 +298,4 @@ class Headers
 
         return $this->removeLang($url, $this->lang());
     }
-
-    public function getDocumentURIWithQuery()
-    {
-        $url = $this->env['REQUEST_URI'];
-
-        return $this->removeLang($url, $this->lang());
-    }
 }
