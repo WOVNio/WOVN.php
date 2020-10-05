@@ -308,7 +308,7 @@ https://my-website.com/adminpage
 WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` は翻訳しません。
 
 ```
-ignore_regex[] = /\/search\/\d\d\//
+ignore_regex[] = "/\/search\/\d\d\//"
 ```
 
 #### `ignore_class`

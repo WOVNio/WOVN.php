@@ -99,7 +99,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     {
         $env = EnvFactory::fromFixture('default');
         list($store, $headers) = Utils::getStoreAndHeaders($env);
-        $store->settings['ignore_regex'] = array("/img\/assets$/i", "/\/dog.png$/i");
+        $store->settings['ignore_regex'] = array("/img\/assets$/i", "/\/dog.png$/i", "/\?page_id=[0-9]*&qq_builder$/i");
 
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', $store));
 
@@ -113,6 +113,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, Utils::isIgnoredPath('https://google.com/dog.png', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/dog.png/', $store));
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com/stray_dog.png', $store));
+        $this->assertEquals(true, Utils::isIgnoredPath('/?page_id=2412232&qq_builder', $store));
     }
 
     public function testIsHtml()
