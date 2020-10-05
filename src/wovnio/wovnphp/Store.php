@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+require_once 'custom_domain/CustomDomainLangs.php';
+
 use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
 
@@ -12,6 +14,7 @@ class Store
     public $settings;
     // FIXME: could be private (unused outside this scope???)
     public $configLoaded = false;
+    private $customDomainLangs;
 
     /**
      * @param string $settingFileName
@@ -90,6 +93,7 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'site_prefix_path' => null,
+            'custom_domain_langs' => array(),
 
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
@@ -122,11 +126,17 @@ class Store
             $this->settings['site_prefix_path'] = trim($this->settings['site_prefix_path'], '/');
         }
 
+        if (!empty($this->settings['custom_domain_langs']) && is_array($this->settings['custom_domain_langs'])) {
+            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs']);
+        }
+
         // getting the url pattern
         if ($this->settings['url_pattern_name'] === 'query') {
             $this->settings['url_pattern_reg'] = '((\?.*&)|\?)' . $this->settings['lang_param_name'] . '=(?P<lang>[^&]+)(&|$)';
         } elseif ($this->settings['url_pattern_name'] === 'subdomain') {
             $this->settings['url_pattern_reg'] = '^(?P<lang>[^.]+)\.';
+        } elseif ($this->settings['url_pattern_name'] === 'custom_domain') {
+            // not use regex
         } else {
             $this->settings['url_pattern_name'] = 'path';
             $prefix = empty($this->settings['site_prefix_path']) ? '' : str_replace('/', '\/', '/' . $this->settings['site_prefix_path']);
@@ -248,5 +258,10 @@ class Store
     public function defaultLang()
     {
         return $this->settings['default_lang'];
+    }
+
+    public function getCustomDomainLangs()
+    {
+        return $this->customDomainLangs;
     }
 }

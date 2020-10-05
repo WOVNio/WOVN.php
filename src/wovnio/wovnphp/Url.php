@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+require_once 'custom_domain/CustomDomainLangUrlHandler.php';
+
 class Url
 {
     /**
@@ -37,22 +39,22 @@ class Url
         $site_prefix_path = $store->settings['site_prefix_path'];
         $lang_code = $store->convertToCustomLangCode($lang);
         $lang_param_name = $store->settings['lang_param_name'];
+        $default_lang = $store->settings['default_lang'];
 
         if (Utils::isIgnoredPath($uri, $store)) {
             return $uri;
         }
 
-        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store->settings);
-        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store->settings);
+        $no_lang_uri = self::removeLangCode($uri, $lang_code, $store, $headers);
+        $no_lang_host = self::removeLangCode($headers->host, $lang_code, $store, $headers);
 
         if ($store->hasDefaultLangAlias()) {
-            $default_lang = $store->settings['default_lang'];
-            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store->settings);
-            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store->settings);
+            $no_lang_uri = self::removeLangCode($no_lang_uri, $store->convertToCustomLangCode($default_lang), $store, $headers);
+            $no_lang_host = self::removeLangCode($no_lang_host, $store->convertToCustomLangCode($default_lang), $store, $headers);
         }
 
         // absolute urls
-        if (preg_match('/^(https?:)?\/\//i', $no_lang_uri)) {
+        if (self::isAbsoluteUri($no_lang_uri)) {
             $parsed_url = parse_url($no_lang_uri);
             // only continue if the host of the url is the same as the headers host
             if (!self::uriFromSameHost($no_lang_uri, $no_lang_host)) {
@@ -67,6 +69,9 @@ class Url
                     break;
                 case 'path':
                     $new_uri = self::addPathLangCode($no_lang_uri, $lang_code, $site_prefix_path);
+                    break;
+                case 'custom_domain':
+                    $new_uri = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($no_lang_uri, $lang_code, $store->getCustomDomainLangs());
                     break;
                 default:
                     $new_uri = $uri;
@@ -98,6 +103,14 @@ class Url
                     break;
                 case 'query':
                     $new_uri = self::addQueryLangCode($no_lang_uri, $lang_code, $lang_param_name);
+                    break;
+                case 'custom_domain':
+                    if (self::isAbsolutePath($no_lang_uri)) { // absolute path
+                        $absoluteUrl = $headers->protocol . '://' . $headers->host . $no_lang_uri;
+                        $absoluteUrlWithLang = CustomDomainLangUrlHandler::addCustomDomainLangToAbsoluteUrl($absoluteUrl, $lang_code, $store->getCustomDomainLangs());
+                        $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                        $new_uri = $segments['others'];
+                    }
                     break;
                 default: // path
                     if (preg_match('/^\//', $no_lang_uri)) {
@@ -195,6 +208,15 @@ class Url
         return $new_uri;
     }
 
+    private static function addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang)
+    {
+        $customDomainLangs = $store->getCustomDomainLangs();
+        $targetLangDomain = $customDomainLangs->getCustomDomainLangByLang($lang_code);
+        $defaultLangDomain = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+        $new_uri = str_replace($defaultLangDomain, $targetLangDomain, $no_lang_uri);
+        return $new_uri;
+    }
+
     /**
      * Removing the lang of the url, literally.
      * No lang code to custom lang alias conversion happens here.
@@ -204,12 +226,13 @@ class Url
      * @param String $settings The settings object
      * @return String The url without the lang
      */
-    public static function removeLangCode($uri, $lang_code, $settings)
+    public static function removeLangCode($uri, $lang_code, $store, $headers)
     {
         if (!$lang_code || strlen($lang_code) == 0 || self::isAnchorLink($uri)) {
             return $uri;
         }
 
+        $settings = $store->settings;
         $pattern = $settings['url_pattern_name'];
         $lang_param_name = $settings['lang_param_name'];
         $site_prefix_path = $settings['site_prefix_path'];
@@ -224,6 +247,26 @@ class Url
                 // limit to one replacement
                 $prefix = empty($site_prefix_path) ? '' : '/' . $site_prefix_path;
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
+            case 'custom_domain':
+                $customDomainLangs = $store->getCustomDomainLangs();
+                $default_lang = $settings['default_lang'];
+                $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
+                $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+                $newUri = $uri;
+                if (self::isAbsoluteUri($uri)) {
+                    $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
+                } elseif (self::isAbsolutePath($uri)) {
+                    $absoluteUrl = $headers->protocol . '://' . $headers->originalHost . $uri;
+                    $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
+                    $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                    $newUri = $segments['others'];
+                } elseif ($uri === $customDomainLangToRemove->getHost()) {
+                    $absoluteUrl = $headers->protocol . '://' . $uri . $headers->originalPath;
+                    $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
+                    $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
+                    $newUri = $segments['host'];
+                }
+                return $newUri;
             default:
                 return $uri;
         }
@@ -253,6 +296,34 @@ class Url
             "($prefix)" . // 3: site prefix path like /dir1
             '(/|\?|#|$)' . // 4: path, query, hash or end-of-string like /dir2/?a=b#hash
             '@'
+        );
+    }
+
+    private static function isAbsoluteUri($uri)
+    {
+        return preg_match('/^(https?:)?\/\//i', $uri);
+    }
+
+    private static function isAbsolutePath($uri)
+    {
+        return preg_match('/^\//', $uri);
+    }
+
+    private static function makeSegmentsFromAbsoluteUrl($absoluteUrl)
+    {
+        preg_match(
+            '@' .
+            '^(.*://|//)?' . // 1: schema (optional) like https://
+            '([^/?]*)?' . // 2: host (optional) like wovn.io
+            '((?:/|\?|#).*)?$' . // 3: path with query or hash
+            '@',
+            $absoluteUrl,
+            $matches
+        );
+        return array(
+            'schema' => array_key_exists(1, $matches) ? $matches[1] : '',
+            'host' => array_key_exists(2, $matches) ? $matches[2] : '',
+            'others' => array_key_exists(3, $matches) ? $matches[3] : ''
         );
     }
 }

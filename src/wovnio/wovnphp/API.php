@@ -61,6 +61,9 @@ class API
         if (!empty($store->settings['site_prefix_path'])) {
             $data['site_prefix_path'] = $store->settings['site_prefix_path'];
         }
+        if (!empty($store->settings['custom_domain_langs'])) {
+            $data['custom_domain_langs'] = json_encode($store->settings['custom_domain_langs']);
+        }
 
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();

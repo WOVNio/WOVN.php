@@ -8,7 +8,8 @@ namespace Wovnio\Wovnphp;
 class Headers
 {
     public $protocol;
-    public $unmaskedHost;
+    public $originalHost;
+    public $originalPath;
     public $host;
     public $pathname;
     public $url;
@@ -40,17 +41,29 @@ class Headers
             }
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_HOST'])) {
-            $this->unmaskedHost = $env['HTTP_X_FORWARDED_HOST'];
+            $this->originalHost = $env['HTTP_X_FORWARDED_HOST'];
         } else {
-            $this->unmaskedHost = $env['HTTP_HOST'];
+            $this->originalHost = $env['HTTP_HOST'];
         }
         if (!isset($env['REQUEST_URI'])) {
             $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
         }
-        $this->host = $this->unmaskedHost;
+
+        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->originalPath = $env['HTTP_X_FORWARDED_REQUEST_URI'];
+        } elseif (isset($env['REDIRECT_URL'])) {
+            $this->originalPath = $env['REDIRECT_URL'];
+        }
+
+        if (!preg_match('/\/$/', $this->originalPath) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->originalPath)) {
+            $this->originalPath .= '/';
+        }
+        $this->host = $this->originalHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
             $this->host = $intermediateHost[1];
+        } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
+            $this->host = $this->removeLang($this->host, $this->lang());
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
@@ -127,16 +140,24 @@ class Headers
             } else {
                 $request_uri = $this->env['REQUEST_URI'];
             }
-            preg_match($rp, $server_name . $request_uri, $match);
-            if (isset($match['lang'])) {
-                $lang_code = Lang::formatLangCode($match['lang'], $this->store);
-                if (!is_null($lang_code)) {
-                    $this->pathLang = $lang_code;
+
+            $full_url = $server_name . $request_uri;
+            $lang_code = null;
+            if ($this->store->settings['url_pattern_name'] == 'custom_domain') {
+                $customDomainLangs = $this->store->getCustomDomainLangs();
+                $customDomain = $customDomainLangs->getCustomDomainLangByUrl($full_url);
+                if (!empty($customDomain)) {
+                    $lang_code = $customDomain->getLang();
+                }
+            } else {
+                $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
+                preg_match($rp, $full_url, $match);
+                if (isset($match['lang'])) {
+                    $lang_identifier = $match['lang'];
+                    $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
                 }
             }
-            if ($this->pathLang === null) {
-                $this->pathLang = '';
-            }
+            $this->pathLang = is_null($lang_code) ? '' : $lang_code;
         }
         return $this->pathLang;
     }
@@ -192,40 +213,58 @@ class Headers
 
         switch ($this->store->settings['url_pattern_name']) {
             case 'query':
-                if (isset($this->env['REQUEST_URI'])) {
-                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-                }
-                $this->env['QUERY_STRING'] = $this->removeLang($this->env['QUERY_STRING']);
-                if (isset($this->env['ORIGINAL_FULLPATH'])) {
-                    $this->env['ORIGINAL_FULLPATH'] = $this->removeLang($this->env['ORIGINAL_FULLPATH']);
-                }
-                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['X-FORWARDED_REQUEST_URI']);
-                }
+                $this->removeLangFromQuery();
                 break;
-
             case 'subdomain':
-                if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-                    $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
-                }
-                $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
-                $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+                $this->removeLangFromHost();
                 break;
-
+            case 'custom_domain':
+                $this->removeLangFromHost();
+                $this->removeLangFromPath();
+                break;
             case 'path':
             default:
-                if (isset($this->env['REQUEST_URI'])) {
-                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-                }
-                if (isset($this->env['REDIRECT_URL'])) {
-                    $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
-                }
-                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
-                }
+                $this->removeLangFromPath();
+                break;
         }
 
         return $this->env;
+    }
+
+    private function removeLangFromHost()
+    {
+        if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
+            $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
+        }
+        $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
+        $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+    }
+
+    private function removeLangFromPath()
+    {
+        if (isset($this->env['REQUEST_URI'])) {
+            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
+        }
+        if (isset($this->env['REDIRECT_URL'])) {
+            $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
+        }
+        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
+        }
+    }
+
+    private function removeLangFromQuery()
+    {
+        if (isset($this->env['REQUEST_URI'])) {
+            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
+        }
+        $this->env['QUERY_STRING'] = $this->removeLang($this->env['QUERY_STRING']);
+        if (isset($this->env['ORIGINAL_FULLPATH'])) {
+            $this->env['ORIGINAL_FULLPATH'] = $this->removeLang($this->env['ORIGINAL_FULLPATH']);
+        }
+        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['X-FORWARDED_REQUEST_URI']);
+        }
     }
 
     /**
@@ -285,10 +324,10 @@ class Headers
         $lang_code = $this->store->convertToCustomLangCode($lang);
         $default_lang = $this->store->settings['default_lang'];
         if ($this->store->hasDefaultLangAlias()) {
-            $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store->settings);
+            $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store, $this);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
-            return Url::removeLangCode($uri, $lang_code, $this->store->settings);
+            return Url::removeLangCode($uri, $lang_code, $this->store, $this);
         }
     }
 

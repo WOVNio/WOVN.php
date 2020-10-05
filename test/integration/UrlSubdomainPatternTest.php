@@ -6,6 +6,8 @@ use Wovnio\Test\Helpers\TestUtils;
 
 class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
 {
+    private static $orgHostFile;
+
     public static function setUpBeforeClass()
     {
         TestUtils::addHost('testsite.com');
@@ -17,6 +19,13 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
         TestUtils::addHost('custom-ja.testsite.com');
         TestUtils::addHost('custom-en-us.testsite.com');
         TestUtils::addHost('custom-zh-hant-hk.testsite.com');
+    }
+
+    public static function tearDownAfterClass()
+    {
+        if (!empty(self::$orgHostFile)) {
+            file_put_contents('/etc/hosts', self::$orgHostFile);
+        }
     }
 
     protected function setUp()
