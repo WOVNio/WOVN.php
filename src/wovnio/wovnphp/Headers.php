@@ -9,14 +9,9 @@ class Headers
 {
     public $protocol;
     public $unmaskedHost;
-    public $unmaskedPathname;
-    public $unmaskedUrl;
     public $host;
     public $pathname;
     public $url;
-    public $redisUrl;
-    // PHP ONLY
-    public $maskedRequestURI;
 
     private $env;
     private $store;
@@ -52,15 +47,6 @@ class Headers
         if (!isset($env['REQUEST_URI'])) {
             $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
         }
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->unmaskedPathname = $env['HTTP_X_FORWARDED_REQUEST_URI'];
-        } elseif (isset($env['REDIRECT_URL'])) {
-            $this->unmaskedPathname = $env['REDIRECT_URL'];
-        }
-        if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
-            $this->unmaskedPathname .= '/';
-        }
-        $this->unmaskedUrl = $this->protocol . '://' . $this->unmaskedHost . $this->unmaskedPathname;
         $this->host = $this->unmaskedHost;
         if (in_array($store->settings['url_pattern_name'], array('subdomain', 'custom_domain'))) {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
@@ -78,70 +64,13 @@ class Headers
             $this->pathname = $this->removeLang($exploded[0], $this->lang());
         }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
-        $urlQuery = $this->removeLang($this->query, $this->lang());
-        $urlQuery = strlen($urlQuery) > 0 ? '?' . $urlQuery : '';
-        $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
-        if (count($store->settings['query']) > 0) {
-            $queryVals = array();
-            foreach ($store->settings['query'] as $qv) {
-                $rp = '/(^|&)(?P<queryVal>' . $qv . '[^&]+)(&|$)/';
-                preg_match($rp, $this->query, $match);
-                if (isset($match['queryVal'])) {
-                    array_push($queryVals, $match['queryVal']);
-                }
-            }
-            if (count($queryVals) > 0) {
-                asort($queryVals);
-                $this->query = '?' . implode('&', $queryVals);
-            }
-        } else {
-            $this->query = '';
-        }
         $this->query = $this->removeLang($this->query, $this->lang());
+        $urlQuery = strlen($this->query) > 0 ? '?' . $this->query : '';
+
         $this->pathnameKeepTrailingSlash = $this->pathname;
         $this->pathname = preg_replace('/\/$/', '', $this->pathname);
         $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
         $this->urlKeepTrailingSlash = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash . $urlQuery;
-        if (isset($store->settings['query']) && !empty($store->settings['query'])) {
-            $this->redisUrl = $this->host . $this->pathname . $this->matchQuery($urlQuery, $store->settings['query']);
-        } else {
-            $this->redisUrl = $this->host . $this->pathname;// . $urlQuery;
-        }
-        // PHP ONLY
-        $this->maskedRequestURI = $this->removeLang(preg_replace('/\?.*$/', '', $env['REQUEST_URI']));
-    }
-
-    /**
-     * Public function matching the query in the url with the query params in the settings
-     *  - Will remove query params not include in the settings
-     *  - Will sort the query params in order and deliver a valid string
-     *
-     * @return String A valid query params string with '?' and separators '&'
-     */
-    public function matchQuery($urlQuery, $querySettings)
-    {
-        if (empty($urlQuery) || empty($querySettings)) {
-            return '';
-        }
-
-        $urlQuery = preg_replace('/^\?/', '', $urlQuery);
-        $queryArray = explode('&', $urlQuery);
-
-        sort($queryArray, SORT_STRING);
-        foreach ($queryArray as $k => $q) {
-            $keep = false;
-            foreach ($querySettings as $qs) {
-                if (strpos($q, $qs) !== false) {
-                    $keep = true;
-                }
-            }
-            if (!$keep) {
-                unset($queryArray[$k]);
-            }
-        }
-        if (!empty($queryArray)) {
-            return '?' . implode('&', $queryArray);
-        }
     }
 
     /**
@@ -255,43 +184,6 @@ class Headers
         }
         return $this->browserLang;
     }
-
-    /**
-     * Public function returning the location of the redirection
-     *
-     * @param String $lang The lang to display, can be null or empty
-     * @return String The url of the redirections location
-     */
-    public function redirectLocation($lang = null)
-    {
-        if ($lang === null) {
-            $lang = $this->computeBrowserLang();
-        }
-        if ($lang === $this->store->settings['default_lang']) {
-            return $this->protocol . '://' . $this->url;
-        }
-        $location = $this-> url;
-        switch ($this->store->settings['url_pattern_name']) {
-            case 'query':
-                // if (!preg_match('/\?/', $this->env['REQUEST_URI'])) {
-                // as $location is directtly modified it is safe to directly test it
-                if (!preg_match('/\?/', $location)) {
-                    $location = $location . '?' . $this->store->settings['lang_param_name'] . '=' . $lang;
-                } else {
-                    $location = $location . '&' . $this->store->settings['lang_param_name'] . '=' . $lang;
-                }
-                break;
-            case 'subdomain':
-                $location = $lang . '.' . $location;
-                break;
-            case 'path':
-            default:
-                $prefix = empty($this->store->settings['site_prefix_path']) ? '' : '/' . $this->store->settings['site_prefix_path'];
-                $location = preg_replace("@$prefix(/|$)@", $prefix . '/' . $lang . '/', $location, 1);
-        }
-        return $this->protocol . '://' . $location;
-    }
-
 
     /**
      * Public function returning the env environment for the request out
@@ -421,22 +313,18 @@ class Headers
             $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store, $this);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
+<<<<<<< HEAD
             return Url::removeLangCode($uri, $lang_code, $this->store, $this);
+=======
+            return Url::removeLangCode($uri, $lang_code, $this->store->settings);
+>>>>>>> 9efa3d22a5d86ba4964b41afd66a857f26243d20
         }
     }
 
     public function getDocumentURI()
     {
         $url = $this->env['REQUEST_URI'];
-        $url_arr = parse_url($url);
 
-        if ($url_arr && array_key_exists('query', $url_arr)) {
-            $query = $url_arr['query'];
-            $uri = str_replace(array($query,'?'), '', $url);
-        } else {
-            $uri = $url;
-        }
-
-        return $this->removeLang($uri, $this->lang());
+        return $this->removeLang($url, $this->lang());
     }
 }

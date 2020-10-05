@@ -68,7 +68,6 @@ class Store
             'url_pattern_name' => 'query',
             'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
-            'query' => array(),
             'widget_url' => '//j.wovn.io/1',
             'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
             'api_error_host' => 'api.wovn.io',
@@ -122,16 +121,6 @@ class Store
 
         // GETTING THE LANGUAGE AND SETTING IT AS CODE
         $this->settings['default_lang'] = Lang::getCode($this->settings['default_lang']);
-
-        // Gettting the query params array, adding = if missing and sorting
-        if (!empty($this->settings['query'])) {
-            foreach ($this->settings['query'] as $k => $q) {
-                if (!preg_match('/=$/', $q)) {
-                    $this->settings['query'][$k] = $q . '=';
-                }
-            }
-            sort($this->settings['query'], SORT_STRING);
-        }
 
         if (!empty($this->settings['site_prefix_path'])) {
             $this->settings['site_prefix_path'] = trim($this->settings['site_prefix_path'], '/');

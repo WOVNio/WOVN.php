@@ -80,65 +80,6 @@ class StoreTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($store->isValid());
     }
 
-    public function testQuerySettingOneParam()
-    {
-        $file_config = dirname(__FILE__) . '/test_config.ini';
-        if (file_exists($file_config)) {
-            unlink($file_config);
-        }
-        $data = implode("\n", array(
-            'project_token = "T0k3N"',
-            'query[] = "a"',
-            'backend_host = "rs1.wovn.io"',
-            'backend_port = "6379"',
-            'default_lang = "English"'
-        ));
-        file_put_contents($file_config, $data);
-        $store = Store::createFromFile($file_config);
-        unlink($file_config);
-        $this->assertEquals(array('a='), $store->settings['query']);
-    }
-
-    public function testQuerySettingTwoParam()
-    {
-        $file_config = dirname(__FILE__) . '/test_config.ini';
-        if (file_exists($file_config)) {
-            unlink($file_config);
-        }
-        $data = implode("\n", array(
-            'project_token = "T0k3N"',
-            'query[] = "a"',
-            'query[] = "b"',
-            'backend_host = "rs1.wovn.io"',
-            'backend_port = "6379"',
-            'default_lang = "English"'
-        ));
-        file_put_contents($file_config, $data);
-        $store = Store::createFromFile($file_config);
-        unlink($file_config);
-        $this->assertEquals(array('a=', 'b='), $store->settings['query']);
-    }
-
-    public function testQuerySettingTwoParamsSorting()
-    {
-        $file_config = dirname(__FILE__) . '/test_config.ini';
-        if (file_exists($file_config)) {
-            unlink($file_config);
-        }
-        $data = implode("\n", array(
-            'project_token = "T0k3N"',
-            'query[] = "b"',
-            'query[] = "a"',
-            'backend_host = "rs1.wovn.io"',
-            'backend_port = "6379"',
-            'default_lang = "English"'
-        ));
-        file_put_contents($file_config, $data);
-        $store = Store::createFromFile($file_config);
-        unlink($file_config);
-        $this->assertEquals(array('a=', 'b='), $store->settings['query']);
-    }
-
     public function testEncodingSetting()
     {
         $file_config = dirname(__FILE__) . '/test_config.ini';
@@ -392,8 +333,7 @@ class StoreTest extends \PHPUnit_Framework_TestCase
             array('path', '/dir1/dir2', 'dir1/dir2'),
             array('path', '/dir1/dir2/', 'dir1/dir2'),
             array('path', 'dir1/dir2/', 'dir1/dir2'),
-            array('subdomain', null, null),
-            array('query', null, null),
+            array('subdomain', null, null)
         );
         foreach ($testCases as $case) {
             list($url_pattern_name, $site_prefix_path, $expected_site_prefix_path) = $case;
