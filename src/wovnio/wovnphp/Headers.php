@@ -313,11 +313,7 @@ class Headers
             $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store, $this);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
-<<<<<<< HEAD
             return Url::removeLangCode($uri, $lang_code, $this->store, $this);
-=======
-            return Url::removeLangCode($uri, $lang_code, $this->store->settings);
->>>>>>> 9efa3d22a5d86ba4964b41afd66a857f26243d20
         }
     }
 
