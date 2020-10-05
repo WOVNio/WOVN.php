@@ -144,7 +144,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'en-us.testsite.com' => 'en-US',
             'testsite.com/ja' => 'ja',
             'testsite.com/zh/chs' => 'zh-CHS',
-            'zh-hant-hk.testsite.com/zh' => 'zh-Hant-HK'
+            'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $settings = array(
             'url_pattern_name' => 'custom_domain',
@@ -156,21 +156,45 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('http://en-us.testsite.com', 'http://testsite.com', 'en-US'),
             array('http://testsite.com/ja', 'http://testsite.com', 'ja'),
             array('http://testsite.com/zh/chs', 'http://testsite.com', 'zh-CHS'),
-            array('http://zh-hant-hk.testsite.com/zh', 'http://testsite.com', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh', 'http://testsite.com', 'zh-Hant-HK'),
 
-            array('http://zh-hant-hk.testsite.com', 'http://zh-hant-hk.testsite.com', 'zh-Hant-HK'), // don't change, if request uri is not match custom domain langs rule.
-            array('http://zh-hant-hk.testsite.com/zh/', 'http://testsite.com/', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/index.html', 'http://testsite.com/index.html', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path', 'http://testsite.com/path', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path/', 'http://testsite.com/path/', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path/index.html', 'http://testsite.com/path/index.html', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path/index.html?query=1', 'http://testsite.com/path/index.html?query=1', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path/index.html#hash', 'http://testsite.com/path/index.html#hash', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.testsite.com/zh/path/index.html?query=1#hash', 'http://testsite.com/path/index.html?query=1#hash', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com', 'http://zh-hant-hk.com', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/', 'http://testsite.com/', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/index.html', 'http://testsite.com/index.html', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path', 'http://testsite.com/path', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path/', 'http://testsite.com/path/', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path/index.html', 'http://testsite.com/path/index.html', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path/index.html?query=1', 'http://testsite.com/path/index.html?query=1', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path/index.html#hash', 'http://testsite.com/path/index.html#hash', 'zh-Hant-HK'),
+            array('http://zh-hant-hk.com/zh/path/index.html?query=1#hash', 'http://testsite.com/path/index.html?query=1#hash', 'zh-Hant-HK'),
+
+            // schema
+            array('//zh-hant-hk.com', '//zh-hant-hk.com', 'zh-Hant-HK'),
+            array('https://zh-hant-hk.com', 'https://zh-hant-hk.com', 'zh-Hant-HK'),
+
+            // only host
+            array('testsite.com', 'testsite.com', 'en'),
+            array('en-us.testsite.com', 'testsite.com', 'en-US'),
+            array('testsite.com', 'testsite.com', 'ja'),
+            array('testsite.com', 'testsite.com', 'zh-CHS'),
+            array('zh-hant-hk.com', 'zh-hant-hk.com', 'zh-Hant-HK'),
+
+            // only path
+            array('/', '/', 'zh-Hant-HK'),
+            array('/zh/', '/zh/', 'zh-Hant-HK'),
+            array('/ja', '', 'ja'),
+            array('/ja/', '/', 'ja'),
+            array('/ja/index.html', '/index.html', 'ja'),
+            array('/ja/dir', '/dir', 'ja'),
+            array('/ja/dir/', '/dir/', 'ja'),
+            array('/ja/dir/index.html', '/dir/index.html', 'ja'),
+            array('/ja/?query=1', '/?query=1', 'ja'),
+            array('/ja/#hash', '/#hash', 'ja'),
+            array('/zh/chs/', '/', 'zh-CHS'),
         );
         $env = array(
             'HTTP_HOST' => 'testsite.com',
-            'REQUEST_URI' => '/req_uri/'
+            'REQUEST_URI' => '/zh/'
         );
 
         foreach ($testCases as $case) {
@@ -310,6 +334,51 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
             $this->assertEquals($expectedLangCode, $headers->computePathLang());
+        };
+    }
+
+    public function testPathLangWithCustomDomainPattern()
+    {
+        $custom_domain_langs = array(
+            'my-site.com' => 'en',
+            'en-us.my-site.com' => 'en-US',
+            'my-site.com/ja' => 'ja',
+            'my-site.com/zh/chs' => 'zh-CHS',
+            'zh-hant-hk.com/zh' => 'zh-Hant-HK'
+        );
+        $settings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => $custom_domain_langs
+        );
+        $testCases = array(
+            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
+            array(array('SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/'), 'en-US'),
+            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/ja'), 'ja'),
+            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/zh/chs'), 'zh-CHS'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
+
+            // request uri pattern
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.html'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/index.html'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh?query=1'), 'zh-Hant-HK'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh#hash'), 'zh-Hant-HK'),
+
+            // should be default lang
+            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/japan'), 'en'),
+            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
+            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/'), '')
+        );
+
+        foreach ($testCases as $case) {
+            list($env, $expectedLangCode) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+            $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
+            $this->assertEquals($expectedLangCode, $headers->computePathLang(), "env -> [" . json_encode($env) . "] | lang -> [${expectedLangCode}]");
         };
     }
 

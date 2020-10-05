@@ -947,7 +947,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'en-us.my-site.com' => 'en-US', // subdomain pattern
             'my-site.com/ja' => 'ja', // path pattern
             'my-site.com/zh/chs' => 'zh-CHS', // deep path pattern
-            'zh-hant-hk.my-site.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+            'zh-hant-hk.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
         );
         $testCases = array(
             // no_lang_url, lang_code, expected_url
@@ -959,10 +959,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             array('https://my-site.com/a/b/index.php', 'ja', 'https://my-site.com/ja/a/b/index.php'),
             array('https://my-site.com/index.php', 'en-US', 'https://en-us.my-site.com/index.php'),
             array('https://my-site.com/index.php', 'zh-CHS', 'https://my-site.com/zh/chs/index.php'),
-            array('https://my-site.com/index.php', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php'),
-            array('https://my-site.com/index.php?a=1&b=2', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2'),
-            array('https://my-site.com/index.php#hash', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php#hash'),
-            array('https://my-site.com/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash'),
+            array('https://my-site.com/index.php', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php'),
+            array('https://my-site.com/index.php?a=1&b=2', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php?a=1&b=2'),
+            array('https://my-site.com/index.php#hash', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php#hash'),
+            array('https://my-site.com/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://zh-hant-hk.com/zh/index.php?a=1&b=2#hash'),
 
             // absolute path
             array('/', 'en', '/'),
@@ -1010,7 +1010,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             'en-us.my-site.com' => 'en-US', // subdomain pattern
             'my-site.com/ja' => 'ja', // path pattern
             'my-site.com/zh/chs' => 'zh-CHS', // deep path pattern
-            'zh-hant-hk.my-site.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+            'zh-hant-hk.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
         );
         $testCases = array(
             // $target_uri, $lang, $expected_uri, $env
@@ -1022,10 +1022,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             array('https://my-site.com/ja/a/b/index.php', 'ja', 'https://my-site.com/a/b/index.php', array()),
             array('https://en-us.my-site.com/index.php', 'en-US', 'https://my-site.com/index.php', array()),
             array('https://my-site.com/zh/chs/index.php', 'zh-CHS', 'https://my-site.com/index.php', array()),
-            array('https://zh-hant-hk.my-site.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php', array()),
-            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2', array()),
-            array('https://zh-hant-hk.my-site.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash', array()),
-            array('https://zh-hant-hk.my-site.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash', array()),
+            array('https://zh-hant-hk.com/zh/index.php', 'zh-Hant-HK', 'https://my-site.com/index.php', array()),
+            array('https://zh-hant-hk.com/zh/index.php?a=1&b=2', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2', array()),
+            array('https://zh-hant-hk.com/zh/index.php#hash', 'zh-Hant-HK', 'https://my-site.com/index.php#hash', array()),
+            array('https://zh-hant-hk.com/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', 'https://my-site.com/index.php?a=1&b=2#hash', array()),
 
             // absolute path
             array('/', 'en', '/', array()),
@@ -1035,10 +1035,10 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             array('/ja/a/b/index.php', 'ja', '/a/b/index.php', array()),
             array('/index.php', 'en-US', '/index.php', array('HTTP_HOST' => 'en-us.my-site.com')),
             array('/zh/chs/index.php', 'zh-CHS', '/index.php', array()),
-            array('/zh/index.php', 'zh-Hant-HK', '/index.php', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
-            array('/zh/index.php?a=1&b=2', 'zh-Hant-HK', '/index.php?a=1&b=2', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
-            array('/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
-            array('/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', array('HTTP_HOST' => 'zh-hant-hk.my-site.com')),
+            array('/zh/index.php', 'zh-Hant-HK', '/index.php', array('HTTP_HOST' => 'zh-hant-hk.com')),
+            array('/zh/index.php?a=1&b=2', 'zh-Hant-HK', '/index.php?a=1&b=2', array('HTTP_HOST' => 'zh-hant-hk.com')),
+            array('/zh/index.php#hash', 'zh-Hant-HK', '/index.php#hash', array('HTTP_HOST' => 'zh-hant-hk.com')),
+            array('/zh/index.php?a=1&b=2#hash', 'zh-Hant-HK', '/index.php?a=1&b=2#hash', array('HTTP_HOST' => 'zh-hant-hk.com')),
 
             // other patterns should be keep original
             array('a=1&b=2', 'zh-Hant-HK', 'a=1&b=2', array()),

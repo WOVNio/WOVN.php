@@ -321,9 +321,9 @@ class Url
             $matches
         );
         return array(
-            'schema' => $matches[1],
-            'host' => $matches[2],
-            'others' => $matches[3]
+            'schema' => array_key_exists(1, $matches) ? $matches[1] : '',
+            'host' => array_key_exists(2, $matches) ? $matches[2] : '',
+            'others' => array_key_exists(3, $matches) ? $matches[3] : ''
         );
     }
 }

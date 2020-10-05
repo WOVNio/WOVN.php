@@ -9,6 +9,7 @@ class Headers
 {
     public $protocol;
     public $unmaskedHost;
+    public $unmaskedPathname;
     public $host;
     public $pathname;
     public $url;
@@ -46,6 +47,16 @@ class Headers
         }
         if (!isset($env['REQUEST_URI'])) {
             $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
+        }
+
+        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->unmaskedPathname = $env['HTTP_X_FORWARDED_REQUEST_URI'];
+        } elseif (isset($env['REDIRECT_URL'])) {
+            $this->unmaskedPathname = $env['REDIRECT_URL'];
+        }
+
+        if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
+            $this->unmaskedPathname .= '/';
         }
         $this->host = $this->unmaskedHost;
         if (in_array($store->settings['url_pattern_name'], array('subdomain', 'custom_domain'))) {
@@ -131,7 +142,8 @@ class Headers
             $full_url = $server_name . $request_uri;
             $lang_code = null;
             if ($this->store->settings['url_pattern_name'] == 'custom_domain') {
-                $customDomain = $this->store->getCustomDomainLangs()->getCustomDomainLangByUrl($full_url);
+                $customDomainLangs = $this->store->getCustomDomainLangs();
+                $customDomain = $customDomainLangs->getCustomDomainLangByUrl($full_url);
                 if (!empty($customDomain)) {
                     $lang_code = $customDomain->getLang();
                 }
