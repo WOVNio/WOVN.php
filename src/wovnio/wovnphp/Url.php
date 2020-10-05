@@ -256,12 +256,12 @@ class Url
                 if (self::isAbsoluteUri($uri)) {
                     $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
                 } elseif (self::isAbsolutePath($uri)) {
-                    $absoluteUrl = $headers->protocol . '://' . $headers->unmaskedHost . $uri;
+                    $absoluteUrl = $headers->protocol . '://' . $headers->originalHost . $uri;
                     $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
                     $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
                     $newUri = $segments['others'];
                 } elseif ($uri === $customDomainLangToRemove->getHost()) {
-                    $absoluteUrl = $headers->protocol . '://' . $uri . $headers->unmaskedPathname;
+                    $absoluteUrl = $headers->protocol . '://' . $uri . $headers->originalPath;
                     $absoluteUrlWithLang = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($absoluteUrl, $customDomainLangToRemove, $defaultCustomDomainLang);
                     $segments = self::makeSegmentsFromAbsoluteUrl($absoluteUrlWithLang);
                     $newUri = $segments['host'];

@@ -35,7 +35,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('ja.wovn.io', $headers->unmaskedHost);
+        $this->assertEquals('ja.wovn.io', $headers->originalHost);
         $this->assertEquals('ja.wovn.io', $headers->host);
         $this->assertEquals('https', $headers->protocol);
     }
@@ -49,7 +49,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('my-site.com', $headers->unmaskedHost);
+        $this->assertEquals('my-site.com', $headers->originalHost);
         $this->assertEquals('my-site.com', $headers->host);
         $this->assertEquals('http', $headers->protocol);
     }
@@ -59,7 +59,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $settings = array('use_proxy' => 1);
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
-        $this->assertEquals('my-site.com', $headers->unmaskedHost);
+        $this->assertEquals('my-site.com', $headers->originalHost);
         $this->assertEquals('my-site.com', $headers->host);
         $this->assertEquals('http', $headers->protocol);
     }

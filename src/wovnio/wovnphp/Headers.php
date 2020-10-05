@@ -8,8 +8,8 @@ namespace Wovnio\Wovnphp;
 class Headers
 {
     public $protocol;
-    public $unmaskedHost;
-    public $unmaskedPathname;
+    public $originalHost;
+    public $originalPath;
     public $host;
     public $pathname;
     public $url;
@@ -41,24 +41,24 @@ class Headers
             }
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_HOST'])) {
-            $this->unmaskedHost = $env['HTTP_X_FORWARDED_HOST'];
+            $this->originalHost = $env['HTTP_X_FORWARDED_HOST'];
         } else {
-            $this->unmaskedHost = $env['HTTP_HOST'];
+            $this->originalHost = $env['HTTP_HOST'];
         }
         if (!isset($env['REQUEST_URI'])) {
             $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
         }
 
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->unmaskedPathname = $env['HTTP_X_FORWARDED_REQUEST_URI'];
+            $this->originalPath = $env['HTTP_X_FORWARDED_REQUEST_URI'];
         } elseif (isset($env['REDIRECT_URL'])) {
-            $this->unmaskedPathname = $env['REDIRECT_URL'];
+            $this->originalPath = $env['REDIRECT_URL'];
         }
 
-        if (!preg_match('/\/$/', $this->unmaskedPathname) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->unmaskedPathname)) {
-            $this->unmaskedPathname .= '/';
+        if (!preg_match('/\/$/', $this->originalPath) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->originalPath)) {
+            $this->originalPath .= '/';
         }
-        $this->host = $this->unmaskedHost;
+        $this->host = $this->originalHost;
         if (in_array($store->settings['url_pattern_name'], array('subdomain', 'custom_domain'))) {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
             $this->host = $intermediateHost[1];
