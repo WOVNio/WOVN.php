@@ -257,7 +257,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $settings = array(
             'default_lang' => 'en',
             'custom_lang_aliases' => array('en' => 'english'),
-            'supported_langs' => array('en', 'jp'),
+            'supported_langs' => array('en', 'ja'),
             'url_pattern_name' => 'subdomain'
         );
         $testCases = array(

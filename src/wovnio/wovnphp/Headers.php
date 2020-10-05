@@ -59,9 +59,11 @@ class Headers
             $this->originalPath .= '/';
         }
         $this->host = $this->originalHost;
-        if (in_array($store->settings['url_pattern_name'], array('subdomain', 'custom_domain'))) {
+        if ($store->settings['url_pattern_name'] === 'subdomain') {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
             $this->host = $intermediateHost[1];
+        } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
+            $this->host = $this->removeLang($this->host, $this->lang());
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
