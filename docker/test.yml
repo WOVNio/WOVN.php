@@ -1,0 +1,18 @@
+version: '3'
+services:
+  apache:
+    container_name: apache
+    image: ${DOCKER_IMAGE}
+    privileged: true
+    ports:
+      - 80:80
+    environment:
+      WOVN_ENV: development
+    volumes:
+      - ./apache/log:/var/log/apache2
+      - ./apache/apache2.conf:/etc/apache2/sites-enabled/apache2.conf
+      - ./php.ini:/usr/local/etc/php/php.ini
+      - ../:/opt/project
+      - ./test:/var/www/html
+    command:
+      bash -c "a2enmod rewrite && sleep 5 && apache2-foreground"

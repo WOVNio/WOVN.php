@@ -17,5 +17,5 @@ test/integration/test/integration/wovn_index_sample_workspace
 !/docker/apache.yml
 !/docker/nginx.yml
 !/docker/wp_apache.yml
-!/docker/integrationtest.yml
+!/docker/test.yml
 
