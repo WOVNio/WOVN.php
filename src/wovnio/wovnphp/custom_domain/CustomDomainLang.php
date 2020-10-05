@@ -6,7 +6,6 @@ class CustomDomainLang
     private $host;
     private $path;
     private $lang;
-    private $delimiter = '/';
 
     public function __construct($host, $path, $lang)
     {
@@ -40,8 +39,8 @@ class CustomDomainLang
     private function pathIsEqualOrSubsetOf($path1, $path2)
     {
         // split by delimiter and remove spaces and empty strings
-        $path1Segments = array_filter(array_map('trim', explode($this->delimiter, $path1)), 'strlen');
-        $path2Segments = array_filter(array_map('trim', explode($this->delimiter, $path2)), 'strlen');
+        $path1Segments = array_filter(array_map('trim', explode('/', $path1)), 'strlen');
+        $path2Segments = array_filter(array_map('trim', explode('/', $path2)), 'strlen');
 
         $length = count($path1Segments);
         $diff = array_diff_assoc(

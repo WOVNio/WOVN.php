@@ -307,57 +307,58 @@ class Headers
 
         switch ($this->store->settings['url_pattern_name']) {
             case 'query':
-                if (isset($this->env['REQUEST_URI'])) {
-                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-                }
-                $this->env['QUERY_STRING'] = $this->removeLang($this->env['QUERY_STRING']);
-                if (isset($this->env['ORIGINAL_FULLPATH'])) {
-                    $this->env['ORIGINAL_FULLPATH'] = $this->removeLang($this->env['ORIGINAL_FULLPATH']);
-                }
-                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['X-FORWARDED_REQUEST_URI']);
-                }
+                $this->removeLangFromQuery();
                 break;
-
             case 'subdomain':
-                if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-                    $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
-                }
-                $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
-                $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+                $this->removeLangFromHost();
                 break;
-
             case 'custom_domain':
-                if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-                    $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
-                }
-                $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
-                $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
-                if (isset($this->env['REQUEST_URI'])) {
-                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-                }
-                if (isset($this->env['REDIRECT_URL'])) {
-                    $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
-                }
-                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
-                }
+                $this->removeLangFromHost();
+                $this->removeLangFromPath();
                 break;
-
             case 'path':
             default:
-                if (isset($this->env['REQUEST_URI'])) {
-                    $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-                }
-                if (isset($this->env['REDIRECT_URL'])) {
-                    $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
-                }
-                if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                    $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
-                }
+                $this->removeLangFromPath();
+                break;
         }
 
         return $this->env;
+    }
+
+    private function removeLangFromHost()
+    {
+        if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
+            $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
+        }
+        $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
+        $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+    }
+
+    private function removeLangFromPath()
+    {
+        if (isset($this->env['REQUEST_URI'])) {
+            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
+        }
+        if (isset($this->env['REDIRECT_URL'])) {
+            $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
+        }
+        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
+        }
+    }
+
+    private function removeLangFromQuery()
+    {
+        if (isset($this->env['REQUEST_URI'])) {
+            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
+        }
+        $this->env['QUERY_STRING'] = $this->removeLang($this->env['QUERY_STRING']);
+        if (isset($this->env['ORIGINAL_FULLPATH'])) {
+            $this->env['ORIGINAL_FULLPATH'] = $this->removeLang($this->env['ORIGINAL_FULLPATH']);
+        }
+        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
+            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['X-FORWARDED_REQUEST_URI']);
+        }
     }
 
     /**
@@ -422,109 +423,6 @@ class Headers
         } else {
             return Url::removeLangCode($uri, $lang_code, $this->store, $this);
         }
-    }
-
-    /**
-     * Public function setting the query param of the page in the env
-     * Query and param should look like this: param=value
-     *
-     * @param String $param The query param (param=)
-     * @param String $val The value of the query param (=value)
-     * @return void
-     */
-    public function setQueryParam($param, $val)
-    {
-        global $_GET, $_REQUEST;
-
-        // get old query string
-        if (isset($this->env['QUERY_STRING'])) {
-            $oldQueryString = $this->env['QUERY_STRING'];
-        } elseif (isset($this->env['REDIRECT_QUERY_STRING'])) {
-            $oldQueryString = $this->env['REDIRECT_QUERY_STRING'];
-            // if there is a query string in the request_uri
-        } elseif (isset($this->env['REQUEST_URI']) && preg_match('/\?/', $this->env['REQUEST_URI'])) {
-            $oldQueryString = preg_replace('/^.*\?(.*)$/', '$1', $this->env['REQUEST_URI']);
-        } else {
-            $oldQueryString = '';
-        }
-
-        // make new query string
-        if ($oldQueryString === '') {
-            $newQueryString = $param . '=' . $val;
-        } elseif (preg_match('/(^|&)' . $param . '(=|&|$)/', $oldQueryString)) {
-            $newQueryString = preg_replace('/(^|&)' . $param . '[^&]*/', '$1' . $param . '=' . $val, $oldQueryString);
-        } else {
-            $newQueryString = $oldQueryString . '&' . $param . '=' . $val;
-        }
-
-        // set new query string
-        $this->env['QUERY_STRING'] = $newQueryString;
-        if (isset($this->env['REDIRECT_QUERY_STRING'])) {
-            $this->env['REDIRECT_QUERY_STRING'] = $newQueryString;
-        }
-        if (isset($this->env['REQUEST_URI'])) {
-            $this->env['REQUEST_URI'] = preg_replace('/\?.*$/', '', $this->env['REQUEST_URI']);
-            $this->env['REQUEST_URI'] .= '?' . $newQueryString;
-        }
-
-        // set $_GET and $_REQUEST
-        $_GET[$param] = $val;
-        if (!isset($_REQUEST[$param])) {
-            // do not set if a POST or a cookie value is set.
-            $_REQUEST[$param] = $val;
-        }
-    }
-
-    /**
-     * Set all query params in the passed-in array
-     *
-     * @param array $queryArray The array of query=val Strings to set
-     * @return void
-     */
-    public function setQueryParams($queryArray)
-    {
-        foreach ($queryArray as $qv) {
-            $parts = explode('=', $qv);
-            $parts[1] = urldecode(preg_replace('/\.[^&=]*$/', '', $parts[1]));
-            $parts[0] = urldecode($parts[0]);
-            $this->setQueryParam($parts[0], $parts[1]);
-        }
-    }
-
-    /**
-     * Clear all query params
-     *
-     * @return void
-     */
-    public function clearQueryParams()
-    {
-        // empty query strings
-        if (isset($this->env['QUERY_STRING'])) {
-            $this->env['QUERY_STRING'] = '';
-        }
-        if (isset($this->env['REDIRECT_QUERY_STRING'])) {
-            $this->env['REDIRECT_QUERY_STRING'] = '';
-        }
-        if (isset($this->env['REQUEST_URI'])) {
-            $this->env['REQUEST_URI'] = preg_replace('/\?.*$/', '', $this->env['REQUEST_URI']);
-        }
-
-        // unset all keys in the $_GET array
-        foreach ($_GET as $key => $val) {
-            unset($_GET[$key]);
-        }
-    }
-
-    /**
-     * Make a redirection with a 301 code to a specified location
-     * and dies
-     *
-     * @param String $location The location where to make the redirection
-     */
-    public function redirectTo($location)
-    {
-        header('Location: ' . $location, true, 301);
-        die();
     }
 
     public function getDocumentURI()
