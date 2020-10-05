@@ -30,6 +30,29 @@ make stop
 make clean
 ```
 
+## Run test with PHP version which you like
+1. Change makefile to use `test.yml`.
+```
+DOCKER_COMPOSE_YML = docker/test.yml
+```
+2. Run docker 
+```
+make stop && make start
+```
+3. Enable to run command inside docker
+```
+docker exec -it apache bash
+```
+4. Go to target dir
+```
+cd /opt/project
+```
+5. Run tests
+```
+vendor/bin/phpunit
+vendor/bin/phpunit --configuration phpunit_integration.xml
+```
+
 ## Nginx environment
 You can use with Nginx, if you change from `apache.yml` to `nginx.yml` in `makefile`.
 

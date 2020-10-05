@@ -286,7 +286,7 @@ class Url
         return preg_match('/^(#.*)?$/', $uri);
     }
 
-    public static function generateUrlRegex($site_prefix_path = '')
+    private static function generateUrlRegex($site_prefix_path = '')
     {
         $prefix = $site_prefix_path ? '/' . $site_prefix_path : '';
         return (
