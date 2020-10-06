@@ -13,7 +13,7 @@ class StoreAndHeadersFactory
         $storeSettings = self::buildStoreOptions($settingsOverwrite);
         $env = EnvFactory::fromFixture($fixture, $envOverwrite);
 
-        return StoreAndHeadersFactory::get($env, $storeSettings);
+        return self::get($env, $storeSettings);
     }
 
     public static function get($env, $settings = array())

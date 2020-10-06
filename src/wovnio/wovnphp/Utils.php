@@ -72,12 +72,12 @@ class Utils
      * Return true if $uri should be ignored according to `ignore_paths` or `ignore_regex`.
      * Return false otherwise.
      */
-    public static function isIgnoredPath($uri, $store)
+    public static function isIgnoredPath($uriWithQuery, $store)
     {
-        return $uri && (
-            self::checkIgnorePaths($uri, $store) ||
-            self::checkIgnoreRegex($uri, $store) ||
-            Url::shouldIgnoreBySitePrefixPath($uri, $store->settings)
+        return $uriWithQuery && (
+            self::checkIgnorePaths($uriWithQuery, $store) ||
+            self::checkIgnoreRegex($uriWithQuery, $store) ||
+            Url::shouldIgnoreBySitePrefixPath($uriWithQuery, $store->settings)
         );
     }
 

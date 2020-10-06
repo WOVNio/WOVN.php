@@ -5,12 +5,6 @@ use \Wovnio\Wovnphp\Lang;
 
 class LangTest extends \PHPUnit_Framework_TestCase
 {
-    public function testLangExist()
-    {
-        $this->assertTrue(class_exists('\Wovnio\Wovnphp\Lang'));
-        $this->assertClassHasStaticAttribute("index", 'Wovnio\Wovnphp\Lang');
-    }
-
     public function testLangLength()
     {
         $this->assertEquals(75, count(Lang::$index));
