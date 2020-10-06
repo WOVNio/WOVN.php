@@ -1,13 +1,10 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+use finfo;
+
 class Utils
 {
-    const IMAGE_FILE_PATTERN = "/^(https?:\/\/)?.*(\.((?!jp$)jpe?g?|bmp|gif|png|btif|tiff?|psd|djvu?|xif|wbmp|webp|p(n|b|g|p)m|rgb|tga|x(b|p)m|xwd|pic|ico|fh(c|4|5|7)?|xif|f(bs|px|st)))/i";
-    const AUDIO_FILE_PATTERN = "/^(https?:\/\/)?.*(\.(mp(3|2)|m(p?2|3|p?4|pg)a|midi?|kar|rmi|web(m|a)|aif(f?|c)|w(ma|av|ax)|m(ka|3u)|sil|s3m|og(a|g)|uvv?a))/i";
-    const VIDEO_FILE_PATTERN = "/^(https?:\/\/)?.*(\.(m(x|4)u|fl(i|v)|3g(p|2)|jp(gv|g?m)|mp(4v?|g4|e?g)|m(1|2)v|ogv|m(ov|ng)|qt|uvv?(h|m|p|s|v)|dvb|mk(v|3d|s)|f4v|as(x|f)|w(m(v|x)|vx)))/i";
-    const DOC_FILE_PATTERN = "/^(https?:\/\/)?.*(\.((7|g)?zip|tar|rar|7z|gz|ez|aw|atom(cat|svc)?|(cc)?xa?ml|cdmi(a|c|d|o|q)?|epub|g(ml|px|xf)|jar|js|ser|class|json(ml)?|do(c|t)(m|x)?|xls(m|x)?|xps|pp(a|tx?|s)m?|potm?|sldm|mp(p|t)|bin|dms|lrf|mar|so|dist|distz|m?pkg|bpk|dump|rtf|tfi|pdf|pgp|apk|o(t|d)(b|c|ft?|g|h|i|p|s|t)))/i";
-
     // will return the store and headers objects
     public static function getStoreAndHeaders(&$env)
     {
@@ -38,22 +35,20 @@ class Utils
         }
     }
 
-    public static function isHtml($response_headers, $buffer)
+    public static function isHtml($buffer)
     {
-        // Because Apache sets header automatically when Content-Type is not set,
-        // check the header only when it exists.
-        foreach ($response_headers as $response_header) {
-            $header_data = explode(':', $response_header);
-            if (count($header_data) < 2) {
-                continue;
-            }
-            if (strtolower(trim($header_data[0])) == 'content-type') {
-                if (!preg_match('/html/', $header_data[1])) {
-                    return false;
-                }
+        $finfo = new finfo(FILEINFO_MIME);
+        $contentType = $finfo->buffer($buffer);
+
+        if ($contentType) {
+            if (preg_match('/html|php/', strtolower($contentType))) {
+                return true;
+            } elseif (preg_match('/text/', strtolower($contentType))) {
+                return $buffer != strip_tags($buffer);
+            } else {
+                return false;
             }
         }
-
         return $buffer != strip_tags($buffer);
     }
 
@@ -71,26 +66,6 @@ class Utils
         }
 
         return false;
-    }
-
-    /*
-     * Return true if $uri is an image, audio, video, or some doc filepath.
-     * Return false otherwise.
-     */
-    public static function isFilePathURI($uri, $store)
-    {
-        if (!$uri) {
-            return false;
-        }
-
-        $uri = self::removeQueryAndHash($uri);
-
-        return (
-            preg_match(self::IMAGE_FILE_PATTERN, $uri) ||
-            preg_match(self::AUDIO_FILE_PATTERN, $uri) ||
-            preg_match(self::VIDEO_FILE_PATTERN, $uri) ||
-            preg_match(self::DOC_FILE_PATTERN, $uri)
-        );
     }
 
     /*

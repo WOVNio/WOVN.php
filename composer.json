@@ -4,7 +4,8 @@
   "description": "PHP server library for WOVNio",
   "homepage": "https://wovn.io",
   "require": {
-    "php": ">=5.3"
+    "php": ">=5.3",
+    "ext-fileinfo": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "4.3.*",
