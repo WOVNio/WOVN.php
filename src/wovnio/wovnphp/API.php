@@ -41,8 +41,9 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
+        $computedUrl = self::computeReferenceUrl($headers->urlKeepTrailingSlash, $store, $store->settings['default_lang']);
         $data = array(
-            'url' => $headers->urlKeepTrailingSlash,
+            'url' => $computedUrl,
             'token' => $token,
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
@@ -88,6 +89,25 @@ class API
             Logger::get()->error('Failed to get translated content: {exception}.', array('exception' => $e));
 
             return $marker->revert($converted_html);
+        }
+    }
+
+    private static function computeReferenceUrl($uri, $store, $lang)
+    {
+        $lang_code = $store->convertToCustomLangCode($lang);
+        $url_pattern_name = $store->settings['url_pattern_name'];
+        $custom_domain_langs = $store->settings['custom_domain_langs'];
+        $source_lang_custom_domain = $store->settings['source_lang_custom_domain'];
+
+        if ($url_pattern_name == 'custom_domain' && isset($custom_domain_langs) && isset($source_lang_custom_domain)) {
+            $current_lang_domain = array_search($lang_code, $custom_domain_langs);
+            $current_lang_path = parse_url('http://' . $current_lang_domain . '/');
+            $current_lang_path = $current_lang_path['path'];
+            $bypass_lang_path = parse_url('http://' . $source_lang_custom_domain . '/');
+            $bypass_lang_path = $bypass_lang_path['path'];
+            return str_replace($bypass_lang_path, $current_lang_path, $uri);
+        } else {
+            return $uri;
         }
     }
 

@@ -251,7 +251,7 @@ class Url
                 $customDomainLangs = $store->getCustomDomainLangs();
                 $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
-                $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+                $defaultCustomDomainLang = $customDomainLangs->getSourceCustomDomainByLang($default_lang);
                 $newUri = $uri;
                 if (self::isAbsoluteUri($uri)) {
                     $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
