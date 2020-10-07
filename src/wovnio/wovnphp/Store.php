@@ -22,6 +22,12 @@ class Store
      */
     public static function createFromFile($settingFileName)
     {
+        if (strpos($settingFileName, "json" )) {
+            $settingsFile = file_get_contents($settingFileName);
+            $userSettings = json_decode($settingsFile, true);
+            return new Store($userSettings);
+        }
+
         if (file_exists($settingFileName)) {
             $userSettings = parse_ini_file($settingFileName, true);
         } else {
