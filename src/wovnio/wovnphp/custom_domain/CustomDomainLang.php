@@ -35,7 +35,7 @@ class CustomDomainLang
     {
         return $this->source;
     }
-
+  
     public function isMatch($parsedUrl)
     {
         $host = $parsedUrl['host'];
@@ -64,6 +64,7 @@ class CustomDomainLang
     }
 }
 
+
 class CustomDomainLangSource extends CustomDomainLang
 {
     public function __construct($url, $lang)
@@ -73,3 +74,4 @@ class CustomDomainLangSource extends CustomDomainLang
         parent::__construct($parsedUrl['host'], $parsedUrl['path'], $lang);
     }
 }
+

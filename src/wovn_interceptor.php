@@ -12,6 +12,8 @@ require_once 'wovnio/html/HtmlConverter.php';
 require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDomNode.php';
+require_once 'wovn_helper.php';
+
 
 use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
@@ -31,9 +33,7 @@ $_ENV['WOVN_TARGET_LANG'] = $headers->lang();
 $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
-if (!Utils::isFilePathURI($uri, $store) &&
-    !Utils::isIgnoredPath($uri, $store)
-    ) {
+if (!Utils::isIgnoredPath($uri, $store)) {
     $diagnostics = null;
     $benchmarkStart = 0;
     if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
@@ -46,7 +46,7 @@ if (!Utils::isFilePathURI($uri, $store) &&
 
         $headers->responseOut();
 
-        if (empty($buffer) || !Utils::isHtml(headers_list(), $buffer)) {
+        if (empty($buffer) || !Utils::isHtml($buffer)) {
             return $buffer;
         }
 

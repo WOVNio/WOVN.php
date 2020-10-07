@@ -9,6 +9,7 @@ class CustomDomainLangs
 {
     private $customDomainLangs;
 
+
     public function __construct($customDomainLangsSettingsArray)
     {
         $this->customDomainLangs = array();
@@ -31,7 +32,6 @@ class CustomDomainLangs
         } else {
             $result = array_shift($results);
             return $result->getSource() ? $result->getSource() : $result;
-        }
     }
 
     public function getCustomDomainLangByLang($langCode)
