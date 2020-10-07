@@ -6,12 +6,14 @@ class CustomDomainLang
     private $host;
     private $path;
     private $lang;
+    private $source;
 
-    public function __construct($host, $path, $lang)
+    public function __construct($host, $path, $lang, $source=null)
     {
         $this->host = $host;
         $this->path = substr($path, -1) === '/' ? $path : $path . '/';
         $this->lang = $lang;
+        $this->source = $source ? new CustomDomainLangSource($source, $lang) : null;
     }
 
     public function getHost()
@@ -27,6 +29,11 @@ class CustomDomainLang
     public function getLang()
     {
         return $this->lang;
+    }
+
+    public function getSource()
+    {
+        return $this->source;
     }
 
     public function isMatch($parsedUrl)
@@ -54,5 +61,15 @@ class CustomDomainLang
     {
         $hostAndPath = $this->host . $this->path;
         return substr($hostAndPath, -1) === '/' ? substr($hostAndPath, 0, -1) : $hostAndPath;
+    }
+}
+
+class CustomDomainLangSource extends CustomDomainLang
+{
+    public function __construct($url, $lang)
+    {
+        $url = preg_match("/https?:\/\//", $url, $matches) ? $url : 'http://' . $url;
+        $parsedUrl = parse_url($url);
+        parent::__construct($parsedUrl['host'], $parsedUrl['path'], $lang);
     }
 }

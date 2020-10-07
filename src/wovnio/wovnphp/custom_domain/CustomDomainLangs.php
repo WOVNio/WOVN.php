@@ -1,19 +1,36 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+use PHP_CodeSniffer\Tests\Standards\AllSniffs;
+
 require_once 'CustomDomainLang.php';
 
 class CustomDomainLangs
 {
     private $customDomainLangs;
+
     public function __construct($customDomainLangsSettingsArray)
     {
         $this->customDomainLangs = array();
-        foreach ($customDomainLangsSettingsArray as $langUrl => $lang) {
+        foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
             $parsedUrl = parse_url($this->addProtocolIfNeeded($langUrl));
-
+            $source = array_key_exists('source', $config) ? $config['source'] : null;
             // Disable notice error by adding @, when path is not defined
-            array_push($this->customDomainLangs, new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $lang));
+            array_push($this->customDomainLangs, new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $config['lang'], $source));
+        }
+    }
+
+    public function getSourceCustomDomainByLang($langCode)
+    {
+        $results = array_filter($this->customDomainLangs, function ($customDomain) use ($langCode) {
+            return $customDomain->getLang() === $langCode;
+        });
+
+        if (count($results) <= 0) {
+            return null;
+        } else {
+            $result = array_shift($results);
+            return $result->getSource() ? $result->getSource() : $result;
         }
     }
 
