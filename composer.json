@@ -5,7 +5,7 @@
   "homepage": "https://wovn.io",
   "require": {
     "php": ">=5.3",
-    "ext-json": "*"
+    "ext-json": "*",
     "ext-fileinfo": "*"
   },
   "require-dev": {
