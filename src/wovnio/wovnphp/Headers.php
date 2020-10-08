@@ -45,9 +45,6 @@ class Headers
         } else {
             $this->originalHost = $env['HTTP_HOST'];
         }
-        if (!isset($env['REQUEST_URI'])) {
-            $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
-        }
 
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $this->originalPath = $env['HTTP_X_FORWARDED_REQUEST_URI'];
