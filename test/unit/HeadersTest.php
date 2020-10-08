@@ -193,8 +193,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             array('/zh/chs/', '/', 'zh-CHS'),
         );
         $env = array(
-            'HTTP_HOST' => 'testsite.com',
-            'REQUEST_URI' => '/zh/'
+            'HTTP_HOST' => 'testsite.com'
         );
 
         foreach ($testCases as $case) {
