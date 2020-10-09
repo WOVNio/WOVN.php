@@ -101,7 +101,11 @@ class API
         if ($urlPatternName == 'custom_domain' && $customDomainLangs) {
             $currentLangDomainLang = $customDomainLangs->getSourceCustomDomainByLang($lang);
             $default_lang = $store->settings['default_lang'];
-            $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+            if ($currentLangDomainLang->getSource()) {
+                $defaultCustomDomainLang = $currentLangDomainLang->getSource();
+            } else {
+                $defaultCustomDomainLang = $customDomainLangs->getSourceCustomDomainByLang($default_lang);
+            }
             return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
         } else {
             return $uri;
