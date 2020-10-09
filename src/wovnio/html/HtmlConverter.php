@@ -203,8 +203,8 @@ class HtmlConverter
         if (!empty($this->store->settings['site_prefix_path'])) {
             $data_wovnio_params['sitePrefixPath'] = $this->store->settings['site_prefix_path'];
         }
-        if (!empty($this->store->settings['custom_domain_langs'])) {
-            $data_wovnio_params['customDomainLangs'] = json_encode($this->store->settings['custom_domain_langs']);
+        if ($this->store->getCustomDomainLangs()) {
+            $data_wovnio_params['customDomainLangs'] = json_encode($this->store->getCustomDomainLangs()->toHtmlSwapperHash());
         }
 
         $data_wovnio_info_params = array();

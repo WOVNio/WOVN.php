@@ -1,8 +1,6 @@
 <?php
 namespace Wovnio\Wovnphp;
 
-use PHP_CodeSniffer\Tests\Standards\AllSniffs;
-
 require_once 'CustomDomainLang.php';
 
 class CustomDomainLangs
@@ -15,7 +13,13 @@ class CustomDomainLangs
         $this->customDomainLangs = array();
         foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
             $parsedUrl = parse_url($this->addProtocolIfNeeded($langUrl));
-            $source = array_key_exists('source', $config) ? $config['source'] : null;
+            if (is_array($config)) {
+                $source = array_key_exists('source', $config) ? $config['source'] : null;
+            } else {
+                $config = array('lang' => $config);
+                $source = null;
+            }
+
             // Disable notice error by adding @, when path is not defined
             array_push($this->customDomainLangs, new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $config['lang'], $source));
         }
@@ -32,6 +36,7 @@ class CustomDomainLangs
         } else {
             $result = array_shift($results);
             return $result->getSource() ? $result->getSource() : $result;
+        }
     }
 
     public function getCustomDomainLangByLang($langCode)
@@ -58,6 +63,15 @@ class CustomDomainLangs
             return $customDomain->isMatch($parsedUrl);
         });
         return count($results) <= 0 ? null : array_shift($results);
+    }
+
+    public function toHtmlSwapperHash()
+    {
+        $result = array();
+        foreach ($this->customDomainLangs as $lang) {
+            $result[$lang->getHostAndPathWithoutTrailingSlash()] = $lang->getLang();
+        }
+        return $result;
     }
 
     // parse_url needs protocol to parse URL.

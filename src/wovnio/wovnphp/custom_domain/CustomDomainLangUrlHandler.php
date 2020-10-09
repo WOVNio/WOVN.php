@@ -7,13 +7,12 @@ class CustomDomainLangUrlHandler
     {
         $currentCustomDomain = $customDomainLangs->getCustomDomainLangByUrl($absoluteUrl);
         $newLangCustomDomain = $customDomainLangs->getCustomDomainLangByLang($targetlang);
-        $changedUrl = self::changeToNewCustomDomainLang($absoluteUrl, $currentCustomDomain, $newLangCustomDomain);
-        return $changedUrl;
+        return self::changeToNewCustomDomainLang($absoluteUrl, $currentCustomDomain, $newLangCustomDomain);
     }
 
     public static function changeToNewCustomDomainLang($absoluteUrl, $currentCustomDomain, $newLangCustomDomain)
     {
-        if (!empty($currentCustomDomain) && !empty($newLangCustomDomain) && $currentCustomDomain->getLang() !== $newLangCustomDomain->getLang()) {
+        if (!empty($currentCustomDomain) && !empty($newLangCustomDomain)) {
             $currentHostAndPath = $currentCustomDomain->getHostAndPathWithoutTrailingSlash();
             $newHostAndPath = $newLangCustomDomain->getHostAndPathWithoutTrailingSlash();
             $regex = '@'.

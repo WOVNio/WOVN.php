@@ -2,6 +2,7 @@
 namespace Wovnio\Wovnphp;
 
 require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
+require_once 'custom_domain/CustomDomainLangUrlHandler.php';
 
 use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
@@ -41,9 +42,9 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
-        $computedUrl = self::computeReferenceUrl($headers->urlKeepTrailingSlash, $store, $store->settings['default_lang']);
+        $computedUrl = self::computeSourceVirtualUrl($headers->urlKeepTrailingSlash, $store, $store->settings['default_lang']);
         $data = array(
-            'url' => $computedUrl,
+            'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
             'token' => $token,
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
@@ -62,8 +63,8 @@ class API
         if (!empty($store->settings['site_prefix_path'])) {
             $data['site_prefix_path'] = $store->settings['site_prefix_path'];
         }
-        if (!empty($store->settings['custom_domain_langs'])) {
-            $data['custom_domain_langs'] = json_encode($store->settings['custom_domain_langs']);
+        if ($store->getCustomDomainLangs()) {
+            $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
         }
 
         try {
@@ -92,20 +93,17 @@ class API
         }
     }
 
-    private static function computeReferenceUrl($uri, $store, $lang)
+    private static function computeSourceVirtualUrl($uri, $store, $lang)
     {
-        $lang_code = $store->convertToCustomLangCode($lang);
-        $url_pattern_name = $store->settings['url_pattern_name'];
-        $custom_domain_langs = $store->settings['custom_domain_langs'];
-        $source_lang_custom_domain = $store->settings['source_lang_custom_domain'];
+        $urlPatternName = $store->settings['url_pattern_name'];
+        $customDomainLangs = $store->getCustomDomainLangs();
 
-        if ($url_pattern_name == 'custom_domain' && isset($custom_domain_langs) && isset($source_lang_custom_domain)) {
-            $current_lang_domain = array_search($lang_code, $custom_domain_langs);
-            $current_lang_path = parse_url('http://' . $current_lang_domain . '/');
-            $current_lang_path = $current_lang_path['path'];
-            $bypass_lang_path = parse_url('http://' . $source_lang_custom_domain . '/');
-            $bypass_lang_path = $bypass_lang_path['path'];
-            return str_replace($bypass_lang_path, $current_lang_path, $uri);
+        if ($urlPatternName == 'custom_domain' && $customDomainLangs) {
+            $currentLangDomainLang = $customDomainLangs->getSourceCustomDomainByLang($lang);
+            $default_lang = $store->settings['default_lang'];
+            $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+            return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
+
         } else {
             return $uri;
         }
