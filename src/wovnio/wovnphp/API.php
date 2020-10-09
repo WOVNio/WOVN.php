@@ -42,7 +42,7 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
-        $computedUrl = self::computeSourceVirtualUrl($headers->urlKeepTrailingSlash, $store, $store->settings['default_lang']);
+        $computedUrl = self::computeSourceVirtualUrl($headers->urlKeepTrailingSlash, $store, $headers->lang());
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
             'token' => $token,
@@ -104,7 +104,7 @@ class API
             if ($currentLangDomainLang->getSource()) {
                 $defaultCustomDomainLang = $currentLangDomainLang->getSource();
             } else {
-                $defaultCustomDomainLang = $customDomainLangs->getSourceCustomDomainByLang($default_lang);
+                $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
             }
             return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
         } else {
