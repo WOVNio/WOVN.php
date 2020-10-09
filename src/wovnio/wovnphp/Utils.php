@@ -8,7 +8,7 @@ class Utils
     // will return the store and headers objects
     public static function getStoreAndHeaders(&$env)
     {
-        $file = isset($env['WOVN_CONFIG']) ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini.json';
+        $file = isset($env['WOVN_CONFIG']) ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
         if (!file_exists($file)) {
             $file = DIRNAME(__FILE__) . '/../../../../wovn.ini';
         }
