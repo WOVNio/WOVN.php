@@ -151,58 +151,65 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'custom_domain_langs' => $custom_domain_langs
         );
         $testCases = array(
-            // beforeRemoveUrl, afterRemoveUrl, removeLang
-            array('http://testsite.com', 'http://testsite.com', 'en'),
-            array('http://en-us.testsite.com', 'http://testsite.com', 'en-US'),
-            array('http://testsite.com/ja', 'http://testsite.com', 'ja'),
-            array('http://testsite.com/zh/chs', 'http://testsite.com', 'zh-CHS'),
-            array('http://zh-hant-hk.com/zh', 'http://testsite.com', 'zh-Hant-HK'),
+            // HTTP_HOST, REQUEST_URI, actualUrl, expectedUrl, langToRemove
+            array('testsite.com', '/', 'http://testsite.com', 'http://testsite.com', 'en'),
+            array('en-us.testsite.com', '/', 'http://en-us.testsite.com', 'http://testsite.com', 'en-US'),
+            array('testsite.com', '/ja', 'http://testsite.com/ja', 'http://testsite.com', 'ja'),
+            array('testsite.com', '/zh/chs', 'http://testsite.com/zh/chs', 'http://testsite.com', 'zh-CHS'),
+            array('zh-hant-hk.com', '/zh', 'http://zh-hant-hk.com/zh', 'http://testsite.com', 'zh-Hant-HK'),
 
-            array('http://zh-hant-hk.com', 'http://zh-hant-hk.com', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/', 'http://testsite.com/', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/index.html', 'http://testsite.com/index.html', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path', 'http://testsite.com/path', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path/', 'http://testsite.com/path/', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path/index.html', 'http://testsite.com/path/index.html', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path/index.html?query=1', 'http://testsite.com/path/index.html?query=1', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path/index.html#hash', 'http://testsite.com/path/index.html#hash', 'zh-Hant-HK'),
-            array('http://zh-hant-hk.com/zh/path/index.html?query=1#hash', 'http://testsite.com/path/index.html?query=1#hash', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/', 'http://zh-hant-hk.com', 'http://zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', 'http://zh-hant-hk.com/zh/', 'http://testsite.com/', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/index.html', 'http://zh-hant-hk.com/zh/index.html', 'http://testsite.com/index.html', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path', 'http://zh-hant-hk.com/zh/path', 'http://testsite.com/path', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path/', 'http://zh-hant-hk.com/zh/path/', 'http://testsite.com/path/', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path/index.html', 'http://zh-hant-hk.com/zh/path/index.html', 'http://testsite.com/path/index.html', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path/index.html?query=1', 'http://zh-hant-hk.com/zh/path/index.html?query=1', 'http://testsite.com/path/index.html?query=1', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path/index.html#hash', 'http://zh-hant-hk.com/zh/path/index.html#hash', 'http://testsite.com/path/index.html#hash', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/path/index.html?query=1#hash', 'http://zh-hant-hk.com/zh/path/index.html?query=1#hash', 'http://testsite.com/path/index.html?query=1#hash', 'zh-Hant-HK'),
 
             // schema
-            array('//zh-hant-hk.com', '//zh-hant-hk.com', 'zh-Hant-HK'),
-            array('https://zh-hant-hk.com', 'https://zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', '//zh-hant-hk.com', '//zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', 'https://zh-hant-hk.com', 'https://zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', 'https://zh-hant-hk.com', 'https://zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', 'https://zh-hant-hk.com/zh', 'https://testsite.com', 'zh-Hant-HK'),
 
             // only host
-            array('testsite.com', 'testsite.com', 'en'),
-            array('en-us.testsite.com', 'testsite.com', 'en-US'),
-            array('testsite.com', 'testsite.com', 'ja'),
-            array('testsite.com', 'testsite.com', 'zh-CHS'),
-            array('zh-hant-hk.com', 'zh-hant-hk.com', 'zh-Hant-HK'),
+            array('testsite.com', '/', 'testsite.com', 'testsite.com', 'en'),
+            array('en-us.testsite.com', '/', 'en-us.testsite.com', 'testsite.com', 'en-US'),
+            array('testsite.com', '/ja', 'testsite.com', 'testsite.com', 'ja'),
+            array('testsite.com', '/zh/chs', 'testsite.com', 'testsite.com', 'zh-CHS'),
+            array('zh-hant-hk.com', '/', 'zh-hant-hk.com', 'zh-hant-hk.com', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh', 'zh-hant-hk.com', 'testsite.com', 'zh-Hant-HK'),
 
             // only path
-            array('/', '/', 'zh-Hant-HK'),
-            array('/zh/', '/zh/', 'zh-Hant-HK'),
-            array('/ja', '', 'ja'),
-            array('/ja/', '/', 'ja'),
-            array('/ja/index.html', '/index.html', 'ja'),
-            array('/ja/dir', '/dir', 'ja'),
-            array('/ja/dir/', '/dir/', 'ja'),
-            array('/ja/dir/index.html', '/dir/index.html', 'ja'),
-            array('/ja/?query=1', '/?query=1', 'ja'),
-            array('/ja/#hash', '/#hash', 'ja'),
-            array('/zh/chs/', '/', 'zh-CHS'),
-        );
-        $env = array(
-            'HTTP_HOST' => 'testsite.com'
+            array('zh-hant-hk.com', '/', '/', '/', 'zh-Hant-HK'),
+            array('testsite.com', '/zh/', '/zh/', '/zh/', 'zh-Hant-HK'),
+            array('zh-hant-hk.com', '/zh/', '/zh/', '/', 'zh-Hant-HK'),
+            array('testsite.com', '/ja', '/ja', '', 'ja'),
+            array('testsite.com', '/ja/', '/ja/', '/', 'ja'),
+            array('testsite.com', '/ja/index.html', '/ja/index.html', '/index.html', 'ja'),
+            array('testsite.com', '/ja/dir/', '/ja/dir', '/dir', 'ja'),
+            array('testsite.com', '/ja/dir/', '/ja/dir/', '/dir/', 'ja'),
+            array('testsite.com', '/ja/dir/index.html', '/ja/dir/index.html', '/dir/index.html', 'ja'),
+            array('testsite.com', '/ja/?query=1', '/ja/?query=1', '/?query=1', 'ja'),
+            array('testsite.com', '/ja', '/ja/#hash', '/#hash', 'ja'),
+            array('testsite.com', '/zh/chs/', '/zh/chs/', '/', 'zh-CHS')
         );
 
-        foreach ($testCases as $case) {
-            list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
+        foreach ($testCases as $index => $case) {
+            list($httpHost, $requestUri, $actualUrl, $expectedUrl, $langToRemove) = $case;
+
+            $env = array(
+                'HTTP_HOST' => $httpHost,
+                'REQUEST_URI' => $requestUri
+            );
+
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
             $this->assertEquals($custom_domain_langs, $store->settings['custom_domain_langs']);
-            $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang), "beforeRemoveUrl->[{$beforeRemoveUrl}] afterRemoveUrl->[{$afterRemoveUrl}] removeLang->[{$removeLang}]");
+            $this->assertEquals($expectedUrl, $headers->removeLang($actualUrl, $langToRemove), "#$index httpHost->[{$httpHost}] requestUri->[{$requestUri}] actualUrl->[{$actualUrl}] expectedUrl->[{$expectedUrl}] langToRemove->[{$langToRemove}]");
         };
     }
 
