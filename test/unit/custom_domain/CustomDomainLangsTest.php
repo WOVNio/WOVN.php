@@ -18,14 +18,19 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
             'foo.com/' => 'fr',
             'foo.com/path' => 'ja',
             'foo.com/dir/path' => 'zh-CHS',
-            'english.foo.com/' => 'en'
+            'english.foo.com/' => array('lang' => 'en', 'source' => 'global.foo.com/')
         );
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting);
     }
 
-    private function getLang($customDomainlang)
+    private function getLang($customDomainLang)
     {
-        return $customDomainlang->getLang();
+        return $customDomainLang->getLang();
+    }
+
+    private function getHostAndPathWithoutTrailingSlash($customDomainLang)
+    {
+        return $customDomainLang->getHostAndPathWithoutTrailingSlash();
     }
 
     public function testGetCustomDomainLangByLang()
@@ -36,6 +41,14 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('ja')));
         $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('zh-CHS')));
         $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('en')));
+    }
+
+    public function testGetSourceCustomDomainByLang()
+    {
+        $this->assertEquals('foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('fr')));
+        $this->assertEquals('foo.com/path', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('ja')));
+        $this->assertEquals('foo.com/dir/path', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('zh-CHS')));
+        $this->assertEquals('global.foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('en')));
     }
 
     public function testGetCustomDomainLangByUrl()
