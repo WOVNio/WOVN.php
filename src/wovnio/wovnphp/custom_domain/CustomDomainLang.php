@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+require_once('CustomDomainLangSource.php');
+
 class CustomDomainLang
 {
     private $host;
@@ -8,7 +10,7 @@ class CustomDomainLang
     private $lang;
     private $source;
 
-    public function __construct($host, $path, $lang, $source=null)
+    public function __construct($host, $path, $lang, $source = null)
     {
         $this->host = $host;
         $this->path = substr($path, -1) === '/' ? $path : $path . '/';
@@ -63,15 +65,3 @@ class CustomDomainLang
         return substr($hostAndPath, -1) === '/' ? substr($hostAndPath, 0, -1) : $hostAndPath;
     }
 }
-
-
-class CustomDomainLangSource extends CustomDomainLang
-{
-    public function __construct($url, $lang)
-    {
-        $url = preg_match("/https?:\/\//", $url, $matches) ? $url : 'http://' . $url;
-        $parsedUrl = parse_url($url);
-        parent::__construct($parsedUrl['host'], $parsedUrl['path'], $lang);
-    }
-}
-

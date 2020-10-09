@@ -22,7 +22,7 @@ class Store
      */
     public static function createFromFile($settingFileName)
     {
-        if (strpos($settingFileName, "json" )) {
+        if (strpos($settingFileName, "json")) {
             $settingsFile = file_get_contents($settingFileName);
             $userSettings = json_decode($settingsFile, true);
             return new Store($userSettings);
