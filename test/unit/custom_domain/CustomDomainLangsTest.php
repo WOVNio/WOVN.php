@@ -4,8 +4,6 @@ namespace Wovnio\Wovnphp\Tests;
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLang.php';
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangs.php';
 
-use PHP_CodeSniffer\Tests\Standards\AllSniffs;
-use Wovnio\Wovnphp\CustomDomainLang;
 use Wovnio\Wovnphp\CustomDomainLangs;
 
 class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
