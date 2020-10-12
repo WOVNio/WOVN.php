@@ -4,7 +4,8 @@
 1. [Requirements](#1-requirements)
 2. [Getting Started](#2-getting-started)
 3. [Configuration](#3-configuration)
-4. [Bug Report](#4-bug-report)
+4. [Environment Variable](#4-Environment-Variable)
+5. [Bug Report](#4-bug-report)
 
 ## 1. Requirements
 WOVN.php requires PHP 5.3 or higher. WOVN.php has no third-party dependencies.
@@ -167,26 +168,23 @@ parameters you can set.
 ### 3.1. Required parameters
 Below is the list of all parameters that you have to set for WOVN.php to work.
 
-| Parameter         | Description                                                        | Example |
-|-------------------|--------------------------------------------------------------------|-------- |
-| `project_token`   | WOVN.io project token.                                             | `project_token = TOKEN` |
-| `default_lang`    | Website's original language.                                       | `default_lang = en` |
+| Parameter         | Description                                         | Example |
+|-------------------|-----------------------------------------------------|-------- |
+| `project_token`   | WOVN.io project token.                              | `project_token = TOKEN`     |
+| `default_lang`    | Website's original language.                        | `default_lang = en`         |
 | `supported_langs` | Website's original language<br>and WOVN.io translatable languages. | `supported_langs[] = ja`<br>`supported_langs[] = fr` |
-
-### 3.2. Optional parameters
-In this section we detail more options you can use with WOVN.php. Some of them
-are dependant to the structure of your website whileothers are more advanced
-and should be used for performance optimization.
+| `url_pattern_name`| Pattern how to set language code into URL.          | `url_pattern_name = query`  |
 
 #### `url_pattern_name`
 This parameter defines how web page URLs will be modified to include the
 language information. WOVN.php supports three patterns.
 
-| Option                               | URL Examples                               | Example's language |
-|--------------------------------------|--------------------------------------------|:------------------:|
-| `url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
-| `url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
-| `url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
+| Option                           | Description                            |  URL Examples                               |
+|----------------------------------|----------------------------------------|---------------------------------------------|
+|`url_pattern_name = query`        |Insert language code into query.        | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/index.php?wovn=ja`<br>[French] `https://my-website.com/index.php?wovn=fr`|
+|`url_pattern_name = path`         |Insert language code into head of path. | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/ja/index.php`<br> [French] `https://my-website.com/fr/index.php`         |
+|`url_pattern_name = subdomain`    |Insert language code into domain.       | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://ja.my-website.com/index.php`<br>[French] `https://fr.my-website.com/index.php`          |
+|`url_pattern_name = custom_domain`|Set domain and path.                    | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://ja.my-website.com/index.php`<br>[French] `https://fr.my-website.com/index.php`          |
 
 **Note for path pattern users:**
 You need to change your server settings to strip the language codes off of the
@@ -227,6 +225,40 @@ server {
     # ...
   }
 ```
+
+**Way to set custom_domain pattern:**  
+With `custom_domain` pattern, you can set domain and path for all languages in `supported_langs`.
+Setting format is like `custom_domain_langs[<baseURL>] = '<language>'`.
+
+Note that `<baseURL>` has only host and path prefix. 
+Anything before the host, like http:// should not be included.
+Port numbers should also not be included.
+However, all applicable subdomains must be included.
+
+This is an example of `wovn.ini`, when default lang is Japanese.
+```
+url_pattern_name = custom_domain
+custom_domain_langs[www.site.co.jp/] = 'ja'
+custom_domain_langs[www.site.co.jp/english] = 'en'
+custom_domain_langs[fr.site.co.jp/] = 'fr'
+```
+
+For the example above, all request URLs that match `www.site.com/english/*` will be considered as requests in English language.
+All request URLs other than the above that match `www.site.co.jp/*` will be considered as requests in Japanese langauge.
+And, request URLs that match `fr.site.co.jp/*` will be considered as requests in French langauge.
+With the above example configuration, the page `http://www.site.co.jp/about.html` in Japanese language will have the URL http://www.site.com/english/about.html as English language.
+
+`custom_domain_langs` setting may only be used together with the `url_pattern_name = custom_domain` setting.
+
+If this setting is used, each language declared in `supported_langs` must be given a custom domain.
+
+The path declared for your original language must match the structure of the actual web server.
+In other words, you cannot use this setting to change the request path of your content in original language.
+
+### 3.2. Optional parameters
+In this section we detail more options you can use with WOVN.php. Some of them
+are dependant to the structure of your website whileothers are more advanced
+and should be used for performance optimization.
 
 #### `lang_param_name`
 This parameter is only valid for when `url_pattern_name = query`.
@@ -507,7 +539,7 @@ as possible, we would need to know information like the followings.
 | wovn_index.php       | Your `wovn_index.php`, if it is used                                  |
 | index.php            | Your `index.php`                                                      |
 | Server type          | Nginx / Apache / both                                                 |
-| Server config        | Your Nginx configuration file / Your `.htaccess` of Apache            |
+| Server config        | Your Nginx configuration file / Your all `.htaccess` of Apache        |
 | Log                  | Error log when an error occurs                                        |
 | Request restriction  | Request to `wovn.global.ssl.fastly.net` with 443 port must be allowed |
 | Using SSI            | Whether you are using SSI(Server Side Includes)                       |

@@ -5,9 +5,10 @@ For English users: [English](README.en.md)
 ## Table of Contents
 
 1. [必要条件](#1-必要条件)
-2. [Getting Started](#2-getting-started)
+2. [導入方法](#2-導入方法)
 3. [設定](#3-設定)
-4. [バグ報告](#4-バグ報告)
+4. [環境変数](#4-環境変数)
+5. [バグ報告](#5-バグ報告)
 
 ## 1. 必要条件
 
@@ -16,7 +17,7 @@ WOVN.phpにはPHP 5.3以上が必要です。WOVN.phpにはサードパーティ
 設定によっては、Apacheモジュール `mod_rewrite` をインストールしたり有効化したりする必要があるかもしれません ( [2.3.2.項](#232-静的ウェブサイト) や [3.2.項](#32-任意パラメータ) を参照してください)。
 WOVN.phpはApache 2とNginxで動作確認済みです。両方のインストール方法を提供しています。
 
-## 2. Getting Started
+## 2. 導入方法
 
 ### 2.1. WOVN.php ダウンロード
 
@@ -36,10 +37,10 @@ WOVN.phpを更新する必要がある場合は、`WOVN.php`ディレクトリ�
 
 ### 2.2. 基本的な設定
 
-WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定ファイルを埋める必要があります。
+WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定ファイルを作成する必要があります。
 
 設定ファイルは `wovn.ini` という名前で、ウェブサイトのディレクトリのルートに置かなければなりません。
-サンプルファイルは `wovn.php/wovn.ini.sample` から始めることができます。
+サンプルファイルの`wovn.php/wovn.ini.sample`をコピーして利用して始めることができます。
 
 ```
 $ cp WOVN.php/wovn.ini.sample wovn.ini
@@ -67,6 +68,7 @@ supported_langs[] = fr
 ```
 + /website/root/directory
   + WOVN.php
+  - wovn_index.php
   - wovn.ini
   [...]
 ```
@@ -173,16 +175,12 @@ WOVN.phpの設定は `wovn.ini` ファイルから行うことができます。
 
 以下は、WOVN.phpを動作させるために設定しなければならないすべてのパラメータのリストです。
 
-| Parameter         | Description                                                        | Example |
-|-------------------|--------------------------------------------------------------------|-------- |
-| `project_token`   | WOVN.ioプロジェクトトークン                                        | `project_token = TOKEN` |
-| `default_lang`    | ウェブサイトの翻訳元言語                                           | `default_lang = en` |
-| `supported_langs` | ウェブサイトの翻訳元言語と<br>WOVN.ioで翻訳可能な言語              | `supported_langs[] = ja`<br>`supported_langs[] = fr` |
-
-### 3.2. 任意パラメータ
-
-このセクションでは、WOVN.phpで使用できるオプションを詳しく説明します。
-それらのいくつかはあなたのウェブサイトの構造に依存していますが、他のものはより高度であり、パフォーマンスの最適化のために使用する必要があります。
+| Parameter         | Description                                           | Example                                              |
+|-------------------|-------------------------------------------------------|------------------------------------------------------|
+| `project_token`   | WOVN.ioプロジェクトトークン                              | `project_token = TOKEN`                              |
+| `default_lang`    | ウェブサイトの翻訳元言語                                  | `default_lang = en`                                  |
+| `supported_langs` | ウェブサイトの翻訳元言語と<br>WOVN.ioで翻訳可能な言語        | `supported_langs[] = ja`<br>`supported_langs[] = fr` |
+| `url_pattern_name`| URLに言語コードを挿入するパターン                          | `url_pattern_name = query`                           |
 
 #### `url_pattern_name`
 
@@ -190,16 +188,17 @@ WOVN.phpの設定は `wovn.ini` ファイルから行うことができます。
 
 WOVN.php は 3 つのパターンをサポートしています。
 
-| Option                               | URL Examples                               | Example's language |
-|--------------------------------------|--------------------------------------------|:------------------:|
-| クエリパターン<br>`url_pattern_name = query` (default) | `https://my-website.com/index.php`<br>`https://my-website.com/index.php?wovn=ja`<br>`https://my-website.com/index.php?wovn=fr`         | *Original*<br>Japanese<br>French         |
-| パスパターン<br>`url_pattern_name = path`            | `https://my-website.com/index.php`<br>`https://my-website.com/ja/index.php`<br>`https://my-website.com/fr/index.php`         | *Original*<br>Japanese<br>French         |
-| サブドメインパターン<br>`url_pattern_name = subdomain`       | `https://my-website.com/index.php`<br>`https://ja.my-website.com/index.php`<br>`https://fr.my-website.com/index.php`         | *Original*<br>Japanese<br>French         |
+| Option                           | Description            | URL Examples                                                             |     
+|----------------------------------|------------------------|--------------------------------------------------------------------------|
+|`url_pattern_name = query`        |クエリに言語コードを挿入    | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/index.php?wovn=ja`<br>[French] `https://my-website.com/index.php?wovn=fr` |
+|`url_pattern_name = path`         |パスの先頭に言語コードを挿入 | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/ja/index.php`<br>[French] `https://my-website.com/fr/index.php`           |
+|`url_pattern_name = subdomain`    |ドメインに言語コードを挿入  | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://ja.my-website.com/index.php`<br>[French] `https://fr.my-website.com/index.php`            |
+|`url_pattern_name = custom_domain`|ドメインとパスを設定       | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://ja.my-website.com/index.php`<br>[French] `https://my-website.com/fr/index.php`           |
 
-**パスパターンをお使いの方への注意事項:**
+**パスパターンをお使いの方への設定方法:**  
 PHPスクリプトで処理される前に、URLから言語コードを取り除くために、サーバーの設定を変更する必要があります。
 
-Apacheユーザの場合は、`.htaccess`の先頭に以下のルールを追加することができます。
+Apacheユーザの場合は、`.htaccess`の先頭に以下のルールを追加してください。
 Apacheモジュール `mod_rewrite` を有効化する必要があります。
 `mod_rewrite` モジュールのインストールと有効化については、[公式のドキュメント](https://httpd.apache.org/docs/2.4/)に従ってください
 (場合によっては、`mod_rewrite` が既にインストールされているのに有効化されていないこともあります)。
@@ -235,9 +234,63 @@ server {
   }
 ```
 
+**custom_domainパターンの設定方法:**  
+
+この設定では、サポートされている各言語に対応するドメインとパスを定義できます。
+設定の形式は `custom_domain_langs[<baseURL>] = '<language>'` です。
+
+`<baseURL>` はホストとパスのプレフィックスのみを持つことに注意してください。
+ホストの前には `http://` のようなものは含めてはいけません。
+ポート番号も含めてはいけません。
+リクエストされる可能性があるサブドメインは全て含めてください。
+
+例えば、日本語が元言語の場合、以下のように `wovn.ini` に設定します。
+```
+url_pattern_name = custom_domain
+custom_domain_langs[www.site.co.jp/] = 'ja'
+custom_domain_langs[www.site.co.jp/english] = 'en'
+custom_domain_langs[fr.site.co.jp/] = 'fr'
+```
+
+上記の例では、 `www.site.co.jp/english/*` にマッチするリクエストは英語のリクエストとして扱われます。
+それ以外の `www.site.co.jp/*` にマッチするリクエストは日本語のリクエストとして扱われます。
+また、 `fr.site.co.jp/*` にマッチするリクエストはフランス語のリクエストとして扱われます。
+例えば、`http://www.site.co.jp/about.html` の日本語ページは、`http://www.site.com/english/about.html` という英語ページのURLを持つことになります。
+
+必ず `url_pattern_name = custom_domain`と`custom_domain_langs` は一緒に使用してください。
+
+`supported_langs` で宣言された各言語に `custom_domain_langs` を与えなければなりません。
+
+オリジナル言語のために宣言されたパスは、実際のウェブサーバーの構造と一致していなければなりません。
+この設定を使用して、オリジナル言語のリクエストパスを変更することはできません。
+
+### 3.2. 任意パラメータ
+
+このセクションでは、WOVN.phpで使用できるオプションを詳しく説明します。
+それらのいくつかはあなたのウェブサイトの構造に依存していますが、他のものはより高度であり、パフォーマンスの最適化のために使用する必要があります。
+
+| Parameter                            | 設定が有効になる url_pattern_name | Description                       |
+|--------------------------------------|--------------------------------|-----------------------------------|
+| [lang_param_name](#lang_param_name)  | query                          | クエリパラメータ名を設定              |
+| [custom_lang_aliases](#custom_lang_aliases)| query, path, subdomain   | 言語コードをWOVN既定から変更          |
+| [ignore_paths](#ignore_paths)        | all                            | ライブラリ適用対象外URLをパスで設定    |
+| [ignore_regex](#ignore_regex)        | all                            | ライブラリ適用対象外URLを正規表現で設定 |
+| [ignore_class](#ignore_class)        | all                            | ライブラリ翻訳対象外とするHTMLのclassを設定 |
+| [no_index_langs](#no_index_langs)    | all                            | SEO対策のタグ適用をしない言語を設定    |
+| [encoding](#encoding)                | all                            | HTMLの文字エンコーディングを指定       |
+| [api_timeout](#api_timeout)          | all                            | ライブラリの翻訳処理にかかる上限時間を設定 |
+| [disable_api_request_for_default_lang](#disable_api_request_for_default_lang)| all | 元言語アクセス時の翻訳サーバーへのアクセスの要否を設定 |
+| [use_proxy](#use_proxy)              | all                            | Proxyの使用有無を設定                |
+| [override_content_length](#override_content_length)| all              | 翻訳後のContent-Lengthの更新要否を設定 |
+| [check_amp](#check_amp)              | all                            | AMPページを翻訳対象にするかどうかを設定 |
+| [site_prefix_path](#site_prefix_path)| path                           | 言語コードの挿入位置を変更            |
+| [custom_domain_langs](#custom_domain_langs)| custom_domain            | サポートされている言語のドメインとパスを定義 |
+
+
 #### `lang_param_name`
 
-このパラメータは `url_pattern_name = query` の場合のみ有効です。  ページの言語を宣言するためのクエリパラメータ名を設定することができます。
+このパラメータは `url_pattern_name = query` の場合のみ有効です。
+ページの言語を宣言するためのクエリパラメータ名を設定することができます。
 この設定のデフォルト値は `lang_param_name = wovn` です。
 
 翻訳された英語ページのURLは、 URLの形式が以下のなります。
@@ -420,8 +473,7 @@ override_content_length = 1
 ```
 
 #### `check_amp`
-
-このパラメータは、AMP (Accelerated Mobile Pages) 準拠のページであれば WOVN.PHP がコンテンツを処理しないようにします。
+このパラメータは、AMP (Accelerated Mobile Pages) 準拠のページであれば WOVN.php がコンテンツを処理しないようにします。
 このパラメータを有効にすると、WOVN.phpはコンテンツの変更をしません。
 そのため、WOVNスクリプトのタグを追加することはありません。
 
@@ -435,6 +487,14 @@ override_content_length = 1
 
 ```
 site_prefix_path = dir1/dir2
+```
+
+#### `custom_domain_langs`
+このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern_name = custom_domain` が設定されている場合）のみ有効です。
+カスタムドメイン言語パターン使用時は必須パラメータです。
+`supported_langs` で設定した全ての言語と元言語に、必ず `custom_domain_langs` を設定してください。
+```
+custom_domain_langs[www.mysite.com/english] = 'en'
 ```
 
 ## 4. 環境変数
@@ -474,23 +534,23 @@ SetEnv WOVN_CONFIG /path/to/wovn.ini
 
 お客様の問題を解決するためには、いくつかの情報が必要です。
 まず、どのウェブページで問題が発生したのか、再現するための手順を知る必要があります。
-可能であれば、問題が認証されていないウェブページで発生している場合は、テストアカウントも必要になります
-（そのためにはステージングサーバを使用することをお勧めします）。
+問題が公開されていないウェブページで発生している場合は、ログイン情報も必要になります。
+（検証にはステージングサーバを使用することをお勧めします）。
 
-問題がサーバ側で発生している場合 (ウィジェット `<script>` タグが挿入されていない、言語が検出されない、リダイレクトが正しく処理されていないなど)、通常はより多くの情報が必要です。
+問題がサーバ側で発生している場合 (ウィジェット `<script>` タグが挿入されていない、言語が検出されない、リダイレクトが正しく処理されていないなど)、導入方法に問題がある場合が多く、お客様にサーバーの情報を提供して頂く必要があります。
 
-できるだけ早く問題を解決するためには、以下のような情報が必要です。
+できるだけ早く問題を解決するため、以下のような情報が必要です。
 
-| 情報                 | 説明                                                                               |
-|----------------------|------------------------------------------------------------------------------------|
-| PHP バージョン       | 5.3以上であること                                                                  |
-| WOVN.php バージョン  | `src/version.php` で確認することができます。                                       |
-| 構成                 | ウェブサイトのディレクトリとファイル構造のスナップショット                         |
-| wovn.ini             | あなたの `wovn.ini`                                                                |
-| wovn_index.php       | 使用されている場合は、あたなの `wovn_index.php`                                    |
-| index.php            | あなたの `index.php`                                                               |
-| サーバ種別           | Nginx / Apache / 両方                                                              |
-| サーバ設定           | Nginxの設定ファイル / Apacheの`.htaccess`の設定ファイル                            |
-| ログ                 | エラー発生時のエラーログ                                                           |
-| リクエスト制限       | 443 ポートの `wovn.global.ssl.fastly.net` へのリクエストを許可する必要があります。 |
-| SSIの使用            | SSI(Server Side Includes)を使用しているかどうか                                    |
+| 情報                  | 説明                                                                          |
+|----------------------|-------------------------------------------------------------------------------|
+| PHP バージョン         | 5.3以上であること                                                               |
+| WOVN.php バージョン    | `src/version.php` で確認することができます。                                      |
+| 構成                  | ウェブサイトのディレクトリとファイル構造                                            |
+| wovn.ini             | 使用中の `wovn.ini`                                                            |
+| wovn_index.php       | 使用中の `wovn_index.php`                                                      |
+| index.php            | 使用中の `index.php`                                                           |
+| サーバ種別             | Nginx / Apache / 両方                                                        |
+| サーバ設定             | Nginxの設定ファイル / Apacheの`.htaccess`の設定ファイル（複数あれば全て）            |
+| ログ                 | エラー発生時のエラーログ                                                          |
+| リクエスト制限         | 443 ポートの `wovn.global.ssl.fastly.net` へのリクエストを許可する必要があります。    |
+| SSIの使用             | SSI(Server Side Includes)を使用しているかどうか                                  |
