@@ -293,6 +293,13 @@ example above, `|ja|` and `|fr|` would become `|japanese|` and `|french|`
 respectively in the expression
 `ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`.
 
+#### `custom_domain_langs`
+This parameter is valid and required, when `url_pattern_name` is `custom_domain`.
+Set `custom_domain_langs` for all languagesed declared in `supported_langs` and original language.
+```
+custom_domain_langs[www.mysite.com/english] = 'en'
+```
+
 #### `ignore_paths`
 This parameter tells WOVN.php to not localize content withing given directories.
 
@@ -478,8 +485,6 @@ This parameter is required when you set `enable_wovn_diagnostics` to `true`. Thi
 ```
 wovn_diagnostics_password = wovn_diagnostics_password
 ```
-
-
 
 ## 4. Environment Variable
 
