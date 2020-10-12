@@ -8,10 +8,14 @@ class Utils
     // will return the store and headers objects
     public static function getStoreAndHeaders(&$env)
     {
-        $file = isset($env['WOVN_CONFIG']) ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
-        if (!file_exists($file)) {
+        if (isset($_SERVER['WOVN_CONFIG'])) {
+            $file = $_SERVER['WOVN_CONFIG'] ? $_SERVER['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
+        } elseif (isset($env['WOVN_CONFIG'])) {
+            $file  = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
+        } else {
             $file = DIRNAME(__FILE__) . '/../../../../wovn.ini';
         }
+
         $store = Store::createFromFile($file);
         $headers = new Headers($env, $store);
         return array($store, $headers);
