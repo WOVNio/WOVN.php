@@ -133,4 +133,10 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $expectedComputedUri = "english.foo.com/blog/entry1.html";
         $this->assertEquals($expectedComputedUri, $computedUri);
     }
+
+    public function testHasSource()
+    {
+        $this->assertEquals(false, $this->customDomainLangs->hasSource('fr'));
+        $this->assertEquals(true, $this->customDomainLangs->hasSource('en'));
+    }
 }

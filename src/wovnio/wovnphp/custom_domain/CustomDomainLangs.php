@@ -94,6 +94,15 @@ class CustomDomainLangs
         return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
     }
 
+    public function hasSource($langCode)
+    {
+        $customDomainLang = $this->getCustomDomainLangByLang($langCode);
+        if ($customDomainLang === null) {
+            return false;
+        }
+        return $customDomainLang->getSource() !== null;
+    }
+
     // parse_url needs protocol to parse URL.
     private function addProtocolIfNeeded($url)
     {
