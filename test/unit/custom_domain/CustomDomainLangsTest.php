@@ -4,6 +4,7 @@ namespace Wovnio\Wovnphp\Tests;
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLang.php';
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangs.php';
 
+use PHP_CodeSniffer\Tests\Standards\AllSniffs;
 use Wovnio\Wovnphp\CustomDomainLang;
 use Wovnio\Wovnphp\CustomDomainLangs;
 
@@ -31,6 +32,22 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     private function getHostAndPathWithoutTrailingSlash($customDomainLang)
     {
         return $customDomainLang->getHostAndPathWithoutTrailingSlash();
+    }
+
+    private function hashEquals($a, $b)
+    {
+        if (count($a) != count($b)) {
+            return false;
+        }
+        foreach ($a as $key => $value) {
+            if (!array_key_exists($key, $b)) {
+                return false;
+            }
+            if ($a[$key] != $b[$key]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function testGetCustomDomainLangByLang()
@@ -87,5 +104,33 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ja', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path')));
         $this->assertEquals('en', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/en')));
         $this->assertEquals('fr', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/fr')));
+    }
+
+    public function testToHtmlSwapperHash()
+    {
+        $expected = array(
+            'foo.com' => 'fr',
+            'foo.com/path' => 'ja',
+            'foo.com/dir/path' => 'zh-CHS',
+            'english.foo.com' => 'en'
+        );
+
+        $this->assertEquals(true, $this->hashEquals($expected, $this->customDomainLangs->toHtmlSwapperHash()));
+    }
+
+    public function testComputeSourceVirtualUrlDefaultToDefault()
+    {
+        $currentUri = "global.foo.com/blog/entry1.html";
+        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "en", "en");
+        $expectedComputedUri = "english.foo.com/blog/entry1.html";
+        $this->assertEquals($expectedComputedUri, $computedUri);
+    }
+
+    public function testComputeSourceVirtualUrlOtherToDefault()
+    {
+        $currentUri = "foo.com/path/blog/entry1.html";
+        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "ja", "en");
+        $expectedComputedUri = "english.foo.com/blog/entry1.html";
+        $this->assertEquals($expectedComputedUri, $computedUri);
     }
 }

@@ -74,6 +74,26 @@ class CustomDomainLangs
         return $result;
     }
 
+    /**
+     * Returns the computed (virtual) uri representation for a given physical location uri.
+     * Used when communicating with html-swapper.
+     *
+     * @param $uri string the current uri - pointing to physical location of current lang
+     * @param $lang string lang code of the current uri
+     * @param $defaultLang string lang code of the default (source) language
+     * @return string|string[]|null
+     */
+    public function computeSourceVirtualUrl($uri, $lang, $defaultLang)
+    {
+        $currentLangDomainLang = $this->getSourceCustomDomainByLang($lang);
+        if ($currentLangDomainLang->getSource()) {
+            $defaultCustomDomainLang = $currentLangDomainLang->getSource();
+        } else {
+            $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
+        }
+        return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
+    }
+
     // parse_url needs protocol to parse URL.
     private function addProtocolIfNeeded($url)
     {
