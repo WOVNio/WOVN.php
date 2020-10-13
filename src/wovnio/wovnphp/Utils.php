@@ -10,8 +10,6 @@ class Utils
     {
         if (isset($env['WOVN_CONFIG'])) {
             $file = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
-        } elseif (isset($env['WOVN_CONFIG'])) {
-            $file  = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
         } else {
             $file = DIRNAME(__FILE__) . '/../../../../wovn.ini';
         }
