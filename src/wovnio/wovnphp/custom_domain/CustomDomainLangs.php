@@ -78,12 +78,12 @@ class CustomDomainLangs
      * Returns the computed (virtual) uri representation for a given physical location uri.
      * Used when communicating with html-swapper.
      *
-     * @param $uri string the current uri - pointing to physical location of current lang
+     * @param $physicalUri string the current uri - pointing to physical location of current lang
      * @param $lang string lang code of the current uri
      * @param $defaultLang string lang code of the default (source) language
      * @return string|string[]|null
      */
-    public function computeSourceVirtualUrl($uri, $lang, $defaultLang)
+    public function computeSourceVirtualUrl($physicalUri, $lang, $defaultLang)
     {
         $currentLangDomainLang = $this->getSourceCustomDomainByLang($lang);
         if ($currentLangDomainLang->getSource()) {
@@ -91,7 +91,7 @@ class CustomDomainLangs
         } else {
             $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
         }
-        return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $currentLangDomainLang, $defaultCustomDomainLang);
+        return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
     }
 
     public function hasSource($langCode)
