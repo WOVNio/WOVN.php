@@ -96,10 +96,14 @@ class API
     private static function getUriRepresentation($uri, $store, $lang)
     {
         $urlPatternName = $store->settings['url_pattern_name'];
-        $customDomainLangs = $store->getCustomDomainLangs();
 
-        if ($urlPatternName == 'custom_domain' && $customDomainLangs) {
-            return $customDomainLangs->computeSourceVirtualUrl($uri, $lang, $store->settings['default_lang']);
+        if ($urlPatternName == 'custom_domain') {
+            $customDomainLangs = $store->getCustomDomainLangs();
+            if ($customDomainLangs) {
+                return $customDomainLangs->computeSourceVirtualUrl($uri, $lang, $store->settings['default_lang']);
+            } else {
+                return $uri;
+            }
         } else {
             return $uri;
         }
