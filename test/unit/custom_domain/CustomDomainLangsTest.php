@@ -4,6 +4,7 @@ namespace Wovnio\Wovnphp\Tests;
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLang.php';
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangs.php';
 
+use PHP_CodeSniffer\Tests\Standards\AllSniffs;
 use Wovnio\Wovnphp\CustomDomainLangs;
 
 class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
@@ -34,18 +35,8 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
 
     private function hashEquals($a, $b)
     {
-        if (count($a) != count($b)) {
-            return false;
-        }
-        foreach ($a as $key => $value) {
-            if (!array_key_exists($key, $b)) {
-                return false;
-            }
-            if ($a[$key] != $b[$key]) {
-                return false;
-            }
-        }
-        return true;
+        $diff = array_diff_assoc($a, $b);
+        return count($diff) === 0;
     }
 
     public function testGetCustomDomainLangByLang()
