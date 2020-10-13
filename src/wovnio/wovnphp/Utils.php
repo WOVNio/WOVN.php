@@ -8,8 +8,8 @@ class Utils
     // will return the store and headers objects
     public static function getStoreAndHeaders(&$env)
     {
-        if (isset($_SERVER['WOVN_CONFIG'])) {
-            $file = $_SERVER['WOVN_CONFIG'] ? $_SERVER['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
+        if (isset($env['WOVN_CONFIG'])) {
+            $file = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
         } elseif (isset($env['WOVN_CONFIG'])) {
             $file  = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
         } else {
