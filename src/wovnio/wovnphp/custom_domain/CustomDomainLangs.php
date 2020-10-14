@@ -36,7 +36,7 @@ class CustomDomainLangs
             return null;
         } else {
             $result = array_shift($results);
-            return $result->getSource() ? $result->getSource() : $result;
+            return $result->getSource();
         }
     }
 

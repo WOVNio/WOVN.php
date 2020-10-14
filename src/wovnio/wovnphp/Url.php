@@ -240,13 +240,8 @@ class Url
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
             case 'custom_domain':
                 $customDomainLangs = $store->getCustomDomainLangs();
-                $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
-                if ($customDomainLangToRemove->getSource()) {
-                    $defaultCustomDomainLang = $customDomainLangToRemove->getSource();
-                } else {
-                    $defaultCustomDomainLang = $customDomainLangs->getSourceCustomDomainByLang($default_lang);
-                }
+                $defaultCustomDomainLang = $customDomainLangToRemove->getSource();
                 $newUri = $uri;
                 if (self::isAbsoluteUri($uri)) {
                     $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
