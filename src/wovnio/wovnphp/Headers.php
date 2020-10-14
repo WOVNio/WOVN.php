@@ -45,19 +45,7 @@ class Headers
         } else {
             $this->originalHost = $env['HTTP_HOST'];
         }
-        if (!isset($env['REQUEST_URI'])) {
-            $env['REQUEST_URI'] = $env['PATH_INFO'] . (strlen($env['QUERY_STRING']) === 0 ? '' : '?' . $env['QUERY_STRING']);
-        }
 
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->originalPath = $env['HTTP_X_FORWARDED_REQUEST_URI'];
-        } elseif (isset($env['REDIRECT_URL'])) {
-            $this->originalPath = $env['REDIRECT_URL'];
-        }
-
-        if (!preg_match('/\/$/', $this->originalPath) || !preg_match('/\/[^\/.]+\.[^\/.]+$/', $this->originalPath)) {
-            $this->originalPath .= '/';
-        }
         $this->host = $this->originalHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
@@ -71,9 +59,9 @@ class Headers
             $clientRequestUri = $env['REQUEST_URI'];
         }
         $exploded = explode('?', $clientRequestUri);
-        if ($store->settings['url_pattern_name'] === 'subdomain') {
-            $this->pathname = $exploded[0];
-        } else {
+        $this->pathname = $exploded[0];
+        $this->originalPath = $this->pathname;
+        if ($store->settings['url_pattern_name'] === 'path' || $store->settings['url_pattern_name'] === 'custom_domain') {
             $this->pathname = $this->removeLang($exploded[0], $this->lang());
         }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
