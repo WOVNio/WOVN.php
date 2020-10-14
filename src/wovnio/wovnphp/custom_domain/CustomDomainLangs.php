@@ -86,11 +86,7 @@ class CustomDomainLangs
     public function computeSourceVirtualUrl($physicalUri, $lang, $defaultLang)
     {
         $currentLangDomainLang = $this->getSourceCustomDomainByLang($lang);
-        if ($currentLangDomainLang->getSource()) {
-            $defaultCustomDomainLang = $currentLangDomainLang->getSource();
-        } else {
-            $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
-        }
+        $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
         return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
     }
 
