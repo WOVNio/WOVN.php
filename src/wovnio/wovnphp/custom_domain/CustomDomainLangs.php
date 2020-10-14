@@ -111,7 +111,6 @@ class CustomDomainLangs
             if ($lang === $defaultLang) {
                 return $source;
             }
-
         }
         return null;
     }
