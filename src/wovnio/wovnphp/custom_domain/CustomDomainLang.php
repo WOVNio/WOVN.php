@@ -45,6 +45,12 @@ class CustomDomainLang
         return strtolower($host) === strtolower($this->host) && $this->pathIsEqualOrSubsetOf($this->path, $path);
     }
 
+    public function getHostAndPathWithoutTrailingSlash()
+    {
+        $hostAndPath = $this->host . $this->path;
+        return substr($hostAndPath, -1) === '/' ? substr($hostAndPath, 0, -1) : $hostAndPath;
+    }
+
     private function pathIsEqualOrSubsetOf($path1, $path2)
     {
         // split by delimiter and remove spaces and empty strings
@@ -57,11 +63,5 @@ class CustomDomainLang
             array_slice($path2Segments, 0, $length, false)
         );
         return empty($diff);
-    }
-
-    public function getHostAndPathWithoutTrailingSlash()
-    {
-        $hostAndPath = $this->host . $this->path;
-        return substr($hostAndPath, -1) === '/' ? substr($hostAndPath, 0, -1) : $hostAndPath;
     }
 }
