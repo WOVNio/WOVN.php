@@ -133,7 +133,7 @@ class Store
         }
 
         if (!empty($this->settings['custom_domain_langs']) && is_array($this->settings['custom_domain_langs'])) {
-            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs']);
+            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs'], $this->settings['default_lang']);
         }
 
         // getting the url pattern

@@ -8,16 +8,17 @@ class CustomDomainLangs
     private $customDomainLangs;
 
 
-    public function __construct($customDomainLangsSettingsArray)
+    public function __construct($customDomainLangsSettingsArray, $defaultLang)
     {
+        $defaultLangCustomDomain = CustomDomainLangs::getDefaultLangCustomDomain($customDomainLangsSettingsArray, $defaultLang);
         $this->customDomainLangs = array();
         foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
             $parsedUrl = parse_url($this->addProtocolIfNeeded($langUrl));
             if (is_array($config)) {
-                $source = array_key_exists('source', $config) ? $config['source'] : null;
+                $source = array_key_exists('source', $config) ? $config['source'] : $defaultLangCustomDomain;
             } else {
                 $config = array('lang' => $config);
-                $source = null;
+                $source = $defaultLangCustomDomain;
             }
 
             // Disable notice error by adding @, when path is not defined
@@ -90,18 +91,28 @@ class CustomDomainLangs
         return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
     }
 
-    public function hasSource($langCode)
-    {
-        $customDomainLang = $this->getCustomDomainLangByLang($langCode);
-        if ($customDomainLang === null) {
-            return false;
-        }
-        return $customDomainLang->getSource() !== null;
-    }
-
     // parse_url needs protocol to parse URL.
     private function addProtocolIfNeeded($url)
     {
         return preg_match("/https?:\/\//", $url, $matches) ? $url : 'http://' . $url;
+    }
+
+    private static function getDefaultLangCustomDomain($customDomainLangsSettingsArray, $defaultLang)
+    {
+        foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
+            if (is_array($config)) {
+                $source = array_key_exists('source', $config) ? $config['source'] : $langUrl;
+                $lang = $config['lang'];
+            } else {
+                $lang = $config;
+                $source = $langUrl;
+            }
+
+            if ($lang === $defaultLang) {
+                return $source;
+            }
+
+        }
+        return null;
     }
 }

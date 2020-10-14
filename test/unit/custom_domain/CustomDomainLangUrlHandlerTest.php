@@ -21,7 +21,7 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
             'english.foo.com/' => 'en',
             'zh-hant-hk.foo.com/zh' => 'zh-Hant-HK'
         );
-        $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting);
+        $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }
 
     public function testAddCustomDomainLangToAbsoluteUrl()
