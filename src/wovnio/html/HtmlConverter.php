@@ -272,9 +272,7 @@ class HtmlConverter
         if ($this->store->hasDefaultLangAlias()) {
             $url = $this->headers->removeLang($url, $this->store->defaultLang());
             $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
-        } elseif ($lang_code !== $this->store->defaultLang()) {
-            $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
-        } elseif ($this->store->getCustomDomainLangs() !== null) {
+        } elseif ($lang_code !== $this->store->defaultLang() || $this->store->settings['url_pattern_name'] === 'custom_domain') {
             $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
         }
         return htmlentities($url);
