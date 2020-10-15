@@ -82,7 +82,7 @@ class CustomDomainLangs
      * @param $physicalUri string the current uri - pointing to physical location of current lang
      * @param $lang string lang code of the current uri
      * @param $defaultLang string lang code of the default (source) language
-     * @return string|string[]|null
+     * @return string|null
      */
     public function computeSourceVirtualUrl($physicalUri, $lang, $defaultLang)
     {
