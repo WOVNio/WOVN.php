@@ -146,17 +146,6 @@ class Utils
         }
         return false;
     }
-
-    private static function getEnv($env, $keys)
-    {
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $env)) {
-                return $env[$key];
-            }
-        }
-        return '';
-    }
-
     /*
      * Return path component of $uri
      */
