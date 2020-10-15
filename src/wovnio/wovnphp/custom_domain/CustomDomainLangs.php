@@ -1,8 +1,6 @@
 <?php
 namespace Wovnio\Wovnphp;
 
-use PHP_CodeSniffer\Tests\Standards\AllSniffs;
-
 require_once 'CustomDomainLang.php';
 
 class CustomDomainLangs
