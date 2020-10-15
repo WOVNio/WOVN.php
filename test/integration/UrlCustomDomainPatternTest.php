@@ -170,6 +170,49 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://zh-hant-hk.com/zh/sub/index.html')->body);
     }
 
+    public function testCustomDomainPatternWithDomainSource()
+    {
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        mkdir("{$this->docRoot}/ja");
+        TestUtils::writeFile("{$this->docRoot}/ja/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        $customDomainLangs = array(
+            'testsite.com/en' => array('lang' => 'en', 'source' => 'testsite.com/ja'),
+            'testsite.com/fr' => 'fr',
+            'testsite.com/ja' => 'ja',
+        );
+        TestUtils::setWovnJson("{$this->docRoot}/wovn.json", array(
+            'url_pattern_name' => 'custom_domain',
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'ja', 'fr'),
+            'custom_domain_langs' => $customDomainLangs
+        ));
+
+        $customDomainLangsHtmlSwapperRep = array(
+            'testsite.com/en' => 'en',
+            'testsite.com/fr' => 'fr',
+            'testsite.com/ja' => 'ja',
+        );
+
+        $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
+        $content_without_html_swapper = '<html>'.
+            '<head>'.
+            '<link rel="alternate" hreflang="en" href="http://testsite.com/en/index.html">'.
+            '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
+            '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/index.html">'.
+            '<script src="//j.wovn.io/1"'.
+            ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
+            ' data-wovnio-info="version=WOVN.php_VERSION"'.
+            ' async></script>'.
+            '</head>'.
+            '<body>test</body>'.
+            '</html>';
+
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://testsite.com/en/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://testsite.com/fr/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://testsite.com/ja/index.html')->body);
+    }
+
     public function testCustomDomainPatternSubDirWithIntercepter()
     {
         $langs = array('ja', 'zh\/chs', 'zh');
