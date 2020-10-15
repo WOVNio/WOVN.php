@@ -1,6 +1,8 @@
 <?php
 namespace Wovnio\Wovnphp;
 
+use PHP_CodeSniffer\Tests\Standards\AllSniffs;
+
 require_once 'CustomDomainLang.php';
 
 class CustomDomainLangs
@@ -22,35 +24,32 @@ class CustomDomainLangs
             }
 
             // Disable notice error by adding @, when path is not defined
-            array_push($this->customDomainLangs, new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $config['lang'], $source));
+            $this->customDomainLangs[$config['lang']] = new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $config['lang'], $source);
         }
     }
 
     public function getSourceCustomDomainByLang($langCode)
     {
-        $results = array_filter($this->customDomainLangs, function ($customDomain) use ($langCode) {
-            return $customDomain->getLang() === $langCode;
-        });
-
-        if (count($results) <= 0) {
+        $customDomainLang = $this->getCustomDomainLangByLang($langCode);
+        if ($customDomainLang === null) {
             return null;
         } else {
-            $result = array_shift($results);
-            return $result->getSource();
+            return $customDomainLang->getSource();
         }
     }
 
     public function getCustomDomainLangByLang($langCode)
     {
-        $results = array_filter($this->customDomainLangs, function ($customDomain) use ($langCode) {
-            return $customDomain->getLang() === $langCode;
-        });
-        return count($results) <= 0 ? null : array_shift($results);
+        if (array_key_exists($langCode, $this->customDomainLangs)) {
+            return $this->customDomainLangs[$langCode];
+        } else {
+            return null;
+        }
     }
 
     public function getCustomDomainLangByUrl($url)
     {
-        $sortedCustomDomainLangs = $this->customDomainLangs;
+        $sortedCustomDomainLangs = array_values($this->customDomainLangs);
         // "/" path will naturally match every URL, so by comparing longest paths first we will get the best match
         usort($sortedCustomDomainLangs, function ($left, $right) {
             return strlen($left->getPath()) <= strlen($right->getPath());
