@@ -42,7 +42,7 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
-        $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->lang());
+        $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
             'token' => $token,
