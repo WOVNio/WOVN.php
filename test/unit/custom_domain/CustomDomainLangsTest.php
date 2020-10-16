@@ -15,10 +15,10 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->customDomainLangsSetting = array(
-            'foo.com/' => 'fr',
-            'foo.com/path' => array('lang' => 'ja', 'source' => 'japan.foo.com/'),
-            'foo.com/dir/path' => 'zh-CHS',
-            'english.foo.com/' => array('lang' => 'en', 'source' => 'global.foo.com/')
+            'fr' => array('url' => 'foo.com/'),
+            'ja' => array('url' => 'foo.com/path', 'source' => 'japan.foo.com/'),
+            'zh-CHS' => array('url' => 'foo.com/dir/path'),
+            'en' => array('url' => 'english.foo.com/', 'source' => 'global.foo.com/')
         );
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }
@@ -85,9 +85,9 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     public function testGetCustomDomainLangByUrlWithNestedPaths()
     {
         $customDomainLangsSetting = array(
-            'foo.com/path' => 'ja',
-            'foo.com/path/en' => 'en',
-            'foo.com/path/fr' => 'fr'
+            'ja' => array('url' => 'foo.com/path'),
+            'en' => array('url' => 'foo.com/path/en'),
+            'fr' => array('url' => 'foo.com/path/fr'),
         );
         $customDomainLangs = new CustomDomainLangs($customDomainLangsSetting, 'en');
         $this->assertEquals('ja', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path')));

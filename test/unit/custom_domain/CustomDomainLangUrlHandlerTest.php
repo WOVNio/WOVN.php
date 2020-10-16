@@ -15,11 +15,11 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->customDomainLangsSetting = array(
-            'foo.com/' => 'fr',
-            'foo.com/path' => 'ja',
-            'foo.com/dir/path' => 'zh-CHS',
-            'english.foo.com/' => 'en',
-            'zh-hant-hk.foo.com/zh' => 'zh-Hant-HK'
+            'fr' => array('url' => 'foo.com/'),
+            'ja' => array('url' => 'foo.com/path'),
+            'zh-CHS' => array('url' => 'foo.com/dir/path'),
+            'en' => array('url' => 'english.foo.com/'),
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.foo.com/zh')
         );
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }

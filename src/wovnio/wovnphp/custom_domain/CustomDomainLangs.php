@@ -12,17 +12,12 @@ class CustomDomainLangs
     {
         $defaultLangCustomDomain = CustomDomainLangs::getDefaultLangCustomDomain($customDomainLangsSettingsArray, $defaultLang);
         $this->customDomainLangs = array();
-        foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
-            $parsedUrl = parse_url($this->addProtocolIfNeeded($langUrl));
-            if (is_array($config)) {
-                $source = array_key_exists('source', $config) ? $config['source'] : $defaultLangCustomDomain;
-            } else {
-                $config = array('lang' => $config);
-                $source = $defaultLangCustomDomain;
-            }
+        foreach ($customDomainLangsSettingsArray as $langCode => $config) {
+            $parsedUrl = parse_url($this->addProtocolIfNeeded($config['url']));
+            $source = array_key_exists('source', $config) ? $config['source'] : $defaultLangCustomDomain;
 
             // Disable notice error by adding @, when path is not defined
-            $this->customDomainLangs[$config['lang']] = new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $config['lang'], $source);
+            $this->customDomainLangs[$langCode] = new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $langCode, $source);
         }
     }
 
@@ -66,8 +61,8 @@ class CustomDomainLangs
     public function toHtmlSwapperHash()
     {
         $result = array();
-        foreach ($this->customDomainLangs as $lang) {
-            $result[$lang->getHostAndPathWithoutTrailingSlash()] = $lang->getLang();
+        foreach ($this->customDomainLangs as $langCode => $customDomainLang) {
+            $result[$customDomainLang->getHostAndPathWithoutTrailingSlash()] = $customDomainLang->getLang();
         }
         return $result;
     }
@@ -96,19 +91,14 @@ class CustomDomainLangs
 
     private static function getDefaultLangCustomDomain($customDomainLangsSettingsArray, $defaultLang)
     {
-        foreach ($customDomainLangsSettingsArray as $langUrl => $config) {
-            if (is_array($config)) {
-                $source = array_key_exists('source', $config) ? $config['source'] : $langUrl;
-                $lang = $config['lang'];
+        if (array_key_exists($defaultLang, $customDomainLangsSettingsArray)) {
+            if (isset($customDomainLangsSettingsArray[$defaultLang]['source'])) {
+                return $customDomainLangsSettingsArray[$defaultLang]['source'];
             } else {
-                $lang = $config;
-                $source = $langUrl;
-            }
-
-            if ($lang === $defaultLang) {
-                return $source;
+                return $customDomainLangsSettingsArray[$defaultLang]['url'];
             }
         }
+
         return null;
     }
 }
