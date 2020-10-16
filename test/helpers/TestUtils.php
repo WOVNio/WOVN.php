@@ -144,10 +144,11 @@ class TestUtils
         }
     }
 
-    public static function enableWovnJson($htaccessFilePath)
+    public static function setWovnConfig($htaccessFilePath, $wovnConfigFilePath)
     {
         $htaccess = file_get_contents($htaccessFilePath);
-        $replacedHtaccess = $htaccess . "\nSetEnv WOVN_CONFIG";
+        $replacedHtaccess = $htaccess . "\nSetEnv WOVN_CONFIG " . $wovnConfigFilePath;
+        error_log($replacedHtaccess);
         file_put_contents($htaccessFilePath, $replacedHtaccess);
     }
 }

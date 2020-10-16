@@ -62,7 +62,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         $customDomainLangsHtmlSwapperRep = array(
             'testsite.com' => 'en',
             'en-us.testsite.com' => 'en-US',
@@ -113,7 +113,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         $customDomainLangsHtmlSwapperRep = array(
             'testsite.com' => 'en',
             'en-us.testsite.com' => 'en-US',
@@ -161,7 +161,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         $customDomainLangsHtmlSwapperRep = array(
             'testsite.com' => 'en',
             'en-us.testsite.com' => 'en-US',
@@ -196,7 +196,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         mkdir("{$this->docRoot}/ja");
         TestUtils::writeFile("{$this->docRoot}/ja/index.html", '<html><head></head><body>test</body></html>');
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         $customDomainLangs = array(
             'en' => array('url' => 'testsite.com/en', 'source' => 'testsite.com/ja'),
             'fr' => array('url' => 'testsite.com/fr'),
@@ -258,7 +258,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
             'custom_domain_langs' => $customDomainLangs
         ));
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         $customDomainLangsHtmlSwapperRep = array(
             'testsite.com' => 'en',
             'en-us.testsite.com' => 'en-US',
@@ -306,7 +306,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'custom_domain_langs' => $customDomainLangs,
             'disable_api_request_for_default_lang' => 0
         ));
-        TestUtils::enableWovnJson("{$this->docRoot}/.htaccess");
+        TestUtils::setWovnConfig("{$this->docRoot}/.htaccess", "{$this->docRoot}/wovn.json");
         TestUtils::cleanUpDirectory("{$this->docRoot}/v0");
         $customDomainLangsHtmlSwapperRep = array(
             'testsite.com' => 'en',
