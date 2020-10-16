@@ -188,7 +188,7 @@ WOVN.phpの設定は `wovn.ini` ファイルから行うことができます。
 
 WOVN.php は 3 つのパターンをサポートしています。
 
-| Option                           | Description            | URL Examples                                                             |     
+| Option                           | Description            | URL Examples                                                             |
 |----------------------------------|------------------------|--------------------------------------------------------------------------|
 |`url_pattern_name = query`        |クエリに言語コードを挿入    | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/index.php?wovn=ja`<br>[French] `https://my-website.com/index.php?wovn=fr` |
 |`url_pattern_name = path`         |パスの先頭に言語コードを挿入 | [Original] `https://my-website.com/index.php`<br>[Japanese] `https://my-website.com/ja/index.php`<br>[French] `https://my-website.com/fr/index.php`           |
@@ -333,8 +333,18 @@ custom_lang_aliases[fr] = french
 
 例えば、ウェブサイトの `admin` ディレクトリを翻訳したくない場合は、以下のように WOVN.php を設定します。
 
-```Text
+`wovn.ini`
+
+```ini
 ignore_paths[] = /admin
+```
+
+`wovn.json`
+
+```json
+{
+  "ignore_paths": ["/admin"]
+}
 ```
 
 この設定では、WOVN.php は以下の URL を無視します。
@@ -360,8 +370,18 @@ https://my-website.com/adminpage
 例えば、検索ページを翻訳しないようにしたい場合は、以下のように `wovn.ini` を設定します。
 WOVN.phpは `https://my-website.com/search/index.php` を翻訳するが、`https://my-website.com/search/01/` や `https://my-website.com/search/02/` は翻訳しません。
 
-```
+`wovn.ini`
+
+```ini
 ignore_regex[] = "/\/search\/\d\d\//"
+```
+
+`wovn.json`
+
+```json
+{
+  "ignore_regex": ["/\/search\/\d\d\//"]
+}
 ```
 
 #### `ignore_class`
@@ -371,9 +391,19 @@ ignore_regex[] = "/\/search\/\d\d\//"
 
 例えば、クラス `ignore` と `no-translate` のすべての HTML 要素を無視したい場合は、以下のように WOVN.php を設定する必要があります。
 
-```
+`wonv.ini`
+
+```ini
 ignore_class[] = ignore
 ignore_class[] = no-translate
+```
+
+`wovn.json`
+
+```json
+{
+  "ignore_class": ["ignore", "no-translate"]
+}
 ```
 
 #### `no_index_langs`
@@ -383,8 +413,18 @@ ignore_class[] = no-translate
 例えば、英語ページのインデックスを避けたい場合は、以下のように `en` を追加します。
 `<meta name="robots" content="noindex">` タグは英語ページの場合、`head` タグの中に挿入されます。
 
-```
+`wovn.ini`
+
+```ini
 no_index_langs[] = en
+```
+
+`wovn.json`
+
+```json
+{
+  "no_index_langs": ["en"]
+}
 ```
 
 #### `encoding`
@@ -399,8 +439,18 @@ WOVN.php は 8 つのエンコーディングをサポートしています。
 
 例えば、WebサイトのファイルがUTF-8でエンコードされている場合は、以下のようにWOVN.phpを設定する必要があります。
 
+`wovn.ini`
+
 ```
 encoding = UTF-8
+```
+
+`wovn.json`
+
+```json
+{
+	"encoding": "UTF-8"
+}
 ```
 
 #### `api_timeout`
@@ -414,8 +464,18 @@ APIからの応答に時間がかかりすぎると、翻訳元のコンテン�
 
 例えば、デフォルトのタイムアウトを2秒まで増やしたい場合は、以下のように `wovn.ini` を設定します。
 
-```
+`wovn.ini`
+
+```ini
 api_timeout = 2
+```
+
+`wovn.json`
+
+```json
+{
+	"api_timeout": 2
+}
 ```
 
 #### `disable_api_request_for_default_lang`
@@ -431,8 +491,18 @@ api_timeout = 2
 
 リソースに問題がなければ、以下のように翻訳元言語のAPIリクエストを停止することをお勧めします。
 
-```
+`wovn.ini`
+
+```ini
 disable_api_request_for_default_lang = 1
+```
+
+`wovn.json`
+
+```json
+{
+	"disable_api_request_for_default_lang": true
+}
 ```
 
 #### `use_proxy`
@@ -443,8 +513,18 @@ disable_api_request_for_default_lang = 1
 プロキシを使ってコンテンツを提供している場合、WOVN.phpはリクエストされたURLに基づいて情報を収集する際にそれを知る必要があります。
 その場合は、`use_proxy` を `1` (true) に設定する必要があります。
 
-```
+`wovn.ini`
+
+```ini
 use_proxy = 1
+```
+
+`wovn.json`
+
+```json
+{
+	"use_proxy": true
+}
 ```
 
 `use_proxy` がアクティブな場合、WOVN.php は HTTP ヘッダ `X-Forwarded-Proto` と `X-Forwarded-Host` から URL プロトコルとホストを利用しようとします。
@@ -468,14 +548,38 @@ RequestHeader    setifempty X-Forwarded-Request-Uri "expr=%{REQUEST_URI}"
 
 レスポンスヘッダ「Content-Length」の更新を維持する必要がある場合は、`override_content_length` を `1` (true) に設定してください。
 
-```
+`wovn.ini`
+
+```ini
 override_content_length = 1
+```
+
+`wovn.json`
+
+```json
+{
+  "override_content_length": true
+}
 ```
 
 #### `check_amp`
 このパラメータは、AMP (Accelerated Mobile Pages) 準拠のページであれば WOVN.php がコンテンツを処理しないようにします。
 このパラメータを有効にすると、WOVN.phpはコンテンツの変更をしません。
 そのため、WOVNスクリプトのタグを追加することはありません。
+
+`wovn.ini`
+
+```ini
+check_amp = 1
+```
+
+`wovn.json`
+
+```json
+{
+  "check_amp": true
+}
+```
 
 #### `site_prefix_path`
 このパラメータは、特定のパス以下のみWOVNで処理するように指定します。
@@ -485,17 +589,43 @@ override_content_length = 1
 `http://www.mysite.com/dir/index.html`を英語にした場合、`http://www.mysite.com/dir/en/index.html`のように、指定したディレクトリ以下に言語コードが追加されます。
 該当しないパスの場合は、WOVNは処理せず、スクリプトも追加されません。
 
+`wovn.ini`
+
 ```
 site_prefix_path = dir1/dir2
+```
+
+`wovn.json`
+
+```json
+{
+  "site_prefix_path": "dir1/dir2"
+}
 ```
 
 #### `custom_domain_langs`
 このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern_name = custom_domain` が設定されている場合）のみ有効です。
 カスタムドメイン言語パターン使用時は必須パラメータです。
 `supported_langs` で設定した全ての言語と元言語に、必ず `custom_domain_langs` を設定してください。
+`wovn.ini`
+
+```ini
+NOT SUPPORTED
 ```
-custom_domain_langs[www.mysite.com/english] = 'en'
+
+`wovn.json`
+
+```json
+{
+  "custom_domain_langs": {
+    "en": {
+      "url": "www.mysite.com/english"
+    }
+  }
+}
 ```
+
+
 
 ## 4. 環境変数
 
