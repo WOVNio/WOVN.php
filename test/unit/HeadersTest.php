@@ -140,11 +140,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testRemoveLangWithCustomDomainPattern()
     {
         $custom_domain_langs = array(
-            'testsite.com' => 'en',
-            'en-us.testsite.com' => 'en-US',
-            'testsite.com/ja' => 'ja',
-            'testsite.com/zh/chs' => 'zh-CHS',
-            'zh-hant-hk.com/zh' => 'zh-Hant-HK'
+            'en' => array('url' => 'testsite.com'),
+            'en-US' => array('url' => 'en-us.testsite.com'),
+            'ja' => array('url' => 'testsite.com/ja'),
+            'zh-CHS' => array('url' => 'testsite.com/zh/chs'),
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.com/zh'),
         );
         $settings = array(
             'url_pattern_name' => 'custom_domain',
@@ -346,11 +346,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testPathLangWithCustomDomainPattern()
     {
         $custom_domain_langs = array(
-            'my-site.com' => 'en',
-            'en-us.my-site.com' => 'en-US',
-            'my-site.com/ja' => 'ja',
-            'my-site.com/zh/chs' => 'zh-CHS',
-            'zh-hant-hk.com/zh' => 'zh-Hant-HK'
+            'en' => array('url' => 'my-site.com'),
+            'en-US' => array('url' => 'en-us.my-site.com'),
+            'ja' => array('url' => 'my-site.com/ja'),
+            'zh-CHS' => array('url' => 'my-site.com/zh/chs'),
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.com/zh'),
         );
         $settings = array(
             'url_pattern_name' => 'custom_domain',
@@ -625,8 +625,8 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $settings = array(
             'url_pattern_name' => 'custom_domain',
             'custom_domain_langs' => array(
-                'minimaltech.co' => 'en',
-                'ja.minimaltech.co' => 'ja'
+                'en' => array('url' => 'minimaltech.co'),
+                'ja' => array('url' => 'ja.minimaltech.co')
             )
         );
         $env = array(

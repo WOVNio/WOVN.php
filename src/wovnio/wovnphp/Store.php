@@ -22,6 +22,12 @@ class Store
      */
     public static function createFromFile($settingFileName)
     {
+        if (substr($settingFileName, -5) === '.json') {
+            $settingsFile = file_get_contents($settingFileName);
+            $userSettings = json_decode($settingsFile, true);
+            return new Store($userSettings);
+        }
+
         if (file_exists($settingFileName)) {
             $userSettings = parse_ini_file($settingFileName, true);
         } else {
@@ -127,7 +133,7 @@ class Store
         }
 
         if (!empty($this->settings['custom_domain_langs']) && is_array($this->settings['custom_domain_langs'])) {
-            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs']);
+            $this->customDomainLangs = new CustomDomainLangs($this->settings['custom_domain_langs'], $this->settings['default_lang']);
         }
 
         // getting the url pattern

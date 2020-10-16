@@ -943,11 +943,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testAddLangCodeWithCustomDomainLangs()
     {
         $custom_domain_langs = array(
-            'my-site.com' => 'en', // default lang
-            'en-us.my-site.com' => 'en-US', // subdomain pattern
-            'my-site.com/ja' => 'ja', // path pattern
-            'my-site.com/zh/chs' => 'zh-CHS', // deep path pattern
-            'zh-hant-hk.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+            'en' => array('url' => 'my-site.com'),
+            'en-US' => array('url' => 'en-us.my-site.com'),
+            'ja' => array('url' => 'my-site.com/ja'),
+            'zh-CHS' => array('url' => 'my-site.com/zh/chs'),
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.com/zh'),
         );
         $testCases = array(
             // no_lang_url, lang_code, expected_url
@@ -1006,11 +1006,11 @@ class UrlTest extends \PHPUnit_Framework_TestCase
     public function testRemoveLangCodeWithCustomDomainLangs()
     {
         $custom_domain_langs = array(
-            'my-site.com' => 'en', // default lang
-            'en-us.my-site.com' => 'en-US', // subdomain pattern
-            'my-site.com/ja' => 'ja', // path pattern
-            'my-site.com/zh/chs' => 'zh-CHS', // deep path pattern
-            'zh-hant-hk.com/zh' => 'zh-Hant-HK' // sudbomain pattern and path pattern
+            'en' => array('url' => 'my-site.com'),
+            'en-US' => array('url' => 'en-us.my-site.com'),
+            'ja' => array('url' => 'my-site.com/ja'),
+            'zh-CHS' => array('url' => 'my-site.com/zh/chs'),
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.com/zh'),
         );
         $testCases = array(
             // $target_uri, $lang, $expected_uri, $env
