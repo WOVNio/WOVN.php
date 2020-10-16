@@ -113,6 +113,14 @@ class TestUtils
         TestUtils::writeFile($filePath, $contents);
     }
 
+    public static function setWovnJson($filePath, $settings = array())
+    {
+        $mergedSettings = self::generateSettings($settings);
+        $contents = json_encode($mergedSettings);
+
+        TestUtils::writeFile($filePath, $contents);
+    }
+
     public static function disableRewriteToWovnIndex($htaccessFilePath)
     {
         // Remove rewrite rule to wovn_index.php
@@ -134,5 +142,13 @@ class TestUtils
             );
             file_put_contents($htaccessFilePath, $replacedHtaccess);
         }
+    }
+
+    public static function setWovnConfig($htaccessFilePath, $wovnConfigFilePath)
+    {
+        $htaccess = file_get_contents($htaccessFilePath);
+        $replacedHtaccess = $htaccess . "\nSetEnv WOVN_CONFIG " . $wovnConfigFilePath;
+        error_log($replacedHtaccess);
+        file_put_contents($htaccessFilePath, $replacedHtaccess);
     }
 }

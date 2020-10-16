@@ -14,6 +14,7 @@ services:
       - ./public:/var/www/html
       - ../:/var/www/html/WOVN.php
       - ../wovn.ini.sample:/var/www/html/wovn.ini
+      - ../wovn.json.sample:/var/www/html/wovn.json
       - ../wovn_index_sample.php:/var/www/html/wovn_index.php
       - ../htaccess_sample:/var/www/html/.htaccess
 

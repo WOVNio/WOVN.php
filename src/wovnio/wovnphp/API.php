@@ -2,6 +2,7 @@
 namespace Wovnio\Wovnphp;
 
 require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
+require_once 'custom_domain/CustomDomainLangUrlHandler.php';
 
 use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
@@ -41,8 +42,9 @@ class API
         }
 
         $timeout = $store->settings['api_timeout'];
+        $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->lang());
         $data = array(
-            'url' => $headers->urlKeepTrailingSlash,
+            'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
             'token' => $token,
             'lang_code' => $headers->lang(),
             'url_pattern' => $store->settings['url_pattern_name'],
@@ -61,8 +63,8 @@ class API
         if (!empty($store->settings['site_prefix_path'])) {
             $data['site_prefix_path'] = $store->settings['site_prefix_path'];
         }
-        if (!empty($store->settings['custom_domain_langs'])) {
-            $data['custom_domain_langs'] = json_encode($store->settings['custom_domain_langs']);
+        if ($store->getCustomDomainLangs()) {
+            $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
         }
 
         try {
@@ -88,6 +90,22 @@ class API
             Logger::get()->error('Failed to get translated content: {exception}.', array('exception' => $e));
 
             return $marker->revert($converted_html);
+        }
+    }
+
+    private static function getUriRepresentation($uri, $store, $lang)
+    {
+        $urlPatternName = $store->settings['url_pattern_name'];
+
+        if ($urlPatternName == 'custom_domain') {
+            $customDomainLangs = $store->getCustomDomainLangs();
+            if ($customDomainLangs) {
+                return $customDomainLangs->computeSourceVirtualUrl($uri, $lang, $store->settings['default_lang']);
+            } else {
+                return $uri;
+            }
+        } else {
+            return $uri;
         }
     }
 

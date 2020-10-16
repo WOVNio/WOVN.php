@@ -132,7 +132,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $settings = array(
             'supported_langs' => array('fr'),
             'default_lang' => 'en',
-            'custom_domain_langs' => array('testsite.com' => 'en', 'testsite.com/fr' => 'fr'),
+            'custom_domain_langs' => array('en' => array('url' => 'testsite.com'), 'fr' => array('url' => 'testsite.com/fr')),
             'url_pattern_name' => 'custom_domain'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, array('HTTP_HOST' => 'testsite.com'));

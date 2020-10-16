@@ -4,7 +4,7 @@ namespace Wovnio\Wovnphp\Tests;
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLang.php';
 require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangs.php';
 
-use Wovnio\Wovnphp\CustomDomainLang;
+use PHP_CodeSniffer\Tests\Standards\AllSniffs;
 use Wovnio\Wovnphp\CustomDomainLangs;
 
 class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
@@ -15,17 +15,28 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->customDomainLangsSetting = array(
-            'foo.com/' => 'fr',
-            'foo.com/path' => 'ja',
-            'foo.com/dir/path' => 'zh-CHS',
-            'english.foo.com/' => 'en'
+            'fr' => array('url' => 'foo.com/'),
+            'ja' => array('url' => 'foo.com/path', 'source' => 'japan.foo.com/'),
+            'zh-CHS' => array('url' => 'foo.com/dir/path'),
+            'en' => array('url' => 'english.foo.com/', 'source' => 'global.foo.com/')
         );
-        $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting);
+        $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }
 
-    private function getLang($customDomainlang)
+    private function getLang($customDomainLang)
     {
-        return $customDomainlang->getLang();
+        return $customDomainLang->getLang();
+    }
+
+    private function getHostAndPathWithoutTrailingSlash($customDomainLang)
+    {
+        return $customDomainLang->getHostAndPathWithoutTrailingSlash();
+    }
+
+    private function hashEquals($a, $b)
+    {
+        $diff = array_diff_assoc($a, $b);
+        return count($diff) === 0;
     }
 
     public function testGetCustomDomainLangByLang()
@@ -36,6 +47,14 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ja', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('ja')));
         $this->assertEquals('zh-CHS', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('zh-CHS')));
         $this->assertEquals('en', $this->getLang($this->customDomainLangs->getCustomDomainLangByLang('en')));
+    }
+
+    public function testGetSourceCustomDomainByLang()
+    {
+        $this->assertEquals('global.foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('fr')));
+        $this->assertEquals('japan.foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('ja')));
+        $this->assertEquals('global.foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('zh-CHS')));
+        $this->assertEquals('global.foo.com', $this->getHostAndPathWithoutTrailingSlash($this->customDomainLangs->getSourceCustomDomainByLang('en')));
     }
 
     public function testGetCustomDomainLangByUrl()
@@ -66,13 +85,41 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     public function testGetCustomDomainLangByUrlWithNestedPaths()
     {
         $customDomainLangsSetting = array(
-            'foo.com/path' => 'ja',
-            'foo.com/path/en' => 'en',
-            'foo.com/path/fr' => 'fr'
+            'ja' => array('url' => 'foo.com/path'),
+            'en' => array('url' => 'foo.com/path/en'),
+            'fr' => array('url' => 'foo.com/path/fr'),
         );
-        $customDomainLangs = new CustomDomainLangs($customDomainLangsSetting);
+        $customDomainLangs = new CustomDomainLangs($customDomainLangsSetting, 'en');
         $this->assertEquals('ja', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path')));
         $this->assertEquals('en', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/en')));
         $this->assertEquals('fr', $this->getLang($customDomainLangs->getCustomDomainLangByUrl('http://foo.com/path/fr')));
+    }
+
+    public function testToHtmlSwapperHash()
+    {
+        $expected = array(
+            'foo.com' => 'fr',
+            'foo.com/path' => 'ja',
+            'foo.com/dir/path' => 'zh-CHS',
+            'english.foo.com' => 'en'
+        );
+
+        $this->assertEquals(true, $this->hashEquals($expected, $this->customDomainLangs->toHtmlSwapperHash()));
+    }
+
+    public function testComputeSourceVirtualUrlDefaultToDefault()
+    {
+        $currentUri = "global.foo.com/blog/entry1.html";
+        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "en", "en");
+        $expectedComputedUri = "english.foo.com/blog/entry1.html";
+        $this->assertEquals($expectedComputedUri, $computedUri);
+    }
+
+    public function testComputeSourceVirtualUrlOtherToDefault()
+    {
+        $currentUri = "japan.foo.com/blog/entry1.html";
+        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "ja", "en");
+        $expectedComputedUri = "english.foo.com/blog/entry1.html";
+        $this->assertEquals($expectedComputedUri, $computedUri);
     }
 }

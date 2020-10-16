@@ -194,7 +194,7 @@ class Url
     {
         // check if subdomain already exists
         if (preg_match('/\./', $parsed_url['host'])) {
-            $explodedSubDomain= explode('.', $parsed_url['host']);
+            $explodedSubDomain = explode('.', $parsed_url['host']);
             $subDomain = $explodedSubDomain[0];
             $sub_do_lang = Lang::getCode($subDomain);
             if ($sub_do_lang && strtolower($sub_do_lang) === strtolower($lang_code)) {
@@ -205,15 +205,6 @@ class Url
         } else {
             $new_uri = preg_replace('/(\/\/)([^\.]*)/', '${1}' . self::formatForRegExp(strtolower($lang_code)) . '.' . '${2}', $no_lang_uri, 1);
         }
-        return $new_uri;
-    }
-
-    private static function addCustomDomainLangCode($no_lang_uri, $lang_code, $default_lang)
-    {
-        $customDomainLangs = $store->getCustomDomainLangs();
-        $targetLangDomain = $customDomainLangs->getCustomDomainLangByLang($lang_code);
-        $defaultLangDomain = $customDomainLangs->getCustomDomainLangByLang($default_lang);
-        $new_uri = str_replace($defaultLangDomain, $targetLangDomain, $no_lang_uri);
         return $new_uri;
     }
 
@@ -249,9 +240,8 @@ class Url
                 return preg_replace("@$prefix/$lang_code(/|$)@i", "$prefix/", $uri, 1);
             case 'custom_domain':
                 $customDomainLangs = $store->getCustomDomainLangs();
-                $default_lang = $settings['default_lang'];
                 $customDomainLangToRemove = $customDomainLangs->getCustomDomainLangByLang($lang_code);
-                $defaultCustomDomainLang = $customDomainLangs->getCustomDomainLangByLang($default_lang);
+                $defaultCustomDomainLang = $customDomainLangToRemove->getSource();
                 $newUri = $uri;
                 if (self::isAbsoluteUri($uri)) {
                     $newUri = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($uri, $customDomainLangToRemove, $defaultCustomDomainLang);
