@@ -14,7 +14,7 @@ class API
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
-        $lang = $headers->lang();
+        $lang = $headers->requestLang();
         $body_hash = md5($original_content);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
@@ -46,7 +46,7 @@ class API
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
             'token' => $token,
-            'lang_code' => $headers->lang(),
+            'lang_code' => $headers->requestLang(),
             'url_pattern' => $store->settings['url_pattern_name'],
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
@@ -111,6 +111,6 @@ class API
 
     private static function makeAPICall($store, $headers)
     {
-        return $headers->lang() != $store->settings['default_lang'] || !$store->settings['disable_api_request_for_default_lang'];
+        return $headers->requestLang() != $store->settings['default_lang'] || !$store->settings['disable_api_request_for_default_lang'];
     }
 }

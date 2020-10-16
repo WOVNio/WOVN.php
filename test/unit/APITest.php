@@ -48,7 +48,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
-        $lang = $headers->lang();
+        $lang = $headers->requestLang();
         $body_hash = md5($content);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
@@ -64,7 +64,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $pattern = $store->settings['url_pattern_name'];
         $lang_param_name = $store->settings['lang_param_name'];
         $default_lang = $store->settings['default_lang'];
-        $current_lang = $headers->lang();
+        $current_lang = $headers->requestLang();
         $version = WOVN_PHP_VERSION;
         $site_prefix_path = empty($store->settings['site_prefix_path']) ? '' : '&amp;sitePrefixPath=' . $store->settings['site_prefix_path'];
 
@@ -76,7 +76,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $data = array(
             'url' => $headers->urlKeepTrailingSlash,
             'token' => $store->settings['project_token'],
-            'lang_code' => $headers->lang(),
+            'lang_code' => $headers->requestLang(),
             'url_pattern' => $store->settings['url_pattern_name'],
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
