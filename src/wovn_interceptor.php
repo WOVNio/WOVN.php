@@ -13,12 +13,14 @@ require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDomNode.php';
 require_once 'wovn_helper.php';
+require_once 'wovnio/wovnphp/CookieLang.php';
 
 
 use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Diagnostics;
+use \Wovnio\Wovnphp\CookieLang;
 
 // GET STORE AND HEADERS
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER);
@@ -43,7 +45,12 @@ if (!Utils::isIgnoredPath($uri, $store)) {
     }
     // use the callback of ob_start to modify the content and return
     ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
-
+        $cookieLang = new CookieLang($headers, $store);
+        if ($cookieLang->shouldRedirect()) {
+            $redirectDebug = $cookieLang->computeRedirectUrl();
+            // this carries an implied HTTP 302
+            header("Location: " . $cookieLang->computeRedirectUrl());
+        }
         $headers->responseOut();
 
         if (empty($buffer) || !Utils::isHtml($buffer)) {
