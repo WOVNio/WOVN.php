@@ -119,7 +119,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($uri, $expected_uri, $lang, $pattern) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $this->assertTrue($store->hasDefaultLangAlias());
             $this->assertEquals($expected_uri, Url::addLangCode($uri, $store, $lang, $headers));
         }
@@ -837,7 +837,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             $additional_env = array(
                 'REQUEST_URI' => $request_uri
             );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "request_uri->[{$request_uri}] target_url->[{$target_url}]");
         };
     }
@@ -881,7 +881,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             $additional_env = array(
                 'REQUEST_URI' => $request_uri
             );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "request_uri->[{$request_uri}] target_url->[{$target_url}]");
         };
     }
@@ -935,7 +935,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             $additional_env = array(
                 'REQUEST_URI' => $request_uri
             );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected_uri, Url::AddLangCode($target_url, $store, $lang, $headers), "target_url->[{$target_url}] expected_uri->[{$expected_uri}]");
         };
     }
@@ -996,7 +996,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($no_lang_url, $lang, $expected_uri) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
 
             $this->assertEquals('en', $headers->requestLang());
             $this->assertEquals($expected_uri, Url::addLangCode($no_lang_url, $store, $lang, $headers), "no_lang_url->[{$no_lang_url}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
@@ -1060,7 +1060,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($target_uri, $lang, $expected_uri, $env) = $case;
             $additional_env = empty($env) ? $base_env : array_merge($base_env, $env);
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
 
             $this->assertEquals('en', $headers->requestLang());
             $this->assertEquals($expected_uri, Url::removeLangCode($target_uri, $lang, $store, $headers), "target_url->[{$target_uri}] lang->[{$lang}] expected_uri->[{$expected_uri}]");
@@ -1072,7 +1072,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
         $lang = 'en';
         $expected_uri = '/index.php';
         $uri = "/$lang$expected_uri";
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', array(
             'default_lang' => 'ja',
             'supported_langs' => array('en'),
             'url_pattern_name' => 'path',
@@ -1311,7 +1311,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             $additional_env = array(
                 'REQUEST_URI' => "https://my-site.com/$site_prefix_path/en"
             );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected_uri, Url::removeLangCode($target_url, $remove_lang, $store, $headers));
         };
     }
@@ -1404,7 +1404,7 @@ class UrlTest extends \PHPUnit_Framework_TestCase
             $additional_env = array(
                 'REQUEST_URI' => "https://my-site.com/$site_prefix_path/fr"
             );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected, Url::shouldIgnoreBySitePrefixPath($uri, $store->settings));
         }
     }

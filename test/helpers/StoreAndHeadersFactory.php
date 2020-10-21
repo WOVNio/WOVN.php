@@ -5,6 +5,7 @@ require_once 'test/helpers/EnvFactory.php';
 
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
+use Wovnio\Wovnphp\Environment;
 
 class StoreAndHeadersFactory
 {
@@ -19,9 +20,10 @@ class StoreAndHeadersFactory
     public static function get($env, $settings = array())
     {
         $store = new Store($settings);
-        $headers = new Headers($env, $store);
+        $envWrapper = new Environment($env, $store);
+        $headers = new Headers($store, $envWrapper);
 
-        return array($store, $headers);
+        return array($store, $headers, $envWrapper);
     }
 
     private static function buildStoreOptions($options)

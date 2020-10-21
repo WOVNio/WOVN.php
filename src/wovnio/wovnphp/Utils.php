@@ -15,7 +15,8 @@ class Utils
         }
 
         $store = Store::createFromFile($file);
-        $headers = new Headers($env, $store);
+        $envWrapper = new Environment($env, $store);
+        $headers = new Headers($store, $envWrapper);
         return array($store, $headers);
     }
 

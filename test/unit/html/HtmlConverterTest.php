@@ -13,7 +13,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         libxml_use_internal_errors(true);
         $html = file_get_contents('test/fixtures/real_html/stack_overflow.html');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -34,7 +34,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         libxml_use_internal_errors(true);
         $html = file_get_contents('test/fixtures/real_html/youtube.html');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -55,7 +55,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         libxml_use_internal_errors(true);
         $html = file_get_contents('test/fixtures/real_html/yelp.html');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -76,7 +76,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         libxml_use_internal_errors(true);
         $html = file_get_contents('test/fixtures/real_html/yahoo_jp.html');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -100,7 +100,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -118,7 +118,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn',
             'url_pattern_name' => 'path'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -135,7 +135,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'custom_domain_langs' => array('en' => array('url' => 'testsite.com'), 'fr' => array('url' => 'testsite.com/fr')),
             'url_pattern_name' => 'custom_domain'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, array('HTTP_HOST' => 'testsite.com'));
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, array('HTTP_HOST' => 'testsite.com'));
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -161,7 +161,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn',
             'url_pattern_name' => 'path'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -183,7 +183,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
@@ -205,7 +205,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/custom_en/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
@@ -227,7 +227,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/news/blog/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/news/blog/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
@@ -248,7 +248,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/custom_en/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -270,7 +270,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/ja/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/custom_en/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('en'));
@@ -292,7 +292,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/custom_en/blog/news/pages.html'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/ja/blog/news/pages.html';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -308,7 +308,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn',
             'url_pattern_name' => 'query'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?wovn=ja';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -325,7 +325,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn',
             'url_pattern_name' => 'query'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?wovn=ja';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -341,7 +341,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'query',
             'lang_param_name' => 'lan'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://my-site.com/?lan=ja';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -357,7 +357,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'wovn',
             'url_pattern_name' => 'subdomain'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://ja.my-site.com/';
         $generated_href = TestUtils::invokeMethod($converter, 'buildHrefLang', array('ja'));
@@ -380,7 +380,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'HTTP_HOST' => 'custom_en.my-site.com'
         );
 
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $this->assertEquals('/pages.html', $headers->pathname);
         $this->assertEquals('en', $headers->requestLang());
         $this->assertEquals('custom_en.my-site.com', $headers->host);
@@ -397,7 +397,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(true);
 
@@ -412,7 +412,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -431,7 +431,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -446,7 +446,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -457,7 +457,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testInsertSnippetAndHreflangTagsWithEmptySupportedLangs()
     {
         $html = '<html><body><a>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -468,7 +468,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testInsertSnippetAndHreflangTagsWithHead()
     {
         $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -483,7 +483,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array(),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -500,7 +500,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'query',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -517,7 +517,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -534,7 +534,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'subdomain',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -545,7 +545,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithEmptySupportedLangs()
     {
         $html = '<html><body><a>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -556,7 +556,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithHead()
     {
         $html = '<html><head><title>TITLE</title></head><body><a>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -571,7 +571,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array(),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -582,8 +582,8 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithoutEncoding()
     {
         $html = mb_convert_encoding('<html>こんにちは</html>', 'SJIS');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -597,7 +597,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         foreach (HtmlConverter::$supportedEncodings as $encoding) {
             $html = mb_convert_encoding('<html>こんにちは</html>', $encoding);
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
             $converter = new HtmlConverter($html, $encoding, $store->settings['project_token'], $store, $headers);
             list($translated_html) = $converter->convertToAppropriateBodyForApi();
 
@@ -610,7 +610,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithWovnIgnore()
     {
         $html = '<html><body><a wovn-ignore>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
         $keys = $marker->keys();
@@ -622,7 +622,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithDataWovnIgnore()
     {
         $html = '<html><body><a data-wovn-ignore>hello</a></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
         $keys = $marker->keys();
@@ -639,7 +639,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             'ignore_class' => array('ignore'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeCustomIgnoreClass');
         $keys = $marker->keys();
@@ -651,7 +651,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithMultipleWovnIgnore()
     {
         $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
         $keys = $marker->keys();
@@ -663,7 +663,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithForm()
     {
         $html = '<html><body><form>hello<input type="button" value="click"></form>world</body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
         $keys = $marker->keys();
@@ -675,7 +675,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithMultipleForm()
     {
         $html = '<html><body><form>hello<input type="button" value="click"></form>world<form>hello2<input type="button" value="click2"></form></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
         $keys = $marker->keys();
@@ -687,7 +687,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithFormAndWovnIgnore()
     {
         $html = '<html><body><form wovn-ignore>hello<input type="button" value="click"></form>world</body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
         $keys = $marker->keys();
@@ -699,7 +699,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithHiddenInput()
     {
         $html = '<html><body><input type="hidden" value="aaaaa">world</body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
         $keys = $marker->keys();
@@ -711,7 +711,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithHiddenInputMultipleTimes()
     {
         $html = '<html><body><input type="hidden" value="aaaaa">world<input type="hidden" value="aaaaa"></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
         $keys = $marker->keys();
@@ -723,7 +723,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithScript()
     {
         $html = '<html><body><script>console.log("hello")</script>world</body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
         $keys = $marker->keys();
@@ -735,7 +735,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithMultipleScript()
     {
         $html = '<html><head><script>console.log("hello")</script></head><body>world<script>console.log("hello2")</script></body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
         $keys = $marker->keys();
@@ -747,7 +747,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     public function testConvertToAppropriateBodyForApiWithComment()
     {
         $html = '<html><body>hello<!-- backend-wovn-ignore    -->ignored <!--/backend-wovn-ignore-->  world</body></html>';
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeRemoveBackendWovnIgnoreComment($converter, $html);
         $keys = $marker->keys();
@@ -767,7 +767,7 @@ ignored2
 <!--/backend-wovn-ignore-->
 bye
 </body></html>";
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeRemoveBackendWovnIgnoreComment($converter, $html);
         $keys = $marker->keys();
@@ -793,7 +793,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -814,7 +814,7 @@ bye
             'custom_lang_aliases' => array('zh-CHS' => 'custom_simple'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -835,7 +835,7 @@ bye
             'custom_lang_aliases' => array('en' => 'english'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -856,7 +856,7 @@ bye
             'custom_lang_aliases' => array('en' => 'english'),
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -876,7 +876,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -896,7 +896,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -916,7 +916,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -936,7 +936,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -956,7 +956,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -975,7 +975,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -995,7 +995,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1015,7 +1015,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1034,7 +1034,7 @@ bye
             'url_pattern_name' => 'query',
             'lang_param_name' => 'language'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1054,7 +1054,7 @@ bye
             'url_pattern_name' => 'path',
             'lang_param_name' => 'wovn'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1075,7 +1075,7 @@ bye
             'lang_param_name' => 'wovn'
         );
         $env = array('REQUEST_URI' => '/dir1/dir2/');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1096,7 +1096,7 @@ bye
             'lang_param_name' => 'wovn',
             'no_index_langs' => array('en')
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1117,7 +1117,7 @@ bye
             'lang_param_name' => 'wovn',
             'no_index_langs' => array('en', 'cs', 'fr')
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1137,7 +1137,7 @@ bye
             'site_prefix_path' => '/dir1/dir2/'
         );
         $env = array('REQUEST_URI' => '/dir1/dir2/');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 
@@ -1158,7 +1158,7 @@ bye
             'site_prefix_path' => '/dir1/dir2/'
         );
         $env = array('REQUEST_URI' => '/dir1/dir2/');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html) = $converter->insertSnippetAndHreflangTags(false);
 

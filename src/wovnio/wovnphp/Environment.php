@@ -12,6 +12,7 @@ class Environment
         $this->store = $store;
     }
 
+    // TODO: Only exposed for tests
     public function getEnv() {
         return $this->env;
     }
