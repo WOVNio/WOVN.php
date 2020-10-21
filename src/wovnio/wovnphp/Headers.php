@@ -19,6 +19,7 @@ class Headers
     private $pathLang;
     private $query;
     private $browserLang;
+    private $cookieLang;
 
     /**
      * Constructor of the Headers class
@@ -31,6 +32,7 @@ class Headers
     {
         $this->env =& $env;
         $this->store =& $store;
+        $this->cookieLang = new CookieLang($this, $store);
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {
@@ -113,7 +115,7 @@ class Headers
      *
      * @return String The path lang
      */
-    public function computePathLang()
+    public function  computePathLang()
     {
         if ($this->pathLang === null) {
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
@@ -145,7 +147,10 @@ class Headers
                     $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
                 }
             }
-            $this->pathLang = is_null($lang_code) ? '' : $lang_code;
+//            $cookieLang = CookieLang::getCookieLang();
+            $pathLang = is_null($lang_code) ? '' : $lang_code;
+//            $this->pathLang = $cookieLang ? $cookieLang : $pathLang;
+            $this->pathLang = $pathLang;
         }
         return $this->pathLang;
     }
@@ -264,17 +269,21 @@ class Headers
         $lang = $this->computePathLang();
 
         if ($lang && strlen($lang) > 0) {
-            if (!headers_sent()) {
-                $locationHeaders = array('location', 'Location');
-                $responseHeaders = $this->getResponseHeaders();
+            if (headers_sent()) {
+                return;
+            }
+            $locationHeaders = array('location', 'Location');
+            $responseHeaders = $this->getResponseHeaders();
 
-                foreach ($locationHeaders as $locationHeader) {
-                    if (array_key_exists($locationHeader, $responseHeaders)) {
-                        $redirectLocation = $responseHeaders[$locationHeader];
+            foreach ($locationHeaders as $locationHeader) {
+                if (array_key_exists($locationHeader, $responseHeaders)) {
+                    $redirectLocation = $responseHeaders[$locationHeader];
+                    if ($this->cookieLang->computeRedirectUrl($redirectLocation)) {
+                        $newLocation = $this->cookieLang->computeRedirectUrl($redirectLocation);
+                    } else {
                         $newLocation = Url::addLangCode($redirectLocation, $this->store, $lang, $this);
-
-                        header($locationHeader . ': ' . $newLocation);
                     }
+                    header($locationHeader . ': ' . $newLocation);
                 }
             }
         }
