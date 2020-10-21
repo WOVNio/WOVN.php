@@ -29,7 +29,7 @@ if (!$store->isValid()) {
 }
 
 // Make it available for user application
-$_ENV['WOVN_TARGET_LANG'] = $headers->lang();
+$_ENV['WOVN_TARGET_LANG'] = $headers->requestLang();
 $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
