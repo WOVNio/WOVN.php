@@ -15,7 +15,7 @@ class Utils
         }
 
         $store = Store::createFromFile($file);
-        $headers = new Headers($env, $store);
+        $headers = new Headers($env, $store, $_COOKIE);
         return array($store, $headers);
     }
 

@@ -47,9 +47,8 @@ if (!Utils::isIgnoredPath($uri, $store)) {
     ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
         $cookieLang = new CookieLang($headers, $store);
         if ($cookieLang->shouldRedirect()) {
-            $redirectDebug = $cookieLang->computeRedirectUrl();
             // this carries an implied HTTP 302
-            header("Location: " . $cookieLang->computeRedirectUrl());
+            header("Location: " . $headers->computeRedirectUrl());
         }
         $headers->responseOut();
 

@@ -19,6 +19,7 @@ class Headers
     private $pathLang;
     private $query;
     private $browserLang;
+    private $cookies;
     private $cookieLang;
 
     /**
@@ -26,12 +27,14 @@ class Headers
      *
      * @param array &$env Contains the _SERVER env variable
      * @param Store &$store The store containing user settings
+     * @param array $cookies &$cookies Contains the _COOKIE env variable
      * @return void
      */
-    public function __construct(&$env, &$store)
+    public function __construct(&$env, &$store, $cookies)
     {
         $this->env =& $env;
         $this->store =& $store;
+        $this->cookies = $cookies;
         $this->cookieLang = new CookieLang($this, $store);
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
@@ -147,9 +150,7 @@ class Headers
                     $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
                 }
             }
-//            $cookieLang = CookieLang::getCookieLang();
             $pathLang = is_null($lang_code) ? '' : $lang_code;
-//            $this->pathLang = $cookieLang ? $cookieLang : $pathLang;
             $this->pathLang = $pathLang;
         }
         return $this->pathLang;
@@ -267,25 +268,38 @@ class Headers
     public function responseOut()
     {
         $lang = $this->computePathLang();
+        if (!$lang || strlen($lang)==0) {
+            return;
+        }
 
-        if ($lang && strlen($lang) > 0) {
-            if (headers_sent()) {
-                return;
-            }
-            $locationHeaders = array('location', 'Location');
-            $responseHeaders = $this->getResponseHeaders();
+        if (headers_sent()) {
+            return;
+        }
 
-            foreach ($locationHeaders as $locationHeader) {
-                if (array_key_exists($locationHeader, $responseHeaders)) {
-                    $redirectLocation = $responseHeaders[$locationHeader];
-                    if ($this->cookieLang->computeRedirectUrl($redirectLocation)) {
-                        $newLocation = $this->cookieLang->computeRedirectUrl($redirectLocation);
-                    } else {
-                        $newLocation = Url::addLangCode($redirectLocation, $this->store, $lang, $this);
-                    }
-                    header($locationHeader . ': ' . $newLocation);
-                }
+        $locationHeaders = array('location', 'Location');
+        $responseHeaders = $this->getResponseHeaders();
+        $redirectLocation = null;
+        $newLocation = null;
+
+        foreach ($locationHeaders as $locationHeader) {
+            if (array_key_exists($locationHeader, $responseHeaders)) {
+                $redirectLocation = $responseHeaders[$locationHeader];
             }
+        }
+
+        if ($redirectLocation) {
+            $newLocation = Url::addLangCode($redirectLocation, $this->store, $lang, $this);
+        }
+
+        if ($this->cookieLang->shouldRedirect()) {
+            $cookieLangRedirectLocation = $this->computeRedirectUrl();
+            if ($cookieLangRedirectLocation) {
+                $newLocation = $cookieLangRedirectLocation;
+            }
+        }
+
+        if ($newLocation) {
+            header($locationHeader . ': ' . $newLocation);
         }
     }
 
@@ -342,5 +356,23 @@ class Headers
             $originalURL = $originalURL . '?' . $this->query;
         }
         return $originalURL;
+    }
+
+    public function computeRedirectUrl()
+    {
+        $cookieLangCode = $this->cookieLang->getCookieLang();
+        $url = $this->urlKeepTrailingSlash;
+        if ($this->store->hasDefaultLangAlias()) {
+            $url = $this->removeLang($url, $this->store->defaultLang());
+            $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
+        } elseif ($cookieLangCode !== $this->store->defaultLang() || $this->store->settings['url_pattern_name'] === 'custom_domain') {
+            $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
+        }
+        return htmlentities($url);
+    }
+
+    public function getCookies()
+    {
+        return $this->cookies;
     }
 }
