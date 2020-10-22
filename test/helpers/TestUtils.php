@@ -30,7 +30,7 @@ class TestUtils
         file_put_contents('/etc/hosts', $hostFile);
     }
 
-    public static function fetchURL($url, $timeout = 3)
+    public static function fetchURL($url, $timeout = 3, $langCookie = null)
     {
         $return = new stdClass;
         $return->headers = array();
@@ -38,13 +38,19 @@ class TestUtils
         $return->error = null;
         $return->statusCode = null;
 
-        $http_context = stream_context_create(array(
+        $contextOptions = array(
             'http' => array(
                 'method' => 'GET',
                 'timeout' => $timeout,
                 'ignore_errors' => true,
             )
-        ));
+        );
+
+        if ($langCookie) {
+            $contextOptions['http']['header'] = "Cookie: wovn_selected_lang={$langCookie}";
+        }
+
+        $http_context = stream_context_create($contextOptions);
 
         $return->body = @file_get_contents($url, false, $http_context);
         $response_headers = $http_response_header;
@@ -56,6 +62,10 @@ class TestUtils
         foreach ($response_headers as $value) {
             if (preg_match('{([^:]+): (.+)}', $value, $match)) {
                 $return->headers[ $match[0] ] = $match[1];
+            }
+            $exploded = explode(':', $value, 2);
+            if (sizeof($exploded) == 2) {
+                $return->sensibleHeaders[trim($exploded[0])] = trim($exploded[1]);
             }
         }
 
