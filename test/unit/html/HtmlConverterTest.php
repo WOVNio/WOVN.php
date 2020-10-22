@@ -382,7 +382,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
         $this->assertEquals('/pages.html', $headers->pathname);
-        $this->assertEquals('en', $headers->lang());
+        $this->assertEquals('en', $headers->requestLang());
         $this->assertEquals('custom_en.my-site.com', $headers->host);
         $converter = new HtmlConverter($html, 'UTF-8', $store->settings['project_token'], $store, $headers);
         $expected_href = 'http://ja.my-site.com/pages.html';

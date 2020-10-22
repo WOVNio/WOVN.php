@@ -16,7 +16,7 @@ class Headers
 
     private $env;
     private $store;
-    private $pathLang;
+    private $urlLang;
     private $query;
     private $browserLang;
     private $cookies;
@@ -53,10 +53,10 @@ class Headers
 
         $this->host = $this->originalHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
-            $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->lang()));
+            $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->requestLang()));
             $this->host = $intermediateHost[1];
         } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
-            $this->host = $this->removeLang($this->host, $this->lang());
+            $this->host = $this->removeLang($this->host, $this->requestLang());
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
@@ -67,10 +67,10 @@ class Headers
         $this->pathname = $exploded[0];
         $this->originalPath = $this->pathname;
         if ($store->settings['url_pattern_name'] === 'path' || $store->settings['url_pattern_name'] === 'custom_domain') {
-            $this->pathname = $this->removeLang($exploded[0], $this->lang());
+            $this->pathname = $this->removeLang($exploded[0], $this->requestLang());
         }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
-        $this->query = $this->removeLang($this->query, $this->lang());
+        $this->query = $this->removeLang($this->query, $this->requestLang());
         $urlQuery = strlen($this->query) > 0 ? '?' . $this->query : '';
 
         $this->pathnameKeepTrailingSlash = $this->pathname;
@@ -90,37 +90,27 @@ class Headers
     }
 
     /**
-     * Public function returning an url array with protocol, host, pathname
-     *
-     * @return array The url array
-     */
-    public function getUrlArray()
-    {
-        $url = array();
-        $url['protocol'] = $this->protocol;
-        $url['host'] = $this->host;
-        $url['pathname'] = $this->pathname;
-        return $url;
-    }
-
-    /**
-     * Public function returns the pathLang if exists or the default lang in the store
+     * Returns the language code derived from the request, with fallback to default lang
      *
      * @return String The lang
      */
-    public function lang()
+    public function requestLang()
     {
-        return ($this->computePathLang() && strlen($this->computePathLang()) > 0) ? $this->computePathLang() : $this->store->settings['default_lang'];
+        $urlLang = $this->urlLanguage();
+
+        return ($urlLang && strlen($urlLang) > 0)
+            ? $urlLang
+            : $this->store->settings['default_lang'];
     }
 
     /**
-     * Public function returning the pathLang
+     * Returns the language explicitly specified in the request URL
      *
-     * @return String The path lang
+     * @return String lang code
      */
-    public function computePathLang()
+    public function urlLanguage()
     {
-        if ($this->pathLang === null) {
+        if ($this->urlLang === null) {
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
                 $server_name = $this->env['HTTP_X_FORWARDED_HOST'];
             } else {
@@ -150,10 +140,9 @@ class Headers
                     $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
                 }
             }
-            $pathLang = is_null($lang_code) ? '' : $lang_code;
-            $this->pathLang = $pathLang;
+            $this->urlLang = is_null($lang_code) ? '' : $lang_code;
         }
-        return $this->pathLang;
+        return $this->urlLang;
     }
 
     /**
@@ -267,8 +256,8 @@ class Headers
      */
     public function responseOut()
     {
-        $lang = $this->computePathLang();
-        if (!$lang || strlen($lang)==0) {
+        $urlLanguage = $this->urlLanguage();
+        if (!$urlLanguage || strlen($urlLanguage)==0) {
             return;
         }
 
@@ -288,7 +277,7 @@ class Headers
         }
 
         if ($redirectLocation) {
-            $newLocation = Url::addLangCode($redirectLocation, $this->store, $lang, $this);
+            $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
         }
 
         if ($this->cookieLang->shouldRedirect()) {
@@ -329,7 +318,7 @@ class Headers
     public function removeLang($uri, $lang = null)
     {
         if ($lang === null) {
-            $lang = $this->computePathLang();
+            $lang = $this->urlLanguage();
         }
 
         $lang_code = $this->store->convertToCustomLangCode($lang);
@@ -346,7 +335,7 @@ class Headers
     {
         $url = $this->env['REQUEST_URI'];
 
-        return $this->removeLang($url, $this->lang());
+        return $this->removeLang($url, $this->requestLang());
     }
 
     public function constructOriginalURL()

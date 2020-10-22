@@ -31,6 +31,6 @@ class CookieLang
         if (!$this->store->settings['use_cookie_lang']) {
             return false;
         }
-        return self::getCookieLang() && ($this->header->lang() != self::getCookieLang()) && $this->header->lang() === $this->store->defaultLang();
+        return self::getCookieLang() && ($this->header->requestLang() != self::getCookieLang()) && $this->header->requestLang() === $this->store->defaultLang();
     }
 }

@@ -47,7 +47,7 @@ class HtmlConverter
         $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
         $this->html = $this->insertHreflangTags($this->html);
 
-        if ($this->isNoindexLang($this->headers->lang())) {
+        if ($this->isNoindexLang($this->headers->requestLang())) {
             $this->html = $this->insertNoindex($this->html);
         }
 
@@ -195,7 +195,7 @@ class HtmlConverter
         $data_wovnio_params = array();
         $data_wovnio_params['key'] = $this->token;
         $data_wovnio_params['backend'] = 'true';
-        $data_wovnio_params['currentLang'] = $this->headers->lang();
+        $data_wovnio_params['currentLang'] = $this->headers->requestLang();
         $data_wovnio_params['defaultLang'] = $this->store->settings['default_lang'];
         $data_wovnio_params['urlPattern'] = $this->store->settings['url_pattern_name'];
         $data_wovnio_params['langCodeAliases'] = json_encode($this->store->settings['custom_lang_aliases']);
