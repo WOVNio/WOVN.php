@@ -118,7 +118,7 @@ class Headers
      *
      * @return String The path lang
      */
-    public function  computePathLang()
+    public function computePathLang()
     {
         if ($this->pathLang === null) {
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {

@@ -3,7 +3,6 @@
 
 namespace Wovnio\Wovnphp;
 
-
 class CookieLang
 {
     const COOKIE_LANG_NAME = 'wovn_selected_lang';
@@ -27,7 +26,8 @@ class CookieLang
         return null;
     }
 
-    public function shouldRedirect() {
+    public function shouldRedirect()
+    {
         if (!$this->store->settings['use_cookie_lang']) {
             return false;
         }
