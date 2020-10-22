@@ -278,7 +278,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         };
     }
 
-    public function testPathLangWithPathPattern()
+    public function testUrlLanguageWithPathPattern()
     {
         $settings = array('url_pattern_name' => 'path');
         $env = array('SERVER_NAME' => 'wovn.io');
@@ -297,11 +297,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
-            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+            $this->assertEquals($expectedLangCode, $headers->urlLanguage());
         };
     }
 
-    public function testPathLangWithQueryPattern()
+    public function testUrlLanguageWithQueryPattern()
     {
         $settings = array('url_pattern_name' => 'query');
         $env = array('SERVER_NAME' => 'wovn.io');
@@ -317,11 +317,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('query', $store->settings['url_pattern_name']);
-            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+            $this->assertEquals($expectedLangCode, $headers->urlLanguage());
         };
     }
 
-    public function testPathLangWithSubdomainPattern()
+    public function testUrlLanguageWithSubdomainPattern()
     {
 
         $settings = array('url_pattern_name' => 'subdomain');
@@ -339,11 +339,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
-            $this->assertEquals($expectedLangCode, $headers->computePathLang());
+            $this->assertEquals($expectedLangCode, $headers->urlLanguage());
         };
     }
 
-    public function testPathLangWithCustomDomainPattern()
+    public function testUrlLanguageWithCustomDomainPattern()
     {
         $custom_domain_langs = array(
             'en' => array('url' => 'my-site.com'),
@@ -384,11 +384,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
-            $this->assertEquals($expectedLangCode, $headers->computePathLang(), "env -> [" . json_encode($env) . "] | lang -> [${expectedLangCode}]");
+            $this->assertEquals($expectedLangCode, $headers->urlLanguage(), "env -> [" . json_encode($env) . "] | lang -> [${expectedLangCode}]");
         };
     }
 
-    public function testPathLangWithSubdomainAndUseProxyTrue()
+    public function testUrlLanguageWithSubdomainAndUseProxyTrue()
     {
         $settings = array(
             'url_pattern_name' => 'subdomain',
@@ -402,11 +402,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
+        $pathlang = $headers->urlLanguage();
         $this->assertEquals('en', $pathlang);
     }
 
-    public function testPathLangWithPathAndUseProxyTrue()
+    public function testUrlLanguageWithPathAndUseProxyTrue()
     {
         $settings = array(
             'url_pattern_name' => 'path',
@@ -420,11 +420,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
+        $pathlang = $headers->urlLanguage();
         $this->assertEquals('sv', $pathlang);
     }
 
-    public function testPathLangWithSubdomainAndUseProxyFalse()
+    public function testUrlLanguageWithSubdomainAndUseProxyFalse()
     {
         $settings = array(
             'url_pattern_name' => 'subdomain',
@@ -438,11 +438,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
+        $pathlang = $headers->urlLanguage();
         $this->assertEquals('ja', $pathlang);
     }
 
-    public function testPathLangWithPathAndUseProxyFalse()
+    public function testUrlLanguageWithPathAndUseProxyFalse()
     {
         $settings = array(
             'url_pattern_name' => 'path',
@@ -456,11 +456,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $pathlang = $headers->computePathLang();
+        $pathlang = $headers->urlLanguage();
         $this->assertEquals('ko', $pathlang);
     }
 
-    public function testPathLangWithUseProxyTrueButNoForwardedHost()
+    public function testUrlLanguageWithUseProxyTrueButNoForwardedHost()
     {
         $settings = array(
             'url_pattern_name' => 'subdomain',
@@ -468,7 +468,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings);
 
-        $pathlang = $headers->computePathLang();
+        $pathlang = $headers->urlLanguage();
         $this->assertEquals('ja', $pathlang);
     }
 
@@ -611,7 +611,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
-        $this->assertEquals('ja', $headers->computePathLang());
+        $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
@@ -636,7 +636,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
-        $this->assertEquals('ja', $headers->computePathLang());
+        $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
@@ -654,7 +654,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('ja', $headers->computePathLang());
+        $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
@@ -671,7 +671,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
-        $this->assertEquals('ja', $headers->computePathLang());
+        $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
