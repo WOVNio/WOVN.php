@@ -35,7 +35,7 @@ class Headers
         $this->env =& $env;
         $this->store =& $store;
         $this->cookies = $cookies;
-        $this->cookieLang = new CookieLang($this, $store);
+        $this->cookieLang = new CookieLang($this);
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {
@@ -117,7 +117,6 @@ class Headers
                 $server_name = $this->env['SERVER_NAME'];
             }
             // get the lang in the path
-            $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
                 $request_uri = $this->env['HTTP_X_FORWARDED_REQUEST_URI'];
             } else {
@@ -280,7 +279,7 @@ class Headers
             $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
         }
 
-        if ($this->cookieLang->shouldRedirect()) {
+        if ($this->shouldRedirect()) {
             $cookieLangRedirectLocation = $this->computeRedirectUrl();
             if ($cookieLangRedirectLocation) {
                 $newLocation = $cookieLangRedirectLocation;
@@ -363,5 +362,13 @@ class Headers
     public function getCookies()
     {
         return $this->cookies;
+    }
+
+    public function shouldRedirect()
+    {
+        if (!$this->store->settings['use_cookie_lang']) {
+            return false;
+        }
+        return $this->cookieLang->getCookieLang() && ($this->requestLang() != $this->cookieLang->getCookieLang()) && $this->requestLang() === $this->store->defaultLang();
     }
 }

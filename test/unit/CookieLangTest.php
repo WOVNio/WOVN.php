@@ -51,56 +51,42 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
     public function testShouldNotRedirectNonSourceToNonSourceQueryPattern()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'fr');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(false, $cookieLang->shouldRedirect());
+        $this->assertEquals(false, $headers->shouldRedirect());
     }
 
     public function testShouldNotRedirectSameLangQueryPattern()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'ja');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(false, $cookieLang->shouldRedirect());
+        $this->assertEquals(false, $headers->shouldRedirect());
     }
 
     public function testShouldNotRedirectFeatureDisabled()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'ja', false);
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(false, $cookieLang->shouldRedirect());
+        $this->assertEquals(false, $headers->shouldRedirect());
     }
 
     public function testShouldRedirectDefaultLangQueryPattern()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'en');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(true, $cookieLang->shouldRedirect());
+        $this->assertEquals(true, $headers->shouldRedirect());
     }
 
     public function testShouldNotRedirectNonSourceToNonSourcePathPattern()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'fr');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(false, $cookieLang->shouldRedirect());
+        $this->assertEquals(false, $headers->shouldRedirect());
     }
 
     public function testShouldNotRedirectSameLangPathPattern()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'ja');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(false, $cookieLang->shouldRedirect());
+        $this->assertEquals(false, $headers->shouldRedirect());
     }
 
     public function testShouldRedirectDefaultLangPathPattern()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'en');
-        $cookieLang = new CookieLang($headers, $store);
-
-        $this->assertEquals(true, $cookieLang->shouldRedirect());
+        $this->assertEquals(true, $headers->shouldRedirect());
     }
 }
