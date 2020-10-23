@@ -316,8 +316,8 @@ NOT SUPPORTED
 ```json
 {
   "custom_domain_langs": {
-    "en": { "url": "www.mysite.com/english" },
-    "ja": { "url": "www.mysite.com/" },
+    "en": { "url": "www.site.com/english" },
+    "ja": { "url": "www.site.co.jp/" },
     "fr": { "url": "fr.site.co.jp/" }
   }
 }
