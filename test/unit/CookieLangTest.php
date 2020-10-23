@@ -48,43 +48,43 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         return StoreAndHeadersFactory::fromFixture('default', $settings, $env, $cookies);
     }
 
-    public function testRequestToTargetLang_WithTargetCookie_QueryPattern_ShouldNotRedirect()
+    public function testRequestToTargetLangWithTargetCookieQueryPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'fr');
         $this->assertEquals(false, $headers->shouldRedirect());
     }
 
-    public function testRequestToSameLang_WithCookie_QueryPattern_ShouldNotRedirect()
+    public function testRequestToSameLangWithCookieQueryPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'ja');
         $this->assertEquals(false, $headers->shouldRedirect());
     }
 
-    public function testFeatureDisabled_ShouldNotRedirect()
+    public function testFeatureDisabledShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'ja', false);
         $this->assertEquals(false, $headers->shouldRedirect());
     }
 
-    public function testRequestToDefaultLang_WithTargetCookie_ShouldRedirect()
+    public function testRequestToDefaultLangWithTargetCookieShouldRedirect()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'en');
         $this->assertEquals(true, $headers->shouldRedirect());
     }
 
-    public function testRequestToTargetLang_WithTargetCookie_PathPattern_ShouldNotRedirect()
+    public function testRequestToTargetLangWithTargetCookiePathPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'fr');
         $this->assertEquals(false, $headers->shouldRedirect());
     }
 
-    public function testRequestToSameLang_WithCookie_PathPattern_ShouldNotRedirect()
+    public function testRequestToSameLangWithCookiePathPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'ja');
         $this->assertEquals(false, $headers->shouldRedirect());
     }
 
-    public function testRequestToDefaultLang_WithTargetCookie_PathPattern_ShouldRedirect()
+    public function testRequestToDefaultLangWithTargetCookiePathPatternShouldRedirect()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'en');
         $this->assertEquals(true, $headers->shouldRedirect());
