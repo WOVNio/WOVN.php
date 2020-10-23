@@ -490,7 +490,7 @@ wovn_diagnostics_password = wovn_diagnostics_password
 When set to true, WOVN.php will attempt to redirect a request to the default language to the language set in the `wovn_selected_lang` cookie. No redirect will happen if no such cookie is set.
 
 ```
-use_cookie_lang = ture
+use_cookie_lang = true
 ```
 
 ## 4. Environment Variable
