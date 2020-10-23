@@ -350,13 +350,8 @@ class Headers
     {
         $cookieLangCode = $this->cookieLang->getCookieLang();
         $url = $this->urlKeepTrailingSlash;
-        if ($this->store->hasDefaultLangAlias()) {
-            $url = $this->removeLang($url, $this->store->defaultLang());
-            $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
-        } elseif ($cookieLangCode !== $this->store->defaultLang() || $this->store->settings['url_pattern_name'] === 'custom_domain') {
-            $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
-        }
-        return htmlentities($url);
+        $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
+        return $url;
     }
 
     public function getCookies()
