@@ -65,4 +65,34 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(302, $result->statusCode);
         self::assertEquals('http://localhost/ja/index.html', $result->sensibleHeaders['Location']);
     }
+
+    public function testShouldNotRedirectDefaultLangPathPattern()
+    {
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'path',
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'default_lang' => 'en',
+            'use_cookie_lang' => true
+        ));
+        $result = TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.html', 3, 'ja');
+
+        self::assertEquals(200, $result->statusCode);
+    }
+
+    public function testShouldNotRedirectDefaultLangToOtherLangPathPattern()
+    {
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'path',
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'default_lang' => 'en',
+            'use_cookie_lang' => true
+        ));
+        $result = TestUtils::fetchURL('http://localhost/ja/index.html', 3, 'en');
+
+        self::assertEquals(200, $result->statusCode);
+    }
 }
