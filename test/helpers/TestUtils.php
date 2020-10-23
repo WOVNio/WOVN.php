@@ -30,13 +30,16 @@ class TestUtils
         file_put_contents('/etc/hosts', $hostFile);
     }
 
-    public static function fetchURL($url, $timeout = 3, $langCookie = null)
+    public static function fetchURL($url, $timeout = null, $cookieOverwrite = null)
     {
         $return = new stdClass;
         $return->headers = array();
         $return->body = null;
         $return->error = null;
         $return->statusCode = null;
+        if ($timeout === null) {
+            $timeout = 3;
+        }
 
         $contextOptions = array(
             'http' => array(
@@ -46,8 +49,14 @@ class TestUtils
             )
         );
 
-        if ($langCookie) {
-            $contextOptions['http']['header'] = "Cookie: wovn_selected_lang={$langCookie}";
+        if ($cookieOverwrite) {
+            $cookies = array();
+            foreach ($cookieOverwrite as $name => $value) {
+                $cookieString = join('=', array($name, $value));
+                array_push($cookies, $cookieString);
+            }
+            $cookieString = join(';', $cookies);
+            $contextOptions['http']['header'] = "Cookie: {$cookieString}";
         }
 
         $http_context = stream_context_create($contextOptions);

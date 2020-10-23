@@ -34,7 +34,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         TestUtils::cleanUpDirectory($this->docRoot);
     }
 
-    public function testShould302RedirectDefaultLangQueryPattern()
+    public function testRequestToDefaultLang_QueryPattern_WithCookie_ShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -44,13 +44,13 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
             'default_lang' => 'en',
             'use_cookie_lang' => true
         ));
-        $result = TestUtils::fetchURL('http://localhost/index.html', 3, 'ja');
+        $result = TestUtils::fetchURL('http://localhost/index.html', 3, array('wovn_selected_lang' => 'ja'));
 
         self::assertEquals(302, $result->statusCode);
         self::assertEquals('http://localhost/index.html?wovn=ja', $result->sensibleHeaders['Location']);
     }
 
-    public function testShould302RedirectDefaultLangPathPattern()
+    public function testRequestToDefaultLang_PathPattern_WithCookie_ShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -60,13 +60,13 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
             'default_lang' => 'en',
             'use_cookie_lang' => true
         ));
-        $result = TestUtils::fetchURL('http://localhost/index.html', 3, 'ja');
+        $result = TestUtils::fetchURL('http://localhost/index.html', null, array('wovn_selected_lang' => 'ja'));
 
         self::assertEquals(302, $result->statusCode);
         self::assertEquals('http://localhost/ja/index.html', $result->sensibleHeaders['Location']);
     }
 
-    public function testShouldNotRedirectDefaultLangPathPattern()
+    public function testRequestToTargetLang_WithCookie_ShouldNotRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -76,12 +76,12 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
             'default_lang' => 'en',
             'use_cookie_lang' => true
         ));
-        $result = TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.html', 3, 'ja');
+        $result = TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.html', null, array('wovn_selected_lang' => 'ja'));
 
         self::assertEquals(200, $result->statusCode);
     }
 
-    public function testShouldNotRedirectDefaultLangToOtherLangPathPattern()
+    public function testRequestToTargetLang_WithDefaultCookie_ShouldNotRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -91,7 +91,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
             'default_lang' => 'en',
             'use_cookie_lang' => true
         ));
-        $result = TestUtils::fetchURL('http://localhost/ja/index.html', 3, 'en');
+        $result = TestUtils::fetchURL('http://localhost/ja/index.html', null, array('wovn_selected_lang' => 'en'));
 
         self::assertEquals(200, $result->statusCode);
     }
