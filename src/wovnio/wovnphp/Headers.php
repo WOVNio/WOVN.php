@@ -34,7 +34,7 @@ class Headers
     {
         $this->env =& $env;
         $this->store =& $store;
-        $this->cookieLang = new CookieLang($this, $cookies);
+        $this->cookieLang = new CookieLang($cookies);
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {

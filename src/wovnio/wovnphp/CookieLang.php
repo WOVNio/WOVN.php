@@ -7,12 +7,10 @@ class CookieLang
 {
     const COOKIE_LANG_NAME = 'wovn_selected_lang';
 
-    private $header;
     private $cookieLang;
 
-    public function __construct($header, $cookies)
+    public function __construct($cookies)
     {
-        $this->header = $header;
         $this->loadCookieLang($cookies);
     }
 
