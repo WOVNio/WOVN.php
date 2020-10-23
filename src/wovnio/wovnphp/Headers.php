@@ -279,13 +279,6 @@ class Headers
             $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
         }
 
-        if ($this->shouldRedirect()) {
-            $cookieLangRedirectLocation = $this->computeRedirectUrl();
-            if ($cookieLangRedirectLocation) {
-                $newLocation = $cookieLangRedirectLocation;
-            }
-        }
-
         if ($newLocation) {
             header($locationHeader . ': ' . $newLocation);
         }

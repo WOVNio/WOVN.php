@@ -48,6 +48,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if ($headers->shouldRedirect()) {
             // this carries an implied HTTP 302
             header("Location: " . $headers->computeRedirectUrl());
+            exit();
         }
         $headers->responseOut();
 
