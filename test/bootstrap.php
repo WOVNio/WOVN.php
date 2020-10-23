@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 $_ENV['WOVN_ENV'] = 'development';
 
 require_once 'src/version.php';
+require_once 'src/wovnio/wovnphp/Environment.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Logger.php';

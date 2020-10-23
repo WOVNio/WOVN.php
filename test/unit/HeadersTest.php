@@ -33,7 +33,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
             'HTTP_X_FORWARDED_PROTO' => 'https'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('ja.wovn.io', $headers->originalHost);
         $this->assertEquals('ja.wovn.io', $headers->host);
@@ -47,7 +47,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
             'HTTP_X_FORWARDED_PROTO' => 'https'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('my-site.com', $headers->originalHost);
         $this->assertEquals('my-site.com', $headers->host);
@@ -57,7 +57,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testHeadersWithUseProxyTrueButNoForwardedInfo()
     {
         $settings = array('use_proxy' => 1);
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $this->assertEquals('my-site.com', $headers->originalHost);
         $this->assertEquals('my-site.com', $headers->host);
@@ -81,7 +81,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
@@ -106,7 +106,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('query', $store->settings['url_pattern_name']);
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
@@ -130,7 +130,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
@@ -205,7 +205,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
                 'REQUEST_URI' => $requestUri
             );
 
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
             $this->assertEquals($custom_domain_langs, $store->settings['custom_domain_langs']);
@@ -228,7 +228,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
@@ -251,7 +251,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
@@ -272,7 +272,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($beforeRemoveUrl, $afterRemoveUrl, $removeLang) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
         };
@@ -294,7 +294,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($requestUrl, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('path', $store->settings['url_pattern_name']);
             $this->assertEquals($expectedLangCode, $headers->urlLanguage());
@@ -314,7 +314,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($requestUrl, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('REQUEST_URI' => $requestUrl));
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('query', $store->settings['url_pattern_name']);
             $this->assertEquals($expectedLangCode, $headers->urlLanguage());
@@ -336,7 +336,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($serverName, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('SERVER_NAME' => $serverName));
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
             $this->assertEquals($expectedLangCode, $headers->urlLanguage());
@@ -381,7 +381,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         foreach ($testCases as $case) {
             list($env, $expectedLangCode) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+            list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
             $this->assertEquals($expectedLangCode, $headers->urlLanguage(), "env -> [" . json_encode($env) . "] | lang -> [${expectedLangCode}]");
@@ -400,7 +400,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->urlLanguage();
         $this->assertEquals('en', $pathlang);
@@ -418,7 +418,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->urlLanguage();
         $this->assertEquals('sv', $pathlang);
@@ -436,7 +436,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->urlLanguage();
         $this->assertEquals('ja', $pathlang);
@@ -454,7 +454,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $pathlang = $headers->urlLanguage();
         $this->assertEquals('ko', $pathlang);
@@ -466,7 +466,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'subdomain',
             'use_proxy' => 1
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings);
 
         $pathlang = $headers->urlLanguage();
         $this->assertEquals('ja', $pathlang);
@@ -479,11 +479,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => 1
         );
         $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
         $this->assertEquals('my-site.com', $he['SERVER_NAME']);
     }
@@ -495,11 +495,11 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => false
         );
         $env = array('HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('en.minimaltech.co', $he['HTTP_X_FORWARDED_HOST']);
     }
 
@@ -507,9 +507,9 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     {
         $settings = array('url_pattern_name' => 'path');
         $env = array('HTTP_X_FORWARDED_REQUEST_URI' => '/ja/forwarded/path/');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_path_request', $settings, $env);
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('/ja/mypage.php', $he['REQUEST_URI']);
         $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
         $this->assertEquals('/ja/index.php', $he['HTTP_REFERER']);
@@ -517,7 +517,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
         $this->assertEquals('/mypage.php', $he['REDIRECT_URL']);
         $this->assertEquals('/index.php', $he['HTTP_REFERER']);
@@ -527,16 +527,16 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     public function testRequestOutUrlPatternQuery()
     {
         $settings = array('url_pattern_name' => 'query');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_query_request', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_query_request', $settings);
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('?wovn=ja', $he['QUERY_STRING']);
         $this->assertEquals('/mypage.php?wovn=ja', $he['REQUEST_URI']);
         $this->assertEquals('/index.php?login=no&wovn=ja', $he['HTTP_REFERER']);
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('', $he['QUERY_STRING']);
         $this->assertEquals('/mypage.php', $he['REQUEST_URI']);
         $this->assertEquals('/index.php?login=no', $he['HTTP_REFERER']);
@@ -549,7 +549,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => false
         );
         $env = array('HTTPS' => 'on');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('https', $headers->protocol);
     }
@@ -561,7 +561,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => false
         );
         $env = array('HTTPS' => 'random');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('https', $headers->protocol);
     }
@@ -572,7 +572,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'url_pattern_name' => 'subdomain',
             'use_proxy' => false
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $this->assertEquals('http', $headers->protocol);
     }
@@ -584,7 +584,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => false
         );
         $env = array('HTTPS' => '');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('http', $headers->protocol);
     }
@@ -596,7 +596,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'use_proxy' => false
         );
         $env = array('HTTPS' => 'off');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('http', $headers->protocol);
     }
@@ -609,13 +609,13 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'ja.minimaltech.co',
             'REQUEST_URI' => '/dummy'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
         $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
         $this->assertEquals('minimaltech.co', $he['SERVER_NAME']);
     }
@@ -634,13 +634,13 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'ja.minimaltech.co',
             'REQUEST_URI' => '/dummy'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);
 
         $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('minimaltech.co', $he['HTTP_REFERER']);
         $this->assertEquals('minimaltech.co', $he['SERVER_NAME']);
     }
@@ -652,13 +652,13 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_REFERER' => 'minimaltech.co/ja',
             'REQUEST_URI' => '/ja/dummy'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
     }
 
@@ -669,13 +669,13 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'HTTP_REFERER' => 'minimaltech.co/?wovn=ja',
             'REQUEST_URI' => '/dummy?wovn=ja'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('ja', $headers->urlLanguage());
 
         $headers->requestOut();
 
-        $he = $headers->getEnv();
+        $he = $envWrapper->getEnv();
         $this->assertEquals('minimaltech.co/', $he['HTTP_REFERER']);
     }
 
@@ -693,7 +693,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'my-site.com',
             'REQUEST_URI' => 'http://my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -713,7 +713,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -735,7 +735,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -757,7 +757,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -780,7 +780,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -803,7 +803,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -826,7 +826,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr.my-site.com',
             'REQUEST_URI' => 'http://fr.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -852,7 +852,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'SERVER_NAME' => 'fr-test.my-site.com',
             'REQUEST_URI' => 'http://fr-test.my-site.com/test'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -871,7 +871,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -887,7 +887,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/fr/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -905,7 +905,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/fr/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -923,7 +923,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/fr/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -945,7 +945,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'site_prefix_path' => 'dir'
         );
         $env = array( 'REQUEST_URI' => '/dir/fr/requested');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -964,7 +964,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/fr/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -983,7 +983,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'query');
         $env = array( 'REQUEST_URI' => '/test');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -999,7 +999,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'query');
         $env = array( 'REQUEST_URI' => '/test?wovn=fr');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -1017,7 +1017,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'query');
         $env = array( 'REQUEST_URI' => '/test?wovn=fr');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -1035,7 +1035,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'query');
         $env = array( 'REQUEST_URI' => '/test?wovn=fr');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -1054,7 +1054,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
 
         $settings = array('url_pattern_name' => 'query');
         $env = array( 'REQUEST_URI' => '/test?wovn=fr');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $headers->responseOut();
         $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
@@ -1070,7 +1070,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'query' => array('page=')
         );
         $env = array( 'REQUEST_URI' => '/en/path?page=1&wovn=vi');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('/en/path?page=1', $headers->getDocumentURI());
     }
@@ -1079,7 +1079,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
     {
         $settings = array('url_pattern_name' => 'path');
         $env = array( 'REQUEST_URI' => '/en/path?page=1');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('/path?page=1', $headers->getDocumentURI());
     }
@@ -1096,7 +1096,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/en/path',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/forwarded/other/path'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('http://sub.domain.com/path', $headers->urlKeepTrailingSlash);
     }
@@ -1113,7 +1113,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'REQUEST_URI' => '/en/path',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/en/forwarded/other/path'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
         $this->assertEquals('http://main.com/forwarded/other/path', $headers->urlKeepTrailingSlash);
     }

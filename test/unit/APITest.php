@@ -9,6 +9,7 @@ require_once 'src/wovnio/wovnphp/Utils.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Url.php';
 require_once 'src/wovnio/wovnphp/Store.php';
+require_once 'src/wovnio/wovnphp/Environment.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Url.php';
@@ -89,7 +90,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslationURL()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
         $body = '<html></html>';
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body);
 
@@ -98,7 +99,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslate()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
@@ -121,7 +122,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testTranslateWithNoindexLangs()
     {
         $settings = array('no_index_langs' => array('en'));
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
@@ -141,7 +142,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testTranslateWithCustomLangAliases()
     {
         $settings = array('custom_lang_aliases' => array('ja' => 'ja-test'));
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $responsed_html = "<html><head></head><body><h1>response from html-swapper</h1></body></html>";
@@ -161,7 +162,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithWovnIgnore()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $original_html = '<html><head></head><body><h1 wovn-ignore>en</h1>hello</body></html>';
         $responsed_html = '<html><head></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
@@ -180,7 +181,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithDataWovnIgnore()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $original_html = '<html><head></head><body><h1 data-wovn-ignore>en</h1>hello</body></html>';
         $responsed_html = '<html><head></head><body><h1 data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
@@ -199,7 +200,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithScriptTag()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $original_html = '<html><head><script>console.log("test");</script></head><body><h1>en</h1>hello</body></html>';
         $responsed_html = '<html><head><script><!-- __wovn-backend-ignored-key-0 --></script></head><body><h1>fr</h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
@@ -218,7 +219,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithSchema()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
 
         $original_html = '<html>' .
         '<head><script type="application/ld+json">{ "text": "Hello" }</script></head>' .
@@ -244,7 +245,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testTranslateWithSaveMemoryBySendingWovnIgnoreContent()
     {
         $settings = array('save_memory_by_sending_wovn_ignore_content' => true);
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html>' .
         '<head><script>console.log("test");</script></head>' .
@@ -268,7 +269,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithErrorHandled()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
@@ -286,7 +287,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
     public function testTranslateWithEmptyResponse()
     {
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default');
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = null;
         $mock = $this->mockTranslationApi($response);
@@ -304,7 +305,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'disable_api_request_for_default_lang' => true,
             'default_lang' => 'en'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
@@ -322,7 +323,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'disable_api_request_for_default_lang' => false,
             'default_lang' => 'en'
         );
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
@@ -337,7 +338,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     public function testTranslateWithSitePrefixPath()
     {
         $settings = array('site_prefix_path' => 'dir1/dir2');
-        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        list($store, $headers, $envWrapper) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));

@@ -1,5 +1,8 @@
 <?php
+
 namespace Wovnio\Wovnphp;
+
+use Wovnio\Wovnphp\Environment;
 
 /**
  *  The Headers class contains the server variable environnement _SERVER
@@ -15,6 +18,7 @@ class Headers
     public $url;
 
     private $env;
+    private $envWrapper;
     private $store;
     private $urlLang;
     private $query;
@@ -25,39 +29,27 @@ class Headers
      *
      * @param array &$env Contains the _SERVER env variable
      * @param Store &$store The store containing user settings
+     * @param Environment $envWrapper $_SERVER env wrapper
      * @return void
      */
-    public function __construct(&$env, &$store)
+    public function __construct($store, $envWrapper)
     {
-        $this->env =& $env;
-        $this->store =& $store;
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
-            $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
-        } else {
-            if (isset($env['HTTPS']) && !empty($env['HTTPS']) && $env['HTTPS'] !== 'off') {
-                $this->protocol = 'https';
-            } else {
-                $this->protocol = 'http';
-            }
-        }
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_HOST'])) {
-            $this->originalHost = $env['HTTP_X_FORWARDED_HOST'];
-        } else {
-            $this->originalHost = $env['HTTP_HOST'];
-        }
+        $this->store = $store;
+        $this->envWrapper = $envWrapper;
 
+        $this->protocol = $this->envWrapper->getProtocol();
+        $this->originalHost = $this->envWrapper->getHost();
         $this->host = $this->originalHost;
+
         if ($store->settings['url_pattern_name'] === 'subdomain') {
             $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->requestLang()));
             $this->host = $intermediateHost[1];
         } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
             $this->host = $this->removeLang($this->host, $this->requestLang());
         }
-        if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
-        } else {
-            $clientRequestUri = $env['REQUEST_URI'];
-        }
+
+        $clientRequestUri = $this->envWrapper->getRequestUri();
+
         $exploded = explode('?', $clientRequestUri);
         $this->pathname = $exploded[0];
         $this->originalPath = $this->pathname;
@@ -72,16 +64,6 @@ class Headers
         $this->pathname = preg_replace('/\/$/', '', $this->pathname);
         $this->url = $this->protocol . '://' . $this->host . $this->pathname . $urlQuery;
         $this->urlKeepTrailingSlash = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash . $urlQuery;
-    }
-
-    /**
-     * Public function returning the env variable
-     *
-     * @return array The environment
-     */
-    public function getEnv()
-    {
-        return $this->env;
     }
 
     /**
@@ -106,20 +88,14 @@ class Headers
     public function urlLanguage()
     {
         if ($this->urlLang === null) {
-            if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-                $server_name = $this->env['HTTP_X_FORWARDED_HOST'];
-            } else {
-                $server_name = $this->env['SERVER_NAME'];
-            }
+            $server_name = $this->envWrapper->getServerName();
+
             // get the lang in the path
             $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
-            if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-                $request_uri = $this->env['HTTP_X_FORWARDED_REQUEST_URI'];
-            } else {
-                $request_uri = $this->env['REQUEST_URI'];
-            }
+            $requestUri = $this->envWrapper->getRequestUri();
 
-            $full_url = $server_name . $request_uri;
+            $full_url = $server_name . $requestUri;
+
             $lang_code = null;
             if ($this->store->settings['url_pattern_name'] == 'custom_domain') {
                 $customDomainLangs = $this->store->getCustomDomainLangs();
@@ -149,29 +125,10 @@ class Headers
     {
         if ($this->browserLang === null) {
             // cookie lang
-            if (isset($this->env['HTTP_COOKIE'])) {
-                $cookie = $this->env['HTTP_COOKIE'];
-            } else {
-                $cookie = '';
-            }
+            $cookie = $this->envWrapper->getCookies();
             preg_match('/wovn_selected_lang\s*=\s*(?P<lang>[^;\s]+)/', $cookie, $match);
             if (isset($match['lang']) && isset(Lang::$lang[$match['lang']])) {
                 $this->browserLang = $match['lang'];
-            } else {
-                # IS THIS RIGHT?
-                $this->browserLang = '';
-                if (isset($this->env['HTTP_ACCEPT_LANGUAGE'])) {
-                    $httpAcceptLang = $this->env['HTTP_ACCEPT_LANGUAGE'];
-                } else {
-                    $httpAcceptLang = '';
-                }
-                $acceptLangs = preg_split('/[,;]/', $httpAcceptLang);
-                foreach ($acceptLangs as $l) {
-                    if (isset(Lang::$lang[$l])) {
-                        $this->browserLang = $l;
-                        break;
-                    }
-                }
             }
         }
         return $this->browserLang;
@@ -185,9 +142,7 @@ class Headers
      */
     public function requestOut()
     {
-        if (isset($this->env['HTTP_REFERER'])) {
-            $this->env['HTTP_REFERER'] = $this->removeLang($this->env['HTTP_REFERER']);
-        }
+        $this->envWrapper->setReferer($this->removeLang($this->envWrapper->getReferer()));
 
         switch ($this->store->settings['url_pattern_name']) {
             case 'query':
@@ -211,38 +166,21 @@ class Headers
 
     private function removeLangFromHost()
     {
-        if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-            $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
-        }
-        $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
-        $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
+        $this->envWrapper->setHost($this->removeLang($this->$originalHost));
+        $this->envWrapper->setServerName($this->removeLang($this->envWrapper->getServerName()));
     }
 
     private function removeLangFromPath()
     {
-        if (isset($this->env['REQUEST_URI'])) {
-            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-        }
-        if (isset($this->env['REDIRECT_URL'])) {
-            $this->env['REDIRECT_URL'] = $this->removeLang($this->env['REDIRECT_URL']);
-        }
-        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['HTTP_X_FORWARDED_REQUEST_URI']);
-        }
+        $this->envWrapper->setRequestUri($this->removeLang($this->envWrapper->getRequestUri()));
+        $this->envWrapper->setRedirectUrl($this->removeLang($this->envWrapper->getRedirectUrl()));
     }
 
     private function removeLangFromQuery()
     {
-        if (isset($this->env['REQUEST_URI'])) {
-            $this->env['REQUEST_URI'] = $this->removeLang($this->env['REQUEST_URI']);
-        }
-        $this->env['QUERY_STRING'] = $this->removeLang($this->env['QUERY_STRING']);
-        if (isset($this->env['ORIGINAL_FULLPATH'])) {
-            $this->env['ORIGINAL_FULLPATH'] = $this->removeLang($this->env['ORIGINAL_FULLPATH']);
-        }
-        if (isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
-            $this->env['HTTP_X_FORWARDED_REQUEST_URI'] = $this->removeLang($this->env['X-FORWARDED_REQUEST_URI']);
-        }
+        $this->envWrapper->setRequestUri($this->removeLang($this->envWrapper->getRequestUri()));
+        $this->envWrapper->setQueryString($this->removeLang($this->envWrapper->getQueryString()));
+        $this->envWrapper->setOriginalFullpath($this->removeLang($this->envWrapper->getOriginalFullpath()));
     }
 
     /**
@@ -295,6 +233,10 @@ class Headers
      */
     public function removeLang($uri, $lang = null)
     {
+        if ($uri === null) {
+            return $uri;
+        }
+
         if ($lang === null) {
             $lang = $this->urlLanguage();
         }
@@ -311,7 +253,7 @@ class Headers
 
     public function getDocumentURI()
     {
-        $url = $this->env['REQUEST_URI'];
+        $url = $this->envWrapper->getRequestUri();
 
         return $this->removeLang($url, $this->requestLang());
     }
