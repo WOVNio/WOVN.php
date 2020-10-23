@@ -9,7 +9,7 @@ class CookieLang
 
     private $header;
 
-    public function __construct($header, $store)
+    public function __construct($header)
     {
         $this->header = $header;
     }
