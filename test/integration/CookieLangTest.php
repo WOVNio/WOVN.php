@@ -34,7 +34,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         TestUtils::cleanUpDirectory($this->docRoot);
     }
 
-    public function testRequestToDefaultLang_QueryPattern_WithCookie_ShouldRedirect()
+    public function testRequestToDefaultLangQueryPatternWithCookieShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -50,7 +50,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('http://localhost/index.html?wovn=ja', $result->sensibleHeaders['Location']);
     }
 
-    public function testRequestToDefaultLang_PathPattern_WithCookie_ShouldRedirect()
+    public function testRequestToDefaultLangPathPatternWithCookieShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -66,7 +66,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         self::assertEquals('http://localhost/ja/index.html', $result->sensibleHeaders['Location']);
     }
 
-    public function testRequestToTargetLang_WithCookie_ShouldNotRedirect()
+    public function testRequestToTargetLangWithCookieShouldNotRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -81,7 +81,7 @@ class CookieLangTest extends \PHPUnit_Framework_TestCase
         self::assertEquals(200, $result->statusCode);
     }
 
-    public function testRequestToTargetLang_WithDefaultCookie_ShouldNotRedirect()
+    public function testRequestToTargetLangWithDefaultCookieShouldNotRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
