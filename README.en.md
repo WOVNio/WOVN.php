@@ -747,6 +747,7 @@ wovn_diagnostics_password = wovn_diagnostics_password
 ```json
 {
   "wovn_diagnostics_password": "wovn_diagnostics_password"
+}
 ```
 
 #### `use_cookie_lang`
