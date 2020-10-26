@@ -19,7 +19,6 @@ class Headers
     private $urlLang;
     private $query;
     private $browserLang;
-    private $cookies;
     private $cookieLang;
 
     /**
@@ -342,6 +341,9 @@ class Headers
         if (!$this->store->settings['use_cookie_lang']) {
             return false;
         }
-        return $this->cookieLang->getCookieLang() && ($this->requestLang() != $this->cookieLang->getCookieLang()) && $this->requestLang() === $this->store->defaultLang();
+        $requestLang = $this->requestLang();
+        $cookieLang = $this->cookieLang->getCookieLang();
+
+        return $cookieLang && ($requestLang !== $cookieLang) && ($requestLang === $this->store->defaultLang());
     }
 }
