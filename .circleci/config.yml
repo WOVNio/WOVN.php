@@ -138,10 +138,10 @@ workflows:
       - test_php55:
           requires:
             - build
-      - test_php54:
+      - test_php53:
           requires:
             - build
-      - test_php53:
+      - test_php54:
           requires:
             - build
       - test_phphhvm:
