@@ -329,15 +329,6 @@ class Headers
         return $this->removeLang($url, $this->requestLang());
     }
 
-    public function constructOriginalURL()
-    {
-        $originalURL = $this->protocol . '://' . $this->originalHost . $this->originalPath;
-        if ($this->query) {
-            $originalURL = $originalURL . '?' . $this->query;
-        }
-        return $originalURL;
-    }
-
     public function computeRedirectUrl()
     {
         $cookieLangCode = $this->cookieLang->getCookieLang();
