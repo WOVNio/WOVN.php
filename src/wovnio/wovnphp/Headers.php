@@ -346,11 +346,6 @@ class Headers
         return $url;
     }
 
-    public function getCookies()
-    {
-        return $this->cookies;
-    }
-
     public function shouldRedirect()
     {
         if (!$this->store->settings['use_cookie_lang']) {
