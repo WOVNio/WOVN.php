@@ -23,6 +23,9 @@ jobs:
   build:
     <<: *defaults
     steps:
+      - run:
+          name: Display Composer Version
+          command: php composer.phar --version
       - checkout
       - restore_cache:
           keys:
