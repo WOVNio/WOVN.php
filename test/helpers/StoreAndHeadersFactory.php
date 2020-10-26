@@ -3,6 +3,7 @@ namespace Wovnio\Test\Helpers;
 
 require_once 'test/helpers/EnvFactory.php';
 
+use Wovnio\Wovnphp\CookieLang;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
 
@@ -19,7 +20,8 @@ class StoreAndHeadersFactory
     public static function get($env, $settings = array(), $cookiesOverwrite = array())
     {
         $store = new Store($settings);
-        $headers = new Headers($env, $store, $cookiesOverwrite);
+        $cookieLang = new CookieLang($cookiesOverwrite);
+        $headers = new Headers($env, $store, $cookieLang);
 
         return array($store, $headers);
     }

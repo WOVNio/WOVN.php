@@ -26,14 +26,14 @@ class Headers
      *
      * @param array &$env Contains the _SERVER env variable
      * @param Store &$store The store containing user settings
-     * @param array $cookies &$cookies Contains the _COOKIE env variable
+     * @param CookieLang $cookieLang A CookieLang instance
      * @return void
      */
-    public function __construct(&$env, &$store, $cookies)
+    public function __construct(&$env, &$store, $cookieLang)
     {
         $this->env =& $env;
         $this->store =& $store;
-        $this->cookieLang = new CookieLang($cookies);
+        $this->cookieLang = $cookieLang;
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {

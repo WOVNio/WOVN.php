@@ -16,7 +16,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     public function testGetStoreAndHeaders()
     {
         $env = EnvFactory::fromFixture('default');
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $this->assertEquals('Wovnio\Wovnphp\Store', get_class($store));
         $this->assertEquals('Wovnio\Wovnphp\Headers', get_class($headers));
     }
@@ -25,23 +25,23 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     {
         $env = EnvFactory::fromFixture('default');
         $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteA.ini';
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $this->assertEquals('SiteA', $store->settings['project_token']);
 
         $env = EnvFactory::fromFixture('default');
         $env['WOVN_CONFIG'] = dirname(__FILE__) . '/../fixtures/config/siteB.ini';
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $this->assertEquals('SiteB', $store->settings['project_token']);
 
         $env = EnvFactory::fromFixture('default');
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $this->assertEquals('', $store->settings['project_token']);
     }
 
     public function testIsIgnoredPathUsingIgnorePathSetting()
     {
         $env = EnvFactory::fromFixture('default');
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $store->settings['ignore_paths'] = array('coucou.html', '/assets/img/', '/admin');
 
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', $store));
@@ -72,7 +72,7 @@ class UtilsTest extends \PHPUnit_Framework_TestCase
     public function testIsIgnoredPathUsingIgnoreRegexSetting()
     {
         $env = EnvFactory::fromFixture('default');
-        list($store, $headers) = Utils::getStoreAndHeaders($env);
+        list($store, $headers) = Utils::getStoreAndHeaders($env, array());
         $store->settings['ignore_regex'] = array("/img\/assets$/i", "/\/dog.png$/i", "/\?page_id=[0-9]*&qq_builder$/i");
 
         $this->assertEquals(false, Utils::isIgnoredPath('https://google.com', $store));

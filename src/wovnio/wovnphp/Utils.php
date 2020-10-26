@@ -6,7 +6,7 @@ use finfo;
 class Utils
 {
     // will return the store and headers objects
-    public static function getStoreAndHeaders(&$env)
+    public static function getStoreAndHeaders(&$env, $cookies)
     {
         if (isset($env['WOVN_CONFIG'])) {
             $file = $env['WOVN_CONFIG'] ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
@@ -15,7 +15,8 @@ class Utils
         }
 
         $store = Store::createFromFile($file);
-        $headers = new Headers($env, $store, $_COOKIE);
+        $cookieLang = new CookieLang($cookies);
+        $headers = new Headers($env, $store, $cookieLang);
         return array($store, $headers);
     }
 

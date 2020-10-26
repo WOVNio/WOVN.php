@@ -23,7 +23,7 @@ use Wovnio\Wovnphp\Diagnostics;
 use \Wovnio\Wovnphp\CookieLang;
 
 // GET STORE AND HEADERS
-list($store, $headers) = Utils::getStoreAndHeaders($_SERVER);
+list($store, $headers) = Utils::getStoreAndHeaders($_SERVER, $_COOKIE);
 
 if (!$store->isValid()) {
     Logger::get()->error('WOVN Invalid configuration');
