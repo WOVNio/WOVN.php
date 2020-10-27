@@ -37,6 +37,9 @@ WOVN.phpを更新する必要がある場合は、`WOVN.php`ディレクトリ�
 
 ### 2.2. 基本的な設定
 
+WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定ファイルを記入する必要があります。  
+`.ini` 設定ファイルか `.json` 設定ファイルのどちらかを選択してください。
+
 WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定ファイルを作成する必要があります。
 
 設定ファイルは `wovn.ini` という名前で、ウェブサイトのディレクトリのルートに置かなければなりません。
@@ -45,6 +48,17 @@ WOVN.ioプロジェクトでWOVN.phpを動作させるためには、設定フ�
 ```
 $ cp WOVN.php/wovn.ini.sample wovn.ini
 ```
+
+**注意**:
+
+バージョン1.3.0以降、 `custom_domain` のURLパターンを利用したい場合は、設定ファイルをJSON形式で作成する必要があります。  
+設定ファイルは、 `wovn.json` という名前で、ウェブサイトのディレクトリのルートに置かなければなりません。  
+サンプルファイルは `wovn.php/wovn.json.sample` から起動することができます。
+
+```
+$ cp WOVN.php/wovn.json.sample wovn.json
+```
+
 
 このセクションでは、開始するための基本的な設定を説明します。
 WOVN.phpの設定の詳細については、[セクション3.](#3-設定)を参照してください。
@@ -55,7 +69,9 @@ WOVN.phpの設定の詳細については、[セクション3.](#3-設定)を参
 
 以下は、トークンが "TOKEN"、翻訳元言語が英語(`en`)、翻訳先言語が日本語(`ja`)とフランス語(`fr`)のプロジェクトの `wovn.ini` の例です。
 
-```
+`wovn.ini`
+
+```ini
 project_token = TOKEN
 url_pattern_name = query
 default_lang = en
@@ -63,7 +79,26 @@ supported_langs[] = ja
 supported_langs[] = fr
 ```
 
+`wovn.json`
+
+```json
+{
+    "project_token": "TOKEN",
+    "url_pattern_name": "query",
+    "default_lang": "en",
+    "supported_langs": [
+        "ja",
+        "fr",
+        "en"
+    ],
+    "encoding": "UTF-8"
+}
+```
+
+
 このステップの最後に、ウェブサイトのファイル構造は以下のようになります。
+
+`wovn.ini`
 
 ```
 + /website/root/directory
@@ -72,6 +107,16 @@ supported_langs[] = fr
   - wovn.ini
   [...]
 ```
+
+`wovn.json`
+
+```
++ /website/root/directory
+  + WOVN.php
+  - wovn.json
+  [...]
+```
+
 
 ### 2.3. WOVN.phpの有効化
 
@@ -236,20 +281,46 @@ server {
 
 **custom_domainパターンの設定方法:**  
 
-この設定では、サポートされている各言語に対応するドメインとパスを定義できます。
-設定の形式は `custom_domain_langs[<baseURL>] = '<language>'` です。
+この設定では、サポートされている各言語に対応するドメインとパスを定義できます。  
+バージョン1.3.0以降、 `custom_domain` のURLパターンを利用したい場合は、設定ファイルをJSON形式で作成する必要があります。
 
-`<baseURL>` はホストとパスのプレフィックスのみを持つことに注意してください。
-ホストの前には `http://` のようなものは含めてはいけません。
-ポート番号も含めてはいけません。
-リクエストされる可能性があるサブドメインは全て含めてください。
+`wovn.ini`
 
-例えば、日本語が元言語の場合、以下のように `wovn.ini` に設定します。
+```ini
+NOT SUPPORTED
 ```
-url_pattern_name = custom_domain
-custom_domain_langs[www.site.co.jp/] = 'ja'
-custom_domain_langs[www.site.co.jp/english] = 'en'
-custom_domain_langs[fr.site.co.jp/] = 'fr'
+
+`wovn.json`
+
+```
+{
+  "url_pattern_name": "custom_domain"
+}
+
+```
+
+#### `custom_domain_langs`
+
+このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern_name = custom_domain` が設定されている場合）のみ有効です。  
+カスタムドメイン言語パターン使用時は必須パラメータです。  
+`supported_langs` で設定した全ての言語と元言語に、必ず `custom_domain_langs` を設定してください。
+
+`wovn.ini`
+
+```ini
+NOT SUPPORTED
+```
+
+`wovn.json`
+
+```json
+{
+  "custom_domain_langs": {
+    "en": { "url": "www.site.com/english" },
+    "ja": { "url": "www.site.co.jp/" },
+    "fr": { "url": "fr.site.co.jp/" }
+  }
+}
 ```
 
 上記の例では、 `www.site.co.jp/english/*` にマッチするリクエストは英語のリクエストとして扱われます。
@@ -301,8 +372,18 @@ https://my-website.com/index.php?wovn=en
 
 代わりに以下のような値を設定すると
 
-```
+`wovn.ini`
+
+```ini
 lang_param_name = language
+```
+
+`wovn.json`
+
+```json
+{
+  "lang_param_name": "langauge"
+}
 ```
 
 上記のURLの例では、次のような形式になります。
@@ -314,11 +395,24 @@ https://my-website.com/index.php?language=en
 #### `custom_lang_aliases`
 
 このパラメータでは、WOVN.phpで使用する言語コードを再定義することができます。
-例えば、"ja "の代わりに "japanese "を、"fr "の代わりに "french "を使いたい場合は、以下のように `wovn.ini` を設定します。
+例えば、"ja "の代わりに "japanese "を、"fr "の代わりに "french "を使いたい場合は、以下のように設定して下さい。
+
+`wovn.ini`
 
 ```
 custom_lang_aliases[ja] = japanese
 custom_lang_aliases[fr] = french
+```
+
+`wovn.json`
+
+```json
+{
+  "custom_lang_aliases": {
+    "ja": "japanese",
+    "fr": "french"
+  }
+}
 ```
 
 **パスURLパターンをお使いの方へのご注意:**
@@ -602,29 +696,6 @@ site_prefix_path = dir1/dir2
   "site_prefix_path": "dir1/dir2"
 }
 ```
-
-#### `custom_domain_langs`
-このパラメータは、カスタムドメイン言語パターンの場合（`url_pattern_name = custom_domain` が設定されている場合）のみ有効です。
-カスタムドメイン言語パターン使用時は必須パラメータです。
-`supported_langs` で設定した全ての言語と元言語に、必ず `custom_domain_langs` を設定してください。
-`wovn.ini`
-
-```ini
-NOT SUPPORTED
-```
-
-`wovn.json`
-
-```json
-{
-  "custom_domain_langs": {
-    "en": {
-      "url": "www.mysite.com/english"
-    }
-  }
-}
-```
-
 
 
 ## 4. 環境変数
