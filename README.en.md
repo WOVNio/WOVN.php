@@ -266,20 +266,46 @@ server {
 ```
 
 **Way to set custom_domain pattern:**  
+
 With `custom_domain` pattern, you can set domain and path for all languages in `supported_langs`.
-Setting format is like `custom_domain_langs[<baseURL>] = '<language>'`.
+Starting from version 1.3.0, you must create the configuration file in JSON format if you want to make use of the `custom_domain` URL pattern.
 
-Note that `<baseURL>` has only host and path prefix. 
-Anything before the host, like http:// should not be included.
-Port numbers should also not be included.
-However, all applicable subdomains must be included.
+`wovn.ini`
 
-This is an example of `wovn.ini`, when default lang is Japanese.
+```ini
+NOT SUPPORTED
 ```
-url_pattern_name = custom_domain
-custom_domain_langs[www.site.co.jp/] = 'ja'
-custom_domain_langs[www.site.co.jp/english] = 'en'
-custom_domain_langs[fr.site.co.jp/] = 'fr'
+
+`wovn.json`
+
+```
+{
+  "url_pattern_name": "custom_domain"
+}
+
+```
+
+#### `custom_domain_langs`
+
+This parameter is valid and required, when `url_pattern_name` is `custom_domain`.
+Set `custom_domain_langs` for all languagesed declared in `supported_langs` and original language.
+
+`wovn.ini`
+
+```ini
+NOT SUPPORTED
+```
+
+`wovn.json`
+
+```json
+{
+  "custom_domain_langs": {
+    "en": { "url": "www.site.com/english" },
+    "ja": { "url": "www.site.co.jp/" },
+    "fr": { "url": "fr.site.co.jp/" }
+  }
+}
 ```
 
 For the example above, all request URLs that match `www.site.com/english/*` will be considered as requests in English language.
@@ -378,30 +404,6 @@ You need to update your `.htacces` or Nginx configuration accordingly. For the
 example above, `|ja|` and `|fr|` would become `|japanese|` and `|french|`
 respectively in the expression
 `ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi`.
-
-#### `custom_domain_langs`
-This parameter is valid and required, when `url_pattern_name` is `custom_domain`.
-Set `custom_domain_langs` for all languagesed declared in `supported_langs` and original language.
-
-`wovn.ini`
-
-```ini
-NOT SUPPORTED
-```
-
-`wovn.json`
-
-```json
-{
-  "custom_domain_langs": {
-    "en": {
-      "url": "www.mysite.com/english"
-    }
-  }
-}
-```
-
-
 
 #### `ignore_paths`
 
