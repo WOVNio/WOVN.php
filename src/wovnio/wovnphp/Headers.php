@@ -19,18 +19,21 @@ class Headers
     private $urlLang;
     private $query;
     private $browserLang;
+    private $cookieLang;
 
     /**
      * Constructor of the Headers class
      *
      * @param array &$env Contains the _SERVER env variable
      * @param Store &$store The store containing user settings
+     * @param CookieLang $cookieLang A CookieLang instance
      * @return void
      */
-    public function __construct(&$env, &$store)
+    public function __construct(&$env, &$store, $cookieLang)
     {
         $this->env =& $env;
         $this->store =& $store;
+        $this->cookieLang = $cookieLang;
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {
@@ -112,7 +115,6 @@ class Headers
                 $server_name = $this->env['SERVER_NAME'];
             }
             // get the lang in the path
-            $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {
                 $request_uri = $this->env['HTTP_X_FORWARDED_REQUEST_URI'];
             } else {
@@ -252,21 +254,31 @@ class Headers
     public function responseOut()
     {
         $urlLanguage = $this->urlLanguage();
+        if (!$urlLanguage || strlen($urlLanguage)==0) {
+            return;
+        }
 
-        if ($urlLanguage && strlen($urlLanguage) > 0) {
-            if (!headers_sent()) {
-                $locationHeaders = array('location', 'Location');
-                $responseHeaders = $this->getResponseHeaders();
+        if (headers_sent()) {
+            return;
+        }
 
-                foreach ($locationHeaders as $locationHeader) {
-                    if (array_key_exists($locationHeader, $responseHeaders)) {
-                        $redirectLocation = $responseHeaders[$locationHeader];
-                        $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
+        $locationHeaders = array('location', 'Location');
+        $responseHeaders = $this->getResponseHeaders();
+        $redirectLocation = null;
+        $newLocation = null;
 
-                        header($locationHeader . ': ' . $newLocation);
-                    }
-                }
+        foreach ($locationHeaders as $locationHeader) {
+            if (array_key_exists($locationHeader, $responseHeaders)) {
+                $redirectLocation = $responseHeaders[$locationHeader];
             }
+        }
+
+        if ($redirectLocation) {
+            $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
+        }
+
+        if ($newLocation) {
+            header($locationHeader . ': ' . $newLocation);
         }
     }
 
@@ -314,5 +326,24 @@ class Headers
         $url = $this->env['REQUEST_URI'];
 
         return $this->removeLang($url, $this->requestLang());
+    }
+
+    public function computeRedirectUrl()
+    {
+        $cookieLangCode = $this->cookieLang->getCookieLang();
+        $url = $this->urlKeepTrailingSlash;
+        $url = Url::addLangCode($url, $this->store, $cookieLangCode, $this);
+        return $url;
+    }
+
+    public function shouldRedirect()
+    {
+        if (!$this->store->settings['use_cookie_lang']) {
+            return false;
+        }
+        $requestLang = $this->requestLang();
+        $cookieLang = $this->cookieLang->getCookieLang();
+
+        return $cookieLang && ($requestLang !== $cookieLang) && ($requestLang === $this->store->defaultLang());
     }
 }

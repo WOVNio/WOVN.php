@@ -109,7 +109,8 @@ class Store
 
             // without knowing much about this feature, no one should use this.
             'save_memory_by_sending_wovn_ignore_content' => false,
-            'enable_wovn_diagnostics' => false
+            'enable_wovn_diagnostics' => false,
+            'use_cookie_lang' => false
         );
     }
 

@@ -752,6 +752,23 @@ wovn_diagnostics_password = wovn_diagnostics_password
 }
 ```
 
+#### `use_cookie_lang`
+When set to true, WOVN.php will attempt to redirect a request to the default language to the language set in the `wovn_selected_lang` cookie. No redirect will happen if no such cookie is set.
+
+`wovn.ini`
+
+```ini
+use_cookie_lang = true
+```
+
+`wovn.json`
+
+```json
+{
+  "use_cookie_lang": true
+}
+```
+
 ## 4. Environment Variable
 
 ### `WOVN_TARGET_LANG`
@@ -770,7 +787,7 @@ if ($_ENV['WOVN_TARGET_LANG'] == 'fr') {
 
 ### `WOVN_CONFIG`
 
-This environment variable allows the user to change the default `wovn.ini` path to
+This environment variable allows the user to change the default `wovn.ini` or `wovn.json` path to
 an arbitrary configuration file path.
 For example, you can make changes as follows
 
