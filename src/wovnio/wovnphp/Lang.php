@@ -83,7 +83,9 @@ class Lang
         'uk' => array('name' => 'Українська', 'code' => 'uk', 'en' => 'Ukrainian'),
         'ur' => array('name' => 'اردو', 'code' => 'ur', 'en' => 'Urdu'),
         'vi' => array('name' => 'Tiếng Việt', 'code' => 'vi', 'en' => 'Vietnamese'),
-        'km' => array('name' => 'ភាសាខ្មែរ', 'code' => 'km', 'en' => 'Khmer')
+        'km' => array('name' => 'ភាសាខ្មែរ', 'code' => 'km', 'en' => 'Khmer'),
+        'ta' => array('name' => 'தமிழ்', 'code' => 'ta', 'en' => 'Tamil'),
+        'si' => array('name' => 'සිංහල', 'code' => 'si', 'en' => 'Sinhala')
     );
 
     /**
