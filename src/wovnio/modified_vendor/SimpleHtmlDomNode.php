@@ -280,7 +280,7 @@ class SimpleHtmlDomNode {
     {
         $val = $this->get_attr_val($this->attribute, $name);
 
-        if (isset($val)) {
+        if ($val) {
             return $this->convert_text($val);
         }
 
@@ -404,15 +404,8 @@ class SimpleHtmlDomNode {
 
     function __isset($name)
     {
-        switch ($name)
-        {
-            case 'outertext': return true;
-            case 'innertext': return true;
-            case 'plaintext': return true;
-        }
-        //no value attr: nowrap, checked selected...
-        // return (array_key_exists($name, $this->attr)) ? true : isset($this->attr[$name]);
-        return false;
+        $val = $this->get_attr_val($this->attribute, $name);
+        return $val === true || $val === '';
     }
 
   /*
@@ -511,7 +504,7 @@ class SimpleHtmlDomNode {
     // camel naming conventions
     function getAttribute($name) {return $this->__get($name);}
     function setAttribute($name, $value) {$this->__set($name, $value);}
-    // function hasAttribute($name) {return $this->__isset($name);}
+    function hasAttribute($name) {return $this->__isset($name);}
     function removeAttribute($name) {$this->__set($name, null);}
     function getElementById($id) {return $this->find("#$id", 0);}
     function getElementsById($id, $idx=null) {return $this->find("#$id", $idx);}
