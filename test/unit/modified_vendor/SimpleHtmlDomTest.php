@@ -150,6 +150,19 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<html><body><div class=\'multiple\' style="attribute" data-test=world data-dummy1="dummy" data-dummy2=\'dummy\' data-dummy3=dummy></div></body>', $replaced_html);
     }
 
+    public function testHasAttribute()
+    {
+        $html = '<html><body><div class="test1" data-dummy-1="test2" data-dummy-2="" data-dummy-3></div></body>';
+        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+        $nodes = $this->getTagNodes($dom, 'div');
+        $this->assertEquals(1, count($nodes));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('class'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-1'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-2'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-3'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-4'));
+    }
+
     private function getTagNodes($dom, $tag_name)
     {
         $self = $this;

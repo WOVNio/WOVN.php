@@ -300,6 +300,7 @@ class SimpleHtmlDomNode {
     {
         $text_len = strlen($attr_text);
         $name_pos = stripos($attr_text, $name);
+        error_log('name_pos: ' . json_encode($name_pos));
         if ($name_pos === false) return false;
         if ($name_pos >= $text_len) return true;
 
@@ -405,7 +406,7 @@ class SimpleHtmlDomNode {
     function __isset($name)
     {
         $val = $this->get_attr_val($this->attribute, $name);
-        return $val === true || $val === '';
+        return isset($val) && $val !== false ;
     }
 
   /*
