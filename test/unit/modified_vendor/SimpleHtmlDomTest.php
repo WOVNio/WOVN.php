@@ -10,59 +10,27 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetAttribute()
     {
-        $html = '<html><body><div class="hello" data-dummy="dummy"></div></body>';
+        $html = '<html><body>'.
+            '<div'.
+            ' class="this is class"'.
+            ' data-dummy-1="double quote"'.
+            ' data-dummy-2=\'single quote\''.
+            ' data-dummy-3=without-quote'.
+            ' data-dummy-4=""'.
+            ' data-dummy-5=\'\''.
+            ' data-dummy-6'.
+            '></div>'.
+            '</body></html>';
         $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
         $nodes = $this->getTagNodes($dom, 'div');
         $this->assertEquals(1, count($nodes));
-        foreach ($nodes as $node) {
-            $this->assertEquals('hello', $node->getAttribute('class'));
-        }
-    }
-
-    public function testGetAttributeWithSingleQuote()
-    {
-        $html = "<html><body><div class='hello' data-dummy='dummy'></div></body>";
-        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
-        $nodes = $this->getTagNodes($dom, 'div');
-        $this->assertEquals(1, count($nodes));
-        foreach ($nodes as $node) {
-            $this->assertEquals('hello', $node->getAttribute('class'));
-        }
-    }
-
-    public function testGetAttributeWithoutQuote()
-    {
-        $html = "<html><body><div class=hello  data-dummy=dummy></div></body>";
-        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
-        $nodes = $this->getTagNodes($dom, 'div');
-        $this->assertEquals(1, count($nodes));
-        foreach ($nodes as $node) {
-            $this->assertEquals('hello', $node->getAttribute('class'));
-        }
-    }
-
-    public function testGetAttributeWithoutValue()
-    {
-        $html = "<html><body><div wovn-ignore></div></body>";
-        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
-        $nodes = $this->getTagNodes($dom, 'div');
-        $this->assertEquals(1, count($nodes));
-        foreach ($nodes as $node) {
-            $this->assertEquals(true, $node->getAttribute('wovn-ignore'));
-        }
-    }
-
-    public function testGetAttributeWithMultipleAttribute()
-    {
-        $html = "<html><body><div class='hello' style=\"test-style\" data-test=test-data data-dummy1=\"dummy\" data-dummy2='dummy' data-dummy3=dummy></div></body>";
-        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
-        $nodes = $this->getTagNodes($dom, 'div');
-        $this->assertEquals(1, count($nodes));
-        foreach ($nodes as $node) {
-            $this->assertEquals('hello', $node->getAttribute('class'));
-            $this->assertEquals('test-style', $node->getAttribute('style'));
-            $this->assertEquals('test-data', $node->getAttribute('data-test'));
-        }
+        $this->assertEquals('this is class', $nodes[0]->getAttribute('class'));
+        $this->assertEquals('double quote', $nodes[0]->getAttribute('data-dummy-1'));
+        $this->assertEquals('single quote', $nodes[0]->getAttribute('data-dummy-2'));
+        $this->assertEquals('without-quote', $nodes[0]->getAttribute('data-dummy-3'));
+        $this->assertEquals('', $nodes[0]->getAttribute('data-dummy-4'));
+        $this->assertEquals('', $nodes[0]->getAttribute('data-dummy-5'));
+        $this->assertEquals(true, $nodes[0]->getAttribute('data-dummy-6'));
     }
 
     public function testSetAttribute()
@@ -152,7 +120,17 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
 
     public function testHasAttribute()
     {
-        $html = '<html><body><div class="test1" data-dummy-1="test2" data-dummy-2="" data-dummy-3></div></body>';
+        $html = '<html><body>'.
+            '<div'.
+            ' class="test1"'.
+            ' data-dummy-1="test2"'.
+            ' data-dummy-2=\'test3\''.
+            ' data-dummy-3=test4'.
+            ' data-dummy-4=""'.
+            ' data-dummy-5=\'\''.
+            ' data-dummy-6'.
+            '></div>'.
+            '</body></html>';
         $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
         $nodes = $this->getTagNodes($dom, 'div');
         $this->assertEquals(1, count($nodes));
@@ -160,7 +138,10 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-1'));
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-2'));
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-3'));
-        $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-4'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-4'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-5'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-6'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-7'));
     }
 
     private function getTagNodes($dom, $tag_name)
