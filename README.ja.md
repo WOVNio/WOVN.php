@@ -53,7 +53,7 @@ $ cp WOVN.php/wovn.ini.sample wovn.ini
 
 バージョン1.3.0以降、 `custom_domain` のURLパターンを利用したい場合は、設定ファイルをJSON形式で作成する必要があります。  
 設定ファイルは、 `wovn.json` という名前で、ウェブサイトのディレクトリのルートに置かなければなりません。  
-サンプルファイルは `wovn.php/wovn.json.sample` から起動することができます。
+サンプルファイルは `wovn.php/wovn.json.sample` から起動することができます。Additionally, you need to set a `mod_env` Apache internal environment variable called `WOVN_CONFIG` for WOVN.php to start using the JSON config file. For example, you can set this variable by adding `SetEnv WOVN_CONFIG` to your `.htaccess` file.
 
 ```
 $ cp WOVN.php/wovn.json.sample wovn.json
