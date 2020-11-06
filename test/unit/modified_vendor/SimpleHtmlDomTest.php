@@ -129,6 +129,7 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
             ' data-dummy-4=""'.
             ' data-dummy-5=\'\''.
             ' data-dummy-6'.
+            ' data-dummy-7=false'.
             '></div>'.
             '</body></html>';
         $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
@@ -141,7 +142,8 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-4'));
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-5'));
         $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-6'));
-        $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-7'));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('data-dummy-7'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-100'));
     }
 
     private function getTagNodes($dom, $tag_name)
