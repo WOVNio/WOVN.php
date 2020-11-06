@@ -405,7 +405,7 @@ class SimpleHtmlDomNode {
     function __isset($name)
     {
         $val = $this->get_attr_val($this->attribute, $name);
-        return isset($val) && $val !== false ;
+        return $val !== false;
     }
 
   /*
