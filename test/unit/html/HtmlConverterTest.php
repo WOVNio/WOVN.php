@@ -607,29 +607,77 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testConvertToAppropriateBodyForApiWithWovnSnippet()
+    {
+        $original_html = '<html>'.
+            '<head>'.
+            '<script src="//j.wovn.io/1" data-wovnio="key=123456" async></script>'.
+            '</head>'.
+            '<body>'.
+            '<a>hello</a>'.
+            '</body>'.
+            '</html>';
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        $converter = new HtmlConverter($original_html, null, $store->settings['project_token'], $store, $headers);
+        list($translated_html, $marker) = $this->executeConvert($converter, $original_html, 'UTF-8', '_removeSnippet');
+
+        $this->assertEquals(0, count($marker->keys()));
+        $expected_html = '<html>'.
+            '<head>'.
+            '</head>'.
+            '<body>'.
+            '<a>hello</a>'.
+            '</body>'.
+            '</html>';
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
     public function testConvertToAppropriateBodyForApiWithWovnIgnore()
     {
-        $html = '<html><body><a wovn-ignore>hello</a></body></html>';
+        $original_html = '<html>'.
+            '<body>'.
+            '<a wovn-ignore>hello</a>'.
+            '<a wovn-ignore="">wovn</a>'.
+            '<a wovn-ignore="true">world</a>'.
+            '</body>'.
+            '</html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
-        $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
-        $keys = $marker->keys();
+        $converter = new HtmlConverter($original_html, null, $store->settings['project_token'], $store, $headers);
+        list($translated_html, $marker) = $this->executeConvert($converter, $original_html, 'UTF-8', '_removeWovnIgnore');
 
-        $this->assertEquals(1, count($keys));
-        $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a></body></html>", $translated_html);
+        $this->assertEquals(3, count($marker->keys()));
+        $expected_html = '<html>'.
+            '<body>'.
+            '<a wovn-ignore><!-- __wovn-backend-ignored-key-0 --></a>'.
+            '<a wovn-ignore=""><!-- __wovn-backend-ignored-key-1 --></a>'.
+            '<a wovn-ignore="true"><!-- __wovn-backend-ignored-key-2 --></a>'.
+            '</body>'.
+            '</html>';
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithDataWovnIgnore()
     {
-        $html = '<html><body><a data-wovn-ignore>hello</a></body></html>';
+        $original_html = '<html>'.
+            '<body>'.
+            '<a data-wovn-ignore>hello</a>'.
+            '<a data-wovn-ignore="">wovn</a>'.
+            '<a data-wovn-ignore="true">world</a>'.
+            '</body>'.
+            '</html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
-        $converter = new HtmlConverter($html, null, $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
-        $keys = $marker->keys();
+        $converter = new HtmlConverter($original_html, null, $store->settings['project_token'], $store, $headers);
+        list($translated_html, $marker) = $this->executeConvert($converter, $original_html, 'UTF-8', '_removeWovnIgnore');
 
-        $this->assertEquals(1, count($keys));
-        $this->assertEquals('<!-- __wovn-backend-ignored-key-0 -->', $keys[0]);
-        $this->assertEquals("<html><body><a data-wovn-ignore>$keys[0]</a></body></html>", $translated_html);
+        $this->assertEquals(3, count($marker->keys()));
+        $expected_html = '<html>'.
+            '<body>'.
+            '<a data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></a>'.
+            '<a data-wovn-ignore=""><!-- __wovn-backend-ignored-key-1 --></a>'.
+            '<a data-wovn-ignore="true"><!-- __wovn-backend-ignored-key-2 --></a>'.
+            '</body>'.
+            '</html>';
+        $this->assertEquals($expected_html, $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithCustomIgnoreClass()

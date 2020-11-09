@@ -2,6 +2,7 @@
 namespace Wovnio\Test\Helpers;
 
 require_once 'test/helpers/EnvFactory.php';
+require_once 'src/wovnio/wovnphp/CookieLang.php';
 
 use Wovnio\Wovnphp\CookieLang;
 use Wovnio\Wovnphp\Store;
