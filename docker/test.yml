@@ -2,7 +2,9 @@ version: '3'
 services:
   apache:
     container_name: apache
-    image: ${DOCKER_IMAGE}
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
     privileged: true
     ports:
       - 80:80

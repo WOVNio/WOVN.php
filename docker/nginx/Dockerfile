@@ -1,4 +1,7 @@
-FROM php:7.3-fpm
+# set docker image
+ARG DOCKER_IMAGE="php:7.4-apache"
+
+FROM ${DOCKER_IMAGE}
 RUN apt-get update
 
 # install xdebug
