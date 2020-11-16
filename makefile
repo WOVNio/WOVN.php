@@ -23,7 +23,9 @@ dev_setup:
 test:
 	vendor/bin/phpunit
 
-# Before using these commands, make sure that dokcer is running with test.yml.
+start_test:
+	env DOCKER_IMAGE=${DOCKER_IMAGE} docker-compose -f docker/test.yml up
+
 test_unit_with_docker:
 	docker exec -it -w /opt/project apache /bin/bash -c "vendor/bin/phpunit"
 

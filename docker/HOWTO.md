@@ -83,25 +83,24 @@ vendor/bin/phpunit --filter <test name> <relative path to target test file>
 `--filter`: You can specify test name.  
 `--debug`: You can see test details.
 
-### Run unit tests
+### Run tests
 If you run the following command, tests will be run with PHP in your local PC.
 ```
 vendor/bin/phpunit
 ```
 
-When you want to run tests in specific version of PHP, you can do that by the following way.  
-1. Change PHP version by changing `DOCKER_IMAGE` in `makefile`.
+When you want to run tests with Docker, you can do that by the following way.  
 
-2. Run docker with `docker/test.yml` (`DOCKER_COMPOSE_YML` in `makefile`)
+1. Run Docker with `docker/test.yml` (`DOCKER_COMPOSE_YML` in `makefile`)
 ```
-make stop && make start
+make stop && make start_test
 ```
 
-3. Start `Listen for XDebug in tests` from VSCode.
+2. Start `Listen for XDebug in tests` from VSCode.
 You can set break point.  
 If you don't need to debug, skip this step.
 
-4. Run tests
+3. Run tests
 ```
 make test_unit_with_docker
 make test_integration_with_docker
