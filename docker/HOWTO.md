@@ -119,6 +119,11 @@ vendor/bin/phpunit --configuration phpunit_integration.xml
 ## Nginx environment
 You can use with Nginx, if you change from `apache.yml` to `nginx.yml` in `makefile`.
 
-## With Wordpress environment
-You can use with Wordpress, if you change from `apache.yml` to `wp_apache.yml` in `makefile`.
-You can set wordpress directory with `working_dir: /var/www/html/anywhere` in `wp_apache.yml`.
+## With WordPress environment
+You can use with WordPress, if you change from `apache.yml` to `wp_apache.yml` in `makefile`.  
+Don't forget to configure the followings.
+- .htaccess
+- wovn_intercepter.php
+
+### Change directory of WordPress files
+You can change WordPress files directory with `working_dir: /var/www/html/anywhere` in `wp_apache.yml`.
