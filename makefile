@@ -1,6 +1,7 @@
-# DOCKER_COMPOSE_YML = docker/apache.yml
-DOCKER_COMPOSE_YML = docker/test.yml
-DOCKER_IMAGE = php:7.3-apache
+DOCKER_COMPOSE_YML = docker/apache.yml
+# DOCKER_COMPOSE_YML = docker/test.yml
+# DOCKER_COMPOSE_YML = docker/wp_apache.yml
+DOCKER_IMAGE = php:7.4-apache
 
 .PHONY: build stop start clean dev_setup test test_debug test_unit_with_docker test_integration_with_docker
 
