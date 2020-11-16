@@ -96,7 +96,8 @@ When you want to run tests with Docker, you can do that by the following way.
 make stop && make start_test
 ```
 
-2. Start `Listen for XDebug in tests` from VSCode.
+2. Start `Listen for XDebug in tests` from VSCode.  
+Start `Listen for XDebug in tests` from `Run` menu in VSCode.  
 You can set break point.  
 If you don't need to debug, skip this step.
 
