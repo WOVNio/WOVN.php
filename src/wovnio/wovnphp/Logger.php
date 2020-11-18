@@ -8,10 +8,16 @@ namespace Wovnio\Wovnphp;
  */
 class Logger
 {
+    const PHP_SYSTEM_LOGGER = 0;
+    const LOG_FILE = 3;
+
     private static $logger = null;
 
     private $prefix;
     private $quiet;
+    private $destinationType;
+    private $logFilePath;
+    private $maxLogLineLength = 1024;
 
     public static function get()
     {
@@ -31,6 +37,16 @@ class Logger
     {
         $this->prefix = $prefix;
         $this->quiet = $quiet;
+        $this->destinationType = self::PHP_SYSTEM_LOGGER;
+    }
+
+    public function setLogFilePath($logFilePath) {
+        $this->logFilePath = $logFilePath;
+        $this->destinationType = self::LOG_FILE;
+    }
+
+    public function setMaxLogLineLength($maxLength) {
+        $this->maxLogLineLength = $maxLength;
     }
 
     public function getPrefix()
@@ -95,8 +111,22 @@ class Logger
 
     private function log($level, $message, $context)
     {
-        if (!$this->quiet) {
-            error_log("$this->prefix [$level] " . $this->interpolate($message, $context));
+        if ($this->quiet) {
+            return;
+        }
+
+
+        $date = date('Y-m-d H:i:s');
+        $prefixString = "$this->prefix [$date][$level] ";
+
+        $log_message = $this->truncateToLengthLimit($prefixString . $this->interpolate($message, $context));
+
+        if ($this->destinationType == self::PHP_SYSTEM_LOGGER) {
+            error_log($log_message);
+        }
+
+        if ($this->destinationType == self::LOG_FILE) {
+            error_log($log_message . "\n", self::LOG_FILE, $this->logFilePath);
         }
     }
 
@@ -113,5 +143,12 @@ class Logger
         }
 
         return strtr($message, $replacements);
+    }
+
+    private function truncateToLengthLimit($log) {
+        if (strlen($log) < $this->maxLogLineLength) {
+            return $log;
+        }
+        return substr($log, 0, $this->maxLogLineLength - 12) . '[TRUNCATED]';
     }
 }

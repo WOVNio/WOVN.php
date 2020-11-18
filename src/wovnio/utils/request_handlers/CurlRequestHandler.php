@@ -50,7 +50,13 @@ class CurlRequestHandler extends AbstractRequestHandler
         $response = curl_exec($curl_session);
         $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
         $headers = $response ? explode("\r\n", substr($response, 0, $header_size)) : array();
-
+        $parsedHeaders = array('status' => $headers[0]);
+        foreach ($headers as $value) {
+            $exploded = explode(':', $value, 2);
+            if (sizeof($exploded) == 2) {
+                $parsedHeaders[trim($exploded[0])] = trim($exploded[1]);
+            }
+        }
         if (curl_error($curl_session) !== '') {
             $curl_error_code = curl_errno($curl_session);
             $http_error_code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
@@ -64,6 +70,6 @@ class CurlRequestHandler extends AbstractRequestHandler
 
         curl_close($curl_session);
 
-        return array($response_body, $headers, null);
+        return array($response_body, $parsedHeaders, null);
     }
 }
