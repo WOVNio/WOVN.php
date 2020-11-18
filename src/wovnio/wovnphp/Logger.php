@@ -40,12 +40,14 @@ class Logger
         $this->destinationType = self::PHP_SYSTEM_LOGGER;
     }
 
-    public function setLogFilePath($logFilePath) {
+    public function setLogFilePath($logFilePath)
+    {
         $this->logFilePath = $logFilePath;
         $this->destinationType = self::LOG_FILE;
     }
 
-    public function setMaxLogLineLength($maxLength) {
+    public function setMaxLogLineLength($maxLength)
+    {
         $this->maxLogLineLength = $maxLength;
     }
 
@@ -145,7 +147,8 @@ class Logger
         return strtr($message, $replacements);
     }
 
-    private function truncateToLengthLimit($log) {
+    private function truncateToLengthLimit($log)
+    {
         if (strlen($log) < $this->maxLogLineLength) {
             return $log;
         }

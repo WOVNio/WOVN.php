@@ -53,6 +53,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if ($headers->shouldRedirect()) {
             // this carries an implied HTTP 302
             header("Location: " . $headers->computeRedirectUrl());
+            Logger::get()->info('Request ended, redirect: ' . $headers->computeRedirectUrl());
             exit();
         }
         $headers->responseOut();
@@ -70,10 +71,12 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
             $diagnostics->logPerformance($benchmarkStart, $benchmarkEnd);
+            Logger::get()->info('Request ended, swapping time (ms): ' . ($benchmarkEnd - $benchmarkStart));
             $diagnostics->logOriginalPage($buffer);
             $diagnostics->logSwappedPage($translatedBuffer);
             return $diagnostics->renderResults();
         } else {
+            Logger::get()->info('Request ended.');
             if ($translatedBuffer !== null && !empty($translatedBuffer)) {
                 Utils::changeHeaders($translatedBuffer, $store);
                 return $translatedBuffer;
