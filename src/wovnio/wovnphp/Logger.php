@@ -35,6 +35,7 @@ class Logger
 
     public function __construct($quiet = false, $prefix = 'WOVN.php')
     {
+        date_default_timezone_set('UTC');
         $this->prefix = $prefix;
         $this->quiet = $quiet;
         $this->destinationType = self::PHP_SYSTEM_LOGGER;
