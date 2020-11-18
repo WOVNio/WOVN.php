@@ -77,7 +77,7 @@ class API
             $status = $headers['status'];
             $data['body'] = "[Hidden]";
             Logger::get()->info("[{$requestUUID}] API call to html-swapper finished: {$status}.");
-            Logger::get()->info("[{$requestUUID}] API call payload: " . print_r($data, true));
+            Logger::get()->info("[{$requestUUID}] API call payload: " . $data);
             if ($response === null) {
                 if ($error) {
                     header("X-Wovn-Error: $error");
