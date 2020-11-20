@@ -2,6 +2,7 @@
 namespace Wovnio\Utils\RequestHandlers;
 
 require_once 'AbstractRequestHandler.php';
+require_once DIRNAME(__FILE__) . '../../HTTPHeaderParser.php';
 
 use Wovnio\Utils\HTTPHeaderParser\HTTPHeaderParser;
 use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
