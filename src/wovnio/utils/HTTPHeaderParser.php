@@ -3,10 +3,10 @@
 
 namespace Wovnio\Utils\HTTPHeaderParser;
 
-
 class HTTPHeaderParser
 {
-    public static function parseRawHeader($rawHeader) {
+    public static function parseRawHeader($rawHeader)
+    {
         if (!$rawHeader) {
             return array();
         }
@@ -22,7 +22,8 @@ class HTTPHeaderParser
         return $parsedHeaders;
     }
 
-    public static function parseRawResponse($rawResponse, $headerSize) {
+    public static function parseRawResponse($rawResponse, $headerSize)
+    {
         if (!$rawResponse || !$headerSize) {
             return array();
         }
