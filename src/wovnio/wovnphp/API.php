@@ -80,7 +80,7 @@ class API
                 $status = array_key_exists('status', $headers) ? $headers['status'] : 'STATUS_UNKNOWN';
                 $data['body'] = "[Hidden]";
                 Logger::get()->info("[{$requestUUID}] API call to html-swapper finished: {$status}.");
-                Logger::get()->info("[{$requestUUID}] API call payload: " . $data);
+                Logger::get()->info("[{$requestUUID}] API call payload: " . json_encode($data));
             }
 
             if ($response === null) {
