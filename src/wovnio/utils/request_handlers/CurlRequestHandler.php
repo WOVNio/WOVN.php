@@ -52,7 +52,7 @@ class CurlRequestHandler extends AbstractRequestHandler
         $response = curl_exec($curl_session);
         $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
         $headers = $response ? explode("\r\n", substr($response, 0, $header_size)) : array();
-        $parsedHeaders = HTTPHeaderParser::parseRawHeader(substr($response, 0, $header_size));
+        $parsedHeaders = HTTPHeaderParser::parseRawResponse($response, $header_size);
         if (curl_error($curl_session) !== '') {
             $curl_error_code = curl_errno($curl_session);
             $http_error_code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
