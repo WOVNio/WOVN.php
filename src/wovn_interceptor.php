@@ -26,12 +26,17 @@ use \Wovnio\Wovnphp\CookieLang;
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER, $_COOKIE);
 
 if (!$store->isValid()) {
-    Logger::get()->error('WOVN Invalid configuration');
+    Logger::get()->critical('WOVN Invalid configuration');
     return false;
 }
 
 // Make it available for user application
 $_ENV['WOVN_TARGET_LANG'] = $headers->requestLang();
+
+Logger::get()->info('WOVN.php version ' . WOVN_PHP_VERSION . ' has received a request for '
+    . $_SERVER['REQUEST_URI'] . ' in ' . $_ENV['WOVN_TARGET_LANG'] . '.');
+Logger::get()->info('Request received. ' . json_encode($_SERVER));
+
 $headers->requestOut();
 
 $uri = $headers->getDocumentURI();
@@ -39,7 +44,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
     $diagnostics = null;
     $benchmarkStart = 0;
     if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
-        Logger::get()->info('WOVN DIAGNOSTICS IS ON');
+        Logger::get()->info('Wovn Diagnostics is turned on.');
         $benchmarkStart = microtime(true) * 1000;
         $diagnostics = new Diagnostics($store);
     }
@@ -48,6 +53,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if ($headers->shouldRedirect()) {
             // this carries an implied HTTP 302
             header("Location: " . $headers->computeRedirectUrl());
+            Logger::get()->info('Request ended, redirect: ' . $headers->computeRedirectUrl());
             exit();
         }
         $headers->responseOut();
@@ -65,10 +71,12 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
             $diagnostics->logPerformance($benchmarkStart, $benchmarkEnd);
+            Logger::get()->info('Request ended, swapping time (ms): ' . ($benchmarkEnd - $benchmarkStart));
             $diagnostics->logOriginalPage($buffer);
             $diagnostics->logSwappedPage($translatedBuffer);
             return $diagnostics->renderResults();
         } else {
+            Logger::get()->info('Request ended.');
             if ($translatedBuffer !== null && !empty($translatedBuffer)) {
                 Utils::changeHeaders($translatedBuffer, $store);
                 return $translatedBuffer;

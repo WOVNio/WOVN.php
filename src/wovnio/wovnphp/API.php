@@ -73,9 +73,20 @@ class API
                 return $marker->revert($converted_html);
             }
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
+
+            $requestUUID = 'NO_UUID';
+            if ($headers) {
+                $requestUUID = array_key_exists('X-Request-Id', $headers) ? $headers['X-Request-Id'] : 'NO_UUID';
+                $status = array_key_exists('status', $headers) ? $headers['status'] : 'STATUS_UNKNOWN';
+                $data['body'] = "[Hidden]";
+                Logger::get()->info("[{$requestUUID}] API call to html-swapper finished: {$status}.");
+                Logger::get()->info("[{$requestUUID}] API call payload: " . json_encode($data));
+            }
+
             if ($response === null) {
                 if ($error) {
                     header("X-Wovn-Error: $error");
+                    Logger::get()->error("[{$requestUUID}] API call error: {$error}.");
                 }
                 return $marker->revert($converted_html);
             }

@@ -31,7 +31,7 @@ class Store
         if (file_exists($settingFileName)) {
             $userSettings = parse_ini_file($settingFileName, true);
         } else {
-            Logger::get()->warning('WOVN Configuration not found: {filename}.', array('filename' => $settingFileName));
+            Logger::get()->critical('WOVN Configuration not found: {filename}.', array('filename' => $settingFileName));
             $userSettings = null;
         }
 
@@ -187,6 +187,16 @@ class Store
         // Use default timeout if not set
         if ($this->settings['api_timeout'] === '') {
             $this->settings['api_timeout'] = $defaultSettings['api_timeout'];
+        }
+
+        // Configure WOVN logging
+        if (!empty($this->settings['logging'])) {
+            if ($this->settings['logging']['destination'] == 'file') {
+                Logger::get()->setLogFilePath($this->settings['logging']['path']);
+            }
+            if (!empty($this->settings['logging']['max_line_length'])) {
+                Logger::get()->setMaxLogLineLength($this->settings['logging']['max_line_length']);
+            }
         }
 
         $this->configLoaded = true;

@@ -58,6 +58,7 @@ class Diagnostics
         $buffer = '<html wovn-ignore><body style="margin-left:20px;"><h1>WOVN.php Diagnostics Page</h1>';
         if (!$this->authenticate($_COOKIE["wovn_diagnostics_name"], $_COOKIE["wovn_diagnostics_hash"])) {
             $buffer .= '<p>You are not authorized to view this page.</p>';
+            Logger::get()->info('Wovn Diagnostics is not displayed because user is not authorized.');
             return $buffer;
         }
         foreach ($this->results as $item => $result) {

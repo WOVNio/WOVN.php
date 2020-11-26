@@ -2,7 +2,9 @@
 namespace Wovnio\Utils\RequestHandlers;
 
 require_once 'AbstractRequestHandler.php';
+require_once DIRNAME(__FILE__) . '../../HTTPHeaderParser.php';
 
+use Wovnio\Utils\HTTPHeaderParser\HTTPHeaderParser;
 use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
 
 class CurlRequestHandler extends AbstractRequestHandler
@@ -50,7 +52,7 @@ class CurlRequestHandler extends AbstractRequestHandler
         $response = curl_exec($curl_session);
         $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
         $headers = $response ? explode("\r\n", substr($response, 0, $header_size)) : array();
-
+        $parsedHeaders = HTTPHeaderParser::parseRawResponse($response, $header_size);
         if (curl_error($curl_session) !== '') {
             $curl_error_code = curl_errno($curl_session);
             $http_error_code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
@@ -64,6 +66,6 @@ class CurlRequestHandler extends AbstractRequestHandler
 
         curl_close($curl_session);
 
-        return array($response_body, $headers, null);
+        return array($response_body, $parsedHeaders, null);
     }
 }

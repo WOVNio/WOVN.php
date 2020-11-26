@@ -35,7 +35,6 @@ abstract class AbstractRequestHandler
             switch ($method) {
                 case 'POST':
                     return $this->post($url, $headers, $query, $timeout);
-                    break;
             }
         } catch (\Exception $e) {
             $errorContext = array('method' => $method, 'url' => $url, 'exception' => $e);
