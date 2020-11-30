@@ -45,7 +45,9 @@ class HtmlConverter
     public function insertSnippetAndHreflangTags($adds_backend_error_mark)
     {
         $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
-        $this->html = $this->insertHreflangTags($this->html);
+        if ($this->store->settings['insert_hreflangs']) {
+            $this->html = $this->insertHreflangTags($this->html);
+        }
 
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $this->html = $this->insertNoindex($this->html);

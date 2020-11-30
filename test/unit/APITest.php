@@ -82,6 +82,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body,
+            'insert_hreflangs' => $store->settings['insert_hreflangs']
         );
 
         return array_merge($data, $extra);

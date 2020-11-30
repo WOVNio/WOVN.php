@@ -98,6 +98,7 @@ class Store
             'ignore_regex' => array(),
             'ignore_class' => array(),
             'no_index_langs' => array(),
+            'insert_hreflangs' => true,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
