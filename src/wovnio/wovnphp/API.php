@@ -19,7 +19,7 @@ class API
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
         $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
+        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key; //append on to cache key with current time or something to invalidate it
     }
 
     public static function translate($store, $headers, $original_content)

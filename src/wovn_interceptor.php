@@ -8,6 +8,7 @@ require_once 'wovnio/wovnphp/Utils.php';
 require_once 'wovnio/wovnphp/API.php';
 require_once 'wovnio/wovnphp/Url.php';
 require_once 'wovnio/wovnphp/Diagnostics.php';
+require_once 'wovnio/wovnphp/RequestOptions.php';
 require_once 'wovnio/html/HtmlConverter.php';
 require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
@@ -20,10 +21,15 @@ use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Diagnostics;
+use Wovnio\Wovnphp\RequestOptions;
 use \Wovnio\Wovnphp\CookieLang;
 
 // GET STORE AND HEADERS
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER, $_COOKIE);
+// RequestOptions here?
+
+$queryString = parse_url($headers->getEnv()['REQUEST_URI'])['query'];
+$requestOptions = new RequestOptions($queryString);
 
 if (!$store->isValid()) {
     Logger::get()->critical('WOVN Invalid configuration');
