@@ -82,7 +82,7 @@ class APITest extends \PHPUnit_Framework_TestCase
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body,
-            'insert_hreflangs' => $store->settings['insert_hreflangs']
+            'insert_hreflangs' => json_encode($store->settings['insert_hreflangs'])
         );
 
         return array_merge($data, $extra);
@@ -134,8 +134,12 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
         $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
-        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
-        $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
+        $expected_html_before_send = '<html><head>'.
+        '<meta name="robots" content="noindex">'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async>'.
+        '</script></head>'.
+        '<body><h1>en</h1>'.
+        '</body></html>';
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('no_index_langs' => json_encode(array('en')))), $data, "should contain extra setting");
     }
 
