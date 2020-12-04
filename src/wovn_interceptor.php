@@ -76,7 +76,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
             return $buffer;
         }
 
-        $translatedBuffer = API::translate($store, $headers, $buffer, $requestOptions->getCacheDisableMode());
+        $translatedBuffer = API::translate($store, $headers, $buffer, $requestOptions);
 
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
