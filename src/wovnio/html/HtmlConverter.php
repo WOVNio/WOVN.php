@@ -108,11 +108,11 @@ class HtmlConverter
             } elseif (strtolower($node->tag) == "body") {
                 $body = $node;
             }
-            $self->_removeWovnIgnore($node, $marker);
-            $self->_removeCustomIgnoreClass($node, $marker);
-            $self->_removeForm($node, $marker);
+            $self->removeWovnIgnore($node, $marker);
+            $self->removeCustomIgnoreClass($node, $marker);
+            $self->removeForm($node, $marker);
             // inside <script>, comment("<!--") is invalid
-            $self->_removeScript($node, $marker);
+            $self->removeScript($node, $marker);
         });
     }
 
