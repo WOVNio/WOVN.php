@@ -96,13 +96,11 @@ class HtmlConverter
     private function replaceDom($dom, &$marker)
     {
         $self = $this;
-        $adds_hreflang = isset($this->store) && isset($this->headers);
-
         $html = null;
         $head = null;
         $body = null;
 
-        $dom->iterateAll(function ($node) use (&$self, $marker, $adds_hreflang, &$html, &$head, &$body) {
+        $dom->iterateAll(function ($node) use (&$self, $marker, &$html, &$head, &$body) {
             if (strtolower($node->tag) == "html") {
                 $html = $node;
             } elseif (strtolower($node->tag) == "head") {
@@ -299,46 +297,6 @@ class HtmlConverter
 
         $key = $marker->addCommentValue($originalText);
         $element->innertext = $key;
-    }
-
-    // PHP 5.3 doesn't allow calling private method inside anonymous functions,
-    // so we use '_' for implicit visibility in the methods below
-    // phpcs:disable Squiz.Scope.MethodScope.Missing
-    // phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
-
-    /**
-     * @param SimpleHtmlDomNode $node
-     */
-    function _removeSnippet($node)
-    {
-        if (strtolower($node->tag) !== 'script') {
-            return;
-        }
-
-        $src_value = $node->getAttribute('src');
-        if (strpos($src_value, '//j.wovn.io/') !== false ||
-            strpos($src_value, '//j.dev-wovn.io:3000/') !== false) {
-            $node->outertext = ''; // remove node
-        }
-    }
-
-    /**
-     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
-     * Use `_` prefix to imply `private`
-     *
-     * @param SimpleHtmlDomNode $node
-     */
-    function _removeHreflang($node)
-    {
-        if (strtolower($node->tag) != 'link') {
-            return;
-        }
-
-        $lang_codes = $this->store->settings['supported_langs'];
-        $hreflangValue = $node->getAttribute('hreflang');
-        if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
-            $node->outertext = ''; // remove node
-        }
     }
 
     /**
