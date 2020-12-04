@@ -21,6 +21,9 @@
     <exclude name="PSR1.Files.SideEffects.FoundWithSymbols" />
 
     <exclude name="Generic.ControlStructures.InlineControlStructure.NotAllowed" />
+
+    <!-- TODO: src/wovnio/html/HtmlConverter.php is using function name started with underscore -->
+    <exclude name="PSR2.Methods.MethodDeclaration.Underscore" />
   </rule>
 
   <!-- use camelCase everywhere (PSR2 forces it for class members only) -->
