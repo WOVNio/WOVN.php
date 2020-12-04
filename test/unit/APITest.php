@@ -12,6 +12,7 @@ require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 require_once 'src/wovnio/wovnphp/Url.php';
+require_once 'src/wovnio/wovnphp/RequestOptions.php';
 require_once 'src/wovnio/html/HtmlConverter.php';
 require_once 'src/wovnio/html/HtmlReplaceMarker.php';
 require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
@@ -92,8 +93,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
         $body = '<html></html>';
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body);
+        $request_options = new requestOptions('', false);
 
-        $this->assertTrue(API::url($store, $headers, $body) === $expected_api_url);
+        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
     }
 
     public function testTranslate()
@@ -104,8 +106,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals($responsed_html, $result);
         $this->assertEquals(1, count($mock->arguments));
@@ -127,8 +130,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -147,8 +151,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = "<html><head></head><body><h1>response from html-swapper</h1></body></html>";
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -166,8 +171,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals('<html><head></head><body><h1 wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
@@ -185,8 +191,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1 data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals('<html><head></head><body><h1 data-wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
@@ -204,8 +211,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head><script><!-- __wovn-backend-ignored-key-0 --></script></head><body><h1>fr</h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -227,8 +235,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -251,9 +260,10 @@ class APITest extends \PHPUnit_Framework_TestCase
         '<body><h1 wovn-ignore>en</h1></body>' .
         '</html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
-
         $mock = $this->mockTranslationApi($response);
-        $result = API::translate($store, $headers, $original_html);
+        $request_options = new requestOptions('', false);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -272,8 +282,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
@@ -290,8 +301,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = null;
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
@@ -309,8 +321,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
         $this->assertEquals(0, count($mock->arguments), 'dont request to translation');
         $expected_result = '<html><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head><body><h1>en</h1></body></html>';
         $this->assertEquals($expected_result, $result, "should return contents without fallback");
@@ -327,8 +340,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
         $this->assertEquals(1, count($mock->arguments));
         $expected_result = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $this->assertEquals($expected_result, $result, 'should return contents from html-swapper even if target language is same as default language');
@@ -342,8 +356,9 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
+        $request_options = new requestOptions('', false);
 
-        $result = API::translate($store, $headers, $original_html);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
