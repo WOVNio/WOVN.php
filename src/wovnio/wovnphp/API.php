@@ -10,7 +10,7 @@ use \Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
 class API
 {
-    public static function url($store, $headers, $original_content)
+    public static function url($store, $headers, $original_content, $cache_disable_mode)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
@@ -19,12 +19,15 @@ class API
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
         $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
+        if ($cache_disable_mode) {
+            $cache_key . "&timestamp=" . time();
+        }
         return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key; //append on to cache key with current time or something to invalidate it
     }
 
-    public static function translate($store, $headers, $original_content)
+    public static function translate($store, $headers, $original_content, $cache_disable_mode)
     {
-        $api_url = self::url($store, $headers, $original_content);
+        $api_url = self::url($store, $headers, $original_content, $cache_disable_mode);
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
 

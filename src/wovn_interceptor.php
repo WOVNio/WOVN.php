@@ -59,7 +59,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         $diagnostics = new Diagnostics($store);
     }
     // use the callback of ob_start to modify the content and return
-    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
+    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart, $requestOptions) {
         if ($headers->shouldRedirect()) {
             // this carries an implied HTTP 302
             header("Location: " . $headers->computeRedirectUrl());
@@ -76,7 +76,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
             return $buffer;
         }
 
-        $translatedBuffer = API::translate($store, $headers, $buffer);
+        $translatedBuffer = API::translate($store, $headers, $buffer, $requestOptions->getCacheDisableMode());
 
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
