@@ -26,14 +26,18 @@ use \Wovnio\Wovnphp\CookieLang;
 
 // GET STORE AND HEADERS
 list($store, $headers) = Utils::getStoreAndHeaders($_SERVER, $_COOKIE);
-// RequestOptions here?
-
-$queryString = parse_url($headers->getEnv()['REQUEST_URI'])['query'];
-$requestOptions = new RequestOptions($queryString);
 
 if (!$store->isValid()) {
     Logger::get()->critical('WOVN Invalid configuration');
     return false;
+}
+
+$queryString = parse_url($_SERVER['REQUEST_URI'])['query'];
+$debugModeEnable = $store->settings['debug_mode'];
+$requestOptions = new RequestOptions($queryString, $debugModeEnable);
+
+if ($requestOptions->getDisableMode()) {
+    return true;
 }
 
 // Make it available for user application
