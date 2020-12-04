@@ -660,7 +660,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter(null, $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeCustomIgnoreClass');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeCustomIgnoreClass');
         $keys = $marker->keys();
 
         $this->assertEquals(1, count($keys));
@@ -672,7 +672,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeWovnIgnore');
         $keys = $marker->keys();
 
         $this->assertEquals(2, count($keys));
@@ -684,7 +684,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><form>hello<input type="button" value="click"></form>world</body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
         $keys = $marker->keys();
 
         $this->assertEquals(1, count($keys));
@@ -696,7 +696,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><form>hello<input type="button" value="click"></form>world<form>hello2<input type="button" value="click2"></form></body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
         $keys = $marker->keys();
 
         $this->assertEquals(2, count($keys));
@@ -708,7 +708,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><form wovn-ignore>hello<input type="button" value="click"></form>world</body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
         $keys = $marker->keys();
 
         $this->assertEquals(1, count($keys));
@@ -720,7 +720,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><input type="hidden" value="aaaaa">world</body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
         $keys = $marker->keys();
 
         $this->assertEquals(1, count($keys));
@@ -732,7 +732,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><input type="hidden" value="aaaaa">world<input type="hidden" value="aaaaa"></body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeForm');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeForm');
         $keys = $marker->keys();
 
         $this->assertEquals(2, count($keys));
@@ -744,7 +744,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><body><script>console.log("hello")</script>world</body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeScript');
         $keys = $marker->keys();
 
         $this->assertEquals(1, count($keys));
@@ -756,7 +756,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html><head><script>console.log("hello")</script></head><body>world<script>console.log("hello2")</script></body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeScript');
+        list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', 'removeScript');
         $keys = $marker->keys();
 
         $this->assertEquals(2, count($keys));

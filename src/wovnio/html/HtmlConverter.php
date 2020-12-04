@@ -298,22 +298,19 @@ class HtmlConverter
         $key = $marker->addCommentValue($originalText);
         $element->innertext = $key;
     }
-
+    
     /**
-     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
-     * Use `_` prefix to imply `private`
-     *
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeWovnIgnore($node, $marker)
+    private function removeWovnIgnore($node, $marker)
     {
         if ($node->hasAttribute('wovn-ignore') || $node->hasAttribute('data-wovn-ignore')) {
             $this->putReplaceMarker($node, $marker);
         }
     }
 
-    function _removeCustomIgnoreClass($node, $marker)
+    private function removeCustomIgnoreClass($node, $marker)
     {
         $class_attr = $node->getAttribute('class');
         if ($class_attr) {
@@ -329,13 +326,10 @@ class HtmlConverter
     /**
      * Remove form elements to avoid CSRF token or flexible input's value
      *
-     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
-     * Use `_` prefix to imply `private`
-     *
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeForm($node, $marker)
+    private function removeForm($node, $marker)
     {
         if (strtolower($node->tag) === 'form') {
             $this->putReplaceMarker($node, $marker);
@@ -357,13 +351,10 @@ class HtmlConverter
      * Remove <script>
      * some script have random value for almost same purpose with CSRF
      *
-     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
-     * Use `_` prefix to imply `private`
-     *
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeScript($node, $marker)
+    private function removeScript($node, $marker)
     {
         if (strtolower($node->tag) === 'script' && !preg_match('/type=["\']application\/ld\+json["\']/', $node->attribute)) {
             $this->putReplaceMarker($node, $marker);
