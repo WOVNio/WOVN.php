@@ -24,6 +24,7 @@ use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Utils;
+use Wovnio\Wovnphp\RequestOptions;
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
 class APITest extends \PHPUnit_Framework_TestCase
