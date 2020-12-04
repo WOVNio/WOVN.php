@@ -32,7 +32,7 @@ if (!$store->isValid()) {
     return false;
 }
 
-$queryString = parse_url($_SERVER['REQUEST_URI'])['query'];
+$queryString = $_SERVER['REQUEST_URI'];
 $debugModeEnable = $store->settings['debug_mode'];
 $requestOptions = new RequestOptions($queryString, $debugModeEnable);
 
