@@ -22,7 +22,7 @@ class API
         if ($requestOptions->getCacheDisableMode() || $requestOptions->getDebugMode()) {
             $cache_key . "&timestamp=" . time();
         }
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key; //append on to cache key with current time or something to invalidate it
+        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
     public static function translate($store, $headers, $original_content, $requestOptions)

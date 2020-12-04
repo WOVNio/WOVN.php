@@ -1,4 +1,5 @@
 <?php
+
 namespace Wovnio\Wovnphp;
 
 class RequestOptions
@@ -7,54 +8,50 @@ class RequestOptions
      * disableMode:
      *      - do nothing to the request
      */
-    private $disable_mode;
+    private $disableMode;
     /*
      * cacheDisableMode:
      *      - bypass cache for request to translation API
      * Only available if debugMode is also turned on server side.
      */
-    private $cache_disable_mode;
+    private $cacheDisableMode;
     /*
      * debugMode:
      *      - activate extra debugging information.
-     *      - send "debug_mode=true" to translation API
+     *      - send "debugMode=true" to translation API
      *      - bypass cache for request to translation API
      * Only available if debugMode is also turned on server side.
      */
-    private $debug_mode;
+    private $debugMode;
 
 
-    public function __construct($queryString, $debugModeEnable) {
-        $this->disable_mode = false;
-        $this->cache_disable_mode = false;
-        $this->debug_mode = false;
+    public function __construct($queryString, $debugModeEnable)
+    {
+        $this->disableMode = false;
+        $this->cacheDisableMode = false;
+        $this->debugMode = false;
 
         if ($queryString !== null) {
-            $this->disable_mode = strpos($queryString, 'wovnDisable') !== false;
-            // error_log("Debug mode enable: " . $debugModeEnable);
+            $this->disableMode = strpos($queryString, 'wovnDisable') !== false;
             if ($debugModeEnable) {
-                $this->cache_disable_mode = strpos($queryString, 'wovnCacheDisable') !== false;
-                $this->debug_mode = strpos($queryString, 'wovnDebugMode') !== false;
+                $this->cacheDisableMode = strpos($queryString, 'wovnCacheDisable') !== false;
+                $this->debugMode = strpos($queryString, 'wovnDebugMode') !== false;
             }
         }
-        
-        // error_log("Disable mode:        " . $this->disable_mode);
-        // error_log("Cache disable mode:  " . $this->cache_disable_mode);
-        // error_log("Debug mode:          " . $this->debug_mode);
     }
 
     public function getDisableMode()
     {
-        return $this->disable_mode;
+        return $this->disableMode;
     }
 
     public function getCacheDisableMode()
     {
-        return $this->cache_disable_mode;
+        return $this->cacheDisableMode;
     }
 
     public function getDebugMode()
     {
-        return $this->debug_mode;
+        return $this->debugMode;
     }
 }
