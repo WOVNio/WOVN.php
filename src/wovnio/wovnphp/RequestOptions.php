@@ -34,8 +34,8 @@ class RequestOptions
         if ($queryStringArray !== null) {
             $this->disableMode = array_key_exists('wovnDisable', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
             if ($debugModeEnable) {
-                $this->cacheDisableMode = array_key_exists('wovnCacheDisable', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
-                $this->debugMode = array_key_exists('wovnDebugMode', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
+                $this->cacheDisableMode = array_key_exists('wovnCacheDisable', $queryStringArray) && strcasecmp($queryStringArray['wovnCacheDisable'], 'false') !== 0;
+                $this->debugMode = array_key_exists('wovnDebugMode', $queryStringArray) && strcasecmp($queryStringArray['wovnDebugMode'], 'false') !== 0;
             }
         }
     }
