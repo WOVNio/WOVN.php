@@ -46,7 +46,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         return $mock;
     }
 
-    private function getExpectedApiUrl($store, $headers, $content)
+    private function getExpectedApiUrl($store, $headers, $content, $request_options)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
@@ -54,7 +54,11 @@ class APITest extends \PHPUnit_Framework_TestCase
         $body_hash = md5($content);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
-        $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
+        $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
+        if ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
+            $cache_key_string = $cache_key_string . "&timestamp=" . time();
+        }
+        $cache_key = rawurlencode($cache_key_string);
 
         return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
@@ -93,8 +97,20 @@ class APITest extends \PHPUnit_Framework_TestCase
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
         $body = '<html></html>';
-        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body);
         $request_options = new RequestOptions('', false);
+        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
+
+        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
+    }
+
+    public function testTranslationURLWithCacheInvalidation()
+    {
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
+        $body = '<html></html>';
+        $request_options = new RequestOptions('/?wovnCacheDisable', true);
+        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
+        error_log("Expected: " . $expected_api_url);
+        error_log("Actual  : " . API::url($store, $headers, $body, $request_options));
 
         $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
     }
@@ -115,7 +131,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
         $this->assertEquals('POST', $method);
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -137,7 +153,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('no_index_langs' => json_encode(array('en')))), $data, "should contain extra setting");
@@ -158,7 +174,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers, '{&quot;ja&quot;:&quot;ja-test&quot;}');
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('custom_lang_aliases' => '{"ja":"ja-test"}')), $data, "should contain snippet which include extra options");
@@ -179,7 +195,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<html><head></head><body><h1 wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data, "should replace and replace back ignored contents");
@@ -199,7 +215,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('<html><head></head><body><h1 data-wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1 data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data, "should replace and replace back ignored contents");
@@ -218,7 +234,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content<script><!-- __wovn-backend-ignored-key-0 --></script></head><body><h1>en</h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -242,7 +258,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = '<html>' .
         '<head>' . $expected_head_content . '<script type="application/ld+json">{ "text": "Hello" }</script></head>' .
@@ -268,7 +284,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = '<html>' .
         '<head>' . $expected_head_content . '<script>console.log("test");</script></head>' .
@@ -289,7 +305,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -363,7 +379,7 @@ class APITest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html), $url);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
         $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=dir1/dir2" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, $settings), $data);

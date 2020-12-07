@@ -18,10 +18,12 @@ class API
         $body_hash = md5($original_content);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
-        $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
+        $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
         if ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
-            $cache_key . "&timestamp=" . time();
+            $cache_key_string = $cache_key_string . "&timestamp=" . time();
         }
+        $cache_key = rawurlencode($cache_key_string);
+
         return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
