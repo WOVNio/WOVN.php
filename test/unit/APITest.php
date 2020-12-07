@@ -97,7 +97,7 @@ class APITest extends \PHPUnit_Framework_TestCase
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
         $body = '<html></html>';
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
 
         $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
@@ -107,10 +107,8 @@ class APITest extends \PHPUnit_Framework_TestCase
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
         $body = '<html></html>';
-        $request_options = new RequestOptions('/?wovnCacheDisable', true);
+        $request_options = new RequestOptions(array('wovnCacheDisable' => ''), true);
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
-        error_log("Expected: " . $expected_api_url);
-        error_log("Actual  : " . API::url($store, $headers, $body, $request_options));
 
         $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
     }
@@ -123,7 +121,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -147,7 +145,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -168,7 +166,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = "<html><head></head><body><h1>response from html-swapper</h1></body></html>";
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -188,7 +186,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -208,7 +206,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1 data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -228,7 +226,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head><script><!-- __wovn-backend-ignored-key-0 --></script></head><body><h1>fr</h1>Bonjour</body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -252,7 +250,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
         $response = json_encode(array("body" => $responsed_html));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -278,7 +276,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         '</html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -299,7 +297,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -318,7 +316,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = null;
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
@@ -338,7 +336,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
         $this->assertEquals(0, count($mock->arguments), 'dont request to translation');
@@ -357,7 +355,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array("body" => '<html><head></head><body><h1>response from html-swapper</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
         $this->assertEquals(1, count($mock->arguments));
@@ -373,7 +371,7 @@ class APITest extends \PHPUnit_Framework_TestCase
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
         $mock = $this->mockTranslationApi($response);
-        $request_options = new RequestOptions('', false);
+        $request_options = new RequestOptions([], false);
 
         $result = API::translate($store, $headers, $original_html, $request_options);
 
