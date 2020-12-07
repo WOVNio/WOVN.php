@@ -136,6 +136,26 @@ class APITest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1.0, $timeout);
     }
 
+    public function testTranslateWithDebugMode()
+    {
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
+        $response = json_encode(array("body" => $responsed_html));
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array('wovnDebugMode' => ''), true);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
+
+        $this->assertEquals(1, count($mock->arguments));
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
+        $expected_html_before_send = "<html><head>$expected_head_content</head><body><h1>en</h1></body></html>";
+        $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('debug_mode' => 'true')), $data);
+    }
+
     public function testTranslateWithNoindexLangs()
     {
         $settings = array('no_index_langs' => array('en'));
