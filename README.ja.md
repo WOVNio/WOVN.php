@@ -356,6 +356,7 @@ NOT SUPPORTED
 | [check_amp](#check_amp)              | all                            | AMPページを翻訳対象にするかどうかを設定 |
 | [site_prefix_path](#site_prefix_path)| path                           | 言語コードの挿入位置を変更            |
 | [custom_domain_langs](#custom_domain_langs)| custom_domain            | サポートされている言語のドメインとパスを定義 |
+| [insert_hreflangs](#custom_domain_langs)| all                         | hreflang属性を持つlinkタグの挿入要否を設定 |
 
 
 #### `lang_param_name`
@@ -697,6 +698,25 @@ site_prefix_path = dir1/dir2
 }
 ```
 
+#### `insert_hreflangs`
+このパラメータはhreflang属性を持つlinkタグを挿入するかどうかを指定します。  
+例えば設定が有効の場合、`<link rel="alternate" hreflang="en" href="https://my-website.com/en/">`のように、公開されている言語のタグを挿入します。
+
+設定が無効の場合はタグは挿入せず、元からあるhreflang属性を持ったタグに変更は加えません。
+
+`wovn.ini`
+
+```
+insert_hreflangs = 1
+```
+
+`wovn.json`
+
+```json
+{
+  "insert_hreflangs": true
+}
+```
 
 ## 4. 環境変数
 
