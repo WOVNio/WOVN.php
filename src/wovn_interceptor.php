@@ -32,9 +32,9 @@ if (!$store->isValid()) {
     return false;
 }
 
-$queryString = $_SERVER['REQUEST_URI'];
+parse_str($headers->query, $queryStringArray);
 $debugModeEnable = $store->settings['debug_mode'];
-$requestOptions = new RequestOptions($queryString, $debugModeEnable);
+$requestOptions = new RequestOptions($queryStringArray, $debugModeEnable);
 
 if ($requestOptions->getDisableMode()) {
     return true;

@@ -7,9 +7,9 @@ class RequestOptionsTest extends \PHPUnit_Framework_TestCase
 {
     public function testNoOptions()
     {
-        $query_string = '/?lang=ja';
+        parse_str('/?lang=ja', $query_string_array);
         $debug_mode = true;
-        $options = new RequestOptions($query_string, $debug_mode);
+        $options = new RequestOptions($query_string_array, $debug_mode);
 
         $this->assertEquals(false, $options->getDisableMode());
         $this->assertEquals(false, $options->getCacheDisableMode());
@@ -18,9 +18,9 @@ class RequestOptionsTest extends \PHPUnit_Framework_TestCase
 
     public function testAllOptions()
     {
-        $query_string = '/?lang=ja&wovnDisable&wovnCacheDisable&wovnDebugMode';
+        parse_str('/?lang=ja&wovnDisable&wovnCacheDisable&wovnDebugMode', $query_string_array);
         $debug_mode = true;
-        $options = new RequestOptions($query_string, $debug_mode);
+        $options = new RequestOptions($query_string_array, $debug_mode);
 
         $this->assertEquals(true, $options->getDisableMode());
         $this->assertEquals(true, $options->getCacheDisableMode());
@@ -29,9 +29,9 @@ class RequestOptionsTest extends \PHPUnit_Framework_TestCase
 
     public function testNeedDebugModeSettingEnabledForCacheDisableAndDebugMode()
     {
-        $query_string = '/?lang=ja&wovnDisable&wovnCacheDisable&wovnDebugMode';
+        parse_str('/?lang=ja&wovnDisable&wovnCacheDisable&wovnDebugMode', $query_string_array);
         $debug_mode = false;
-        $options = new RequestOptions($query_string, $debug_mode);
+        $options = new RequestOptions($query_string_array, $debug_mode);
 
         $this->assertEquals(true, $options->getDisableMode());
         $this->assertEquals(false, $options->getCacheDisableMode());

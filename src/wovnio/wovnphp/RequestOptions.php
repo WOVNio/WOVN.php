@@ -25,17 +25,17 @@ class RequestOptions
     private $debugMode;
 
 
-    public function __construct($queryString, $debugModeEnable)
+    public function __construct($queryStringArray, $debugModeEnable)
     {
         $this->disableMode = false;
         $this->cacheDisableMode = false;
         $this->debugMode = false;
 
-        if ($queryString !== null) {
-            $this->disableMode = strpos($queryString, 'wovnDisable') !== false;
+        if ($queryStringArray !== null) {
+            $this->disableMode = array_key_exists('wovnDisable', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
             if ($debugModeEnable) {
-                $this->cacheDisableMode = strpos($queryString, 'wovnCacheDisable') !== false;
-                $this->debugMode = strpos($queryString, 'wovnDebugMode') !== false;
+                $this->cacheDisableMode = array_key_exists('wovnCacheDisable', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
+                $this->debugMode = array_key_exists('wovnDebugMode', $queryStringArray) && strcasecmp($queryStringArray['wovnDisable'], 'false') !== 0;
             }
         }
     }
