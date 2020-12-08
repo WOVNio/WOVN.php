@@ -8,6 +8,7 @@ require_once 'wovnio/wovnphp/Utils.php';
 require_once 'wovnio/wovnphp/API.php';
 require_once 'wovnio/wovnphp/Url.php';
 require_once 'wovnio/wovnphp/Diagnostics.php';
+require_once 'wovnio/wovnphp/RequestOptions.php';
 require_once 'wovnio/html/HtmlConverter.php';
 require_once 'wovnio/html/HtmlReplaceMarker.php';
 require_once 'wovnio/modified_vendor/SimpleHtmlDom.php';
@@ -20,6 +21,7 @@ use Wovnio\Wovnphp\Logger;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Diagnostics;
+use Wovnio\Wovnphp\RequestOptions;
 use \Wovnio\Wovnphp\CookieLang;
 
 // GET STORE AND HEADERS
@@ -28,6 +30,14 @@ list($store, $headers) = Utils::getStoreAndHeaders($_SERVER, $_COOKIE);
 if (!$store->isValid()) {
     Logger::get()->critical('WOVN Invalid configuration');
     return false;
+}
+
+parse_str($headers->query, $queryStringArray);
+$debugModeEnable = $store->settings['debug_mode'];
+$requestOptions = new RequestOptions($queryStringArray, $debugModeEnable);
+
+if ($requestOptions->getDisableMode()) {
+    return true;
 }
 
 // Make it available for user application
@@ -49,7 +59,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         $diagnostics = new Diagnostics($store);
     }
     // use the callback of ob_start to modify the content and return
-    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart) {
+    ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart, $requestOptions) {
         if ($headers->shouldRedirect()) {
             // this carries an implied HTTP 302
             header("Location: " . $headers->computeRedirectUrl());
@@ -66,7 +76,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
             return $buffer;
         }
 
-        $translatedBuffer = API::translate($store, $headers, $buffer);
+        $translatedBuffer = API::translate($store, $headers, $buffer, $requestOptions);
 
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;

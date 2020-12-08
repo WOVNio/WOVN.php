@@ -13,11 +13,11 @@ class Headers
     public $host;
     public $pathname;
     public $url;
+    public $query;
 
     private $env;
     private $store;
     private $urlLang;
-    private $query;
     private $browserLang;
     private $cookieLang;
 

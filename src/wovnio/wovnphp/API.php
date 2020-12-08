@@ -10,7 +10,7 @@ use \Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
 class API
 {
-    public static function url($store, $headers, $original_content)
+    public static function url($store, $headers, $original_content, $request_options)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
@@ -18,13 +18,18 @@ class API
         $body_hash = md5($original_content);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
-        $cache_key = rawurlencode("(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)");
+        $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
+        if ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
+            $cache_key_string = $cache_key_string . "&timestamp=" . time();
+        }
+        $cache_key = rawurlencode($cache_key_string);
+
         return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
     }
 
-    public static function translate($store, $headers, $original_content)
+    public static function translate($store, $headers, $original_content, $request_options)
     {
-        $api_url = self::url($store, $headers, $original_content);
+        $api_url = self::url($store, $headers, $original_content, $request_options);
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
 
@@ -68,6 +73,9 @@ class API
         }
         if ($store->getCustomDomainLangs()) {
             $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
+        }
+        if ($request_options->getDebugMode()) {
+            $data['debug_mode'] = 'true';
         }
 
         try {
