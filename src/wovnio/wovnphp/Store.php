@@ -34,7 +34,6 @@ class Store
             Logger::get()->critical('WOVN Configuration not found: {filename}.', array('filename' => $settingFileName));
             $userSettings = null;
         }
-
         return new Store($userSettings);
     }
 
@@ -98,6 +97,7 @@ class Store
             'ignore_regex' => array(),
             'ignore_class' => array(),
             'no_index_langs' => array(),
+            'insert_hreflangs' => true,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
@@ -198,6 +198,10 @@ class Store
             if (!empty($this->settings['logging']['max_line_length'])) {
                 Logger::get()->setMaxLogLineLength($this->settings['logging']['max_line_length']);
             }
+        }
+
+        if (!is_bool($this->settings['insert_hreflangs'])) {
+            $this->settings['insert_hreflangs'] = !!$this->settings['insert_hreflangs'];
         }
 
         $this->configLoaded = true;

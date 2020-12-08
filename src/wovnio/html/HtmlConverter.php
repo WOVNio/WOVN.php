@@ -18,11 +18,11 @@ class HtmlConverter
 {
     public static $supportedEncodings = array('UTF-8', 'EUC-JP', 'SJIS', 'eucJP-win', 'SJIS-win', 'JIS', 'ISO-2022-JP', 'ASCII');
 
-    private $html;
     private $encoding;
     private $token;
     private $store;
     private $headers;
+    private $marker;
 
 
     /**
@@ -33,26 +33,26 @@ class HtmlConverter
      * @param Store $store
      * @param Headers $headers
      */
-    public function __construct($html, $encoding, $token, $store, $headers)
+    public function __construct($encoding, $token, $store, $headers)
     {
-        $this->html = $html;
         $this->encoding = $encoding;
         $this->token = $token;
         $this->store = $store;
         $this->headers = $headers;
+        $this->marker = new HtmlReplaceMarker();
     }
 
-    public function insertSnippetAndHreflangTags($adds_backend_error_mark)
+    public function insertSnippetAndHreflangTags($html, $add_fallback_mark)
     {
-        $this->html = $this->insertSnippet($this->html, $adds_backend_error_mark);
-        $this->html = $this->insertHreflangTags($this->html);
-
-        if ($this->isNoindexLang($this->headers->requestLang())) {
-            $this->html = $this->insertNoindex($this->html);
+        $converted_html = $html;
+        $converted_html = $this->insertSnippet($converted_html, $add_fallback_mark);
+        if ($this->store->settings['insert_hreflangs']) {
+            $converted_html = $this->insertHreflangTags($converted_html);
         }
-
-        $marker = new HtmlReplaceMarker();
-        return array($this->html, $marker);
+        if ($this->isNoindexLang($this->headers->requestLang())) {
+            $converted_html = $this->insertNoindex($converted_html);
+        }
+        return $converted_html;
     }
 
     /**
@@ -61,23 +61,22 @@ class HtmlConverter
      *
      * @return array converted html and HtmlReplaceMarker
      */
-    public function convertToAppropriateBodyForApi()
+    public function convertToAppropriateBodyForApi($html)
     {
         if ($this->encoding && in_array($this->encoding, self::$supportedEncodings)) {
             $encoding = $this->encoding;
         } else {
             // Encoding detection uses 30% of execution time for this method.
-            $encoding = mb_detect_encoding($this->html, self::$supportedEncodings);
+            $encoding = mb_detect_encoding($html, self::$supportedEncodings);
         }
-        $marker = new HtmlReplaceMarker();
-        $converted_html = $this->html;
+        $converted_html = $html;
 
-        $dom = SimpleHtmlDom::str_get_html($this->html, $encoding, false, false, $encoding, false);
+        $dom = SimpleHtmlDom::str_get_html($converted_html, $encoding, false, false, $encoding, false);
         if ($dom) {
-            $this->replaceDom($dom, $marker);
+            $this->replaceDom($dom, $this->marker);
 
             $converted_html = $dom->save();
-            $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $marker);
+            $converted_html = $this->removeBackendWovnIgnoreComment($converted_html, $this->marker);
 
             // Without clear(), Segmentation fault will be raised.
             // @see https://sourceforge.net/p/simplehtmldom/bugs/103/
@@ -85,19 +84,23 @@ class HtmlConverter
             unset($dom);
         }
 
-        return array($converted_html, $marker);
+        return $converted_html;
+    }
+
+    public function revertMarkers($marked_html)
+    {
+        $unmarked_html = $this->marker->revert($marked_html);
+        return $unmarked_html;
     }
 
     private function replaceDom($dom, &$marker)
     {
         $self = $this;
-        $adds_hreflang = isset($this->store) && isset($this->headers);
-
         $html = null;
         $head = null;
         $body = null;
 
-        $dom->iterateAll(function ($node) use (&$self, $marker, $adds_hreflang, &$html, &$head, &$body) {
+        $dom->iterateAll(function ($node) use (&$self, $marker, &$html, &$head, &$body) {
             if (strtolower($node->tag) == "html") {
                 $html = $node;
             } elseif (strtolower($node->tag) == "head") {
@@ -105,36 +108,12 @@ class HtmlConverter
             } elseif (strtolower($node->tag) == "body") {
                 $body = $node;
             }
-            $self->_removeSnippet($node);
-            if ($adds_hreflang) {
-                $self->_removeHreflang($node);
-            }
             $self->_removeWovnIgnore($node, $marker);
             $self->_removeCustomIgnoreClass($node, $marker);
             $self->_removeForm($node, $marker);
             // inside <script>, comment("<!--") is invalid
             $self->_removeScript($node, $marker);
         });
-
-        $tags = array($head, $body, $html);
-        foreach ($tags as $insert_tag) {
-            if (is_null($insert_tag)) {
-                continue;
-            }
-
-            $hreflangTags = array();
-            if ($adds_hreflang) {
-                $lang_codes = $this->store->settings['supported_langs'];
-                foreach ($lang_codes as $lang_code) {
-                    $href = $this->buildHrefLang($lang_code);
-                    array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
-                }
-            }
-
-            $snippet = $this->buildSnippetCode(true);
-            $insert_tag->innertext = implode('', $hreflangTags) . $snippet . $insert_tag->innertext;
-            break;
-        }
     }
 
     /**
@@ -142,14 +121,14 @@ class HtmlConverter
      * When snippet is always inserted, do nothing
      *
      * @param string $html
-     * @param bool $adds_backend_error_mark
+     * @param bool $add_fallback_mark
      */
-    private function insertSnippet($html, $adds_backend_error_mark)
+    private function insertSnippet($html, $add_fallback_mark)
     {
         $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
         $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
 
-        $snippet_code = $this->buildSnippetCode($adds_backend_error_mark);
+        $snippet_code = $this->buildSnippetCode($add_fallback_mark);
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
@@ -190,7 +169,7 @@ class HtmlConverter
         return $result;
     }
 
-    private function buildSnippetCode($adds_backend_error_mark)
+    private function buildSnippetCode($add_fallback_mark)
     {
         $data_wovnio_params = array();
         $data_wovnio_params['key'] = $this->token;
@@ -215,7 +194,7 @@ class HtmlConverter
         $widget_url = $this->store->settings['widget_url'];
         $data_wovnio = htmlentities($this->buildParamsStr($data_wovnio_params));
         $data_wovnio_info = htmlentities($this->buildParamsStr($data_wovnio_info_params));
-        $fallback_mark = $adds_backend_error_mark ? ' data-wovnio-type="fallback_snippet"' : '';
+        $fallback_mark = $add_fallback_mark ? ' data-wovnio-type="fallback_snippet"' : '';
 
         return "<script src=\"$widget_url\" data-wovnio=\"$data_wovnio\" data-wovnio-info=\"$data_wovnio_info\"$fallback_mark async></script>";
     }
@@ -237,6 +216,9 @@ class HtmlConverter
      */
     private function insertHreflangTags($html)
     {
+        if (!$this->store->settings['insert_hreflangs']) {
+            return;
+        }
         if (isset($this->store->settings['supported_langs'])) {
             if (is_array($this->store->settings['supported_langs'])) {
                 $lang_codes = $this->store->settings['supported_langs'];
@@ -317,46 +299,6 @@ class HtmlConverter
         $element->innertext = $key;
     }
 
-    // PHP 5.3 doesn't allow calling private method inside anonymous functions,
-    // so we use '_' for implicit visibility in the methods below
-    // phpcs:disable Squiz.Scope.MethodScope.Missing
-    // phpcs:disable PSR2.Methods.MethodDeclaration.Underscore
-
-    /**
-     * @param SimpleHtmlDomNode $node
-     */
-    function _removeSnippet($node)
-    {
-        if (strtolower($node->tag) !== 'script') {
-            return;
-        }
-
-        $src_value = $node->getAttribute('src');
-        if (strpos($src_value, '//j.wovn.io/') !== false ||
-            strpos($src_value, '//j.dev-wovn.io:3000/') !== false) {
-            $node->outertext = ''; // remove node
-        }
-    }
-
-    /**
-     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
-     * Use `_` prefix to imply `private`
-     *
-     * @param SimpleHtmlDomNode $node
-     */
-    function _removeHreflang($node)
-    {
-        if (strtolower($node->tag) != 'link') {
-            return;
-        }
-
-        $lang_codes = $this->store->settings['supported_langs'];
-        $hreflangValue = $node->getAttribute('hreflang');
-        if (in_array(Lang::getCode($hreflangValue), $lang_codes)) {
-            $node->outertext = ''; // remove node
-        }
-    }
-
     /**
      * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
      * Use `_` prefix to imply `private`
@@ -364,14 +306,14 @@ class HtmlConverter
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeWovnIgnore($node, $marker)
+    public function _removeWovnIgnore($node, $marker)
     {
         if ($node->hasAttribute('wovn-ignore') || $node->hasAttribute('data-wovn-ignore')) {
             $this->putReplaceMarker($node, $marker);
         }
     }
 
-    function _removeCustomIgnoreClass($node, $marker)
+    public function _removeCustomIgnoreClass($node, $marker)
     {
         $class_attr = $node->getAttribute('class');
         if ($class_attr) {
@@ -393,7 +335,7 @@ class HtmlConverter
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeForm($node, $marker)
+    public function _removeForm($node, $marker)
     {
         if (strtolower($node->tag) === 'form') {
             $this->putReplaceMarker($node, $marker);
@@ -421,7 +363,7 @@ class HtmlConverter
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
      */
-    function _removeScript($node, $marker)
+    public function _removeScript($node, $marker)
     {
         if (strtolower($node->tag) === 'script' && !preg_match('/type=["\']application\/ld\+json["\']/', $node->attribute)) {
             $this->putReplaceMarker($node, $marker);

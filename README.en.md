@@ -341,6 +341,7 @@ and should be used for performance optimization.
 | [check_amp](#check_amp)                                      | all                       | Enable/Disable translation for AMP pages                     |
 | [site_prefix_path](#site_prefix_path)                        | path                      | Changes where the language code is inserted                  |
 | [custom_domain_langs](#custom_domain_langs)                  | custom_domain             | Use custom domains for supported languages                   |
+| [insert_hreflangs](#custom_domain_langs)                     | all                       | Enable/disable addition of link tag with hreflang attribute  |
 
 #### `lang_param_name`
 This parameter is only valid for when `url_pattern_name = query`.
@@ -691,6 +692,27 @@ site_prefix_path = dir1/dir2
 ```json
 {
   "site_prefix_path": "dir1/dir2"
+}
+```
+
+#### `insert_hreflangs`
+
+This parameter tells WOVN.php to insert link tag with hreflang.
+If setting is on, the tag like `<link rel="alternate" hreflang="en" href="https://my-website.com/en/">` will be inserted for published languages.
+
+If setting is off, WOVN.php doesn't add any change to link tag with hreflang.
+
+`wovn.ini`
+
+```
+insert_hreflangs = 1
+```
+
+`wovn.json`
+
+```json
+{
+  "insert_hreflangs": true
 }
 ```
 
