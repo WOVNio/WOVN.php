@@ -28,18 +28,18 @@ class API
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
 
-        $converter = new HtmlConverter($original_content, $encoding, $token, $store, $headers);
+        $converter = new HtmlConverter($encoding, $token, $store, $headers);
         if (self::makeAPICall($store, $headers) === false) {
-            list($translated_content) = $converter->insertSnippetAndHreflangTags(false);
+            $translated_content = $converter->insertSnippetAndHreflangTags($original_content, false);
             return $translated_content;
         }
 
         $saves_memory = $store->settings['save_memory_by_sending_wovn_ignore_content'];
-        if ($saves_memory) {
-            list($converted_html, $marker) = $converter->insertSnippetAndHreflangTags(true);
-        } else {
-            list($converted_html, $marker) = $converter->convertToAppropriateBodyForApi();
+        $converted_html = $original_content;
+        if (!$saves_memory) {
+            $converted_html = $converter->convertToAppropriateBodyForApi($converted_html);
         }
+        $converted_html = $converter->insertSnippetAndHreflangTags($converted_html, true);
 
         $timeout = $store->settings['api_timeout'];
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
@@ -62,6 +62,9 @@ class API
         }
         if (!empty($store->settings['site_prefix_path'])) {
             $data['site_prefix_path'] = $store->settings['site_prefix_path'];
+        }
+        if (isset($store->settings['insert_hreflangs'])) {
+            $data['insert_hreflangs'] = json_encode($store->settings['insert_hreflangs']);
         }
         if ($store->getCustomDomainLangs()) {
             $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
@@ -88,19 +91,19 @@ class API
                     header("X-Wovn-Error: $error");
                     Logger::get()->error("[{$requestUUID}] API call error: {$error}.");
                 }
-                return $marker->revert($converted_html);
+                return $converter->revertMarkers($converted_html);
             }
 
             $translation_response = json_decode($response, true);
             if (array_key_exists('body', $translation_response)) {
-                return $marker->revert($translation_response['body']);
+                return $converter->revertMarkers($translation_response['body']);
             } else {
-                return $marker->revert($converted_html);
+                return $converter->revertMarkers($converted_html);
             }
         } catch (\Exception $e) {
             Logger::get()->error('Failed to get translated content: {exception}.', array('exception' => $e));
 
-            return $marker->revert($converted_html);
+            return $converter->revertMarkers($converted_html);
         }
     }
 
