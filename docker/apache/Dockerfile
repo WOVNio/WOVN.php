@@ -5,7 +5,7 @@ RUN apt-get update
 RUN a2enmod rewrite
 
 # install xdebug
-RUN pecl install xdebug
+RUN pecl install xdebug-2.9.0
 RUN docker-php-ext-enable xdebug
 
 WORKDIR /var/www/html
