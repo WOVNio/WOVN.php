@@ -55,6 +55,18 @@ class HtmlConverter
         return $converted_html;
     }
 
+    public function insertHtmlLangAttribute($html, $lang_code)
+    {
+        if (preg_match('/<html\s?.*?>/', $html, $matches)) {
+            $html_open_tag = $matches[0];
+            $replacement = $matches[0];
+            $replacement = preg_replace('/lang=["\']?[a-zA-Z-]*["\']?/', '', $replacement); // remove exsiting lang attribute
+            $replacement = str_replace('<html', "<html lang=\"$lang_code\"", $replacement);
+            return str_replace($html_open_tag, $replacement, $html);
+        }
+        return $html;
+    }
+
     /**
      * Convert to appropriate HTML to send to Translation API
      * e.g.) remove wovn-ignore content

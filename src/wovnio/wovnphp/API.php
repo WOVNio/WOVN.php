@@ -32,10 +32,12 @@ class API
         $api_url = self::url($store, $headers, $original_content, $request_options);
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
+        $requestLang = $headers->requestLang();
 
         $converter = new HtmlConverter($encoding, $token, $store, $headers);
         if (self::makeAPICall($store, $headers) === false) {
             $translated_content = $converter->insertSnippetAndHreflangTags($original_content, false);
+            $translated_content = $converter->insertHtmlLangAttribute($translated_content, $requestLang);
             return $translated_content;
         }
 
@@ -45,6 +47,7 @@ class API
             $converted_html = $converter->convertToAppropriateBodyForApi($converted_html);
         }
         $converted_html = $converter->insertSnippetAndHreflangTags($converted_html, true);
+        $converted_html = $converter->insertHtmlLangAttribute($converted_html, $requestLang);
 
         $timeout = $store->settings['api_timeout'];
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
