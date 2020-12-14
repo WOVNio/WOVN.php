@@ -59,7 +59,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
@@ -89,7 +89,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.php">'.
@@ -117,7 +117,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.html">'.
@@ -148,7 +148,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.php">'.
@@ -175,7 +175,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja')
         ));
 
-        $not_found_page = '<html>'.
+        $not_found_page = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
@@ -200,7 +200,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'api_url' => 'http://localhost/not_exist_html_swapper_url/'
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="ja">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
@@ -231,7 +231,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'custom_lang_aliases' => $langs
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://custom-en.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://custom-ja.testsite.com/index.html">'.
@@ -265,7 +265,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'ignore_paths' => array('/sub')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
@@ -292,7 +292,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'ignore_regex' => array('/sub\/.*/')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.

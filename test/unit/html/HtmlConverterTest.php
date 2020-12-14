@@ -238,6 +238,55 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testInsertHtmlLangAttribute()
+    {
+        $html_cases = array(
+            array(
+                'general case',
+                '<html><head></head><body><a>hello</a></body></html>',
+                '<html lang="en"><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'lang attribute is exist',
+                '<html lang="ja"><head></head><body><a>hello</a></body></html>',
+                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'lang attribute is exist with single quatation',
+                "<html lang='ja'><head></head><body><a>hello</a></body></html>",
+                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'lang attribute is exist without quatation',
+                "<html lang=ja><head></head><body><a>hello</a></body></html>",
+                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'lang code has dash',
+                '<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>',
+                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'other tags have a lang attribute',
+                '<html><head lang="test"></head><body lang="test"><a>hello</a></body></html>',
+                '<html lang="en"><head lang="test"></head><body lang="test"><a>hello</a></body></html>',
+            )
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            $settings = array(
+                'supported_langs' => array('en', 'vi'),
+                'lang_param_name' => 'wovn',
+                'insert_hreflangs' => false
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertHtmlLangAttribute($original_html, 'en');
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
     public function testBuildHrefLangPath()
     {
         $html = '<html><body><a>hello</a></body></html>';
