@@ -252,7 +252,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
                 '<html lang="en" ><head></head><body><a>hello</a></body></html>',
             ),
             array(
-                'lang attribute is exist with single quatation',
+                'lang attribute exists with single quotes',
                 "<html lang='ja'><head></head><body><a>hello</a></body></html>",
                 '<html lang="en" ><head></head><body><a>hello</a></body></html>',
             ),
