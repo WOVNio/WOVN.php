@@ -200,7 +200,7 @@ class UrlSubdomainPatternTest extends \PHPUnit_Framework_TestCase
             'api_url' => 'http://localhost/not_exist_html_swapper_url/'
         ));
 
-        $content_without_html_swapper = '<html lang="ja">'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.

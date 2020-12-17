@@ -59,8 +59,10 @@ class HtmlConverter
     {
         if (preg_match('/<html\s?.*?>/', $html, $matches)) {
             $html_open_tag = $matches[0];
-            $replacement = $matches[0];
-            $replacement = preg_replace('/lang=["\']?[a-zA-Z-]*["\']?/', '', $replacement); // remove exsiting lang attribute
+            if (preg_match('/lang=["\']?[a-zA-Z-]*["\']?/', $html_open_tag)) {
+                return $html;
+            }
+            $replacement = $html_open_tag;
             $replacement = str_replace('<html', "<html lang=\"$lang_code\"", $replacement);
             return str_replace($html_open_tag, $replacement, $html);
         }

@@ -242,34 +242,34 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
     {
         $html_cases = array(
             array(
-                'general case',
+                'general case - insert lang attribute',
                 '<html><head></head><body><a>hello</a></body></html>',
                 '<html lang="en"><head></head><body><a>hello</a></body></html>',
             ),
             array(
-                'lang attribute exists',
+                'html with other attribute - insert lang attribute',
+                '<html test="lang"><head></head><body><a>hello</a></body></html>',
+                '<html lang="en" test="lang"><head></head><body><a>hello</a></body></html>',
+            ),
+            array(
+                'lang attribute exists - keep existing lang',
                 '<html lang="ja"><head></head><body><a>hello</a></body></html>',
-                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+                '<html lang="ja"><head></head><body><a>hello</a></body></html>',
             ),
             array(
-                'lang attribute exists with single quotes',
+                'lang attribute exists with single quotes - keep existing lang',
                 "<html lang='ja'><head></head><body><a>hello</a></body></html>",
-                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+                "<html lang='ja'><head></head><body><a>hello</a></body></html>",
             ),
             array(
-                'lang attribute exists without quotes',
+                'lang attribute exists without quotes - keep existing lang',
                 "<html lang=ja><head></head><body><a>hello</a></body></html>",
-                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
+                "<html lang=ja><head></head><body><a>hello</a></body></html>",
             ),
             array(
-                'lang code has dash',
+                'lang code has dash - keep existing lang',
                 '<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>',
-                '<html lang="en" ><head></head><body><a>hello</a></body></html>',
-            ),
-            array(
-                'other tags have a lang attribute',
-                '<html><head lang="test"></head><body lang="test"><a>hello</a></body></html>',
-                '<html lang="en"><head lang="test"></head><body lang="test"><a>hello</a></body></html>',
+                '<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>',
             )
         );
         foreach ($html_cases as $case) {
