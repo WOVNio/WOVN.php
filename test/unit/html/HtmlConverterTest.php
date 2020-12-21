@@ -240,7 +240,6 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testInsertHtmlLangAttribute()
     {
-        list($message, $original_html, $expected_html) = $case;
         $settings = array(
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn',
