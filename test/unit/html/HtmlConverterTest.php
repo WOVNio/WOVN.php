@@ -240,51 +240,21 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testInsertHtmlLangAttribute()
     {
-        $html_cases = array(
-            array(
-                'general case - insert lang attribute',
-                '<html><head></head><body><a>hello</a></body></html>',
-                '<html lang="en"><head></head><body><a>hello</a></body></html>',
-            ),
-            array(
-                'html with other attribute - insert lang attribute',
-                '<html test="lang"><head></head><body><a>hello</a></body></html>',
-                '<html lang="en" test="lang"><head></head><body><a>hello</a></body></html>',
-            ),
-            array(
-                'lang attribute exists - keep existing lang',
-                '<html lang="ja"><head></head><body><a>hello</a></body></html>',
-                '<html lang="ja"><head></head><body><a>hello</a></body></html>',
-            ),
-            array(
-                'lang attribute exists with single quotes - keep existing lang',
-                "<html lang='ja'><head></head><body><a>hello</a></body></html>",
-                "<html lang='ja'><head></head><body><a>hello</a></body></html>",
-            ),
-            array(
-                'lang attribute exists without quotes - keep existing lang',
-                "<html lang=ja><head></head><body><a>hello</a></body></html>",
-                "<html lang=ja><head></head><body><a>hello</a></body></html>",
-            ),
-            array(
-                'lang code has dash - keep existing lang',
-                '<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>',
-                '<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>',
-            )
+        list($message, $original_html, $expected_html) = $case;
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn',
+            'insert_hreflangs' => false
         );
-        foreach ($html_cases as $case) {
-            list($message, $original_html, $expected_html) = $case;
-            $settings = array(
-                'supported_langs' => array('en', 'vi'),
-                'lang_param_name' => 'wovn',
-                'insert_hreflangs' => false
-            );
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
-            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-            $translated_html = TestUtils::invokeMethod($converter, 'insertHtmlLangAttribute', array($original_html, 'en'));
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
 
-            $this->assertEquals($expected_html, $translated_html, $message);
-        }
+        $this->assertContains('<html lang="en"', $converter->insertSnippetAndLangTags('<html><head></head><body><a>hello</a></body></html>', 'en'), 'general case - insert lang attribute');
+        $this->assertContains('<html lang="en"', $converter->insertSnippetAndLangTags('<html test="lang"><head></head><body><a>hello</a></body></html>', 'en'), 'html with other attribute - insert lang attribute');
+        $this->assertContains('<html lang="ja"', $converter->insertSnippetAndLangTags('<html lang="ja"><head></head><body><a>hello</a></body></html>', 'en'), 'lang attribute exists - keep existing lang');
+        $this->assertContains("<html lang='ja'", $converter->insertSnippetAndLangTags("<html lang='ja'><head></head><body><a>hello</a></body></html>", 'en'), 'lang attribute exists with single quotes - keep existing lang');
+        $this->assertContains("<html lang=ja", $converter->insertSnippetAndLangTags("<html lang=ja><head></head><body><a>hello</a></body></html>", 'en'), 'lang attribute exists without quotes - keep existing lang');
+        $this->assertContains('<html lang="zh-CHS"', $converter->insertSnippetAndLangTags('<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>', 'en'), 'lang code has dash - keep existing lang');
     }
 
     public function testBuildHrefLangPath()
