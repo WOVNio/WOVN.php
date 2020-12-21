@@ -17,4 +17,3 @@ services:
       - ../wovn.json.sample:/var/www/html/wovn.json
       - ../wovn_index_sample.php:/var/www/html/wovn_index.php
       - ../htaccess_sample:/var/www/html/.htaccess
-

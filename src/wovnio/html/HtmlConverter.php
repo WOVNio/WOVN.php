@@ -42,7 +42,7 @@ class HtmlConverter
         $this->marker = new HtmlReplaceMarker();
     }
 
-    public function insertSnippetAndHreflangTags($html, $add_fallback_mark)
+    public function insertSnippetAndLangTags($html, $add_fallback_mark)
     {
         $converted_html = $html;
         $converted_html = $this->insertSnippet($converted_html, $add_fallback_mark);
@@ -52,6 +52,8 @@ class HtmlConverter
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $converted_html = $this->insertNoindex($converted_html);
         }
+        $default_lang = $this->store->settings['default_lang'];
+        $converted_html = $this->insertHtmlLangAttribute($converted_html, $default_lang);
         return $converted_html;
     }
 
@@ -144,6 +146,20 @@ class HtmlConverter
     private function isNoindexLang($lang)
     {
         return in_array($lang, $this->store->settings['no_index_langs']);
+    }
+
+    private function insertHtmlLangAttribute($html, $lang_code)
+    {
+        if (preg_match('/<html\s?.*?>/', $html, $matches)) {
+            $html_open_tag = $matches[0];
+            if (preg_match('/lang=["\']?[a-zA-Z-]*["\']?/', $html_open_tag)) {
+                return $html;
+            }
+            $replacement = $html_open_tag;
+            $replacement = str_replace('<html', "<html lang=\"$lang_code\"", $replacement);
+            return str_replace($html_open_tag, $replacement, $html);
+        }
+        return $html;
     }
 
     private function insertAfterTag($tag_names, $html, $insert_str)

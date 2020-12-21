@@ -45,7 +45,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
@@ -76,7 +76,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.php?wovn=ja">'.
@@ -104,7 +104,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.html?wovn=ja">'.
@@ -134,7 +134,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.php?wovn=ja">'.
@@ -161,7 +161,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
         ));
 
-        $not_found_page = '<html>'.
+        $not_found_page = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/no.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/no.html?wovn=ja">'.
@@ -185,7 +185,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'api_url' => 'http://localhost/not_exist_html_swapper_url/'
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
@@ -216,7 +216,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'custom_lang_aliases' => $langs
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
@@ -247,7 +247,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'lang_param_name' => 'lang_param'
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
@@ -278,7 +278,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'disable_api_request_for_default_lang' => false
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
@@ -311,7 +311,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'ignore_paths' => array('/sub')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
@@ -340,7 +340,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'ignore_regex' => array('/sub\/.*/')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
@@ -367,7 +367,7 @@ class UrlQueryPatternTest extends \PHPUnit_Framework_TestCase
             'no_index_langs' => array('en')
         ));
 
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<meta name="robots" content="noindex">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.

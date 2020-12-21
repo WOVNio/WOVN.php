@@ -71,7 +71,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
@@ -122,7 +122,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.php">'.
@@ -170,7 +170,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.html">'.
@@ -216,7 +216,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
         );
 
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
             '<head>'.
             '<link rel="alternate" hreflang="en" href="http://testsite.com/en/index.html">'.
             '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
@@ -267,7 +267,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.php">'.
@@ -316,7 +316,7 @@ class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
             'zh-hant-hk.com/zh' => 'zh-Hant-HK'
         );
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
-        $content_without_html_swapper = '<html>'.
+        $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.php">'.
