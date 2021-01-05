@@ -80,5 +80,6 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('zh-hant-hk.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('zh-hant-hk.foo.com/zhtrap', $zh_hant_hk, $ja));
         $this->assertEquals('english.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('17797-trial2.foo.com/zhtrap', $pt, $en));
+        $this->assertEquals('17797-trial2.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('17797-trial2.foo.com/zhtrap', $pt, $pt));
     }
 }
