@@ -107,7 +107,8 @@ class Diagnostics
         $this->results['original_page'] = $originalPage;
     }
 
-    public function logServerEnv($serverEnv) {
+    public function logServerEnv($serverEnv)
+    {
         $this->results['server_env'] = $serverEnv;
     }
 
