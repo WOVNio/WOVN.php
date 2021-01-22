@@ -56,7 +56,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
     if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
         Logger::get()->info('Wovn Diagnostics is turned on.');
         $benchmarkStart = microtime(true) * 1000;
-        $diagnostics = new Diagnostics($store);
+        $diagnostics = new Diagnostics($store, $_SERVER);
     }
     // use the callback of ob_start to modify the content and return
     ob_start(function ($buffer) use ($headers, $store, $diagnostics, $benchmarkStart, $requestOptions) {
@@ -81,6 +81,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         if (Utils::wovnDiagnosticsEnabled($store, $headers)) {
             $benchmarkEnd = microtime(true) * 1000;
             $diagnostics->logPerformance($benchmarkStart, $benchmarkEnd);
+            $diagnostics->logServerEnv($_SERVER);
             Logger::get()->info('Request ended, swapping time (ms): ' . ($benchmarkEnd - $benchmarkStart));
             $diagnostics->logOriginalPage($buffer);
             $diagnostics->logSwappedPage($translatedBuffer);

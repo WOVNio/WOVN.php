@@ -14,6 +14,7 @@ class Diagnostics
 {
     const SALT = '4b73ec6b-a2e1-4ab9-85bc-d92f03d224e5';
     private $store;
+    private $env;
     private $results;
 
     /**
@@ -21,10 +22,11 @@ class Diagnostics
      *
      *  @return void
      */
-    public function __construct($store)
+    public function __construct($store, $env)
     {
-        $this->initResults();
         $this->store = $store;
+        $this->env = $env;
+        $this->initResults();
     }
     
     /**
@@ -77,7 +79,9 @@ class Diagnostics
                 $buffer .= '<table border="solid"><tbody>';
                 foreach ($result as $subItem => &$subResult) {
                     if (is_array($subResult)) {
-                        $subResult = implode(', ', $subResult);
+                        $subResult = json_encode($subResult, JSON_PRETTY_PRINT);
+                    } else {
+                        $subResult = $subResult ? strval($subResult) : '0';
                     }
                     $buffer .= "<tr><td>{$subItem}</td><td>{$subResult}</td></tr>";
                 }
@@ -103,13 +107,17 @@ class Diagnostics
         $this->results['original_page'] = $originalPage;
     }
 
+    public function logServerEnv($serverEnv) {
+        $this->results['server_env'] = $serverEnv;
+    }
+
     private function initResults()
     {
         $this->results = array(
-            'diagnostics_version' => '1.0',
+            'diagnostics_version' => '1.1',
             'php_version' => phpversion(),
             'wovn.php_version' => WOVN_PHP_VERSION,
-            'wovn.ini' => $this->getWovnIni(),
+            'wovn_config' => $this->getWovnIni(),
             'wovn_index.php' => $this->getWovnIndex(),
             'index.php' => $this->getIndex(),
             'server_type' => $this->getServerType(),
@@ -120,14 +128,22 @@ class Diagnostics
         );
     }
 
-    private static function getWovnIni()
+    private function getWovnIni()
     {
-        $settingFileName = isset($env['WOVN_CONFIG']) ? $env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.ini';
-
-        if (file_exists($settingFileName)) {
-            $userSettings = parse_ini_file($settingFileName, true);
+        if (isset($this->env['WOVN_CONFIG'])) {
+            $settingFileName = $this->env['WOVN_CONFIG'] ? $this->env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
+            if (file_exists($settingFileName)) {
+                $userSettings = file_get_contents($settingFileName);
+            } else {
+                $userSettings = array('Error' => 'Not Found');
+            }
         } else {
-            $userSettings = array('Error' => 'Not Found');
+            $settingFileName = DIRNAME(__FILE__) . '/../../../../wovn.ini';
+            if (file_exists($settingFileName)) {
+                $userSettings = file_get_contents($settingFileName);
+            } else {
+                $userSettings = array('Error' => 'Not Found');
+            }
         }
 
         return $userSettings;
@@ -161,7 +177,7 @@ class Diagnostics
 
     private static function getServerType()
     {
-        return $_SERVER['SERVER_SOFTWARE'] . 'via ' . $_SERVER['SERVER_PROTOCOL'];
+        return $_SERVER['SERVER_SOFTWARE'] . ' via ' . $_SERVER['SERVER_PROTOCOL'];
     }
 
         
@@ -218,7 +234,7 @@ class Diagnostics
     {
         $all = array();
         $excludes = array("..", ".", "WOVN.php");
-        $limit = 10000;
+        $limit = 1000;
         $cwd = getcwd();
         Diagnostics::scanDirectories($cwd, $all, $excludes, $limit);
         return count($all) . " items inside {$cwd}\n" . join("\n", $all);
