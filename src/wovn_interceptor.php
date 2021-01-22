@@ -82,6 +82,7 @@ if (!Utils::isIgnoredPath($uri, $store)) {
             $benchmarkEnd = microtime(true) * 1000;
             $diagnostics->logPerformance($benchmarkStart, $benchmarkEnd);
             $diagnostics->logServerEnv($_SERVER);
+            $diagnostics->logInterpretedWovnConfig($store->settings);
             Logger::get()->info('Request ended, swapping time (ms): ' . ($benchmarkEnd - $benchmarkStart));
             $diagnostics->logOriginalPage($buffer);
             $diagnostics->logSwappedPage($translatedBuffer);

@@ -112,6 +112,11 @@ class Diagnostics
         $this->results['server_env'] = $serverEnv;
     }
 
+    public function logInterpretedWovnConfig($config)
+    {
+        $this->results['interpreted_config'] = $config;
+    }
+
     private function initResults()
     {
         $this->results = array(
