@@ -138,18 +138,14 @@ class Diagnostics
     {
         if (isset($this->env['WOVN_CONFIG'])) {
             $settingFileName = $this->env['WOVN_CONFIG'] ? $this->env['WOVN_CONFIG'] : DIRNAME(__FILE__) . '/../../../../wovn.json';
-            if (file_exists($settingFileName)) {
-                $userSettings = file_get_contents($settingFileName);
-            } else {
-                $userSettings = array('Error' => 'Not Found');
-            }
         } else {
             $settingFileName = DIRNAME(__FILE__) . '/../../../../wovn.ini';
-            if (file_exists($settingFileName)) {
-                $userSettings = file_get_contents($settingFileName);
-            } else {
-                $userSettings = array('Error' => 'Not Found');
-            }
+        }
+
+        if (file_exists($settingFileName)) {
+            $userSettings = file_get_contents($settingFileName);
+        } else {
+            $userSettings = array('Error' => 'Not Found');
         }
 
         return $userSettings;
