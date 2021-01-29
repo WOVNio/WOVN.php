@@ -48,6 +48,13 @@ jobs:
       - run: scripts/run_phpunit_tests.sh php:8.0-apache
       - run: scripts/run_integration_tests.sh php:8.0-apache
       - store-steps
+  test_php74:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:7.4-apache
+      - run: scripts/run_integration_tests.sh php:7.4-apache
+      - store-steps
   test_php73:
     <<: *defaults
     steps:
@@ -117,6 +124,9 @@ workflows:
   build:
     jobs:
       - build
+      - test_php80:
+          requires:
+            - build
       - test_php74:
           requires:
             - build
