@@ -43,17 +43,9 @@ jobs:
       - image: circleci/php:8.0.1-apache
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - vendor-{{ checksum "composer.lock" }}
-            - vendor-
       - run:
           name: Install modules
           command: composer install
-      - save_cache:
-          key: vendor-{{ checksum "composer.lock" }}
-          paths:
-            - ./vendor
       - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
@@ -63,17 +55,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - vendor-{{ checksum "composer-old.lock" }}
-            - vendor-
       - run:
           name: Install modules
           command: COMPOSER=composer-old.json composer install
-      - save_cache:
-          key: vendor-{{ checksum "composer-old.lock" }}
-          paths:
-            - ./vendor
       - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
