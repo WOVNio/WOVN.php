@@ -23,7 +23,7 @@ commands:
           command: |
             composer --version
             php --version
-            ./vendor/bin/phpunit --version
+            # ./vendor/bin/phpunit --version
       - setup_remote_docker:
           docker_layer_caching: true
   store-steps:
