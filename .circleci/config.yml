@@ -45,8 +45,8 @@ jobs:
       - checkout
       - run:
           name: Install modules
-          command: composer install
-      - run: ./vendor/bin/phpcs
+          command: composer update
+      # - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
           paths:
@@ -57,8 +57,8 @@ jobs:
       - checkout
       - run:
           name: Install modules
-          command: COMPOSER=composer-old.json composer install
-      - run: ./vendor/bin/phpcs
+          command: COMPOSER=composer-old.json composer update
+      # - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
           paths:
