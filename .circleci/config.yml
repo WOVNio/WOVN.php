@@ -21,7 +21,6 @@ commands:
           command: |
             php --version
             composer --version
-            vendor/bin/phpunit --version
       - run:
           name: Check code syntax
           command: ./vendor/bin/phpcs
