@@ -38,7 +38,9 @@ commands:
 
 jobs:
   setup_test:
-    <<: *defaults
+    working_directory: ~/project
+    docker:
+      - image: circleci/php:8.0.1-apache
     steps:
       - checkout
       - restore_cache:
