@@ -3,7 +3,9 @@ namespace Wovnio\Wovnphp\Tests\wovn_helper;
 
 require_once 'src/wovn_helper.php';
 
-class WovnHelperTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class WovnHelperTest extends TestCase
 {
     public function testWovnHelperDefaultIndexFiles()
     {

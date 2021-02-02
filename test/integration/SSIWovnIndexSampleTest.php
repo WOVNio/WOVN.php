@@ -1,7 +1,9 @@
 <?php
 namespace Wovnio\Wovnphp\Tests\Integration;
 
-class SSIWovnIndexSampleTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SSIWovnIndexSampleTest extends TestCase
 {
     protected function setUp()
     {

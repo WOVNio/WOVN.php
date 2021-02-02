@@ -7,7 +7,9 @@ use \Wovnio\Html\HtmlReplaceMarker;
 use \Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use \Wovnio\ModifiedVendor\SimpleHtmlDom;
 
-class HtmlConverterTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HtmlConverterTest extends TestCase
 {
     public function testInsertSnippetAndLangTagsWithSampleWebsites()
     {
