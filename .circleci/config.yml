@@ -3,7 +3,7 @@ version: 2.1
 defaults: &defaults
   working_directory: ~/project
   docker:
-    - image: circleci/php:7.1.29-apache-stretch
+    - image: circleci/php:7.4-apache
 
 commands:
   common-steps:
@@ -44,7 +44,17 @@ jobs:
       - checkout
       - run:
           name: Install modules
-          command: composer update
+          command: composer install
+      # - run: ./vendor/bin/phpcs
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - ./*
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      - run: COMPOSER=composer-old.json composer install
       # - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
@@ -56,7 +66,7 @@ jobs:
       - checkout
       - run:
           name: Install modules
-          command: COMPOSER=composer-old.json composer update
+          command: COMPOSER=composer-old.json composer install
       # - run: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
