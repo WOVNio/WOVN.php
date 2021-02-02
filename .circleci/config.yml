@@ -41,10 +41,7 @@ jobs:
           name: Check versions
           command: |
             composer --version
-            ./vendor/bin/phpunit --version
-      - run:
-          name: Syntax check
-          command: ./vendor/bin/phpcs
+            php --version
       - persist_to_workspace:
           root: ./
           paths:
