@@ -16,14 +16,6 @@ commands:
               sudo chown root /usr/bin/docker && sudo chmod u+s /usr/bin/docker
               sudo chown root /usr/bin/docker-compose && sudo chmod u+s /usr/bin/docker-compose
             fi
-      - run:
-          name: Check versions
-          command: |
-            php --version
-            composer --version
-      - run:
-          name: Check code syntax
-          command: ./vendor/bin/phpcs
       - attach_workspace:
           at: ~/project
       - setup_remote_docker:
@@ -45,17 +37,14 @@ jobs:
       - run:
           name: Install modules
           command: composer install
-      # - run: ./vendor/bin/phpcs
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./*
-  build:
-    <<: *defaults
-    steps:
-      - checkout
-      - run: COMPOSER=composer-old.json composer install
-      # - run: ./vendor/bin/phpcs
+      - run:
+          name: Check versions
+          command: |
+            composer --version
+            ./vendor/bin/phpunit --version
+      - run:
+          name: Syntax check
+          command: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
           paths:
@@ -67,7 +56,14 @@ jobs:
       - run:
           name: Install modules
           command: COMPOSER=composer-old.json composer install
-      # - run: ./vendor/bin/phpcs
+      - run:
+          name: Check versions
+          command: |
+            composer --version
+            ./vendor/bin/phpunit --version
+      - run:
+          name: Syntax check
+          command: ./vendor/bin/phpcs
       - persist_to_workspace:
           root: ./
           paths:
