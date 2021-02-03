@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class RequestHandlerFactoryTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         restoreCurl();

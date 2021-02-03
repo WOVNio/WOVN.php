@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class FileGetContentsRequestHandlerTest extends TestCase
 {
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         restoreFileGetContents();

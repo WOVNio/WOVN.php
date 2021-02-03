@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class StoreTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $currentSettingsFile = dirname(__FILE__) . '/current_settings.ini';
         if (file_exists($currentSettingsFile)) {

@@ -14,7 +14,7 @@ class CustomDomainLangUrlHandlerTest extends TestCase
     private $customDomainLangsSetting;
     private $customDomainLangs;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->customDomainLangsSetting = array(
             'fr' => array('url' => 'foo.com/'),

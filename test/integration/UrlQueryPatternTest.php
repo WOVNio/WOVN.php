@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 class UrlQueryPatternTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
         $this->docRoot    = '/var/www/html';
@@ -25,7 +25,7 @@ class UrlQueryPatternTest extends TestCase
         copy("{$this->sourceDir}/test/fixtures/integration/v0/translation", "{$this->docRoot}/v0/translation");
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         TestUtils::cleanUpDirectory($this->docRoot);
     }

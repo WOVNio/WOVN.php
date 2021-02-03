@@ -14,7 +14,7 @@ class CustomDomainLangTest extends TestCase
     private $customDomainWithPathTrailingSlash;
     private $customDomainPathEncodedSpaces;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->customDomainRootPath = new CustomDomainLang('foo.com', '/', 'fr');
         $this->customDomainWithPathNoTrailingSlash = new CustomDomainLang('foo.com', '/path', 'fr');
