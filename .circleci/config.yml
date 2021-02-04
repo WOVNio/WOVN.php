@@ -154,36 +154,14 @@ workflows:
     jobs:
       - setup_test
       - setup_old_test
-      - test_php80:
-          requires:
-            - setup_test
-      - test_php74:
-          requires:
-            - setup_old_test
-      - test_php73:
-          requires:
-            - setup_old_test
-      - test_php72:
-          requires:
-            - setup_old_test
-      - test_php71:
-          requires:
-            - setup_old_test
-      - test_php70:
-          requires:
-            - setup_old_test
-      - test_php56:
-          requires:
-            - setup_old_test
-      - test_php55:
-          requires:
-            - setup_old_test
-      - test_php54:
-          requires:
-            - setup_old_test
-      - test_php53:
-          requires:
-            - setup_old_test
-      - test_phphhvm:
-          requires:
-            - setup_old_test
+      - test_php80
+      - test_php74
+      - test_php73
+      - test_php72
+      - test_php71
+      - test_php70
+      - test_php56
+      - test_php55
+      - test_php54
+      - test_php53
+      - test_phphhvm

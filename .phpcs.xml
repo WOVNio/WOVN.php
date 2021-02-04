@@ -6,6 +6,7 @@
 
   <file>./</file>
   <exclude-pattern>./vendor</exclude-pattern>
+  <exclude-pattern>./script</exclude-pattern>
   <exclude-pattern>./docker</exclude-pattern>
   <exclude-pattern>./src/wovnio/modified_vendor</exclude-pattern>
 
