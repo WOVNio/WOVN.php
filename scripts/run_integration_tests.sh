@@ -26,12 +26,12 @@ APACHE_CONTAINER_ID=`docker run -d -e WOVN_ENV=development --name ${CONTAINER_NA
 docker cp $(pwd) ${APACHE_CONTAINER_ID}:${WORK_DIR}
 
 # Install modules
-docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "php ./scripts/composer-setup.php"
-docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "./composer.phar --version"
-docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "./composer.phar install"
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; php ./scripts/composer-setup.php"
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; ./composer.phar --version"
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; ./composer.phar install"
 
 # Run integration test
-docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "set -e; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; set -e; vendor/bin/phpunit --configuration phpunit_integration.xml --log-junit ${INTGTEST_REPORT_DIR}/results.xml"
 
 # Copy test results to host OS
 docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${INTGTEST_REPORT_DIR}" ${PWD}/${INTGTEST_REPORT_DIR}
