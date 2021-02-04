@@ -25,7 +25,7 @@ class UrlCustomDomainPatternTest extends TestCase
         }
     }
 
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
         $this->docRoot    = '/var/www/html';
@@ -42,7 +42,7 @@ class UrlCustomDomainPatternTest extends TestCase
         copy("{$this->sourceDir}/test/fixtures/integration/v0/translation", "{$this->docRoot}/v0/translation");
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         TestUtils::cleanUpDirectory($this->docRoot);
     }

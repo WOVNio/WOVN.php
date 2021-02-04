@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class WovnIndexSampleTest extends TestCase
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         $this->baseDir = getcwd();
         $this->workspace = dirname(__FILE__) . '/wovn_index_sample_workspace';
@@ -37,7 +37,7 @@ class WovnIndexSampleTest extends TestCase
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         // Normaly, this variable is undefined so revert it
         unset($_SERVER['REQUEST_URI']);

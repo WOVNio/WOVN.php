@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
 
 class HeadersTest extends TestCase
 {
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
 

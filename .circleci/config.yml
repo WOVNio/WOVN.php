@@ -19,9 +19,10 @@ commands:
       - attach_workspace:
           at: ~/project
       - run:
-          name: Check file
+          name: Remove composer modules
           command: |
-            cat vendor/phpunit/phpunit/composer.json
+            rm -rf vendor
+            rm composer.lock
       - setup_remote_docker:
           docker_layer_caching: true
   store-steps:
@@ -81,7 +82,7 @@ jobs:
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.4-apache
-      - run: scripts/run_integration_tests.sh php:7.4-apache
+      # - run: scripts/run_integration_tests.sh php:7.4-apache
       - store-steps
   test_php73:
     <<: *defaults

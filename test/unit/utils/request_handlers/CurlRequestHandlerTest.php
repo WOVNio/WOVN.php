@@ -10,7 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class CurlRequestHandlerTest extends TestCase
 {
-    protected function tearDown(): void
+    protected function tearDown()
     {
         parent::tearDown();
         restoreCurl();

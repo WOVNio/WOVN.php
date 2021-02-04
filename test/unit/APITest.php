@@ -30,12 +30,12 @@ use PHPUnit\Framework\TestCase;
 
 class APITest extends TestCase
 {
-    protected function setUp(): void
+    protected function setUp()
     {
         RequestHandlerFactory::setInstance(null);
     }
 
-    protected function tearDown(): void
+    protected function tearDown()
     {
         RequestHandlerFactory::setInstance(null);
     }
