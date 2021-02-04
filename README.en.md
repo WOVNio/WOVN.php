@@ -805,9 +805,11 @@ Configures WOVN.php's internal logging. When this section is included in `wovn.j
 
 ```json
 {
-  "destination": "file",
-  "path": "/var/logs/error_log.log",
-  "max_line_length": 5124
+  "logging": {
+    "destination": "file",
+    "path": "/var/logs/error_log.log",
+    "max_line_length": 5124
+  }
 }
 ```
 
