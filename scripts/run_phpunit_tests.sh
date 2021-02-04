@@ -23,15 +23,19 @@ if [[ "${DOCKER_IMAGE}" =~ ^php:[8].*$ ]]; then
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function tearDown(.*)/function tearDown(): void/g\""
 
     # Remove modules to install modules for PHP8
+    #   If there is a composer.lock file, composer installs modules depends on lock file.
+    #   So, remove lock file and installed modules first, and re-install modules with current PHP version.
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
 
     # Install modules
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; php ./scripts/composer-setup.php"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; ./composer.phar install"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; ./composer.phar update"
 fi
 
 # Check syntax
+docker exec ${APACHE_CONTAINER_ID} \
+    /bin/bash -c 'find /opt/project -type f -name "*.php" ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors"'
 docker exec ${APACHE_CONTAINER_ID} \
     /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
 
