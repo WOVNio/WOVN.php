@@ -801,7 +801,7 @@ Configures WOVN.php's internal logging. When this section is included in `wovn.j
 
 `max_line_length`: Optional, defaults to `1024`. Lines longer than this setting will be truncated.
 
-`wovn.json` ONLY
+`wovn.json`
 
 ```json
 {
@@ -811,6 +811,14 @@ Configures WOVN.php's internal logging. When this section is included in `wovn.j
     "max_line_length": 5124
   }
 }
+```
+
+`wovn.ini`
+
+```ini
+logging[destination] = "file"
+logging[path] = "/var/logs/error_log.log"
+logging[max_line_length] = 5124
 ```
 
 ## 4. Environment Variable
