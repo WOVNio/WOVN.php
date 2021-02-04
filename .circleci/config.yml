@@ -90,11 +90,6 @@ jobs:
     <<: *defaults
     steps:
       - common-steps
-      - run:
-          name: convert
-          command: |
-            find ~/project -type f -name "*.php" -print0 | xargs -0 sed -i "s/function setUp\(.*\)/function setUp(): void/g"
-            find ~/project -type f -name "*.php" -print0 | xargs -0 sed -i "s/function tearDown\(.*\)/function tearDown(): void/g"
       - run: scripts/run_phpunit_tests.sh php:8.0-apache
       - run: scripts/run_integration_tests.sh php:8.0-apache
       - store-steps
