@@ -25,7 +25,7 @@ docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} -t ${NEW_DOCKER_IMAGE} ./d
 APACHE_CONTAINER_ID=`docker run -d -e WOVN_ENV=development --name ${CONTAINER_NAME} ${NEW_DOCKER_IMAGE} /bin/bash -c "${MOD_REWRITE_ACTIVATION}; ${START_APACHE}"`
 docker cp $(pwd) ${APACHE_CONTAINER_ID}:${WORK_DIR}
 
-if [[ "${DOCKER_IMAGE}" =~ ^php:[8].*$ ]]; then
+if [[ "${DOCKER_IMAGE}" =~ ^php:[78].*$ ]]; then
     # Convert test to support PHP8 syntax
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function setUp(.*)$/function setUp(): void/g\""
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function setUpBeforeClass(.*)$/function setUpBeforeClass(): void/g\""
