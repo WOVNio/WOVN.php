@@ -147,14 +147,14 @@ jobs:
     steps:
       - common-steps
       # php:5.4-apache does not included mbstring extention
-      - run: scripts/run_phpunit_tests.sh vectorface/php5.4
+      - run: scripts/run_phpunit_tests.sh php:5.4-apache
       - run: scripts/run_integration_tests.sh php:5.4-apache
       - store-steps
   test_php53:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh vectorface/php5.3
+      - run: scripts/run_phpunit_tests.sh php:5.3-apache
       - run: scripts/run_integration_tests.sh php:5.3-apache
       - store-steps
   test_phphhvm:
