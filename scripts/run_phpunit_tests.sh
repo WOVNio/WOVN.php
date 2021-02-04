@@ -35,8 +35,6 @@ docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; ./composer.phar
 
 # Check syntax
 docker exec ${APACHE_CONTAINER_ID} \
-    /bin/bash -c 'find /opt/project -type f -name "*.php" ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors"'
-docker exec ${APACHE_CONTAINER_ID} \
     /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
 
 # Run unit test
