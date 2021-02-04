@@ -6,7 +6,7 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   # For path pattern, remove language code
-  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi|km|ta|si)($|/.*$) $1 [L]
+  # RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi|km|ta|si|en-US|zh-Hant-HK)($|/.*$) $1 [L]
 
   # Don't intercept .cgi files, as they won't execute
   RewriteCond %{THE_REQUEST} \.cgi
