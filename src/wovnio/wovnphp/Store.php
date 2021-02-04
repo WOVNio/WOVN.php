@@ -198,6 +198,7 @@ class Store
             if (!empty($this->settings['logging']['max_line_length'])) {
                 Logger::get()->setMaxLogLineLength($this->settings['logging']['max_line_length']);
             }
+            Logger::get()->setQuiet(false);
         }
 
         if (!is_bool($this->settings['insert_hreflangs'])) {
