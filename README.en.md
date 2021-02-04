@@ -791,6 +791,26 @@ use_cookie_lang = true
 }
 ```
 
+#### `logging`
+
+Configures WOVN.php's internal logging. When this section is included in `wovn.json`, WOVN.php's internal logging is enabled. WOVN.php's internal logging uses `error_log()` to log its messages.
+
+`destination`: Optional, can only have the value of `file`. If this is set, WOVN.php's logs will be written into a file defined by `path`. If this not set, logs will be written to PHP's default handling location of `error_log`.
+
+`path`: Required if `destination` is set. Configures which file WOVN.php's logs will be written to. Must be a fully qualified path.
+
+`max_line_length`: Optional, defaults to `1024`. Lines longer than this setting will be truncated.
+
+`wovn.json` ONLY
+
+```json
+{
+  "destination": "file",
+  "path": "/var/logs/error_log.log",
+  "max_line_length": 5124
+}
+```
+
 ## 4. Environment Variable
 
 ### `WOVN_TARGET_LANG`
