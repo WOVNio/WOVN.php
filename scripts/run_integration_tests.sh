@@ -6,7 +6,6 @@ NEW_DOCKER_IMAGE=wovnphp_${DOCKER_IMAGE}
 CONTAINER_NAME="dummy"
 WORK_DIR=/opt/project
 INTGTEST_REPORT_DIR=.phpunit/phpunit.integration
-GITHUB_AUTH_TOKEN=f137458a82b1af1fac7aec42732db9cc517ca9fb
 
 # Prepare directory to store test results
 mkdir -p ${PWD}/${INTGTEST_REPORT_DIR}
@@ -29,7 +28,6 @@ docker cp $(pwd) ${APACHE_CONTAINER_ID}:${WORK_DIR}
 # Install modules
 docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "php ./scripts/composer-setup.php"
 docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "./composer.phar --version"
-docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "./composer.phar config --global github-oauth.github.com ${GITHUB_AUTH_TOKEN}"
 docker exec -w ${WORK_DIR} ${APACHE_CONTAINER_ID} /bin/bash -c "./composer.phar install"
 
 # Run integration test
