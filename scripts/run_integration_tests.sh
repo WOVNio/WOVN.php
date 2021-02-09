@@ -33,7 +33,7 @@ if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function tearDownAfterClass(.*)$/function tearDownAfterClass(): void/g\""
 fi
 
-if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(5\.3).*$ ]]; then
+if [[ ! "${DOCKER_IMAGE}" =~ ^.*php:?(5\.3).*$ ]]; then
     # Remove modules to install modules for PHP8
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
