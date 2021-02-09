@@ -7,7 +7,7 @@ RUN echo "deb http://security.debian.org jessie/updates main" >> /etc/apt/source
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
-RUN apt-get -y --force-yes install git unzip vim
+RUN apt-get -y --force-yes install git unzip
 
 WORKDIR /var/www/html
 

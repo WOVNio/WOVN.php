@@ -35,20 +35,16 @@ jobs:
           name: Display Composer Version
           command: composer --version
       - checkout
-      # - restore_cache:
-      #     keys:
-      #       - vendor-{{ checksum "composer.lock" }}
-      #       - vendor-
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "composer.lock" }}
+            - vendor-
       - run: composer install
-      # - save_cache:
-      #     key: vendor-{{ checksum "composer.lock" }}
-      #     paths:
-      #       - ./vendor
-      - run: ./vendor/bin/phpcs
-      - persist_to_workspace:
-          root: ./
+      - save_cache:
+          key: vendor-{{ checksum "composer.lock" }}
           paths:
-            - ./*
+            - ./vendor
+      - run: ./vendor/bin/phpcs
   test_php80:
     <<: *defaults
     steps:
