@@ -19,7 +19,7 @@ else
 fi
 
 # Create a dummy container which will hold a volume with source
-docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} -t ${NEW_DOCKER_IMAGE} ./docker/apache
+docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} -t ${NEW_DOCKER_IMAGE} -f ./docker/test.Dockerfile ./docker/apache
 
 # Start running docker and copy files (Volume feature doesn't work with CircleCI.)
 APACHE_CONTAINER_ID=`docker run -d -e WOVN_ENV=development --name ${CONTAINER_NAME} ${NEW_DOCKER_IMAGE} /bin/bash -c "${MOD_REWRITE_ACTIVATION}; ${START_APACHE}"`
