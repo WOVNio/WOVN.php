@@ -49,43 +49,6 @@ jobs:
           root: ./
           paths:
             - ./*
-  setup_test:
-    working_directory: ~/project
-    docker:
-      - image: circleci/php:8.0.1-apache
-    steps:
-      - checkout
-      - run:
-          name: Install modules
-          command: composer install
-      - run:
-          name: Check versions
-          command: |
-            composer --version
-            php --version
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - ./*
-  setup_old_test:
-    <<: *defaults
-    steps:
-      - checkout
-      - run:
-          name: Install modules
-          command: COMPOSER=composer-old.json composer install
-      - run:
-          name: Check versions
-          command: |
-            composer --version
-            php --version
-      - run:
-          name: Syntax check
-          command: ./vendor/bin/phpcs
-      - persist_to_workspace:
-          root: ~/project
-          paths:
-            - ./*
   test_php80:
     <<: *defaults
     steps:
@@ -146,7 +109,6 @@ jobs:
     <<: *defaults
     steps:
       - common-steps
-      # php:5.4-apache does not included mbstring extention
       - run: scripts/run_phpunit_tests.sh php:5.4-apache
       - run: scripts/run_integration_tests.sh php:5.4-apache
       - store-steps
@@ -170,33 +132,12 @@ workflows:
     jobs:
       - build
       - test_php80
-      - test_php74:
-          requires:
-            - build
-      - test_php73:
-          requires:
-            - build
-      - test_php72:
-          requires:
-            - build
-      - test_php71:
-          requires:
-            - build
-      - test_php70:
-          requires:
-            - build
-      - test_php56:
-          requires:
-            - build
-      - test_php55:
-          requires:
-            - build
-      - test_php54:
-          requires:
-            - build
-      - test_php53:
-          requires:
-            - build
-      - test_phphhvm:
-          requires:
-            - build
+      - test_php74
+      - test_php73
+      - test_php72
+      - test_php71
+      - test_php70
+      - test_php56
+      - test_php55
+      - test_php54
+      - test_php53
