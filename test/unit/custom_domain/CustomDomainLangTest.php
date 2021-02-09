@@ -18,6 +18,7 @@ class CustomDomainLangTest extends \PHPUnit_Framework_TestCase
         $this->customDomainWithPathNoTrailingSlash = new CustomDomainLang('foo.com', '/path', 'fr');
         $this->customDomainWithPathTrailingSlash = new CustomDomainLang('foo.com', '/path/', 'fr');
         $this->customDomainPathEncodedSpaces = new CustomDomainLang('foo.com', '/dir%20path', 'fr');
+        $this->customDomainWithPort = new CustomDomainLang('foo.com:8099', '/path', 'fr');
     }
 
     public function testCustomDomainLangParams()
@@ -53,6 +54,12 @@ class CustomDomainLangTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->customDomainRootPath->isMatch(parse_url('http://foo.com:3000/other/test.html')));
         $this->assertFalse($this->customDomainRootPath->isMatch(parse_url('http://foo.com:80/other/test.html')));
         $this->assertTrue($this->customDomainRootPath->isMatch(parse_url('http://foo.com/other/test.html')));
+    }
+
+    public function testIsMatchShouldMatchSamePort()
+    {
+        $this->assertTrue($this->customDomainWithPort->isMatch(parse_url('http://foo.com:8099/path')));
+        $this->assertTrue($this->customDomainWithPort->isMatch(parse_url('http://foo.com:8099/path/more')));
     }
 
     public function testIsMatchWithDomainContainingSubstringShouldBeFalse()

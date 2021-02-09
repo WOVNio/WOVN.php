@@ -94,7 +94,7 @@ class CustomDomainLangs
 
     private function removePort($url)
     {
-        $parsed = parse_url($url);
+        $parsed = parse_url($this->addProtocolIfNeeded($url));
         return $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'];
     }
 
