@@ -308,6 +308,8 @@ NOT SUPPORTED
 }
 ```
 
+*New in 1.8.4*: `url` can contain a port number, e.g. `www.site.com:8081/english`.
+
 For the example above, all request URLs that match `www.site.com/english/*` will be considered as requests in English language.
 All request URLs other than the above that match `www.site.co.jp/*` will be considered as requests in Japanese langauge.
 And, request URLs that match `fr.site.co.jp/*` will be considered as requests in French langauge.
