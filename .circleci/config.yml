@@ -119,12 +119,6 @@ jobs:
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
       - run: scripts/run_integration_tests.sh php:5.3-apache
       - store-steps
-  test_phphhvm:
-    <<: *defaults
-    steps:
-      - common-steps
-      - run: scripts/run_phpunit_tests.sh vectorface/hhvm
-      - store-steps
 
 workflows:
   version: 2
@@ -139,9 +133,5 @@ workflows:
       - test_php70
       - test_php56
       - test_php55
-      - test_php54:
-          requires:
-            - build
-      - test_php53:
-          requires:
-            - build
+      - test_php54
+      - test_php53
