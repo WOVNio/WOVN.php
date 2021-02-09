@@ -48,10 +48,10 @@ class CustomDomainLangTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->customDomainRootPath->isMatch(parse_url('http://otherdomain.com/other/test.html')));
     }
 
-    public function testIsMatchWithDifferentPortNumberShouldBeIgnored()
+    public function testIsMatchShouldNotMatchDifferentPorts()
     {
-        $this->assertTrue($this->customDomainRootPath->isMatch(parse_url('http://foo.com:3000/other/test.html')));
-        $this->assertTrue($this->customDomainRootPath->isMatch(parse_url('http://foo.com:80/other/test.html')));
+        $this->assertFalse($this->customDomainRootPath->isMatch(parse_url('http://foo.com:3000/other/test.html')));
+        $this->assertFalse($this->customDomainRootPath->isMatch(parse_url('http://foo.com:80/other/test.html')));
         $this->assertTrue($this->customDomainRootPath->isMatch(parse_url('http://foo.com/other/test.html')));
     }
 
