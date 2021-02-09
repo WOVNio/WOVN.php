@@ -40,6 +40,9 @@ class CustomDomainLang
   
     public function isMatch($parsedUrl)
     {
+        if (isset($parsedUrl['port'])) {
+            $parsedUrl['host'] = $parsedUrl['host'] . ':' . $parsedUrl['port'];
+        }
         $host = $parsedUrl['host'];
         $path = array_key_exists('path', $parsedUrl) ? $parsedUrl['path'] : '/';
         return strtolower($host) === strtolower($this->host) && $this->pathIsEqualOrSubsetOf($this->path, $path);

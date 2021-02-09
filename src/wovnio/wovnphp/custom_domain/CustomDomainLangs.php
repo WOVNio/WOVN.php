@@ -15,7 +15,9 @@ class CustomDomainLangs
         foreach ($customDomainLangsSettingsArray as $langCode => $config) {
             $parsedUrl = parse_url($this->addProtocolIfNeeded($config['url']));
             $source = array_key_exists('source', $config) ? $config['source'] : $defaultLangCustomDomain;
-
+            if (isset($parsedUrl['port'])) {
+                $parsedUrl['host'] = $parsedUrl['host'] . ':' . $parsedUrl['port'];
+            }
             // Disable notice error by adding @, when path is not defined
             $this->customDomainLangs[$langCode] = new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $langCode, $source);
         }
