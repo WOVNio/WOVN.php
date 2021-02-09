@@ -141,4 +141,3 @@ workflows:
       - test_php55
       - test_php54
       - test_php53
-      - test_phphhvm

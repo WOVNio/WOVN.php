@@ -9,7 +9,7 @@ RUN apt-get -y install vim git unzip php-pear
 RUN apt-get clean
 
 # enable mod_rewrite
-# RUN a2enmod rewrite
+RUN a2enmod rewrite
 
 WORKDIR /var/www/html
 
