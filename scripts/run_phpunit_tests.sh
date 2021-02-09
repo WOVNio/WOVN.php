@@ -19,13 +19,22 @@ docker cp $(pwd) ${APACHE_CONTAINER_ID}:${WORK_DIR}
 
 if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
     # Convert test to support PHP8 syntax
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function setUp(.*)$/function setUp(): void/g\""
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function setUpBeforeClass(.*)$/function setUpBeforeClass(): void/g\""
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function tearDown(.*)$/function tearDown(): void/g\""
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i \"s/function tearDownAfterClass(.*)$/function tearDownAfterClass(): void/g\""
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function setUp(.*)$/function setUp(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function setUpBeforeClass(.*)$/function setUpBeforeClass(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function tearDown(.*)$/function tearDown(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function tearDownAfterClass(.*)$/function tearDownAfterClass(): void/g'"
 fi
 
-if [[ ! "${DOCKER_IMAGE}" =~ ^.*php:?(5\.3).*$ ]]; then
+if [[ "${DOCKER_IMAGE}" =~ ^.*php:?5\.3.*$ ]]; then
+    # Convert test to support PHP5.3 syntax
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/^use PHPUnit\\\Framework\\\TestCase;$//g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/extends TestCase$/extends \\\PHPUnit_Framework_TestCase/g'"
+
+    # Copy modules for PHP53
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "rm -rf ${WORK_DIR}/vendor"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "unzip -q -o -d ${WORK_DIR} ${WORK_DIR}/test/vendor_for_php53.zip"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "mv ${WORK_DIR}/vendor_for_php53 ${WORK_DIR}/vendor"
+else
     # Remove modules to install modules for PHP8
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
