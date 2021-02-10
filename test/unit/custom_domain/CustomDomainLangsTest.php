@@ -20,6 +20,7 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
             'zh-CHS' => array('url' => 'foo.com/dir/path'),
             'en' => array('url' => 'english.foo.com/', 'source' => 'global.foo.com/'),
             'no' => array('url' => 'foo.com:8000/path', 'source' => 'no.foo.com:8000/'),
+            'fi' => array('url' => 'fii.com:8000/path', 'source' => 'fi.foo.com:8000/'),
         );
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }
@@ -124,11 +125,11 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expectedComputedUri, $computedUri);
     }
 
-    public function testComputeSourceVirtualUrlShouldRemovePortNumber()
+    public function testComputeSourceVirtualUrlShouldNotRemovePortNumber()
     {
         $currentUri = "http://no.foo.com:8000/blog/entry1.html";
-        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "no", "en");
-        $expectedComputedUri = "http://english.foo.com/blog/entry1.html";
+        $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "no", "fi");
+        $expectedComputedUri = "http://fii.com:8000/path/blog/entry1.html";
         $this->assertEquals($expectedComputedUri, $computedUri);
     }
 }

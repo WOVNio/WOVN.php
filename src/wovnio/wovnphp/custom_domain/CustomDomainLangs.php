@@ -82,20 +82,13 @@ class CustomDomainLangs
     {
         $currentLangDomainLang = $this->getSourceCustomDomainByLang($lang);
         $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
-        $virtualUrl = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
-        return $this->removePort($virtualUrl);
+        return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
     }
 
     // parse_url needs protocol to parse URL.
     private function addProtocolIfNeeded($url)
     {
         return preg_match("/https?:\/\//", $url, $matches) ? $url : 'http://' . $url;
-    }
-
-    private function removePort($url)
-    {
-        $parsed = parse_url($this->addProtocolIfNeeded($url));
-        return $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'];
     }
 
     private static function getDefaultLangCustomDomain($customDomainLangsSettingsArray, $defaultLang)
