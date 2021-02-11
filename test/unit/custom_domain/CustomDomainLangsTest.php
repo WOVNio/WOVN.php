@@ -129,7 +129,7 @@ class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
     {
         $currentUri = "http://no.foo.com:8000/blog/entry1.html";
         $computedUri = $this->customDomainLangs->computeSourceVirtualUrl($currentUri, "no", "fi");
-        $expectedComputedUri = "http://fii.com:8000/path/blog/entry1.html";
+        $expectedComputedUri = "http://fii.com/path/blog/entry1.html";
         $this->assertEquals($expectedComputedUri, $computedUri);
     }
 }
