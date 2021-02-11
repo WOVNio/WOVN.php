@@ -15,7 +15,9 @@ class CustomDomainLangs
         foreach ($customDomainLangsSettingsArray as $langCode => $config) {
             $parsedUrl = parse_url($this->addProtocolIfNeeded($config['url']));
             $source = array_key_exists('source', $config) ? $config['source'] : $defaultLangCustomDomain;
-
+            if (isset($parsedUrl['port'])) {
+                $parsedUrl['host'] = $parsedUrl['host'] . ':' . $parsedUrl['port'];
+            }
             // Disable notice error by adding @, when path is not defined
             $this->customDomainLangs[$langCode] = new CustomDomainLang($parsedUrl['host'], @$parsedUrl['path'], $langCode, $source);
         }
@@ -80,7 +82,14 @@ class CustomDomainLangs
     {
         $currentLangDomainLang = $this->getSourceCustomDomainByLang($lang);
         $defaultCustomDomainLang = $this->getCustomDomainLangByLang($defaultLang);
-        return CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
+        $virtualUrl = CustomDomainLangUrlHandler::changeToNewCustomDomainLang($physicalUri, $currentLangDomainLang, $defaultCustomDomainLang);
+        return $this->removePort($virtualUrl);
+    }
+
+    private function removePort($url)
+    {
+        $parsed = parse_url($this->addProtocolIfNeeded($url));
+        return $parsed['scheme'] . '://' . $parsed['host'] . $parsed['path'];
     }
 
     // parse_url needs protocol to parse URL.
