@@ -191,32 +191,31 @@ class UrlSubdomainPatternTest extends TestCase
         $this->assertEquals($not_found_page, TestUtils::fetchURL('http://testsite.com/index.html')->body);
     }
 
-    // TODO: Fix me
-    // public function testSubdomainPatternWhenHtmlSwapperDoesnotReturnResponse()
-    // {
-    //     $langs = array('en', 'ja');
-    //     copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-    //     TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
-    //     TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
-    //         'url_pattern_name' => 'subdomain',
-    //         'supported_langs' => $langs,
-    //         'api_url' => 'http://localhost/not_exist_html_swapper_url/'
-    //     ));
+    public function testSubdomainPatternWhenHtmlSwapperDoesnotReturnResponse()
+    {
+        $langs = array('en', 'ja');
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'subdomain',
+            'supported_langs' => $langs,
+            'api_url' => 'http://localhost/not_exist_html_swapper_url/'
+        ));
 
-    //     $content_without_html_swapper = '<html lang="en">'.
-    //     '<head>'.
-    //     '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
-    //     '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
-    //     '<script src="//j.wovn.io/1" '.
-    //     'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
-    //     'data-wovnio-info="version=WOVN.php_VERSION" '.
-    //     'data-wovnio-type="fallback_snippet" '. // Sould include fallback snippet
-    //     'async></script>'.
-    //     '</head>'.
-    //     '<body>test</body>'.
-    //     '</html>';
-    //     $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://ja.testsite.com/index.html')->body);
-    // }
+        $content_without_html_swapper = '<html lang="en">'.
+        '<head>'.
+        '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
+        '<script src="//j.wovn.io/1" '.
+        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
+        'data-wovnio-info="version=WOVN.php_VERSION" '.
+        'data-wovnio-type="fallback_snippet" '. // Sould include fallback snippet
+        'async></script>'.
+        '</head>'.
+        '<body>test</body>'.
+        '</html>';
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://ja.testsite.com/index.html')->body);
+    }
 
     public function testSubdomainPatternWithCustomLangAliases()
     {

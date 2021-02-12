@@ -25,6 +25,7 @@ if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function tearDownAfterClass(.*)$/function tearDownAfterClass(): void/g'"
 fi
 
+# Set up modules
 if [[ "${DOCKER_IMAGE}" =~ ^.*php:?5\.3.*$ ]]; then
     # Convert test to support PHP5.3 syntax
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/^use PHPUnit\\\Framework\\\TestCase;$//g'"
@@ -35,7 +36,8 @@ if [[ "${DOCKER_IMAGE}" =~ ^.*php:?5\.3.*$ ]]; then
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "unzip -q -o -d ${WORK_DIR} ${WORK_DIR}/test/vendor_for_php53.zip"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "mv ${WORK_DIR}/vendor_for_php53 ${WORK_DIR}/vendor"
 else
-    # Remove modules to install modules for PHP8
+    # Re-install modules
+    # Remove modules
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
 

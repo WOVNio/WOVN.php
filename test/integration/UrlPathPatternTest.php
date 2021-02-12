@@ -189,34 +189,33 @@ class UrlPathPatternTest extends TestCase
         $this->assertEquals($not_found_page, TestUtils::fetchURL('http://localhost/no.html')->body);
     }
 
-    // TODO: Fix me
-    // public function testPathPatternWhenHtmlSwapperDoesnotReturnResponse()
-    // {
-    //     $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
-    //     copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-    //     TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
-    //     TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
-    //         'url_pattern_name' => 'path',
-    //         'supported_langs' => $langs,
-    //         'api_url' => 'http://localhost/not_exist_html_swapper_url/'
-    //     ));
+    public function testPathPatternWhenHtmlSwapperDoesnotReturnResponse()
+    {
+        $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'path',
+            'supported_langs' => $langs,
+            'api_url' => 'http://localhost/not_exist_html_swapper_url/'
+        ));
 
-    //     $content_without_html_swapper = '<html lang="en">'.
-    //     '<head>'.
-    //     '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
-    //     '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
-    //     '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
-    //     '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.html">'.
-    //     '<script src="//j.wovn.io/1" '.
-    //     'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
-    //     'data-wovnio-info="version=WOVN.php_VERSION" '.
-    //     'data-wovnio-type="fallback_snippet" '. // Sould include fallback snippet
-    //     'async></script>'.
-    //     '</head>'.
-    //     '<body>test</body>'.
-    //     '</html>';
-    //     $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/ja/index.html')->body);
-    // }
+        $content_without_html_swapper = '<html lang="en">'.
+        '<head>'.
+        '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
+        '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
+        '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
+        '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.html">'.
+        '<script src="//j.wovn.io/1" '.
+        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
+        'data-wovnio-info="version=WOVN.php_VERSION" '.
+        'data-wovnio-type="fallback_snippet" '. // Sould include fallback snippet
+        'async></script>'.
+        '</head>'.
+        '<body>test</body>'.
+        '</html>';
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/ja/index.html')->body);
+    }
 
     public function testPathPatternWithCustomLangAliases()
     {

@@ -104,7 +104,7 @@ class API
             }
 
             $translation_response = json_decode($response, true);
-            if (array_key_exists('body', $translation_response)) {
+            if ($translation_response && array_key_exists('body', $translation_response)) {
                 return $converter->revertMarkers($translation_response['body']);
             } else {
                 return $converter->revertMarkers($converted_html);
