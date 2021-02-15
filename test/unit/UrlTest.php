@@ -16,7 +16,9 @@ use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Headers;
 use Wovnio\Wovnphp\Lang;
 
-class UrlTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UrlTest extends TestCase
 {
     private function getStarted($pattern = 'path', $additional_env = array(), $additional_settings = array())
     {

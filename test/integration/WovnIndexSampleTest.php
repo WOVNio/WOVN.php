@@ -6,7 +6,9 @@ namespace Wovnio\Wovnphp\Tests\Integration;
  * - @runInSeparateProcess: It's need if test call header() function
  */
 
-class WovnIndexSampleTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class WovnIndexSampleTest extends TestCase
 {
     protected function setUp()
     {

@@ -9,7 +9,9 @@ require_once 'src/wovnio/html/HtmlConverter.php';
 
 use \Wovnio\Wovnphp\Store;
 
-class StoreTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class StoreTest extends TestCase
 {
     protected function setUp()
     {

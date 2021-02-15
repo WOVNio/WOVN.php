@@ -4,7 +4,9 @@ namespace Wovnio\Wovnphp\Tests\Integration;
 require_once(__DIR__ . '/../helpers/TestUtils.php');
 use Wovnio\Test\Helpers\TestUtils;
 
-class UrlCustomDomainPatternTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UrlCustomDomainPatternTest extends TestCase
 {
     private static $orgHostFile;
 

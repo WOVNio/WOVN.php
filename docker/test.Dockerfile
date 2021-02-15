@@ -1,4 +1,4 @@
-ARG DOCKER_IMAGE=php:7.4-apache
+ARG DOCKER_IMAGE=php:8.0-apache
 FROM ${DOCKER_IMAGE}
 
 RUN echo "deb http://deb.debian.org/debian jessie main" > /etc/apt/sources.list
@@ -7,14 +7,7 @@ RUN echo "deb http://security.debian.org jessie/updates main" >> /etc/apt/source
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
-RUN apt-get -y -f install git unzip
-RUN apt-get clean
-
-# enable mod_rewrite
-RUN a2enmod rewrite
-
-# install xdebug
-RUN pecl install xdebug-2.9.0
-RUN docker-php-ext-enable xdebug
+RUN apt-get -y --force-yes install git unzip
 
 WORKDIR /var/www/html
+

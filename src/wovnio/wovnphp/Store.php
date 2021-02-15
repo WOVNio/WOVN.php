@@ -111,7 +111,7 @@ class Store
             'save_memory_by_sending_wovn_ignore_content' => false,
             'enable_wovn_diagnostics' => false,
             'use_cookie_lang' => false,
-            'wovn_debug_mode' => false
+            'debug_mode' => false
         );
     }
 

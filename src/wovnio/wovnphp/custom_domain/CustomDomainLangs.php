@@ -44,8 +44,8 @@ class CustomDomainLangs
     {
         $sortedCustomDomainLangs = array_values($this->customDomainLangs);
         // "/" path will naturally match every URL, so by comparing longest paths first we will get the best match
-        usort($sortedCustomDomainLangs, function ($left, $right) {
-            return strlen($left->getPath()) <= strlen($right->getPath());
+        uasort($sortedCustomDomainLangs, function ($left, $right) {
+            return strlen($left->getPath()) <= strlen($right->getPath()) ? 1 : -1;
         });
         $parsedUrl = parse_url($this->addProtocolIfNeeded($url));
         if ($parsedUrl && !array_key_exists('path', $parsedUrl)) {

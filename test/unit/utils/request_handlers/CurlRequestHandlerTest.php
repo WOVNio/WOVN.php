@@ -6,7 +6,9 @@ require_once 'test/helpers/CurlMock.php';
 
 use Wovnio\Utils\RequestHandlers\CurlRequestHandler;
 
-class CurlRequestHandlerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CurlRequestHandlerTest extends TestCase
 {
     protected function tearDown()
     {
