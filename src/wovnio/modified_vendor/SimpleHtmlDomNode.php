@@ -22,6 +22,7 @@ class SimpleHtmlDomNode {
     public $info_text = null;
     public $info_inner = null;
     public $info_outer = null;
+    private $is_php_53 = false;
 
     function __construct($dom)
     {
@@ -31,6 +32,10 @@ class SimpleHtmlDomNode {
         } else {
             $dom->dom_flat_node_list_tail->dom_flat_list_next = $this;
             $dom->dom_flat_node_list_tail = $this;
+        }
+        $phpversion =  explode('.', phpversion());
+        if ($phpversion[0] == '5' && $phpversion[1] == '3') {
+            $this->is_php_53 = true;
         }
     }
 
@@ -48,7 +53,9 @@ class SimpleHtmlDomNode {
     function clear()
     {
         $this->dom = null;
-        // $this->parent = null;
+        if ($this->is_php_53) {
+            $this->parent = null;
+        }
         $this->node_begin = null;
     }
 
