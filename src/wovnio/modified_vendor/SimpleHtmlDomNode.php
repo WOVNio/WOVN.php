@@ -48,7 +48,7 @@ class SimpleHtmlDomNode {
     function clear()
     {
         $this->dom = null;
-        $this->parent = null;
+        // $this->parent = null;
         $this->node_begin = null;
     }
 
