@@ -26,8 +26,9 @@ use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\RequestOptions;
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
+use PHPUnit\Framework\TestCase;
 
-class APITest extends \PHPUnit_Framework_TestCase
+class APITest extends TestCase
 {
     protected function setUp()
     {

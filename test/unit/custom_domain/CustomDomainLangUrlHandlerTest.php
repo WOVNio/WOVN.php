@@ -7,7 +7,9 @@ require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangUrlHandler.php';
 use Wovnio\Wovnphp\CustomDomainLangs;
 use Wovnio\Wovnphp\CustomDomainLangUrlHandler;
 
-class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CustomDomainLangUrlHandlerTest extends TestCase
 {
     private $customDomainLangsSetting;
     private $customDomainLangs;

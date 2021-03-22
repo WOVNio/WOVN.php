@@ -111,7 +111,7 @@ class Store
             'save_memory_by_sending_wovn_ignore_content' => false,
             'enable_wovn_diagnostics' => false,
             'use_cookie_lang' => false,
-            'wovn_debug_mode' => false
+            'debug_mode' => false
         );
     }
 
@@ -198,6 +198,7 @@ class Store
             if (!empty($this->settings['logging']['max_line_length'])) {
                 Logger::get()->setMaxLogLineLength($this->settings['logging']['max_line_length']);
             }
+            Logger::get()->setQuiet(false);
         }
 
         if (!is_bool($this->settings['insert_hreflangs'])) {

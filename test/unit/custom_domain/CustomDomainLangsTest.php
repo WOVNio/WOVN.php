@@ -7,7 +7,9 @@ require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangs.php';
 use PHP_CodeSniffer\Tests\Standards\AllSniffs;
 use Wovnio\Wovnphp\CustomDomainLangs;
 
-class CustomDomainLangsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CustomDomainLangsTest extends TestCase
 {
     private $customDomainLangsSetting;
     private $customDomainLangs;

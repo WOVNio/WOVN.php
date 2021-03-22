@@ -5,7 +5,9 @@ require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLang.php';
 
 use Wovnio\Wovnphp\CustomDomainLang;
 
-class CustomDomainLangTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CustomDomainLangTest extends TestCase
 {
     private $customDomainRootPath;
     private $customDomainWithPathNoTrailingSlash;

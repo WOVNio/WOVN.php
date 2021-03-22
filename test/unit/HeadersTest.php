@@ -14,7 +14,9 @@ use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\CookieLang;
 
-class HeadersTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HeadersTest extends TestCase
 {
     protected function tearDown()
     {

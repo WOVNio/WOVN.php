@@ -3,8 +3,9 @@ namespace Wovnio\Wovnphp\Tests\Integration;
 
 require_once(__DIR__ . '/../helpers/TestUtils.php');
 use Wovnio\Test\Helpers\TestUtils;
+use PHPUnit\Framework\TestCase;
 
-class UrlPathPatternTest extends \PHPUnit_Framework_TestCase
+class UrlPathPatternTest extends TestCase
 {
     protected function setUp()
     {

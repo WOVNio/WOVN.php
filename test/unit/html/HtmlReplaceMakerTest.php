@@ -5,7 +5,9 @@ require_once 'src/wovnio/html/HtmlReplaceMarker.php';
 
 use Wovnio\Html\HtmlReplaceMarker;
 
-class HtmlReplaceMarkerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HtmlReplaceMarkerTest extends TestCase
 {
     public function testAddCommentValue()
     {

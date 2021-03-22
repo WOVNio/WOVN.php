@@ -7,7 +7,9 @@ use \Wovnio\Html\HtmlReplaceMarker;
 use \Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use \Wovnio\ModifiedVendor\SimpleHtmlDom;
 
-class HtmlConverterTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HtmlConverterTest extends TestCase
 {
     public function testInsertSnippetAndLangTagsWithSampleWebsites()
     {
@@ -248,12 +250,12 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
 
-        $this->assertContains('<html lang="en"', $converter->insertSnippetAndLangTags('<html><head></head><body><a>hello</a></body></html>', 'en'), 'general case - insert lang attribute');
-        $this->assertContains('<html lang="en"', $converter->insertSnippetAndLangTags('<html test="lang"><head></head><body><a>hello</a></body></html>', 'en'), 'html with other attribute - insert lang attribute');
-        $this->assertContains('<html lang="ja"', $converter->insertSnippetAndLangTags('<html lang="ja"><head></head><body><a>hello</a></body></html>', 'en'), 'lang attribute exists - keep existing lang');
-        $this->assertContains("<html lang='ja'", $converter->insertSnippetAndLangTags("<html lang='ja'><head></head><body><a>hello</a></body></html>", 'en'), 'lang attribute exists with single quotes - keep existing lang');
-        $this->assertContains("<html lang=ja", $converter->insertSnippetAndLangTags("<html lang=ja><head></head><body><a>hello</a></body></html>", 'en'), 'lang attribute exists without quotes - keep existing lang');
-        $this->assertContains('<html lang="zh-CHS"', $converter->insertSnippetAndLangTags('<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>', 'en'), 'lang code has dash - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="en"') !== false, true, 'general case - insert lang attribute');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html test="lang"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="en"') !== false, true, 'html with other attribute - insert lang attribute');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html lang="ja"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="ja"') !== false, true, 'lang attribute exists - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags("<html lang='ja'><head></head><body><a>hello</a></body></html>", 'en'), "<html lang='ja'") !== false, true, 'lang attribute exists with single quotes - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags("<html lang=ja><head></head><body><a>hello</a></body></html>", 'en'), "<html lang=ja") !== false, true, 'lang attribute exists without quotes - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="zh-CHS"') !== false, true, 'lang code has dash - keep existing lang');
     }
 
     public function testBuildHrefLangPath()

@@ -11,7 +11,9 @@ use Wovnio\Test\Helpers\EnvFactory;
 use Wovnio\Wovnphp\Store;
 use Wovnio\Wovnphp\Utils;
 
-class UtilsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UtilsTest extends TestCase
 {
     public function testGetStoreAndHeaders()
     {

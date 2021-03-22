@@ -6,7 +6,9 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDomNode.php';
 
 use Wovnio\ModifiedVendor\SimpleHtmlDom;
 
-class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SimpleHtmlDomTest extends TestCase
 {
     public function testGetAttribute()
     {

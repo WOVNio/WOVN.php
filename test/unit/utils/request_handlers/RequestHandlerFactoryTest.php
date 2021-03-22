@@ -7,7 +7,9 @@ require_once 'test/helpers/FileGetContentsMock.php';
 
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
-class RequestHandlerFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class RequestHandlerFactoryTest extends TestCase
 {
     protected function tearDown()
     {
