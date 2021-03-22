@@ -296,17 +296,23 @@ class SimpleHtmlDomNode {
     }
 
     // parse attributes
+    // false: attribute text does not have key / other: attribute text has key
     protected function get_attr_val($attr_text, $name)
     {
         $text_len = strlen($attr_text);
         $name_pos = stripos($attr_text, $name);
-        if ($name_pos === false) return false;
-        if ($name_pos >= $text_len) return true;
+        if ($name_pos === false) return false; // key is not found
+        if ($name_pos >= $text_len) return true; // attribute text is longer than start posision of key.
 
+        // blank length between key and equal
         $blank_len = strspn($attr_text, $this->dom->token_blank, $name_pos + strlen($name));
+        // start position of value
         $val_start_pos = $name_pos + strlen($name) + $blank_len;
+        // attribute text is longer than start posision of value
         if ($val_start_pos >= $text_len) return true;
-
+        // $attr_text[$val_start_pos] will be `-`, when $attr_text is "wovn-ignore-attrs" and $name is "wovn-ignore" .
+        if ($blank_len === 0 && $attr_text[$val_start_pos] !== '=') return false;
+        // start of value is not equal
         if ($attr_text[$val_start_pos] !== '=') return true;
 
         $val_start_pos += 1;
