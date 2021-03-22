@@ -146,6 +146,30 @@ class SimpleHtmlDomTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $nodes[0]->hasAttribute('data-dummy-100'));
     }
 
+    public function testHasAttributeWovnIgnore()
+    {
+        $html = '<html><body><div wovn-ignore>test</div></body></html>';
+        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+        $nodes = $this->getTagNodes($dom, 'div');
+        $this->assertEquals(1, count($nodes));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('wovn-ignore'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('data-wovn-ignore'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('wovn-ignore-attrs'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('wovn-ignore-content'));
+    }
+
+    public function testHasAttributeWovnIgnoreAttrs()
+    {
+        $html = '<html><body><div wovn-ignore-attrs>test</div></body></html>';
+        $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
+        $nodes = $this->getTagNodes($dom, 'div');
+        $this->assertEquals(1, count($nodes));
+        $this->assertEquals(true, $nodes[0]->hasAttribute('wovn-ignore-attrs'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('wovn-ignore'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('data-wovn-ignore'));
+        $this->assertEquals(false, $nodes[0]->hasAttribute('wovn-ignore-content'));
+    }
+
     private function getTagNodes($dom, $tag_name)
     {
         $self = $this;
