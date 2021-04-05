@@ -1,9 +1,6 @@
 ARG DOCKER_IMAGE=php:7.4-apache
 FROM ${DOCKER_IMAGE}
 
-# modify sources.list to change target for apt-get
-RUN echo "deb http://deb.debian.org/debian jessie main" > /etc/apt/sources.list
-
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
