@@ -3,11 +3,11 @@ FROM ${DOCKER_IMAGE}
 
 # modify sources.list to change target for apt-get
 RUN echo "deb http://deb.debian.org/debian jessie main" > /etc/apt/sources.list
-RUN echo "deb http://security.debian.org jessie/updates main" >> /etc/apt/sources.list
 
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
+# Fix GPG error
 RUN apt-get install -y --force-yes debian-keyring debian-archive-keyring
 RUN apt-get -y -f install git unzip
 RUN apt-get clean
