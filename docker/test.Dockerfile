@@ -9,5 +9,8 @@ RUN apt-get clean all
 RUN apt-get update -qq
 RUN apt-get -y --force-yes install git unzip
 
+RUN docker-php-ext-install mbstring
+RUN docker-php-ext-enable mbstring
+
 WORKDIR /var/www/html
 
