@@ -19,11 +19,15 @@ else
 fi
 
 # Create a dummy container which will hold a volume with source
+docker tag ${DOCKER_IMAGE} base-image
 docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} -t ${NEW_DOCKER_IMAGE} -f ./docker/test.Dockerfile ./docker/apache
 
 # Start running docker and copy files (Volume feature doesn't work with CircleCI.)
 APACHE_CONTAINER_ID=`docker run -d -e WOVN_ENV=development --name ${CONTAINER_NAME} ${NEW_DOCKER_IMAGE} /bin/bash -c "${MOD_REWRITE_ACTIVATION}; ${START_APACHE}"`
 docker cp $(pwd) ${APACHE_CONTAINER_ID}:${WORK_DIR}
+
+# Display PHP version
+docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "php --version"
 
 if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
     # Convert test to support PHP8 syntax
@@ -61,4 +65,4 @@ docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; set -e; vendor/
 docker cp ${APACHE_CONTAINER_ID}:"${WORK_DIR}/${INTGTEST_REPORT_DIR}" ${PWD}/${INTGTEST_REPORT_DIR}
 
 # Remove container
-# docker rm -f ${APACHE_CONTAINER_ID}
+docker rm -f ${APACHE_CONTAINER_ID}
