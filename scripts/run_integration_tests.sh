@@ -19,6 +19,7 @@ else
 fi
 
 # Create a dummy container which will hold a volume with source
+docker pull ${DOCKER_IMAGE}
 docker tag ${DOCKER_IMAGE} base-image
 docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} -t ${NEW_DOCKER_IMAGE} -f ./docker/test.Dockerfile ./docker/apache
 

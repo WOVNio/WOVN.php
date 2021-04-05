@@ -11,6 +11,7 @@ UNITTEST_REPORT_DIR=.phpunit/phpunit
 mkdir -p ${PWD}/${UNITTEST_REPORT_DIR}
 
 # Create a dummy container which will hold a volume with source
+docker pull ${DOCKER_IMAGE}
 docker tag ${DOCKER_IMAGE} base-image
 docker build --build-arg DOCKER_IMAGE=${DOCKER_IMAGE} --no-cache -t ${NEW_DOCKER_IMAGE} -f ./docker/test.Dockerfile ./docker/apache
 
