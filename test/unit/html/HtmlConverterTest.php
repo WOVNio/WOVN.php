@@ -122,7 +122,7 @@ class HtmlConverterTest extends TestCase
         $original_html = '<html><head>' .
         '<script src="https://example.com"></script>' .
         '<script src="https://wovn.global.ssl.fastly.net/widget/abcdef"></script>' .
-        '<script src="https://j.dev-wovn.io:3000"></script>' . 
+        '<script src="https://j.dev-wovn.io:3000"></script>' .
         '<script src="//j.wovn.io/1" data-wovnio="key=NCmbvk&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.0.0" data-wovnio-type="backend_without_api" async></script>' .
         '</head><body></body></html>';
 
