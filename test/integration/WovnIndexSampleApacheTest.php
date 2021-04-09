@@ -192,7 +192,7 @@ EXPECTED;
             'encoding' => 'UTF-8',
             'disable_api_request_for_default_lang' => 'true',
             'supported_langs' => array('ja', 'fr', 'bg', 'en'),
-            'api_url' => 'http://localhost/v0/',
+            'api_url' => 'http://localhost',
         );
         $options = array_merge($defaultOptions, $options);
 

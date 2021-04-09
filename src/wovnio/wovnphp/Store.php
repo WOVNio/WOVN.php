@@ -74,7 +74,7 @@ class Store
             'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
             'widget_url' => '//j.wovn.io/1',
-            'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
+            'api_url' => 'https://wovn.global.ssl.fastly.net',
             'api_timeout' => 1.0,
             'default_lang' => 'en',
             'encoding' => null,
