@@ -128,14 +128,14 @@ class HtmlConverter
      */
     private function insertSnippet($html, $add_fallback_mark)
     {
-        $html = $this->remoceSnippet($html);
+        $html = $this->removeSnippet($html);
         $snippet_code = $this->buildSnippetCode($add_fallback_mark);
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
     }
 
-    private function remoceSnippet($html)
+    private function removeSnippet($html)
     {
         $snippet_regex = '@' .
         '<script[^>]*' . // open tag
