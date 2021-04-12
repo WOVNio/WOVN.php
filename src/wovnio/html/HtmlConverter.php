@@ -142,7 +142,7 @@ class HtmlConverter
         '(' .
         'src=\"[^">]*(' . implode("|", $this->wovnWidgetUrls) . ')[^">]*\"' . // src attribute
         '|' .
-        'data-wovnio=\"[^">]+?\"' . // src attribute
+        'data-wovnio=\"[^">]+?\"' . // data-wovnio attribute
         ')' .
         '[^>]*><\/script>' . // close tag
         '@';
