@@ -117,6 +117,32 @@ class HtmlConverterTest extends TestCase
         }
     }
 
+    public function testInsertSnippetAndLangTagsRemoveExistingSnippets()
+    {
+        $original_html = '<html><head>' .
+        '<script src="https://example.com"></script>' .
+        '<script src="https://wovn.global.ssl.fastly.net/widget/abcdef"></script>' .
+        '<script src="https://j.dev-wovn.io:3000"></script>' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=NCmbvk&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.0.0" data-wovnio-type="backend_without_api" async></script>' .
+        '</head><body></body></html>';
+
+        $expected_html = '<html lang="en"><head>' .
+        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+        '<script src="https://example.com"></script>' .
+        '</head><body></body></html>';
+
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
     public function testInsertSnippetAndLangTagsWithInsertHreflangsFalse()
     {
         $html_cases = array(

@@ -146,7 +146,7 @@ class StoreTest extends TestCase
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
-        $this->assertEquals('https://wovn.global.ssl.fastly.net/v0/', $store->settings['api_url']);
+        $this->assertEquals('https://wovn.global.ssl.fastly.net', $store->settings['api_url']);
         $this->assertArrayHasKey('use_proxy', $store->settings);
         $this->assertEquals(1, $store->settings['use_proxy']);
     }

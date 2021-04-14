@@ -23,7 +23,7 @@ class HtmlConverter
     private $store;
     private $headers;
     private $marker;
-
+    private $wovnWidgetUrls;
 
     /**
      * HtmlConverter constructor.
@@ -40,6 +40,7 @@ class HtmlConverter
         $this->store = $store;
         $this->headers = $headers;
         $this->marker = new HtmlReplaceMarker();
+        $this->wovnWidgetUrls = array("j.wovn.io", "j.dev-wovn.io:3000", $this->store->settings['api_url'] . '/widget');
     }
 
     public function insertSnippetAndLangTags($html, $add_fallback_mark)
@@ -127,13 +128,25 @@ class HtmlConverter
      */
     private function insertSnippet($html, $add_fallback_mark)
     {
-        $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
-        $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
-
+        $html = $this->removeSnippet($html);
         $snippet_code = $this->buildSnippetCode($add_fallback_mark);
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+    }
+
+    private function removeSnippet($html)
+    {
+        $snippet_regex = '@' .
+        '<script[^>]*' . // open tag
+        '(' .
+        'src=\"[^">]*(' . implode("|", $this->wovnWidgetUrls) . ')[^">]*\"' . // src attribute
+        '|' .
+        'data-wovnio=\"[^">]+?\"' . // data-wovnio attribute
+        ')' .
+        '[^>]*><\/script>' . // close tag
+        '@';
+        return $this->removeTagFromHtmlByRegex($html, $snippet_regex);
     }
 
     private function insertNoindex($html)

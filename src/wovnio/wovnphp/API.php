@@ -24,7 +24,7 @@ class API
         }
         $cache_key = rawurlencode($cache_key_string);
 
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
+        return $store->settings['api_url'] . '/v0/translation?cache_key=' . $cache_key;
     }
 
     public static function translate($store, $headers, $original_content, $request_options)

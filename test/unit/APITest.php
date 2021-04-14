@@ -61,7 +61,7 @@ class APITest extends TestCase
         }
         $cache_key = rawurlencode($cache_key_string);
 
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
+        return $store->settings['api_url'] . '/v0/translation?cache_key=' . $cache_key;
     }
 
     private function getExpectedHtmlHeadContent($store, $headers, $lang_code_aliases_string = '[]')
