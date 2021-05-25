@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   apache:
     container_name: apache
@@ -34,3 +34,6 @@ services:
       - ./mysql:/var/lib/mysql
     networks:
       - backend-network
+networks:
+  backend-networkt:
+    name: 'backend-network'

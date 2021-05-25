@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   apache:
     container_name: apache
@@ -22,4 +22,4 @@ services:
       - backend-network
 networks:
   backend-networkt:
-    driver: bridge
+    name: 'backend-network'
