@@ -18,3 +18,8 @@ services:
       - ./test:/var/www/html
     command:
       bash -c "a2enmod rewrite && sleep 5 && apache2-foreground"
+    networks:
+      - backend-network
+networks:
+  backend-networkt:
+    driver: bridge
