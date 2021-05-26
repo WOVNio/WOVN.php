@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   apache:
     container_name: apache
@@ -20,6 +20,8 @@ services:
       - ./public:/var/www/html
       - ../:/var/www/html/WOVN.php
       - ../wovn.ini.sample:/var/www/html/wovn.ini
+    networks:
+      - backend-network
   mysql:
     container_name: mysql
     image: mysql:5.7
@@ -30,4 +32,8 @@ services:
       MYSQL_PASSWORD: password
     volumes:
       - ./mysql:/var/lib/mysql
-
+    networks:
+      - backend-network
+networks:
+  backend-network:
+    name: 'backend-network'

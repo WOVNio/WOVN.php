@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 services:
   nginx:
     container_name: nginx
@@ -11,6 +11,8 @@ services:
       - ./nginx/log:/var/log/nginx
     depends_on:
       - app
+    networks:
+      - backend-network
   app:
     build:
       context: ./nginx
@@ -23,4 +25,8 @@ services:
       - ../wovn.json.sample:/var/www/html/wovn.json
       - ../wovn.ini.sample:/var/www/html/wovn.ini
       - ../wovn_index_sample.php:/var/www/html/wovn_index.php
-
+    networks:
+      - backend-network
+networks:
+  backend-network:
+    name: 'backend-network'
