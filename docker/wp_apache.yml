@@ -35,5 +35,5 @@ services:
     networks:
       - backend-network
 networks:
-  backend-networkt:
+  backend-network:
     name: 'backend-network'
