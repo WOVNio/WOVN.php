@@ -6,7 +6,9 @@ require_once 'test/helpers/FileGetContentsMock.php';
 
 use Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler;
 
-class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class FileGetContentsRequestHandlerTest extends TestCase
 {
     protected function tearDown()
     {
@@ -67,7 +69,9 @@ class FileGetContentsRequestHandlerTest extends \PHPUnit_Framework_TestCase
 
     private function assertPostRequest($file_get_contents_response, $expected_response, $expected_headers, $expected_error)
     {
-        $sut = $this->getMock('Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler', array('fileGetContents'));
+        $sut = $this->getMockBuilder('Wovnio\Utils\RequestHandlers\FileGetContentsRequestHandler')
+            ->setMethods(array('fileGetContents'))
+            ->getMock();
         $body = '<html><head></head><body><h1>Congratulations!</h1></body></html>';
         $data = array(
             'url' => 'https://api.wovn.io/v0/translations/?cache_key=12232015',

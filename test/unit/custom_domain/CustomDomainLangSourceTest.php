@@ -7,7 +7,9 @@ require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangSource.php';
 
 use Wovnio\Wovnphp\CustomDomainLangSource;
 
-class CustomDomainLangSourceTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CustomDomainLangSourceTest extends TestCase
 {
     public function testConstructFromAbsoluteUrlNoProtocol()
     {

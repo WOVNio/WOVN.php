@@ -20,8 +20,7 @@ class CustomDomainLangUrlHandler
                 "(${currentHostAndPath})". // 2. host and path
                 '((?:/|\?|#).*)?$' . // 3: other
                 '@';
-
-            return preg_replace($regex, "$1${newHostAndPath}$3", $absoluteUrl);
+            return preg_replace($regex, '${1}' . "${newHostAndPath}" . '${3}', $absoluteUrl);
         }
         return $absoluteUrl;
     }

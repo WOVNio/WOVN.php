@@ -33,7 +33,7 @@ class Logger
         self::$logger = $logger;
     }
 
-    public function __construct($quiet = false, $prefix = 'WOVN.php')
+    public function __construct($quiet = true, $prefix = 'WOVN.php')
     {
         date_default_timezone_set('UTC');
         $this->prefix = $prefix;

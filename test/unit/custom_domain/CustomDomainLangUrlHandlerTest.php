@@ -7,7 +7,9 @@ require_once 'src/wovnio/wovnphp/custom_domain/CustomDomainLangUrlHandler.php';
 use Wovnio\Wovnphp\CustomDomainLangs;
 use Wovnio\Wovnphp\CustomDomainLangUrlHandler;
 
-class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CustomDomainLangUrlHandlerTest extends TestCase
 {
     private $customDomainLangsSetting;
     private $customDomainLangs;
@@ -19,7 +21,8 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
             'ja' => array('url' => 'foo.com/path'),
             'zh-CHS' => array('url' => 'foo.com/dir/path'),
             'en' => array('url' => 'english.foo.com/'),
-            'zh-Hant-HK' => array('url' => 'zh-hant-hk.foo.com/zh')
+            'zh-Hant-HK' => array('url' => 'zh-hant-hk.foo.com/zh'),
+            'pt' => array('url' => '17797-trial2.foo.com/')
         );
         $this->customDomainLangs = new CustomDomainLangs($this->customDomainLangsSetting, 'en');
     }
@@ -55,6 +58,7 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
         $zh_chs = $this->customDomainLangs->getCustomDomainLangByLang('zh-CHS');
         $en = $this->customDomainLangs->getCustomDomainLangByLang('en');
         $zh_hant_hk = $this->customDomainLangs->getCustomDomainLangByLang('zh-Hant-HK');
+        $pt = $this->customDomainLangs->getCustomDomainLangByLang('pt');
 
         $this->assertEquals('foo.com', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('foo.com', $fr, $fr));
         $this->assertEquals('foo.com/path', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('foo.com', $fr, $ja));
@@ -77,5 +81,7 @@ class CustomDomainLangUrlHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('foo.com/path/path/index.html#hash', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('zh-hant-hk.foo.com/zh/path/index.html#hash', $zh_hant_hk, $ja));
 
         $this->assertEquals('zh-hant-hk.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('zh-hant-hk.foo.com/zhtrap', $zh_hant_hk, $ja));
+        $this->assertEquals('english.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('17797-trial2.foo.com/zhtrap', $pt, $en));
+        $this->assertEquals('17797-trial2.foo.com/zhtrap', CustomDomainLangUrlHandler::changeToNewCustomDomainLang('17797-trial2.foo.com/zhtrap', $pt, $pt));
     }
 }

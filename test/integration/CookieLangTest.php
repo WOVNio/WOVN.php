@@ -10,7 +10,9 @@ use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use Wovnio\Test\Helpers\TestUtils;
 use Wovnio\Wovnphp\CookieLang;
 
-class CookieLangTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class CookieLangTest extends TestCase
 {
     protected function setUp()
     {

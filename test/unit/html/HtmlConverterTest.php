@@ -7,9 +7,11 @@ use \Wovnio\Html\HtmlReplaceMarker;
 use \Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use \Wovnio\ModifiedVendor\SimpleHtmlDom;
 
-class HtmlConverterTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HtmlConverterTest extends TestCase
 {
-    public function testInsertSnippetAndHreflangTagsWithSampleWebsites()
+    public function testInsertSnippetAndLangTagsWithSampleWebsites()
     {
         libxml_use_internal_errors(true);
 
@@ -25,7 +27,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             $original_html = file_get_contents("test/fixtures/{$website_name}.html");
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-            $translated_html = $converter->insertSnippetAndHreflangTags($original_html, false);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
 
             $actual_html = $this->convertEncordingAndCorrectHtml($converter->revertMarkers($translated_html));
             $expected_html = $this->convertEncordingAndCorrectHtml(file_get_contents("test/fixtures/{$website_name}_expected.html"));
@@ -34,7 +36,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testInsertSnippetAndHreflangTags()
+    public function testInsertSnippetAndLangTags()
     {
         $html_cases = array(
             array(
@@ -42,7 +44,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<head>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
@@ -58,7 +60,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
                 '<html><body><a>hello</a></body></html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<body>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
@@ -72,7 +74,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
                 '<html><a>hello</a></html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
@@ -90,7 +92,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
                 '</body>' .
                 '</html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<body>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
@@ -109,13 +111,39 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-            $translated_html = $converter->insertSnippetAndHreflangTags($original_html, false);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
 
             $this->assertEquals($expected_html, $translated_html, $message);
         }
     }
 
-    public function testInsertSnippetAndHreflangTagsWithInsertHreflangsFalse()
+    public function testInsertSnippetAndLangTagsRemoveExistingSnippets()
+    {
+        $original_html = '<html><head>' .
+        '<script src="https://example.com"></script>' .
+        '<script src="https://wovn.global.ssl.fastly.net/widget/abcdef"></script>' .
+        '<script src="https://j.dev-wovn.io:3000"></script>' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=NCmbvk&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;version=0.0.0" data-wovnio-type="backend_without_api" async></script>' .
+        '</head><body></body></html>';
+
+        $expected_html = '<html lang="en"><head>' .
+        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+        '<script src="https://example.com"></script>' .
+        '</head><body></body></html>';
+
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
+    public function testInsertSnippetAndLangTagsWithInsertHreflangsFalse()
     {
         $html_cases = array(
             array(
@@ -123,7 +151,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<head>' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '</head>' .
@@ -143,7 +171,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
                 '</body>' .
                 '</html>',
 
-                '<html>' .
+                '<html lang="en">' .
                 '<body>' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
@@ -162,13 +190,13 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
             );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-            $translated_html = $converter->insertSnippetAndHreflangTags($original_html, false);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
 
             $this->assertEquals($expected_html, $translated_html, $message);
         }
     }
 
-    public function testInsertSnippetAndHreflangTagsWithCustomAlias()
+    public function testInsertSnippetAndLangTagsWithCustomAlias()
     {
         $html = '<html><body><a>hello</a></body></html>';
         $settings = array(
@@ -180,13 +208,13 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
-        $expected_html = "<html><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
+        $expected_html = "<html lang=\"en\"><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
         $this->assertEquals($expected_html, $translated_html);
     }
 
-    public function testInsertSnippetAndHreflangTagsWithCustomDomainLangs()
+    public function testInsertSnippetAndLangTagsWithCustomDomainLangs()
     {
         $html = '<html><body><a>hello</a></body></html>';
         $settings = array(
@@ -197,9 +225,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, array('HTTP_HOST' => 'testsite.com'));
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
-        $expected_html = '<html>'.
+        $expected_html = '<html lang="en">'.
         '<body>'.
         '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/">'.
         '<script src="//j.wovn.io/1"'.
@@ -212,7 +240,7 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
-    public function testInsertSnippetAndHreflangTagsWithFallback()
+    public function testInsertSnippetAndLangTagsWithFallback()
     {
         $html = '<html><body><a>hello</a></body></html>';
         $settings = array(
@@ -221,9 +249,9 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, true);
+        $translated_html = $converter->insertSnippetAndLangTags($html, true);
 
-        $expected_html = '<html>'.
+        $expected_html = '<html lang="en">'.
         '<body>'.
         '<link rel="alternate" hreflang="en" href="http://my-site.com/">'.
         '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">'.
@@ -236,6 +264,24 @@ class HtmlConverterTest extends \PHPUnit_Framework_TestCase
         '</body>'.
         '</html>';
         $this->assertEquals($expected_html, $translated_html);
+    }
+
+    public function testInsertHtmlLangAttribute()
+    {
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn',
+            'insert_hreflangs' => false
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="en"') !== false, true, 'general case - insert lang attribute');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html test="lang"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="en"') !== false, true, 'html with other attribute - insert lang attribute');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html lang="ja"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="ja"') !== false, true, 'lang attribute exists - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags("<html lang='ja'><head></head><body><a>hello</a></body></html>", 'en'), "<html lang='ja'") !== false, true, 'lang attribute exists with single quotes - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags("<html lang=ja><head></head><body><a>hello</a></body></html>", 'en'), "<html lang=ja") !== false, true, 'lang attribute exists without quotes - keep existing lang');
+        $this->assertEquals(strpos($converter->insertSnippetAndLangTags('<html lang="zh-CHS"><head></head><body><a>hello</a></body></html>', 'en'), '<html lang="zh-CHS"') !== false, true, 'lang code has dash - keep existing lang');
     }
 
     public function testBuildHrefLangPath()
@@ -815,7 +861,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_custom_lang_codes_expected.html');
 
@@ -836,7 +882,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias_expected.html');
 
@@ -857,7 +903,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_with_default_lang_alias_expected_subdomain.html');
 
@@ -877,7 +923,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_head_style_expected.html');
 
@@ -897,7 +943,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_body_expected.html');
 
@@ -917,7 +963,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_snippet_when_already_exist_expected.html');
 
@@ -937,7 +983,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_html_expected.html');
 
@@ -957,7 +1003,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_with_exist_hreflang_expected.html');
         $this->assertEquals($expected_html_text, $translated_html);
@@ -976,7 +1022,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/real_html/stack_overflow_hreflang_html_entities_expected.html');
 
@@ -996,7 +1042,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected.html');
 
@@ -1016,7 +1062,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_lang_alias.html');
 
@@ -1035,7 +1081,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_lang_param_name.html');
 
@@ -1055,7 +1101,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias.html');
 
@@ -1076,7 +1122,7 @@ bye
         $env = array('REQUEST_URI' => '/dir1/dir2/');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_default_lang_alias_trailing_slash.html');
 
@@ -1097,7 +1143,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_noindex_langs.html');
 
@@ -1118,7 +1164,7 @@ bye
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_multi_noindex_langs.html');
         $this->assertEquals($expected_html_text, $translated_html);
@@ -1138,7 +1184,7 @@ bye
         $env = array('REQUEST_URI' => '/dir1/dir2/');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_site_prefix_path.html');
         $this->assertEquals($expected_html_text, $translated_html);
@@ -1159,7 +1205,7 @@ bye
         $env = array('REQUEST_URI' => '/dir1/dir2/');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
-        $translated_html = $converter->insertSnippetAndHreflangTags($html, false);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_site_prefix_path_and_custom_lang_codes.html');
         $this->assertEquals($expected_html_text, $translated_html);

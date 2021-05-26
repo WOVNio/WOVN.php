@@ -112,7 +112,7 @@ class Headers
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
                 $server_name = $this->env['HTTP_X_FORWARDED_HOST'];
             } else {
-                $server_name = $this->env['SERVER_NAME'];
+                $server_name = $this->env['HTTP_HOST'];
             }
             // get the lang in the path
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_REQUEST_URI'])) {

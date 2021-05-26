@@ -23,7 +23,7 @@ class HtmlConverter
     private $store;
     private $headers;
     private $marker;
-
+    private $wovnWidgetUrls;
 
     /**
      * HtmlConverter constructor.
@@ -40,9 +40,10 @@ class HtmlConverter
         $this->store = $store;
         $this->headers = $headers;
         $this->marker = new HtmlReplaceMarker();
+        $this->wovnWidgetUrls = array("j.wovn.io", "j.dev-wovn.io:3000", $this->store->settings['api_url'] . '/widget');
     }
 
-    public function insertSnippetAndHreflangTags($html, $add_fallback_mark)
+    public function insertSnippetAndLangTags($html, $add_fallback_mark)
     {
         $converted_html = $html;
         $converted_html = $this->insertSnippet($converted_html, $add_fallback_mark);
@@ -52,6 +53,8 @@ class HtmlConverter
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $converted_html = $this->insertNoindex($converted_html);
         }
+        $default_lang = $this->store->settings['default_lang'];
+        $converted_html = $this->insertHtmlLangAttribute($converted_html, $default_lang);
         return $converted_html;
     }
 
@@ -125,13 +128,25 @@ class HtmlConverter
      */
     private function insertSnippet($html, $add_fallback_mark)
     {
-        $snippet_regex = "/<script[^>]*src=[^>]*j\.[^ '\">]*wovn\.io[^>]*><\/script>/i";
-        $html = $this->removeTagFromHtmlByRegex($html, $snippet_regex);
-
+        $html = $this->removeSnippet($html);
         $snippet_code = $this->buildSnippetCode($add_fallback_mark);
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+    }
+
+    private function removeSnippet($html)
+    {
+        $snippet_regex = '@' .
+        '<script[^>]*' . // open tag
+        '(' .
+        'src=\"[^">]*(' . implode("|", $this->wovnWidgetUrls) . ')[^">]*\"' . // src attribute
+        '|' .
+        'data-wovnio=\"[^">]+?\"' . // data-wovnio attribute
+        ')' .
+        '[^>]*><\/script>' . // close tag
+        '@';
+        return $this->removeTagFromHtmlByRegex($html, $snippet_regex);
     }
 
     private function insertNoindex($html)
@@ -144,6 +159,20 @@ class HtmlConverter
     private function isNoindexLang($lang)
     {
         return in_array($lang, $this->store->settings['no_index_langs']);
+    }
+
+    private function insertHtmlLangAttribute($html, $lang_code)
+    {
+        if (preg_match('/<html\s?.*?>/', $html, $matches)) {
+            $html_open_tag = $matches[0];
+            if (preg_match('/lang=["\']?[a-zA-Z-]*["\']?/', $html_open_tag)) {
+                return $html;
+            }
+            $replacement = $html_open_tag;
+            $replacement = str_replace('<html', "<html lang=\"$lang_code\"", $replacement);
+            return str_replace($html_open_tag, $replacement, $html);
+        }
+        return $html;
     }
 
     private function insertAfterTag($tag_names, $html, $insert_str)

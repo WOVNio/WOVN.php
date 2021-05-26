@@ -74,24 +74,14 @@ class Store
             'lang_param_name' => 'wovn',
             'url_pattern_reg' => '((\?.*&)|\?)wovn=(?P<lang>[^&]+)(&|$)',
             'widget_url' => '//j.wovn.io/1',
-            'api_url' => 'https://wovn.global.ssl.fastly.net/v0/',
-            'api_error_host' => 'api.wovn.io',
-            'api_error_port' => 443,
-            'api_error_path' => '/v0/errors',
+            'api_url' => 'https://wovn.global.ssl.fastly.net',
             'api_timeout' => 1.0,
             'default_lang' => 'en',
             'encoding' => null,
             'supported_langs' => array('en'),
             'custom_lang_aliases' => array(),
-            'test_mode' => false,
-            'test_url' => '',
             'use_proxy' => false,
             'override_content_length' => false,
-            'clean_unprocessable_characters' => false,
-            'include_dir' => '',
-            'directory_index' => '',
-            'wovn_dev_mode' => false,
-            'use_server_error_settings' => false,
             'disable_api_request_for_default_lang' => false,
             'ignore_paths' => array(),
             'ignore_regex' => array(),
@@ -111,7 +101,7 @@ class Store
             'save_memory_by_sending_wovn_ignore_content' => false,
             'enable_wovn_diagnostics' => false,
             'use_cookie_lang' => false,
-            'wovn_debug_mode' => false
+            'debug_mode' => false
         );
     }
 
@@ -175,11 +165,6 @@ class Store
             $this->settings['ignore_regex'] = array();
         }
 
-        // update settings if wovn dev mode is activated
-        if ($this->isWovnDevModeActivated() && (!array_key_exists('api_url', $this->settings) || $this->settings['api_url'] === $defaultSettings['api_url'])) {
-            $this->settings['api_url'] = $this->wovnProtocol() . '://api.' . $this->wovnHost() . '/v0/';
-        }
-
         // Use default api_url property when user api_url property is empty.
         if ($this->settings['api_url'] === '') {
             $this->settings['api_url'] = $defaultSettings['api_url'];
@@ -198,6 +183,7 @@ class Store
             if (!empty($this->settings['logging']['max_line_length'])) {
                 Logger::get()->setMaxLogLineLength($this->settings['logging']['max_line_length']);
             }
+            Logger::get()->setQuiet(false);
         }
 
         if (!is_bool($this->settings['insert_hreflangs'])) {
@@ -221,33 +207,6 @@ class Store
         foreach ($this->settings['no_index_langs'] as $index => $langCode) {
             $this->settings['no_index_langs'][$index] = $this->convertToOriginalCode($langCode);
         }
-    }
-
-    private function isWovnDevModeActivated($settings = null)
-    {
-        if ($settings === null) {
-            $settings = $this->settings;
-        }
-
-        return array_key_exists('wovn_dev_mode', $settings) && $settings['wovn_dev_mode'];
-    }
-
-    public function wovnProtocol($settings = null)
-    {
-        if ($settings === null) {
-            $settings = $this->settings;
-        }
-
-        return ($this->isWovnDevModeActivated($settings)) ? 'http' : 'https';
-    }
-
-    public function wovnHost($settings = null)
-    {
-        if ($settings === null) {
-            $settings = $this->settings;
-        }
-
-        return ($this->isWovnDevModeActivated($settings)) ? 'dev-wovn.io:3000' : 'wovn.io';
     }
 
     public function convertToCustomLangCode($lang_code)

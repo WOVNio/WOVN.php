@@ -14,7 +14,9 @@ use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\CookieLang;
 
-class HeadersTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class HeadersTest extends TestCase
 {
     protected function tearDown()
     {
@@ -335,6 +337,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         foreach ($testCases as $case) {
             list($serverName, $expectedLangCode) = $case;
             $mergedEnv = array_merge($env, array('SERVER_NAME' => $serverName));
+            $mergedEnv = array_merge($mergedEnv, array('HTTP_HOST' => $serverName));
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $mergedEnv);
 
             $this->assertEquals('subdomain', $store->settings['url_pattern_name']);
@@ -356,26 +359,26 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
             'custom_domain_langs' => $custom_domain_langs
         );
         $testCases = array(
-            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
-            array(array('SERVER_NAME' => 'en-us.my-site.com', 'REQUEST_URI' => '/'), 'en-US'),
-            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/ja'), 'ja'),
-            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/zh/chs'), 'zh-CHS'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
+            array(array('HTTP_HOST' => 'en-us.my-site.com', 'REQUEST_URI' => '/'), 'en-US'),
+            array(array('HTTP_HOST' => 'my-site.com', 'REQUEST_URI' => '/ja'), 'ja'),
+            array(array('HTTP_HOST' => 'my-site.com', 'REQUEST_URI' => '/zh/chs'), 'zh-CHS'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
 
             // request uri pattern
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.html'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/index.html'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh?query=1'), 'zh-Hant-HK'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh#hash'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/index.html'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh/dir/index.html'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh?query=1'), 'zh-Hant-HK'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/zh#hash'), 'zh-Hant-HK'),
 
             // should be default lang
-            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/japan'), 'en'),
-            array(array('SERVER_NAME' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
-            array(array('SERVER_NAME' => 'zh-hant-hk.com', 'REQUEST_URI' => '/'), '')
+            array(array('HTTP_HOST' => 'my-site.com', 'REQUEST_URI' => '/japan'), 'en'),
+            array(array('HTTP_HOST' => 'my-site.com', 'REQUEST_URI' => '/'), 'en'),
+            array(array('HTTP_HOST' => 'zh-hant-hk.com', 'REQUEST_URI' => '/'), '')
         );
 
         foreach ($testCases as $case) {
@@ -431,6 +434,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         );
         $env = array(
             'SERVER_NAME' => 'ja.wovn.io',
+            'HTTP_HOST' => 'ja.wovn.io',
             'REQUEST_URI' => '/ko/path/index.html',
             'HTTP_X_FORWARDED_HOST' => 'en.minimaltech.co',
             'HTTP_X_FORWARDED_REQUEST_URI' => '/sv/path/index.html'
@@ -631,6 +635,7 @@ class HeadersTest extends \PHPUnit_Framework_TestCase
         $env = array(
             'HTTP_REFERER' => 'ja.minimaltech.co',
             'SERVER_NAME' => 'ja.minimaltech.co',
+            'HTTP_HOST' => 'ja.minimaltech.co',
             'REQUEST_URI' => '/dummy'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_subdomain_request', $settings, $env);

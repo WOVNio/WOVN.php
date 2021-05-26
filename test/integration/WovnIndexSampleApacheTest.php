@@ -4,7 +4,9 @@ namespace Wovnio\Wovnphp\Tests\Integration;
 require_once(__DIR__ . '/../helpers/TestUtils.php');
 use Wovnio\Test\Helpers\TestUtils;
 
-class WovnIndexSampleApacheTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class WovnIndexSampleApacheTest extends TestCase
 {
     protected function setUp()
     {
@@ -155,7 +157,7 @@ EXPECTED;
 CONTENT;
 
         $expected = <<<EXPECTED
-<html>
+<html lang="en">
   <head><link rel="alternate" hreflang="ja" href="http://localhost/static.html?a=b&amp;wovn=ja"><link rel="alternate" hreflang="fr" href="http://localhost/static.html?a=b&amp;wovn=fr"><link rel="alternate" hreflang="bg" href="http://localhost/static.html?a=b&amp;wovn=bg"><link rel="alternate" hreflang="en" href="http://localhost/static.html?a=b"><script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head>
   <body>
     <h1>Static Content</h1>
@@ -190,7 +192,7 @@ EXPECTED;
             'encoding' => 'UTF-8',
             'disable_api_request_for_default_lang' => 'true',
             'supported_langs' => array('ja', 'fr', 'bg', 'en'),
-            'api_url' => 'http://localhost/v0/',
+            'api_url' => 'http://localhost',
         );
         $options = array_merge($defaultOptions, $options);
 

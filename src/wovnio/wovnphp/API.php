@@ -24,7 +24,7 @@ class API
         }
         $cache_key = rawurlencode($cache_key_string);
 
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
+        return $store->settings['api_url'] . '/v0/translation?cache_key=' . $cache_key;
     }
 
     public static function translate($store, $headers, $original_content, $request_options)
@@ -32,10 +32,11 @@ class API
         $api_url = self::url($store, $headers, $original_content, $request_options);
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
+        $default_lang = $store->settings['default_lang'];
 
         $converter = new HtmlConverter($encoding, $token, $store, $headers);
         if (self::makeAPICall($store, $headers) === false) {
-            $translated_content = $converter->insertSnippetAndHreflangTags($original_content, false);
+            $translated_content = $converter->insertSnippetAndLangTags($original_content, false);
             return $translated_content;
         }
 
@@ -44,7 +45,7 @@ class API
         if (!$saves_memory) {
             $converted_html = $converter->convertToAppropriateBodyForApi($converted_html);
         }
-        $converted_html = $converter->insertSnippetAndHreflangTags($converted_html, true);
+        $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
 
         $timeout = $store->settings['api_timeout'];
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
@@ -103,7 +104,7 @@ class API
             }
 
             $translation_response = json_decode($response, true);
-            if (array_key_exists('body', $translation_response)) {
+            if ($translation_response && array_key_exists('body', $translation_response)) {
                 return $converter->revertMarkers($translation_response['body']);
             } else {
                 return $converter->revertMarkers($converted_html);

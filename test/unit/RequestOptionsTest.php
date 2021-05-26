@@ -3,7 +3,9 @@ namespace Wovnio\Wovnphp\Tests;
 
 use \Wovnio\Wovnphp\RequestOptions;
 
-class RequestOptionsTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class RequestOptionsTest extends TestCase
 {
     public function testNoOptions()
     {

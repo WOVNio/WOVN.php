@@ -3,11 +3,19 @@ version: 2.1
 defaults: &defaults
   working_directory: ~/project
   docker:
-    - image: circleci/php:7.1.29-apache-stretch
+    - image: circleci/php:7.4-apache
 
 commands:
   common-steps:
     steps:
+      - checkout
+      - run:
+          name: Enable to use docker locally
+          command: |
+            if [[ ${CIRCLE_SHELL_ENV} =~ "localbuild" ]]; then
+              sudo chown root /usr/bin/docker && sudo chmod u+s /usr/bin/docker
+              sudo chown root /usr/bin/docker-compose && sudo chmod u+s /usr/bin/docker-compose
+            fi
       - attach_workspace:
           at: ~/project
       - setup_remote_docker:
@@ -37,10 +45,13 @@ jobs:
           paths:
             - ./vendor
       - run: ./vendor/bin/phpcs
-      - persist_to_workspace:
-          root: ./
-          paths:
-            - ./*
+  test_php80:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:8.0-apache
+      - run: scripts/run_integration_tests.sh php:8.0-apache
+      - store-steps
   test_php74:
     <<: *defaults
     steps:
@@ -94,7 +105,6 @@ jobs:
     <<: *defaults
     steps:
       - common-steps
-      # php:5.4-apache does not included mbstring extention
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
       - run: scripts/run_integration_tests.sh php:5.4-apache
       - store-steps
@@ -105,45 +115,19 @@ jobs:
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
       - run: scripts/run_integration_tests.sh php:5.3-apache
       - store-steps
-  test_phphhvm:
-    <<: *defaults
-    steps:
-      - common-steps
-      - run: scripts/run_phpunit_tests.sh vectorface/hhvm
-      - store-steps
 
 workflows:
   version: 2
   build:
     jobs:
       - build
-      - test_php74:
-          requires:
-            - build
-      - test_php73:
-          requires:
-            - build
-      - test_php72:
-          requires:
-            - build
-      - test_php71:
-          requires:
-            - build
-      - test_php70:
-          requires:
-            - build
-      - test_php56:
-          requires:
-            - build
-      - test_php55:
-          requires:
-            - build
-      - test_php54:
-          requires:
-            - build
-      - test_php53:
-          requires:
-            - build
-      - test_phphhvm:
-          requires:
-            - build
+      - test_php80
+      - test_php74
+      - test_php73
+      - test_php72
+      - test_php71
+      - test_php70
+      - test_php56
+      - test_php55
+      - test_php54
+      - test_php53
