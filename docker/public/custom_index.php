@@ -1,4 +1,6 @@
 <?php
+require_once('WOVN.php/src/wovn_interceptor.php');
+
 $content = file_get_contents('php://input');
 
 $response_json = json_decode($content, true);

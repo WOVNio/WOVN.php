@@ -8,15 +8,10 @@ $parsed_url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 if ($parsed_url) {
     $paths = wovn_helper_detect_paths(dirname(__FILE__), $parsed_url);
 
-    if (preg_match('/\/custom_response\//', $_SERVER["REQUEST_URI"]) == 1) {
-        $included = wovn_helper_include_by_paths(array('custom_index.php'));
-        error_log("[DEBUG] Is custom request.");
-    } else {
-        # SSI USER: please swap comments on the two lines below
-        # (also see the SSI comment in the 404 section below)
-        $included = wovn_helper_include_by_paths($paths);
-        # $included = wovn_helper_include_by_paths_with_ssi($paths);
-    }
+    # SSI USER: please swap comments on the two lines below
+    # (also see the SSI comment in the 404 section below)
+    $included = wovn_helper_include_by_paths($paths);
+    # $included = wovn_helper_include_by_paths_with_ssi($paths);
 } else {
     $included = false;
 }
