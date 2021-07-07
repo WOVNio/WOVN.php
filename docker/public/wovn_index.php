@@ -8,7 +8,7 @@ $parsed_url = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 if ($parsed_url) {
     $paths = wovn_helper_detect_paths(dirname(__FILE__), $parsed_url);
 
-    if (strrpos($_SERVER["REQUEST_URI"], 'custom_response') != false) {
+    if (preg_match('/\/custom_response\//', $_SERVER["REQUEST_URI"]) == 1) {
         $included = wovn_helper_include_by_paths(array('custom_index.php'));
         error_log("[DEBUG] Is custom request.");
     } else {
