@@ -3,9 +3,6 @@
 RewriteEngine on
 RewriteRule ^/?(?:ar|eu|bn|bg|ca|zh-CHS|zh-CHT|da|nl|en|fi|fr|gl|de|el|he|hu|id|it|ja|ko|lv|ms|my|ne|no|fa|pl|pt|ru|es|sw|sv|tl|th|hi|tr|uk|vi|km|ta|si|en-US|zh-Hant-HK)($|/.*$) $1 [L]
 
-RewriteCond %{REQUEST_URI} /custom_response*
-RewriteRule "custom_response/?.*" "custom_index.php"
-
 # Intercept only static content: html and htm urls
 # Warning: do not remove this line or other content could be loaded
 RewriteCond %{REQUEST_URI} /$ [OR]
