@@ -8,5 +8,5 @@ $response_options = $response_json['response'];
 foreach ($response_options['headers'] as $key => $value) {
     header("{$key}: {$value}");
 }
-header("content-type: {$response_options['content_type']}");
+header("Content-Type: {$response_options['content-type']}");
 echo($response_options['body']);
