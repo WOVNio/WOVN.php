@@ -61,7 +61,6 @@ class SSIWovnIndexSampleTest extends TestCase
 
     public function testWithSSIWhichIncludeMultipleSpaces()
     {
-        // If you are getting errors here and you modified wovn_index_sample, check the 'sed' commands above
         $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include  virtual="include.html" -->');
         $this->touch('include.html', 'include <!--#include  virtual="nested.html" -->');
         $this->touch('nested.html');
