@@ -59,6 +59,15 @@ class SSIWovnIndexSampleTest extends TestCase
         $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
     }
 
+    public function testWithSSIWhichIncludeMultipleSpaces()
+    {
+        // If you are getting errors here and you modified wovn_index_sample, check the 'sed' commands above
+        $this->touch('ssi.html', '<?php echo \'ssi\'; ?> <!--#include  virtual="include.html" -->');
+        $this->touch('include.html', 'include <!--#include  virtual="nested.html" -->');
+        $this->touch('nested.html');
+        $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
+    }
+
     private function runWovnIndex($request_uri)
     {
         $_SERVER['HTTP_HOST'] = 'localhost';
