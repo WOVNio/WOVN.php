@@ -9,8 +9,8 @@ RUN apt-get install -y --force-yes debian-keyring debian-archive-keyring
 RUN apt-get -y -f install git unzip
 RUN apt-get clean
 
-# enable mod_rewrite
-RUN a2enmod rewrite
+# enable mod_rewrite/mod_include(for SSI)
+RUN a2enmod rewrite include
 
 # install xdebug
 RUN pecl install xdebug-2.9.0
