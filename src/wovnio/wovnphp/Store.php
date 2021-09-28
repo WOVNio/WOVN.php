@@ -177,6 +177,7 @@ class Store
 
         // Configure WOVN logging
         if (!empty($this->settings['logging'])) {
+            Logger::set(new Logger($this->settings['project_token']));
             if ($this->settings['logging']['destination'] == 'file') {
                 Logger::get()->setLogFilePath($this->settings['logging']['path']);
             }
