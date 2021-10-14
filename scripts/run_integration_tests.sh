@@ -54,10 +54,10 @@ else
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
 
-    # install isrg-root-x1-cross-signed CA
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; cp ./scripts/isrg-root-x1-cross-signed.crt /usr/share/ca-certificates/isrg-root-x1-cross-signed.crt"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "echo \"/usr/share/ca-certificates/isrg-root-x1-cross-signed.crt\" >> /etc/ca-certificates.conf"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "update-ca-certificates"
+#    # install isrg-root-x1-cross-signed CA
+#    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; cp ./scripts/isrg-root-x1-cross-signed.crt /usr/share/ca-certificates/isrg-root-x1-cross-signed.crt"
+#    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "echo \"/usr/share/ca-certificates/isrg-root-x1-cross-signed.crt\" >> /etc/ca-certificates.conf"
+#    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "update-ca-certificates"
 
     # Install modules
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; php -d suhosin.executor.include.whitelist='phar' ./scripts/composer-setup.php --disable-tls --install-dir=/usr/local/bin --filename=composer"
