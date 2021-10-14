@@ -83,6 +83,7 @@ class Store
             'use_proxy' => false,
             'override_content_length' => false,
             'disable_api_request_for_default_lang' => false,
+            'compress_api_requests' => true,
             'ignore_paths' => array(),
             'ignore_regex' => array(),
             'ignore_class' => array(),
@@ -244,5 +245,9 @@ class Store
     public function getCustomDomainLangs()
     {
         return $this->customDomainLangs;
+    }
+
+    public function compressApiRequests() {
+        return $this->settings['compress_api_requests'];
     }
 }

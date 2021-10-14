@@ -80,7 +80,7 @@ class API
         }
 
         try {
-            $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
+            $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
             if ($request_handler === null) {
                 return $marker->revert($converted_html);
             }
