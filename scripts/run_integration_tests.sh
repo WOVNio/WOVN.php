@@ -54,9 +54,12 @@ else
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm -rf vendor"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; rm composer.lock"
 
+    # install isrg-root-x1-cross-signed CA
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; cp ./scripts/isrg-root-x1-cross-signed.crt /usr/local/share/ca-certificates/"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "sudo update-ca-certificates"
+
     # Install modules
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; php -d suhosin.executor.include.whitelist='phar' ./scripts/composer-setup.php --install-dir=/usr/local/bin --filename=composer"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "composer config --global disable-tls true && composer config --global secure-http false"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; composer update"
 fi
 
