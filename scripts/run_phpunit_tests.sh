@@ -48,6 +48,7 @@ else
 
     # Install modules
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; php -d suhosin.executor.include.whitelist='phar' ./scripts/composer-setup.php --disable-tls --install-dir=/usr/local/bin --filename=composer"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "composer config --global disable-tls true && composer config --global secure-http false"
     docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "cd ${WORK_DIR}; composer update"
 fi
 
