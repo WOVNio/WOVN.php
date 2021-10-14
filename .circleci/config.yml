@@ -105,7 +105,7 @@ jobs:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh phpseclib/php5.4
+      - run: scripts/run_phpunit_tests.sh potiev/php5.4-apache-xdebug-whezzy
       - run: scripts/run_integration_tests.sh php:5.4-apache
       - store-steps
   test_php53:
