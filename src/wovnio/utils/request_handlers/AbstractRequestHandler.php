@@ -14,7 +14,7 @@ abstract class AbstractRequestHandler
 
     public function __construct($store)
     {
-        $this->store = $store
+        $this->store = $store;
     }
 
     public function sendRequest($method, $url, $data, $timeout = 1.0)
