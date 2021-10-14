@@ -35,15 +35,15 @@ jobs:
           name: Display Composer Version
           command: composer --version
       - checkout
-#      - restore_cache:
-#          keys:
-#            - vendor-{{ checksum "composer.lock" }}
-#            - vendor-
+      - restore_cache:
+          keys:
+            - vendor-{{ checksum "composer.lock" }}
+            - vendor-
       - run: composer install
-#      - save_cache:
-#          key: vendor-{{ checksum "composer.lock" }}
-#          paths:
-#            - ./vendor
+      - save_cache:
+          key: vendor-{{ checksum "composer.lock" }}
+          paths:
+            - ./vendor
       - run: ./vendor/bin/phpcs
   test_php80:
     <<: *defaults
@@ -98,14 +98,14 @@ jobs:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh phpseclib/php5.5
+      - run: scripts/run_phpunit_tests.sh php:5.5-apache
       - run: scripts/run_integration_tests.sh php:5.5-apache
       - store-steps
   test_php54:
     <<: *defaults
     steps:
       - common-steps
-      - run: scripts/run_phpunit_tests.sh potiev/php5.4-apache-xdebug-whezzy
+      - run: scripts/run_phpunit_tests.sh vectorface/php5.4
       - run: scripts/run_integration_tests.sh php:5.4-apache
       - store-steps
   test_php53:
