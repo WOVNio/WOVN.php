@@ -18,11 +18,12 @@ class Logger
     private $destinationType;
     private $logFilePath;
     private $maxLogLineLength = 1024;
+    private $uniqueId;
 
     public static function get()
     {
         if (self::$logger === null) {
-            self::$logger = new Logger();
+            self::$logger = new Logger('UNKNOWN');
         }
 
         return self::$logger;
@@ -33,8 +34,9 @@ class Logger
         self::$logger = $logger;
     }
 
-    public function __construct($quiet = true, $prefix = 'WOVN.php')
+    public function __construct($token, $quiet = true, $prefix = 'WOVN.php')
     {
+        $this->uniqueId = $token . $this->getReasonableCurrentTime();
         date_default_timezone_set('UTC');
         $this->prefix = $prefix;
         $this->quiet = $quiet;
@@ -50,6 +52,11 @@ class Logger
     public function setMaxLogLineLength($maxLength)
     {
         $this->maxLogLineLength = $maxLength;
+    }
+
+    public function getUniqueId()
+    {
+        return $this->uniqueId;
     }
 
     public function getPrefix()
@@ -112,15 +119,21 @@ class Logger
         $this->log('DEBUG', $message, $context);
     }
 
+    private function getReasonableCurrentTime()
+    {
+        $currentTime = str_replace(' ', '', microtime());
+        $currentTime = str_replace('0.', '', $currentTime);
+        return $currentTime;
+    }
+
     private function log($level, $message, $context)
     {
         if ($this->quiet) {
             return;
         }
 
-
         $date = date('Y-m-d H:i:s');
-        $prefixString = "$this->prefix [$date][$level] ";
+        $prefixString = "$this->prefix [$this->uniqueId][$date][$level] ";
 
         $log_message = $this->truncateToLengthLimit($prefixString . $this->interpolate($message, $context));
 
