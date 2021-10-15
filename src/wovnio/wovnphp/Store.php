@@ -248,7 +248,7 @@ class Store
         return $this->customDomainLangs;
     }
 
-    public function compressApiRequests() 
+    public function compressApiRequests()
     {
         return $this->settings['compress_api_requests'];
     }
