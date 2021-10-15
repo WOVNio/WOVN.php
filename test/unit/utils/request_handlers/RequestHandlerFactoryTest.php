@@ -7,6 +7,7 @@ require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/FileGetContentsMock.php';
 
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
+use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use PHPUnit\Framework\TestCase;
 
