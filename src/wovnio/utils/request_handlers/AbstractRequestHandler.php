@@ -21,7 +21,7 @@ abstract class AbstractRequestHandler
     {
         Logger::get()->info("[API call URL: {$url}.");
         $query = http_build_query($data);
-        if (function_exists('gzencode') && $this->store.compressApiRequests()) {
+        if (function_exists('gzencode') && $this->store->compressApiRequests()) {
             // reduce networkIO to make request faster.
             $query = gzencode($query);
             $content_length = strlen($query);
