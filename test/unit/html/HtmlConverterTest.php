@@ -618,6 +618,15 @@ class HtmlConverterTest extends TestCase
                 '<script type="application/ld+json">{test: "test"}</script>'.
                 '</head><body></body></html>',
             ),
+            array(
+                '<input> with no value',
+
+                '<html><head></head><body><input type="hidden"></body></html>',
+
+                '<html><head></head><body><input type="hidden"></body></html>',
+
+                '<html><head></head><body><input type="hidden"></body></html>',
+            ),
         );
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_converted_html, $expected_reverted_html) = $case;

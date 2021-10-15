@@ -3,7 +3,6 @@ namespace Wovnio\Wovnphp;
 
 require_once 'custom_domain/CustomDomainLangs.php';
 
-use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
 
 /**
@@ -177,6 +176,8 @@ class Store
         }
 
         // Configure WOVN logging
+        Logger::set(new Logger($this->settings['project_token']));
+
         if (!empty($this->settings['logging'])) {
             if ($this->settings['logging']['destination'] == 'file') {
                 Logger::get()->setLogFilePath($this->settings['logging']['path']);
