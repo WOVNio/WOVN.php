@@ -3,6 +3,7 @@ namespace Wovnio\Utils\RequestHandlers;
 
 require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
 require_once 'test/helpers/CurlMock.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/FileGetContentsMock.php';
 
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
