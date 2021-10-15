@@ -791,6 +791,23 @@ use_cookie_lang = true
 }
 ```
 
+#### `compress_api_requests`
+When set to true, WOVN.php will attempt to compress requests made to the translation API if possible. Set to true by default.
+
+`wovn.ini`
+
+```ini
+compress_api_requests = true
+```
+
+`wovn.json`
+
+```json
+{
+  "compress_api_requests": true
+}
+```
+
 #### `logging`
 
 Configures WOVN.php's internal logging. When this section is included in `wovn.json`, WOVN.php's internal logging is enabled. WOVN.php's internal logging uses `error_log()` to log its messages.

@@ -16,13 +16,13 @@ class RequestHandlerFactory
         self::$instance = $instance;
     }
 
-    public static function getBestAvailableRequestHandler()
+    public static function getBestAvailableRequestHandler($store)
     {
         if (self::$instance === null) {
             if (CurlRequestHandler::available()) {
-                self::$instance = new CurlRequestHandler();
+                self::$instance = new CurlRequestHandler($store);
             } elseif (FileGetContentsRequestHandler::available()) {
-                self::$instance = new FileGetContentsRequestHandler();
+                self::$instance = new FileGetContentsRequestHandler($store);
             }
         }
 

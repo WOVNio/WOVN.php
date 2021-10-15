@@ -3,9 +3,11 @@ namespace Wovnio\Utils\RequestHandlers;
 
 require_once 'src/wovnio/utils/request_handlers/RequestHandlerFactory.php';
 require_once 'test/helpers/CurlMock.php';
+require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/FileGetContentsMock.php';
 
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
+use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use PHPUnit\Framework\TestCase;
 
@@ -35,8 +37,9 @@ class RequestHandlerFactoryTest extends TestCase
     {
         $this->setCurlAvailability(true);
         $this->setFileGetContentsAvailability(true);
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
 
-        $best_request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
+        $best_request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
         $this->assertTrue($best_request_handler instanceof CurlRequestHandler);
     }
 
@@ -44,8 +47,9 @@ class RequestHandlerFactoryTest extends TestCase
     {
         $this->setCurlAvailability(false);
         $this->setFileGetContentsAvailability(true);
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
 
-        $best_request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
+        $best_request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
         $this->assertTrue($best_request_handler instanceof FileGetContentsRequestHandler);
     }
 
@@ -53,7 +57,8 @@ class RequestHandlerFactoryTest extends TestCase
     {
         $this->setCurlAvailability(false);
         $this->setFileGetContentsAvailability(false);
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
 
-        $this->assertEquals(null, RequestHandlerFactory::getBestAvailableRequestHandler());
+        $this->assertEquals(null, RequestHandlerFactory::getBestAvailableRequestHandler($store));
     }
 }

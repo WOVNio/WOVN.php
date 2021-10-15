@@ -12,11 +12,16 @@ abstract class AbstractRequestHandler
         return false;
     }
 
+    public function __construct($store)
+    {
+        $this->store = $store;
+    }
+
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
         Logger::get()->info("[API call URL: {$url}.");
         $query = http_build_query($data);
-        if (function_exists('gzencode')) {
+        if (function_exists('gzencode') && $this->store->compressApiRequests()) {
             // reduce networkIO to make request faster.
             $query = gzencode($query);
             $content_length = strlen($query);
