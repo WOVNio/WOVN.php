@@ -12,16 +12,24 @@ abstract class AbstractRequestHandler
         return false;
     }
 
+    public function __construct($store)
+    {
+        $this->store = $store;
+    }
+
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
+        Logger::get()->info("[API call URL: {$url}.");
         $query = http_build_query($data);
-        if (function_exists('gzencode')) {
+        if (function_exists('gzencode') && $this->store->compressApiRequests()) {
             // reduce networkIO to make request faster.
             $query = gzencode($query);
             $content_length = strlen($query);
+            $uniqueId = Logger::get()->getUniqueId();
             $headers = array(
                 'Content-Type: application/octet-stream',
-                "Content-Length: $content_length"
+                "Content-Length: $content_length",
+                "X-Request-Id: $uniqueId"
             );
         } else {
             $content_length = strlen($query);

@@ -24,7 +24,7 @@ class API
         }
         $cache_key = rawurlencode($cache_key_string);
 
-        return $store->settings['api_url'] . 'translation?cache_key=' . $cache_key;
+        return $store->settings['api_url'] . '/v0/translation?cache_key=' . $cache_key;
     }
 
     public static function translate($store, $headers, $original_content, $request_options)
@@ -80,7 +80,7 @@ class API
         }
 
         try {
-            $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler();
+            $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
             if ($request_handler === null) {
                 return $marker->revert($converted_html);
             }
@@ -88,17 +88,16 @@ class API
 
             $requestUUID = 'NO_UUID';
             if ($headers) {
-                $requestUUID = array_key_exists('X-Request-Id', $headers) ? $headers['X-Request-Id'] : 'NO_UUID';
                 $status = array_key_exists('status', $headers) ? $headers['status'] : 'STATUS_UNKNOWN';
                 $data['body'] = "[Hidden]";
-                Logger::get()->info("[{$requestUUID}] API call to html-swapper finished: {$status}.");
-                Logger::get()->info("[{$requestUUID}] API call payload: " . json_encode($data));
+                Logger::get()->info("API call to html-swapper finished: {$status}.");
+                Logger::get()->info("API call payload: " . json_encode($data));
             }
 
             if ($response === null) {
                 if ($error) {
                     header("X-Wovn-Error: $error");
-                    Logger::get()->error("[{$requestUUID}] API call error: {$error}.");
+                    Logger::get()->error("API call error: {$error}.");
                 }
                 return $converter->revertMarkers($converted_html);
             }
