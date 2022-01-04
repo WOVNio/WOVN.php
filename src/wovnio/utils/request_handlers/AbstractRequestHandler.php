@@ -20,21 +20,22 @@ abstract class AbstractRequestHandler
     public function sendRequest($method, $url, $data, $timeout = 1.0)
     {
         Logger::get()->info("[API call URL: {$url}.");
-        $query = http_build_query($data);
+        $query = json_encode($data);
         if (function_exists('gzencode') && $this->store->compressApiRequests()) {
             // reduce networkIO to make request faster.
             $query = gzencode($query);
             $content_length = strlen($query);
             $uniqueId = Logger::get()->getUniqueId();
             $headers = array(
-                'Content-Type: application/octet-stream',
+                'Content-Type: application/json',
+                'Content-Encoding: gzip',
                 "Content-Length: $content_length",
                 "X-Request-Id: $uniqueId"
             );
         } else {
             $content_length = strlen($query);
             $headers = array(
-                'Content-Type: application/x-www-form-urlencoded',
+                'Content-Type: application/json',
                 "Content-Length: $content_length"
             );
         }
