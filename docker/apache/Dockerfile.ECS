@@ -1,0 +1,24 @@
+ARG DOCKER_IMAGE=php:5.3-apache
+FROM ${DOCKER_IMAGE}
+
+RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?5\.[3-4].*$ ]]; then \
+    echo "deb http://deb.debian.org/debian jessie main" > "/etc/apt/sources.list"; \
+    echo "deb http://security.debian.org jessie/updates main" >> "/etc/apt/sources.list"; \
+fi'
+
+RUN apt-get autoclean
+RUN apt-get clean all
+RUN apt-get update -qq
+RUN apt-get -y --force-yes install git unzip
+
+RUN a2enmod rewrite include
+
+WORKDIR /var/www/html
+
+ADD . ./WOVN.php
+ADD ./docker/public/ .
+ADD ./docker/apache/apache2.conf /etc/apache2/sites-enabled/apache2.conf
+ADD ./docker/./php.ini /usr/local/etc/php/php.ini
+ADD ./wovn.json.sample /var/www/html/wovn.json
+ADD ./wovn.ini.sample /var/www/html/wovn.ini
+ADD ./wovn_index_sample.php /var/www/html/wovn_index.php
