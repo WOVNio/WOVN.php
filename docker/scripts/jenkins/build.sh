@@ -14,16 +14,20 @@ commit_hash=$(git rev-parse --short HEAD)
 image_tag="${commit_hash}"
 
 sh ${PROJECT_DIR}/build_docker.sh "${REPO_NAME_WOVNPHP}":"${image_tag}"
-# sh ${PROJECT_DIR}/docker/nginx/build.sh "${REPO_NAME_NGINX}":"${image_tag}"
 
-# source ${PROJECT_DIR}/docker/scripts/jenkins/tag_and_push_image.sh
+source ${PROJECT_DIR}/docker/scripts/jenkins/tag_and_push_image.sh
 
-# set +x
-# $(aws ecr get-login --no-include-email --region "${AWS_REGION}" --profile "${AWS_PROFILE}")
-# set -x
+set +x
+$(aws ecr get-login --no-include-email --region "${AWS_REGION}" --profile "${AWS_PROFILE}")
+set -x
 
-# tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNPHP}" "${image_tag}" "staging"
-# tag_and_push_image "${AWS_REGION}" "${REPO_NAME_NGINX}" "${image_tag}" "staging"
+tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNPHP}" "${image_tag}" "staging"
 
-# sed -i "s#wovnrb:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
-# sed -i "s#wovnrb-nginx:latest#"${REPO_NAME_NGINX}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
+sed -i './bak' "s#wovnphp:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
+
+cd ${PROJECT_DIR}/docker/scripts/jenkins/
+TASKDEF_REVISION=$(aws ecs register-task-definition \
+                         --profile "${AWS_PROFILE}" --region "${AWS_REGION}" \
+                         --cli-input-json file://$(pwd)/taskdef.json \
+                      | jq ."taskDefinition.revision")
+echo "${TASKDEF_REVISION}"
