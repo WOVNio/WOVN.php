@@ -23,7 +23,7 @@ set -x
 
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNPHP}" "${image_tag}" "staging"
 
-sed -i './bak' "s#wovnphp:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
+sed -i '' "s#wovnphp:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
 
 cd ${PROJECT_DIR}/docker/scripts/jenkins/
 TASKDEF_REVISION=$(aws ecs register-task-definition \
@@ -31,3 +31,13 @@ TASKDEF_REVISION=$(aws ecs register-task-definition \
                          --cli-input-json file://$(pwd)/taskdef.json \
                       | jq ."taskDefinition.revision")
 echo "${TASKDEF_REVISION}"
+
+
+echo "Start ECS Rolling deploy. Update ${ECS_SERVICE_NAME} by ${TASKDEF_FAMILY_NAME}:${TASKDEF_REVISION}"
+    aws ecs update-service \
+      --profile "${AWS_PROFILE}" --region "${AWS_REGION}" \
+      --cluster "${CLUSTER_NAME}" \
+      --service "${ECS_SERVICE_NAME}" \
+      --task-definition "${TASKDEF_FAMILY_NAME}:${TASKDEF_REVISION}"
+
+cd -

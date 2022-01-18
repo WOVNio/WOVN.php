@@ -17,7 +17,7 @@ WORKDIR /var/www/html
 
 ADD . ./WOVN.php
 ADD ./docker/public/ .
-ADD ./docker/apache/apache2.conf /etc/apache2/sites-enabled/apache2.conf
+#ADD ./docker/apache/apache2.conf /etc/apache2/sites-enabled/apache2.conf
 ADD ./docker/./php.ini /usr/local/etc/php/php.ini
 ADD ./wovn.json.sample /var/www/html/wovn.json
 ADD ./wovn.ini.sample /var/www/html/wovn.ini

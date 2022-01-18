@@ -1,7 +1,6 @@
-project_token = "TOKEN"
+project_token = "xJ0zqg"
 url_pattern_name = "query"
 default_lang = "ja"
 supported_langs[] = "ja"
 supported_langs[] = "en"
-supported_langs[] = "fr"
 encoding = "UTF-8"

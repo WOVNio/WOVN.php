@@ -1,10 +1,9 @@
 {
-    "project_token": "TOKEN",
+    "project_token": "xJ0zqg",
     "url_pattern_name": "query",
-    "default_lang": "ja",
+    "default_lang": "en",
     "supported_langs": [
         "ja",
-        "fr",
         "en"
     ],
     "encoding": "UTF-8"
