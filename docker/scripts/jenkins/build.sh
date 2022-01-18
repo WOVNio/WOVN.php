@@ -23,7 +23,7 @@ set -x
 
 tag_and_push_image "${AWS_REGION}" "${REPO_NAME_WOVNPHP}" "${image_tag}" "staging"
 
-sed -i '' "s#wovnphp:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
+sed -i "s#wovnphp:latest#"${REPO_NAME_WOVNPHP}":"${image_tag}"#g" ${PROJECT_DIR}/docker/scripts/jenkins/taskdef.json
 
 cd ${PROJECT_DIR}/docker/scripts/jenkins/
 TASKDEF_REVISION=$(aws ecs register-task-definition \
