@@ -285,6 +285,10 @@ class HtmlConverter
             return null;
         }
 
+        if ($this->isNoindexLang($this->headers->requestLang())) {
+            return null;
+        }
+
         $canonical_tag = '<link rel="canonical" href="' . $this->headers->getCanonicalUrl() . '">';
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
         return $this->insertAfterTag($parent_tags, $html, $canonical_tag);
