@@ -46,6 +46,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
@@ -62,6 +63,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<body>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
@@ -75,6 +77,7 @@ class HtmlConverterTest extends TestCase
                 '<html><a>hello</a></html>',
 
                 '<html lang="en">' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
@@ -86,6 +89,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html>' .
                 '<body>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
                 '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
                 '<a>hello</a>' .
@@ -127,6 +131,7 @@ class HtmlConverterTest extends TestCase
         '</head><body></body></html>';
 
         $expected_html = '<html lang="en"><head>' .
+        '<link rel="canonical" href="http://my-site.com/">' .
         '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
         '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
         '<script src="https://example.com"></script>' .
@@ -153,6 +158,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '</head>' .
                 '<body>' .
@@ -173,6 +179,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<body>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
                 '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
@@ -210,7 +217,7 @@ class HtmlConverterTest extends TestCase
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
         $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
-        $expected_html = "<html lang=\"en\"><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
+        $expected_html = "<html lang=\"en\"><body><link rel=\"canonical\" href=\"http://my-site.com/\"><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
         $this->assertEquals($expected_html, $translated_html);
     }
 
@@ -229,6 +236,7 @@ class HtmlConverterTest extends TestCase
 
         $expected_html = '<html lang="en">'.
         '<body>'.
+        '<link rel="canonical" href="http://my-site.com/">' .
         '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs={&quot;testsite.com&quot;:&quot;en&quot;,&quot;testsite.com\/fr&quot;:&quot;fr&quot;}"'.
@@ -253,6 +261,7 @@ class HtmlConverterTest extends TestCase
 
         $expected_html = '<html lang="en">'.
         '<body>'.
+        '<link rel="canonical" href="http://my-site.com/">' .
         '<link rel="alternate" hreflang="en" href="http://my-site.com/">'.
         '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">'.
         '<script src="//j.wovn.io/1"'.

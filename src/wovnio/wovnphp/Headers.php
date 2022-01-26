@@ -359,6 +359,6 @@ class Headers
 
     public function isGoogleBot()
     {
-        return strpos($_SERVER['HTTP_USER_AGENT'], GoogleUserAgents::GOOGLE_BOT) !== false;
+        return strpos($_SERVER['HTTP_USER_AGENT'], 'Googlebot/2.1') !== false;
     }
 }
