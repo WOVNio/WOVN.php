@@ -47,7 +47,7 @@ class API
         }
         $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
 
-        $timeout = $store->settings['api_timeout'];
+        $timeout = $headers->isGoogleBot() ? $store->settings['api_timeout_search_engine_bots'] : $store->settings['api_timeout'];
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.

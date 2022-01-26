@@ -75,6 +75,7 @@ class Store
             'widget_url' => '//j.wovn.io/1',
             'api_url' => 'https://wovn.global.ssl.fastly.net',
             'api_timeout' => 1.0,
+            'api_timeout_search_engine_bots' => 5.0,
             'default_lang' => 'ja',
             'encoding' => null,
             'supported_langs' => array('en', 'ja'),
@@ -88,6 +89,8 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'insert_hreflangs' => true,
+            'insert_canonical_tag' => true,
+            'query_canonical_significance' => false,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
@@ -175,6 +178,10 @@ class Store
             $this->settings['api_timeout'] = $defaultSettings['api_timeout'];
         }
 
+        if ($this->settings['api_timeout_search_engine_bots'] === '') {
+            $this->settings['api_timeout_search_engine_bots'] = $defaultSettings['api_timeout'];
+        }
+
         // Configure WOVN logging
         Logger::set(new Logger($this->settings['project_token']));
 
@@ -190,6 +197,14 @@ class Store
 
         if (!is_bool($this->settings['insert_hreflangs'])) {
             $this->settings['insert_hreflangs'] = !!$this->settings['insert_hreflangs'];
+        }
+
+        if (!is_bool($this->settings['insert_canonical_tag'])) {
+            $this->settings['insert_canonical_tag'] = !!$this->settings['insert_canonical_tag'];
+        }
+
+        if (!is_bool($this->settings['query_canonical_significance'])) {
+            $this->settings['query_canonical_significance'] = !!$this->settings['query_canonical_significance'];
         }
 
         $this->configLoaded = true;

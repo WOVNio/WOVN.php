@@ -346,4 +346,19 @@ class Headers
 
         return $cookieLang && ($requestLang !== $cookieLang) && ($requestLang === $this->store->defaultLang());
     }
+
+    public function getCanonicalUrl()
+    {
+        $canonicalUrl = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash;
+        if ($this->store->settings['query_canonical_significance'])
+        {
+            $canonicalUrl = $canonicalUrl . '?' . $this->query;
+        }
+        return $canonicalUrl;
+    }
+
+    public function isGoogleBot()
+    {
+        return strpos($_SERVER['HTTP_USER_AGENT'], GoogleUserAgents::GOOGLE_BOT) !== false;
+    }
 }

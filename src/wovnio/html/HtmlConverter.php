@@ -50,6 +50,9 @@ class HtmlConverter
         if ($this->store->settings['insert_hreflangs']) {
             $converted_html = $this->insertHreflangTags($converted_html);
         }
+        if ($this->store->settings['insert_canonical_tag']) {
+            $converted_html = $this->insertCanonicalTag($converted_html);
+        }
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $converted_html = $this->insertNoindex($converted_html);
         }
@@ -274,6 +277,17 @@ class HtmlConverter
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
+    }
+
+    private function insertCanonicalTag($html)
+    {
+        if (!$this->store->settings['insert_canonical_tag']) {
+            return null;
+        }
+
+        $canonical_tag = '<link rel="canonical" href="' . $this->headers->getCanonicalUrl() . '">';
+        $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
+        return $this->insertAfterTag($parent_tags, $html, $canonical_tag);
     }
 
     private function buildHrefLang($lang_code)
