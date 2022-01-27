@@ -23,4 +23,5 @@ test/integration/test/integration/wovn_index_sample_workspace
 !/docker/wp_apache.yml
 !/docker/test.yml
 !/docker/test.Dockerfile
+!/docker/scripts/startup.sh
 
