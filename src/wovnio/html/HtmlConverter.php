@@ -248,9 +248,6 @@ class HtmlConverter
      */
     private function insertHreflangTags($html)
     {
-        if (!$this->store->settings['insert_hreflangs']) {
-            return null;
-        }
         if (isset($this->store->settings['supported_langs'])) {
             if (is_array($this->store->settings['supported_langs'])) {
                 $lang_codes = $this->store->settings['supported_langs'];
@@ -281,10 +278,6 @@ class HtmlConverter
 
     private function insertCanonicalTag($html)
     {
-        if (!$this->store->settings['insert_canonical_tag']) {
-            return null;
-        }
-
         if ($this->isNoindexLang($this->headers->requestLang())) {
             return $html;
         }
