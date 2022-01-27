@@ -357,8 +357,8 @@ class Headers
         return $canonicalUrl;
     }
 
-    public function isGoogleBot()
+    public function isSearchEngineBot()
     {
-        return strpos($_SERVER['HTTP_USER_AGENT'], 'Googlebot/2.1') !== false;
+        return strpos($this->env['HTTP_USER_AGENT'], 'Googlebot/2.1') !== false;
     }
 }

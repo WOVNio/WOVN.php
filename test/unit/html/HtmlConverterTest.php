@@ -203,6 +203,142 @@ class HtmlConverterTest extends TestCase
         }
     }
 
+    public function testInsertCanonicalTagWithInsertCanonicalTagFalse()
+    {
+        $html_cases = array(
+            array(
+                'common case',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'with existing canonical tag',
+
+                '<html>' .
+                '<body>' .
+                '<link rel="canonical" href="http://my-site.com/?wovn=en" existing-canonical-supported>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
+                '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<body>' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" href="http://my-site.com/?wovn=en" existing-canonical-supported>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
+                '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            $settings = array(
+                'supported_langs' => array('en', 'vi'),
+                'lang_param_name' => 'wovn',
+                'insert_hreflangs' => false,
+                'insert_canonical_tag' => false
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
+    public function testInsertCanonicalTagWithQueryCanonicalSignificanceTrue()
+    {
+        $html_cases = array(
+            array(
+                'common case - should keep query in canonical tag',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="canonical" href="http://my-site.com/?item=1234">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            $settings = array(
+                'supported_langs' => array('en', 'vi'),
+                'lang_param_name' => 'wovn',
+                'insert_hreflangs' => false,
+                'insert_canonical_tag' => true,
+                'query_canonical_significance' => true
+            );
+            $envs = array(
+                'QUERY_STRING' => '?item=1234',
+                'REQUEST_URI' => '/?item=1234'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
+    public function testInsertCanonicalTagWithQueryCanonicalSignificanceFalse()
+    {
+        $html_cases = array(
+            array(
+                'common case - should not keep query in canonical tag',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="canonical" href="http://my-site.com/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            $settings = array(
+                'supported_langs' => array('en', 'vi'),
+                'lang_param_name' => 'wovn',
+                'insert_hreflangs' => false,
+                'insert_canonical_tag' => true,
+                'query_canonical_significance' => false
+            );
+            $envs = array(
+                'QUERY_STRING' => '?item=1234',
+                'REQUEST_URI' => '/?item=1234'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
     public function testInsertSnippetAndLangTagsWithCustomAlias()
     {
         $html = '<html><body><a>hello</a></body></html>';
