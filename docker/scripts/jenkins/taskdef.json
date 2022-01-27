@@ -4,7 +4,7 @@
     {
       "name": "wovnphp",
       "cpu": 0,
-      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnphp:dd313d6",
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnphp:latest",
       "mountPoints": [],
       "workingDirectory": "/var/www/html",
       "linuxParameters": {
