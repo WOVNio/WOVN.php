@@ -358,6 +358,6 @@ class Headers
 
     public function isSearchEngineBot()
     {
-        return strpos($this->env['HTTP_USER_AGENT'], 'Googlebot/2.1') !== false;
+        return strpos($this->env['HTTP_USER_AGENT'], 'Googlebot/') !== false;
     }
 }
