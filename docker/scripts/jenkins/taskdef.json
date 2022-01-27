@@ -31,6 +31,11 @@
           "hostPort": 80,
           "protocol": "tcp",
           "containerPort": 80
+        },
+        {
+          "hostPort": 22,
+          "protocol": "tcp",
+          "containerPort": 22
         }
       ],
       "volumesFrom": [],
