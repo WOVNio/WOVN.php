@@ -350,7 +350,7 @@ class Headers
     public function getCanonicalUrl()
     {
         $canonicalUrl = $this->protocol . '://' . $this->host . $this->pathnameKeepTrailingSlash;
-        if ($this->store->settings['query_canonical_significance']) {
+        if ($this->store->settings['query_canonical_significance'] && !empty($this->query)) {
             $canonicalUrl = $canonicalUrl . '?' . $this->query;
         }
         return $canonicalUrl;

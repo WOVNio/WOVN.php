@@ -75,6 +75,7 @@ class UrlCustomDomainPatternTest extends TestCase
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.html">'.
@@ -126,6 +127,7 @@ class UrlCustomDomainPatternTest extends TestCase
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.php">'.
@@ -174,6 +176,7 @@ class UrlCustomDomainPatternTest extends TestCase
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.html">'.
@@ -220,6 +223,7 @@ class UrlCustomDomainPatternTest extends TestCase
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
         $content_without_html_swapper = '<html lang="en">'.
             '<head>'.
+            '<link rel="canonical" href="http://testsite.com/en/index.html">'.
             '<link rel="alternate" hreflang="en" href="http://testsite.com/en/index.html">'.
             '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
             '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/index.html">'.
@@ -271,6 +275,7 @@ class UrlCustomDomainPatternTest extends TestCase
         $encodedCustomDomainLangsString = htmlentities(json_encode($customDomainLangsHtmlSwapperRep));
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.php">'.

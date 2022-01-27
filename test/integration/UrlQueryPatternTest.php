@@ -45,10 +45,12 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=en-US">'.
@@ -76,10 +78,12 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.php?wovn=en-US">'.
@@ -104,10 +108,12 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.html?wovn=en-US">'.
@@ -134,10 +140,12 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/sub/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.php?wovn=en-US">'.
@@ -161,10 +169,12 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'query_canonical_significance' => true
         ));
 
         $not_found_page = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/no.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/no.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/no.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/no.html?wovn=en-US">'.
@@ -184,11 +194,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'api_url' => 'http://localhost/not_exist_html_swapper_url/'
+            'api_url' => 'http://localhost/not_exist_html_swapper_url/',
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.
@@ -215,11 +227,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array_keys($langs),
-            'custom_lang_aliases' => $langs
+            'custom_lang_aliases' => $langs,
+            'query_canonical_significance' => true
         ));
 
-        $content_without_html_swapper = '<html lang="en">'.
+        $content_without_html_swapper_custom_en = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=custom_en_US">'.
@@ -231,8 +245,9 @@ class UrlQueryPatternTest extends TestCase
         '</head>'.
         '<body>test</body>'.
         '</html>';
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en')->body);
+
+        $this->assertEquals($content_without_html_swapper_custom_en, TestUtils::fetchURL('http://localhost/index.html')->body);
+        $this->assertEquals($content_without_html_swapper_custom_en, TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_ja')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en_US')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_zh_Hant_HK')->body);
@@ -246,11 +261,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'lang_param_name' => 'lang_param'
+            'lang_param_name' => 'lang_param',
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?lang_param=en-US">'.
@@ -277,11 +294,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'disable_api_request_for_default_lang' => false
+            'disable_api_request_for_default_lang' => false,
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?lang_param=en-US">'.
@@ -310,11 +329,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'ignore_paths' => array('/sub')
+            'ignore_paths' => array('/sub'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.
@@ -339,11 +360,13 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'ignore_regex' => array('/sub\/.*/')
+            'ignore_regex' => array('/sub\/.*/'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
+        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.
@@ -366,7 +389,8 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'no_index_langs' => array('en')
+            'no_index_langs' => array('en'),
+            'query_canonical_significance' => true
         ));
 
         $content_without_html_swapper = '<html lang="en">'.

@@ -289,7 +289,7 @@ class HtmlConverter
             return $html;
         }
 
-        $canonical_tag = '<link rel="canonical" href="' . $this->headers->getCanonicalUrl() . '">';
+        $canonical_tag = '<link rel="canonical" href="' . $this->buildCanonicalUrl($this->headers->requestLang()) . '">';
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
         return $this->insertAfterTag($parent_tags, $html, $canonical_tag);
     }
@@ -297,7 +297,17 @@ class HtmlConverter
     private function buildHrefLang($lang_code)
     {
         $url = $this->headers->urlKeepTrailingSlash;
+        return $this->convertUrlToLanguage($url, $lang_code);
+    }
 
+    private function buildCanonicalUrl($lang_code)
+    {
+        $url = $this->headers->getCanonicalUrl();
+        return $this->convertUrlToLanguage($url, $lang_code);
+    }
+
+    private function convertUrlToLanguage($url, $lang_code)
+    {
         if ($this->store->hasDefaultLangAlias()) {
             $url = $this->headers->removeLang($url, $this->store->defaultLang());
             $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);
