@@ -249,7 +249,7 @@ class HtmlConverter
     private function insertHreflangTags($html)
     {
         if (!$this->store->settings['insert_hreflangs']) {
-            return;
+            return null;
         }
         if (isset($this->store->settings['supported_langs'])) {
             if (is_array($this->store->settings['supported_langs'])) {
@@ -286,7 +286,7 @@ class HtmlConverter
         }
 
         if ($this->isNoindexLang($this->headers->requestLang())) {
-            return null;
+            return $html;
         }
 
         $canonical_tag = '<link rel="canonical" href="' . $this->headers->getCanonicalUrl() . '">';

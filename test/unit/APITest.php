@@ -347,7 +347,7 @@ class APITest extends TestCase
         $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
-        $expected_result = '<html lang="en"><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html lang="en"><head><link rel="canonical" href="http://my-site.com/"><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
         $this->assertEquals($expected_result, $result, "should return contents with fallback");
     }
 
