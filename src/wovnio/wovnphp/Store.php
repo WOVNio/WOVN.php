@@ -89,8 +89,7 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'insert_hreflangs' => true,
-            'insert_canonical_tag' => true,
-            'query_canonical_significance' => false,
+            'translate_canonical_tag' => false,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
@@ -199,12 +198,8 @@ class Store
             $this->settings['insert_hreflangs'] = !!$this->settings['insert_hreflangs'];
         }
 
-        if (!is_bool($this->settings['insert_canonical_tag'])) {
-            $this->settings['insert_canonical_tag'] = !!$this->settings['insert_canonical_tag'];
-        }
-
-        if (!is_bool($this->settings['query_canonical_significance'])) {
-            $this->settings['query_canonical_significance'] = !!$this->settings['query_canonical_significance'];
+        if (!is_bool($this->settings['translate_canonical_tag'])) {
+            $this->settings['translate_canonical_tag'] = !!$this->settings['translate_canonical_tag'];
         }
 
         $this->configLoaded = true;

@@ -158,7 +158,7 @@ CONTENT;
 
         $expected = <<<EXPECTED
 <html lang="en">
-  <head><link rel="canonical" href="http://localhost/static.html"><link rel="alternate" hreflang="ja" href="http://localhost/static.html?a=b&amp;wovn=ja"><link rel="alternate" hreflang="fr" href="http://localhost/static.html?a=b&amp;wovn=fr"><link rel="alternate" hreflang="bg" href="http://localhost/static.html?a=b&amp;wovn=bg"><link rel="alternate" hreflang="en" href="http://localhost/static.html?a=b"><script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head>
+  <head><link rel="alternate" hreflang="ja" href="http://localhost/static.html?a=b&amp;wovn=ja"><link rel="alternate" hreflang="fr" href="http://localhost/static.html?a=b&amp;wovn=fr"><link rel="alternate" hreflang="bg" href="http://localhost/static.html?a=b&amp;wovn=bg"><link rel="alternate" hreflang="en" href="http://localhost/static.html?a=b"><script src="//j.wovn.io/1" data-wovnio="key=Tek3n&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head>
   <body>
     <h1>Static Content</h1>
   </body>
@@ -193,6 +193,7 @@ EXPECTED;
             'disable_api_request_for_default_lang' => 'true',
             'supported_langs' => array('ja', 'fr', 'bg', 'en'),
             'api_url' => 'http://localhost',
+            'translate_canonical_tag' => true
         );
         $options = array_merge($defaultOptions, $options);
 

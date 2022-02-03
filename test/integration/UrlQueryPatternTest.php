@@ -50,7 +50,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=en-US">'.
@@ -83,7 +82,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.php?wovn=en-US">'.
@@ -113,7 +111,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.html?wovn=en-US">'.
@@ -145,7 +142,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/sub/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/index.php?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/sub/index.php?wovn=en-US">'.
@@ -174,7 +170,6 @@ class UrlQueryPatternTest extends TestCase
 
         $not_found_page = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/no.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/no.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/no.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/no.html?wovn=en-US">'.
@@ -200,7 +195,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html?wovn=ja">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.
@@ -233,7 +227,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper_custom_en = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?wovn=custom_en_US">'.
@@ -267,7 +260,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?lang_param=en-US">'.
@@ -300,7 +292,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?lang_param=ja">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/index.html?lang_param=en-US">'.
@@ -335,7 +326,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.
@@ -366,7 +356,6 @@ class UrlQueryPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
         '<script src="//j.wovn.io/1" '.

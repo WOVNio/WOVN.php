@@ -49,7 +49,6 @@ class InsertHreflangsTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">' .
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
@@ -86,7 +85,6 @@ class InsertHreflangsTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://localhost/index.html">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.

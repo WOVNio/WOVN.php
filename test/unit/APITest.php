@@ -75,7 +75,7 @@ class APITest extends TestCase
         $version = WOVN_PHP_VERSION;
         $site_prefix_path = empty($store->settings['site_prefix_path']) ? '' : '&amp;sitePrefixPath=' . $store->settings['site_prefix_path'];
 
-        return "<link rel=\"canonical\" href=\"$url\"><link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name$site_prefix_path\" data-wovnio-info=\"version=WOVN.php_$version\" data-wovnio-type=\"fallback_snippet\" async></script>";
+        return "<link rel=\"alternate\" hreflang=\"en\" href=\"$url\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=$token&amp;backend=true&amp;currentLang=$current_lang&amp;defaultLang=$default_lang&amp;urlPattern=$pattern&amp;langCodeAliases=$lang_code_aliases_string&amp;langParamName=$lang_param_name$site_prefix_path\" data-wovnio-info=\"version=WOVN.php_$version\" data-wovnio-type=\"fallback_snippet\" async></script>";
     }
 
     private function getExpectedData($store, $headers, $converted_body, $extra = array())
@@ -347,7 +347,7 @@ class APITest extends TestCase
         $result = API::translate($store, $headers, $original_html, $request_options);
 
         $this->assertEquals(1, count($mock->arguments));
-        $expected_result = '<html lang="en"><head><link rel="canonical" href="http://my-site.com/"><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html lang="en"><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
         $this->assertEquals($expected_result, $result, "should return contents with fallback");
     }
 
@@ -380,7 +380,7 @@ class APITest extends TestCase
 
         $result = API::translate($store, $headers, $original_html, $request_options);
         $this->assertEquals(0, count($mock->arguments), 'dont request to translation');
-        $expected_result = '<html lang="en"><head><link rel="canonical" href="http://my-site.com/"><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head><body><h1>en</h1></body></html>';
+        $expected_result = '<html lang="en"><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script></head><body><h1>en</h1></body></html>';
         $this->assertEquals($expected_result, $result, "should return contents without fallback");
     }
 
@@ -418,7 +418,7 @@ class APITest extends TestCase
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
         $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
-        $expected_head_content = '<link rel="canonical" href="http://my-site.com/"><link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=dir1/dir2" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
+        $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=dir1/dir2" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, $settings), $data);
     }

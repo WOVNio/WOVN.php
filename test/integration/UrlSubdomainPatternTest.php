@@ -63,7 +63,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.html">'.
@@ -94,7 +93,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.php">'.
@@ -123,7 +121,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.html">'.
@@ -155,7 +152,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.php">'.
@@ -183,7 +179,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $not_found_page = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<script src="//j.wovn.io/1" '.
@@ -209,7 +204,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://ja.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<script src="//j.wovn.io/1" '.
@@ -241,7 +235,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://custom-en.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://custom-en.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://custom-ja.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://custom-en-us.testsite.com/index.html">'.
@@ -276,7 +269,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
@@ -304,7 +296,6 @@ class UrlSubdomainPatternTest extends TestCase
 
         $content_without_html_swapper = '<html lang="en">'.
         '<head>'.
-        '<link rel="canonical" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
