@@ -838,9 +838,9 @@ logging[path] = "/var/logs/error_log.log"
 logging[max_line_length] = 5124
 ```
 
-#### `insert_canonical_tag`
-Configures if WOVN.php should automatically insert a canonical tag to the HTML. When set to `true`, WOVN.php
-will insert the current URL with language code as the canonical URL. This setting defaults to `true`.
+#### `translate_canonical_tag`
+Configures if WOVN.php should automatically translate existing canonical tag in the HTML. When set to `true`, WOVN.php
+will translate the canonical URL with the current language code. This setting defaults to `false`.
 
 Only language codes and aliases other than the default language will be included in the canonical URL. When the
 default language has an alias, it will be included in the canonical URL.
@@ -849,36 +849,14 @@ default language has an alias, it will be included in the canonical URL.
 
 ```json
 {
-  "insert_canonical_tag": false
+  "translate_canonical_tag": true
 }
 ```
 
 `wovn.ini`
 
 ```ini
-insert_canonical_tag = false
-```
-
-#### `query_canonical_significance`
-This setting can be used when `insert_canonical_tag` is set to `true`. Configures if URL query parameters
-should be included in the canonical URL. Please set this setting to `true` if query parameters are used to
-identify different pages on your website. (e.g. a website that uses `https://example.com/item?id=5` URL pattern
-to link to different items should turn this setting on)
-
-This setting defaults to `false`.
-
-`wovn.json`
-
-```json
-{
-  "query_canonical_significance": true
-}
-```
-
-`wovn.ini`
-
-```ini
-query_canonical_significance = true
+translate_canonical_tag = true
 ```
 
 #### `api_timeout_search_engine_bots`
