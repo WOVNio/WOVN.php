@@ -44,8 +44,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
-            'query_canonical_significance' => true
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -76,8 +75,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
-            'query_canonical_significance' => true
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -105,8 +103,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
-            'query_canonical_significance' => true
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -136,8 +133,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/sub/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
-            'query_canonical_significance' => true
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -164,8 +160,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/404.html", '<html><head></head><body>Page Not Found</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
-            'query_canonical_significance' => true
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $not_found_page = '<html lang="en">'.
@@ -189,8 +184,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'api_url' => 'http://localhost/not_exist_html_swapper_url/',
-            'query_canonical_significance' => true
+            'api_url' => 'http://localhost/not_exist_html_swapper_url/'
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -221,8 +215,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => array_keys($langs),
-            'custom_lang_aliases' => $langs,
-            'query_canonical_significance' => true
+            'custom_lang_aliases' => $langs
         ));
 
         $content_without_html_swapper_custom_en = '<html lang="en">'.
@@ -254,8 +247,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'lang_param_name' => 'lang_param',
-            'query_canonical_significance' => true
+            'lang_param_name' => 'lang_param'
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -286,8 +278,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'disable_api_request_for_default_lang' => false,
-            'query_canonical_significance' => true
+            'disable_api_request_for_default_lang' => false
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -320,8 +311,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'ignore_paths' => array('/sub'),
-            'query_canonical_significance' => true
+            'ignore_paths' => array('/sub')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -350,8 +340,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'ignore_regex' => array('/sub\/.*/'),
-            'query_canonical_significance' => true
+            'ignore_regex' => array('/sub\/.*/')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -378,8 +367,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
             'supported_langs' => $langs,
-            'no_index_langs' => array('en'),
-            'query_canonical_significance' => true
+            'no_index_langs' => array('en')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
