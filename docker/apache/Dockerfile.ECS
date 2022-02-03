@@ -7,8 +7,9 @@ RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?5\.[3-4].*$ ]]; then \
 fi'
 
 RUN apt-get autoclean && apt-get clean all && apt-get update -qq && \
-    apt-get -y --force-yes install git unzip && \
-    apt install openssh-server -y
+    apt -y --force-yes install git unzip && \
+    apt install openssh-server -y && \
+    apt install vim -y
 
 RUN a2enmod rewrite include
 
