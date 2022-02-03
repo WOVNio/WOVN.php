@@ -51,7 +51,7 @@ class HtmlConverter
             $converted_html = $this->insertHreflangTags($converted_html);
         }
         if ($this->store->settings['translate_canonical_tag']) {
-            $converted_html = $this->insertCanonicalTag($converted_html);
+            $converted_html = $this->translateCanonicalTag($converted_html);
         }
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $converted_html = $this->insertNoindex($converted_html);
@@ -276,7 +276,7 @@ class HtmlConverter
         return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
     }
 
-    private function insertCanonicalTag($html)
+    private function translateCanonicalTag($html)
     {
         if ($this->isNoindexLang($this->headers->requestLang())) {
             return $html;
@@ -288,7 +288,8 @@ class HtmlConverter
             return $html;
         }
         $original_canonical_url = $matches[1];
-        $canonical_tag = '<link rel="canonical" href="' . $this->buildCanonicalUrl($original_canonical_url, $this->headers->requestLang()) . '">';
+        $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
+        $canonical_tag = '<link rel="canonical" href="' . $translated_canonical_url . '">';
         return preg_replace($canonical_tag_regex, $canonical_tag, $html);
     }
 
@@ -296,11 +297,6 @@ class HtmlConverter
     {
         $url = $this->headers->urlKeepTrailingSlash;
         return $this->convertUrlToLanguage($url, $lang_code);
-    }
-
-    private function buildCanonicalUrl($original_canonical_url, $lang_code)
-    {
-        return $this->convertUrlToLanguage($original_canonical_url, $lang_code);
     }
 
     private function convertUrlToLanguage($url, $lang_code)
