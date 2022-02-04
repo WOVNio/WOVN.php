@@ -57,7 +57,8 @@ class API
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
-            'body' => $converted_html
+            'body' => $converted_html,
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
         );
 
         if (count($store->settings['custom_lang_aliases']) > 0) {
@@ -77,9 +78,6 @@ class API
         }
         if ($request_options->getDebugMode()) {
             $data['debug_mode'] = 'true';
-        }
-        if (!$store->settings['translate_canonical_tag']) {
-            $data['translate_canonical_tag'] = false;
         }
 
         try {
