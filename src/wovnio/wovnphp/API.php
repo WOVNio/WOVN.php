@@ -78,6 +78,9 @@ class API
         if ($request_options->getDebugMode()) {
             $data['debug_mode'] = 'true';
         }
+        if (!$store->settings['translate_canonical_tag']) {
+            $data['translate_canonical_tag'] = 'false';
+        }
 
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
