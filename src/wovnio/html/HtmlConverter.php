@@ -282,7 +282,7 @@ class HtmlConverter
             return $html;
         }
 
-        $canonical_tag_regex = "/<link[^>]*rel=\"canonical\"*[^>]*href=\"(.*)\"\>/";
+        $canonical_tag_regex = "/<link[^>]*rel=\"canonical\"*[^>]*href=\"([^\"]*)\"\>/";
         preg_match($canonical_tag_regex, $html, $matches);
         if (count($matches) < 2) {
             return $html;
