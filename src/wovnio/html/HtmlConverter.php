@@ -288,6 +288,11 @@ class HtmlConverter
             return $html;
         }
         $original_canonical_url = $matches[1];
+
+        if (parse_url($original_canonical_url, PHP_URL_HOST) != $this->headers->host) {
+            return $html;
+        }
+
         $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
         $canonical_tag = '<link rel="canonical" href="' . $translated_canonical_url . '">';
         return preg_replace($canonical_tag_regex, $canonical_tag, $html);

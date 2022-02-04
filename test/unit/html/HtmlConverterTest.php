@@ -306,6 +306,38 @@ class HtmlConverterTest extends TestCase
                 '<a>hello</a>' .
                 '</body>' .
                 '</html>'
+            ),
+            array(
+                'canonical URL host does not match request host - should do nothing',
+
+                '<html><head><link rel="canonical" wovn="no" href="http://some-other-site.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" wovn="no" href="http://some-other-site.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'canonical URL host does not match request host variant - should do nothing',
+
+                '<html><head><link rel="canonical" wovn="no" href="http://my-sites.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" wovn="no" href="http://my-sites.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
             )
         );
         $settings = array(
