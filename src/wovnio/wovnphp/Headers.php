@@ -359,7 +359,7 @@ class Headers
             'Slurp',
             'Yahoo'
         );
-        foreach($bots as $bot) {
+        foreach ($bots as $bot) {
             if (strpos($this->env['HTTP_USER_AGENT'], $bot) !== false) {
                 return true;
             }
