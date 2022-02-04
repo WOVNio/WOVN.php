@@ -135,7 +135,7 @@ class APITest extends TestCase
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
-        $this->assertEquals(1.0, $timeout);
+        $this->assertEquals(1.0, $timeout, 'Should use 1.0 for non-search engine bot.');
     }
 
     public function testTranslateWithDebugMode()
@@ -354,6 +354,20 @@ class APITest extends TestCase
     public function testTranslateWithSearchEngineBot()
     {
         $envOverride = array('HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $envOverride);
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $response = null;
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array(), false);
+        $result = API::translate($store, $headers, $original_html, $request_options);
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+
+        $this->assertEquals(5.0, $timeout, 'should use higher timeout of 5.0');
+    }
+
+    public function testTranslateWithSearchEngineBotAlternativeBot()
+    {
+        $envOverride = array('HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)');
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $envOverride);
         $original_html = '<html><head></head><body><h1>en</h1></body></html>';
         $response = null;
