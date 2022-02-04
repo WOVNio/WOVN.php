@@ -196,11 +196,11 @@ class HtmlConverterTest extends TestCase
         }
     }
 
-    public function testInsertCanonicalTagWithInsertCanonicalTagFalse()
+    public function testTranslateCanonicalTagWithTranslateCanonicalTagFalse()
     {
         $html_cases = array(
             array(
-                'common case',
+                'common case - do not translate',
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
@@ -214,7 +214,7 @@ class HtmlConverterTest extends TestCase
                 '</html>'
             ),
             array(
-                'with existing canonical tag',
+                'with existing canonical tag - do not change',
 
                 '<html>' .
                 '<body>' .
@@ -242,9 +242,13 @@ class HtmlConverterTest extends TestCase
             'insert_hreflangs' => false,
             'translate_canonical_tag' => false
         );
+
+        $envs = array(
+            'REQUEST_URI' => '/?wovn=vi'
+        );
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_html) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
             $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
 
@@ -252,11 +256,11 @@ class HtmlConverterTest extends TestCase
         }
     }
 
-    public function testInsertCanonicalTagTranslateExistingTag()
+    public function testTranslateCanonicalTagTranslateExistingTag()
     {
         $html_cases = array(
             array(
-                'common case - should keep existing canonical tag',
+                'common case - should translate existing canonical tag',
 
                 '<html><head><link rel="canonical" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
 
@@ -290,11 +294,11 @@ class HtmlConverterTest extends TestCase
         }
     }
 
-    public function testInsertCanonicalTagTranslateExistingTagIsDefaultLang()
+    public function testTranslateCanonicalTagTranslateExistingTagIsDefaultLang()
     {
         $html_cases = array(
             array(
-                'common case - should keep existing canonical tag',
+                'common case - should keep same canonical tag',
 
                 '<html><head><link rel="canonical" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
 
