@@ -292,7 +292,7 @@ class HtmlConverterTest extends TestCase
                 '</html>'
             ),
             array(
-                'with extra attributes - should translate existing canonical tag',
+                'with extra attributes - should translate existing canonical tag and keep extra attributes',
 
                 '<html><head><link rel="canonical" wovn="no" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
 
@@ -300,7 +300,7 @@ class HtmlConverterTest extends TestCase
                 '<head>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
-                '<link rel="canonical" href="http://my-site.com/vi/news/">' .
+                '<link rel="canonical" wovn="no" href="http://my-site.com/vi/news/">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .
@@ -333,6 +333,22 @@ class HtmlConverterTest extends TestCase
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" wovn="no" href="http://my-sites.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'canonical URL is not complete - should do nothing',
+
+                '<html><head><link rel="canonical"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .

@@ -282,20 +282,15 @@ class HtmlConverter
             return $html;
         }
 
-        $canonical_tag_regex = "/<link[^>]*rel=\"canonical\"*[^>]*href=\"([^\"]*)\"\>/";
+        $canonical_tag_regex = "/(<link[^>]*rel=\"canonical\"*[^>]*href=\")([^\"]*)(\"\>)/";
         preg_match($canonical_tag_regex, $html, $matches);
-        if (count($matches) < 2) {
+        if (count($matches) < 4) {
             return $html;
         }
-        $original_canonical_url = $matches[1];
-
-        if (parse_url($original_canonical_url, PHP_URL_HOST) != $this->headers->host) {
-            return $html;
-        }
-
+        $original_canonical_url = $matches[2];
         $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
-        $canonical_tag = '<link rel="canonical" href="' . $translated_canonical_url . '">';
-        return preg_replace($canonical_tag_regex, $canonical_tag, $html);
+        $replacement = '\1' . $translated_canonical_url . '\3';
+        return preg_replace($canonical_tag_regex, $replacement, $html);
     }
 
     private function buildHrefLang($lang_code)
