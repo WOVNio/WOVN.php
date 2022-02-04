@@ -349,6 +349,21 @@ class Headers
 
     public function isSearchEngineBot()
     {
-        return strpos($this->env['HTTP_USER_AGENT'], 'Googlebot/') !== false;
+        $bots = array(
+            'Googlebot/',
+            'bingbot/',
+            'YandexBot/',
+            'YandexWebmaster/',
+            'DuckDuckBot-Https/',
+            'Baiduspider/',
+            'Slurp',
+            'Yahoo'
+        );
+        foreach($bots as $bot) {
+            if (strpos($this->env['HTTP_USER_AGENT'], $bot) !== false) {
+                return true;
+            }
+        }
+        return false;
     }
 }
