@@ -89,7 +89,7 @@ class Store
             'ignore_class' => array(),
             'no_index_langs' => array(),
             'insert_hreflangs' => true,
-            'translate_canonical_tag' => false,
+            'translate_canonical_tag' => true,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
