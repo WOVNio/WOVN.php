@@ -455,7 +455,7 @@ class APITest extends TestCase
         $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $expacted_data = $this->getExpectedData($store, $headers, $expected_html_before_send, $settings);
-        $expacted_data['translate_canonical_tag'] = 'false';
+        $expacted_data['translate_canonical_tag'] = false;
         $this->assertEquals($expacted_data, $data);
     }
 }
