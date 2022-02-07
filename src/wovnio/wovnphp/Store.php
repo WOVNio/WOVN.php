@@ -75,7 +75,7 @@ class Store
             'widget_url' => '//j.wovn.io/1',
             'api_url' => 'https://wovn.global.ssl.fastly.net',
             'api_timeout' => 1.0,
-            'api_timeout_search_engine_bots' => 5.0,
+            'api_timeout_search_engine_bots' => 5,
             'default_lang' => 'ja',
             'encoding' => null,
             'supported_langs' => array('en', 'ja'),

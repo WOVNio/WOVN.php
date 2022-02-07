@@ -570,23 +570,23 @@ api_timeout = 2
 ```
 
 #### `api_timeout_search_engine_bots`
-A variation of `api_timeout`, configures the translation API request timeout in seconds if WOVN.php has detected a request
+A variation of `api_timeout`, integer, configures the translation API request timeout in seconds if WOVN.php has detected a request
 to be coming from a search engine bot. Currently, bots from Google, Yahoo, Bing, Yandex, DuckDuckGo and Baidu are supported.
 
-This setting defaults to `5.0`.
+This setting defaults to `5`.
 
 `wovn.json`
 
 ```json
 {
-  "api_timeout_search_engine_bots": 5.0
+  "api_timeout_search_engine_bots": 5
 }
 ```
 
 `wovn.ini`
 
 ```ini
-api_timeout_search_engine_bots = 5.0
+api_timeout_search_engine_bots = 5
 ```
 
 #### `disable_api_request_for_default_lang`
