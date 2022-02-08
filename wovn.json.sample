@@ -4,7 +4,7 @@
     "default_lang": "ja",
     "supported_langs": [
         "ja",
-         "fr",
+        "fr",
         "en"
     ],
     "encoding": "UTF-8"
