@@ -298,7 +298,7 @@ class HtmlConverter
         if ($matched_regex_index == -1) {
             return $html;
         }
-        $$canonical_tag_regex = $canonical_tag_regexes[$matched_regex_index];
+        $canonical_tag_regex = $canonical_tag_regexes[$matched_regex_index];
         $original_canonical_url = $matches[2];
         $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
         $replacement = '\1' . $translated_canonical_url . '\3';
