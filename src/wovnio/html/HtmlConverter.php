@@ -288,7 +288,7 @@ class HtmlConverter
         );
 
         $matched_regex_index = -1;
-        foreach($canonical_tag_regexes as $index => $canonical_tag_regex) {
+        foreach ($canonical_tag_regexes as $index => $canonical_tag_regex) {
             preg_match($canonical_tag_regex, $html, $matches);
             if (count($matches) == 4) {
                 $matched_regex_index = $index;
