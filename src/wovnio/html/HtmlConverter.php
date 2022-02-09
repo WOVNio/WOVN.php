@@ -282,11 +282,23 @@ class HtmlConverter
             return $html;
         }
 
-        $canonical_tag_regex = "/(<link[^>]*rel=\"canonical\"[^>]*href=\")([^\"]*)(\"[^>]*>)/";
-        preg_match($canonical_tag_regex, $html, $matches);
-        if (count($matches) < 4) {
+        $canonical_tag_regexes = array(
+            "/(<link[^>]*rel=\"canonical\"[^>]*href=\")([^\"]*)(\"[^>]*>)/",
+            "/(<link[^>]*href=\")([^\"]*)(\"[^>]*rel=\"canonical\"[^>]*>)/"
+        );
+
+        $matched_regex_index = -1;
+        foreach($canonical_tag_regexes as $index => $canonical_tag_regex) {
+            preg_match($canonical_tag_regex, $html, $matches);
+            if (count($matches) == 4) {
+                $matched_regex_index = $index;
+                break;
+            }
+        }
+        if ($matched_regex_index == -1) {
             return $html;
         }
+        $$canonical_tag_regex = $canonical_tag_regexes[$matched_regex_index];
         $original_canonical_url = $matches[2];
         $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
         $replacement = '\1' . $translated_canonical_url . '\3';
