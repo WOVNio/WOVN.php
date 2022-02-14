@@ -1,5 +1,5 @@
 project_token = "TOKEN"
-url_pattern_name = "query"
+url_pattern_name = "path"
 default_lang = "ja"
 supported_langs[] = "ja"
 supported_langs[] = "en"
