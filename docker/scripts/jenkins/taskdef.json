@@ -1,0 +1,63 @@
+{
+  "executionRoleArn": "arn:aws:iam::257024234524:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "wovnphp",
+      "cpu": 0,
+      "image": "257024234524.dkr.ecr.us-west-2.amazonaws.com/wovnphp:latest",
+      "mountPoints": [],
+      "workingDirectory": "/var/www/html",
+      "linuxParameters": {
+        "initProcessEnabled": true
+      },
+      "environment": [],
+      "ulimits": [
+        {
+          "name": "nofile",
+          "softLimit": 65535,
+          "hardLimit": 65535
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/wovnphp",
+          "awslogs-region": "us-west-2",
+          "awslogs-stream-prefix": "ecs"
+        }
+      },
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "protocol": "tcp",
+          "containerPort": 80
+        },
+        {
+          "hostPort": 22,
+          "protocol": "tcp",
+          "containerPort": 22
+        }
+      ],
+      "volumesFrom": [],
+      "stopTimeout": 120,
+      "healthCheck": {
+        "retries": 3,
+        "command": [
+          "CMD-SHELL",
+          "curl -f http://localhost/ || exit 1"
+        ],
+        "timeout": 20,
+        "interval": 60,
+        "startPeriod": 180
+      },
+      "essential": true
+    }
+  ],
+  "placementConstraints": [],
+  "cpu": "1024",
+  "memory": "2048",
+  "requiresCompatibilities": [ "FARGATE" ],
+  "family": "wovnphp",
+  "networkMode": "awsvpc",
+  "volumes": []
+}
