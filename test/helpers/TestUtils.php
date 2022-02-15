@@ -109,7 +109,8 @@ class TestUtils
             'encoding' => 'UTF-8',
             'disable_api_request_for_default_lang' => 'true',
             'supported_langs' => array('en', 'ja'),
-            'api_url' => 'http://localhost'
+            'api_url' => 'http://localhost',
+            'translate_canonical_tag' => true,
         );
         return array_merge($defaultSettings, $settings);
     }

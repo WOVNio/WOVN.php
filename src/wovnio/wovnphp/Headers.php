@@ -346,4 +346,24 @@ class Headers
 
         return $cookieLang && ($requestLang !== $cookieLang) && ($requestLang === $this->store->defaultLang());
     }
+
+    public function isSearchEngineBot()
+    {
+        $bots = array(
+            'Googlebot/',
+            'bingbot/',
+            'YandexBot/',
+            'YandexWebmaster/',
+            'DuckDuckBot-Https/',
+            'Baiduspider/',
+            'Slurp',
+            'Yahoo'
+        );
+        foreach ($bots as $bot) {
+            if (strpos($this->env['HTTP_USER_AGENT'], $bot) !== false) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

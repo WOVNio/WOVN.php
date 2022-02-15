@@ -44,7 +44,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -75,7 +75,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -103,7 +103,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -133,7 +133,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/sub/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $content_without_html_swapper = '<html lang="en">'.
@@ -160,7 +160,7 @@ class UrlQueryPatternTest extends TestCase
         TestUtils::writeFile("{$this->docRoot}/404.html", '<html><head></head><body>Page Not Found</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
             'url_pattern_name' => 'query',
-            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK'),
+            'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
 
         $not_found_page = '<html lang="en">'.
@@ -218,7 +218,7 @@ class UrlQueryPatternTest extends TestCase
             'custom_lang_aliases' => $langs
         ));
 
-        $content_without_html_swapper = '<html lang="en">'.
+        $content_without_html_swapper_custom_en = '<html lang="en">'.
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html?wovn=custom_en">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=custom_ja">'.
@@ -231,8 +231,9 @@ class UrlQueryPatternTest extends TestCase
         '</head>'.
         '<body>test</body>'.
         '</html>';
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en')->body);
+
+        $this->assertEquals($content_without_html_swapper_custom_en, TestUtils::fetchURL('http://localhost/index.html')->body);
+        $this->assertEquals($content_without_html_swapper_custom_en, TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_ja')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_en_US')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=custom_zh_Hant_HK')->body);

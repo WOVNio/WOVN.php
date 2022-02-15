@@ -325,23 +325,28 @@ In this section we detail more options you can use with WOVN.php. Some of them
 are dependant to the structure of your website whileothers are more advanced
 and should be used for performance optimization.
 
-| Parameter                                                    | required url_pattern_name | Description                                                  |
-| ------------------------------------------------------------ | ------------------------- | ------------------------------------------------------------ |
-| [lang_param_name](#lang_param_name)                          | query                     | Setting query parameter                                      |
-| [custom_lang_aliases](#custom_lang_aliases)                  | query, path, subdomain    | Setting language codes different from Wovn's default values  |
-| [ignore_paths](#ignore_paths)                                | all                       | Setting paths that should be excluded from translation       |
-| [ignore_regex](#ignore_regex)                                | all                       | Setting regex expressions on paths that should be excluded from translation |
-| [ignore_class](#ignore_class)                                | all                       | Setting the HTML classes that should be excluded from translation |
-| [no_index_langs](#no_index_langs)                            | all                       | Setting languages that should not be included in SEO optimization tags |
-| [encoding](#encoding)                                        | all                       | Setting HTML content encoding                                |
-| [api_timeout](#api_timeout)                                  | all                       | Setting timeout for translation requests                     |
-| [disable_api_request_for_default_lang](#disable_api_request_for_default_lang) | all                       | Enable/disable translation requests for the defaut language  |
-| [use_proxy](#use_proxy)                                      | all                       | Enable/disable use of proxy                                  |
-| [override_content_length](#override_content_length)          | all                       | Enable/Disable recalculation of Content-Length and update    |
-| [check_amp](#check_amp)                                      | all                       | Enable/Disable translation for AMP pages                     |
-| [site_prefix_path](#site_prefix_path)                        | path                      | Changes where the language code is inserted                  |
-| [custom_domain_langs](#custom_domain_langs)                  | custom_domain             | Use custom domains for supported languages                   |
-| [insert_hreflangs](#custom_domain_langs)                     | all                       | Enable/disable addition of link tag with hreflang attribute  |
+| Parameter                                                                     | required url_pattern_name | Description                                                                 |
+|-------------------------------------------------------------------------------| ------------------------- |-----------------------------------------------------------------------------|
+| [lang_param_name](#lang_param_name)                                           | query                     | Setting query parameter                                                     |
+| [custom_lang_aliases](#custom_lang_aliases)                                   | query, path, subdomain    | Setting language codes different from Wovn's default values                 |
+| [ignore_paths](#ignore_paths)                                                 | all                       | Setting paths that should be excluded from translation                      |
+| [ignore_regex](#ignore_regex)                                                 | all                       | Setting regex expressions on paths that should be excluded from translation |
+| [ignore_class](#ignore_class)                                                 | all                       | Setting the HTML classes that should be excluded from translation           |
+| [no_index_langs](#no_index_langs)                                             | all                       | Setting languages that should not be included in SEO optimization tags      |
+| [encoding](#encoding)                                                         | all                       | Setting HTML content encoding                                               |
+| [api_timeout](#api_timeout)                                                   | all                       | Setting timeout for translation requests                                    |
+| [api_timeout_search_engine_bots](#api_timeout_search_engine_bots)             | all                       | Setting timeout for translation requests for search engine bots             |
+| [disable_api_request_for_default_lang](#disable_api_request_for_default_lang) | all                       | Enable/disable translation requests for the defaut language                 |
+| [use_proxy](#use_proxy)                                                       | all                       | Enable/disable use of proxy                                                 |
+| [override_content_length](#override_content_length)                           | all                       | Enable/Disable recalculation of Content-Length and update                   |
+| [check_amp](#check_amp)                                                       | all                       | Enable/Disable translation for AMP pages                                    |
+| [site_prefix_path](#site_prefix_path)                                         | path                      | Changes where the language code is inserted                                 |
+| [custom_domain_langs](#custom_domain_langs)                                   | custom_domain             | Use custom domains for supported languages                                  |
+| [insert_hreflangs](#custom_domain_langs)                                      | all                       | Enable/disable addition of link tag with hreflang attribute                 |
+| [use_cookie_lang](#use_cookie_lang)                                           | all                       | Enable redirect based on WOVN language cookie, if present                   |
+| [compress_api_requests](#compress_api_requests)                               | all                       | Enable gzip compression for outbound requests to translation API            |
+| [logging](#logging)                                                           | all                       | Enable and configure error logging                                          |
+| [translate_canonical_tag](#translate_canonical_tag)                           | all                       | Enable the translation of canonical tag URL                                 |
 
 #### `lang_param_name`
 This parameter is only valid for when `url_pattern_name = query`.
@@ -562,6 +567,26 @@ api_timeout = 2
 {
 	"api_timeout": 2
 }
+```
+
+#### `api_timeout_search_engine_bots`
+A variation of `api_timeout`, integer, configures the translation API request timeout in seconds if WOVN.php has detected a request
+to be coming from a search engine bot. Currently, bots from Google, Yahoo, Bing, Yandex, DuckDuckGo and Baidu are supported.
+
+This setting defaults to `5`.
+
+`wovn.json`
+
+```json
+{
+  "api_timeout_search_engine_bots": 5
+}
+```
+
+`wovn.ini`
+
+```ini
+api_timeout_search_engine_bots = 5
 ```
 
 #### `disable_api_request_for_default_lang`
@@ -836,6 +861,29 @@ Configures WOVN.php's internal logging. When this section is included in `wovn.j
 logging[destination] = "file"
 logging[path] = "/var/logs/error_log.log"
 logging[max_line_length] = 5124
+```
+
+#### `translate_canonical_tag`
+Configures if WOVN.php should automatically translate existing canonical tag in the HTML. When set to `true`, WOVN.php
+will translate the canonical URL with the current language code according to your `url_pattern_name` setting. 
+This setting defaults to `true`.
+
+Example:
+`<link rel="canonical" href="http://site.com/page.html">` may be translated to 
+`<link rel="canonical" href="http://site.com/en/page.html">` if you are using `path` URL pattern.
+
+`wovn.json`
+
+```json
+{
+  "translate_canonical_tag": true
+}
+```
+
+`wovn.ini`
+
+```ini
+translate_canonical_tag = true
 ```
 
 ## 4. Environment Variable

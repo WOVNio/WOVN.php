@@ -34,7 +34,8 @@ class StoreAndHeadersFactory
             'supported_langs' => array('en'),
             'url_pattern_name' => 'query',
             'lang_param_name' => 'wovn',
-            'project_token' => '123456'
+            'project_token' => '123456',
+            'translate_canonical_tag' => true
         );
 
         return array_merge($defaultOptions, $options);

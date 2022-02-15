@@ -103,12 +103,12 @@ class HtmlConverterTest extends TestCase
                 '</html>'
             )
         );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn'
+        );
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_html) = $case;
-            $settings = array(
-                'supported_langs' => array('en', 'vi'),
-                'lang_param_name' => 'wovn'
-            );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
             $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
@@ -181,14 +181,262 @@ class HtmlConverterTest extends TestCase
                 '</html>'
             )
         );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn',
+            'insert_hreflangs' => false
+        );
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_html) = $case;
-            $settings = array(
-                'supported_langs' => array('en', 'vi'),
-                'lang_param_name' => 'wovn',
-                'insert_hreflangs' => false
-            );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
+    public function testTranslateCanonicalTagWithTranslateCanonicalTagFalse()
+    {
+        $html_cases = array(
+            array(
+                'common case - do not translate',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'with existing canonical tag - do not change',
+
+                '<html>' .
+                '<body>' .
+                '<link rel="canonical" href="http://my-site.com/" existing-canonical-supported>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
+                '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<body>' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" href="http://my-site.com/" existing-canonical-supported>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/?wovn=en" existing-hreflang-supported>' .
+                '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn',
+            'insert_hreflangs' => false,
+            'translate_canonical_tag' => false
+        );
+
+        $envs = array(
+            'REQUEST_URI' => '/?wovn=vi'
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
+    public function testTranslateCanonicalTagTranslateExistingTag()
+    {
+        $html_cases = array(
+            array(
+                'common case - should translate existing canonical tag',
+
+                '<html><head><link rel="canonical" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" href="http://my-site.com/vi/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'with query params - should translate existing canonical tag',
+
+                '<html><head><link rel="canonical" href="http://my-site.com/news/?page=3"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" href="http://my-site.com/vi/news/?page=3">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'with extra attributes - should translate existing canonical tag and keep extra attributes',
+
+                '<html><head><link rel="canonical" wovn="no" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" wovn="no" href="http://my-site.com/vi/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'with extra attributes variant - should translate existing canonical tag and keep extra attributes',
+
+                '<html><head><link rel="canonical" first="no" href="http://my-site.com/news/" second="yes"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" first="no" href="http://my-site.com/vi/news/" second="yes">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'shuffled position for rel and href - href first - should translate existing canonical tag and keep extra attributes',
+
+                '<html><head><link first="no" href="http://my-site.com/news/" rel="canonical" second="yes"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link first="no" href="http://my-site.com/vi/news/" rel="canonical" second="yes">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'canonical URL host does not match request host - should do nothing',
+
+                '<html><head><link rel="canonical" wovn="no" href="http://some-other-site.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" wovn="no" href="http://some-other-site.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'canonical URL host does not match request host variant - should do nothing',
+
+                '<html><head><link rel="canonical" wovn="no" href="http://my-sites.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" wovn="no" href="http://my-sites.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            ),
+            array(
+                'canonical URL is not complete - should do nothing',
+
+                '<html><head><link rel="canonical"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'url_pattern_name' => 'path',
+            'translate_canonical_tag' => true
+        );
+        $envs = array(
+            'REQUEST_URI' => '/vi/news/'
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
+    public function testTranslateCanonicalTagTranslateExistingTagIsDefaultLang()
+    {
+        $html_cases = array(
+            array(
+                'common case - should keep same canonical tag',
+
+                '<html><head><link rel="canonical" href="http://my-site.com/news/"></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="canonical" href="http://my-site.com/news/">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>'
+            )
+        );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'url_pattern_name' => 'path',
+            'translate_canonical_tag' => true
+        );
+        $envs = array(
+            'REQUEST_URI' => '/news/'
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
             $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
 
@@ -628,13 +876,13 @@ class HtmlConverterTest extends TestCase
                 '<html><head></head><body><input type="hidden"></body></html>',
             ),
         );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn',
+            'ignore_class' => array('ignore-class')
+        );
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_converted_html, $expected_reverted_html) = $case;
-            $settings = array(
-                'supported_langs' => array('en', 'vi'),
-                'lang_param_name' => 'wovn',
-                'ignore_class' => array('ignore-class')
-            );
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
             $converted_html = $converter->convertToAppropriateBodyForApi($original_html, false);

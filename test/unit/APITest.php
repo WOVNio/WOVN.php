@@ -89,7 +89,8 @@ class APITest extends TestCase
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body,
-            'insert_hreflangs' => json_encode($store->settings['insert_hreflangs'])
+            'insert_hreflangs' => json_encode($store->settings['insert_hreflangs']),
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
         );
 
         return array_merge($data, $extra);
@@ -135,7 +136,7 @@ class APITest extends TestCase
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
-        $this->assertEquals(1.0, $timeout);
+        $this->assertEquals(1.0, $timeout, 'Should use 1.0 for non-search engine bot.');
     }
 
     public function testTranslateWithDebugMode()
@@ -351,6 +352,34 @@ class APITest extends TestCase
         $this->assertEquals($expected_result, $result, "should return contents with fallback");
     }
 
+    public function testTranslateWithSearchEngineBot()
+    {
+        $envOverride = array('HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $envOverride);
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $response = null;
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array(), false);
+        $result = API::translate($store, $headers, $original_html, $request_options);
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+
+        $this->assertEquals(5.0, $timeout, 'should use higher timeout of 5.0');
+    }
+
+    public function testTranslateWithSearchEngineBotAlternativeBot()
+    {
+        $envOverride = array('HTTP_USER_AGENT' => 'Mozilla/5.0 (compatible; Yahoo! Slurp; http://help.yahoo.com/help/us/ysearch/slurp)');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $envOverride);
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $response = null;
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array(), false);
+        $result = API::translate($store, $headers, $original_html, $request_options);
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+
+        $this->assertEquals(5.0, $timeout, 'should use higher timeout of 5.0');
+    }
+
     public function testTranslateWhenDefaultLangAndMakingAPICallBySettingIsOn()
     {
         $settings = array(
@@ -407,5 +436,26 @@ class APITest extends TestCase
         $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=dir1/dir2" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, $settings), $data);
+    }
+
+    public function testTranslateWithTranslateCanonicalTagFalse()
+    {
+        $settings = array('translate_canonical_tag' => false);
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $response = json_encode(array('missingBodyError' => '<html><head></head><body><h1>fr</h1></body></html>'));
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array(), false);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
+
+        $this->assertEquals(1, count($mock->arguments));
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
+        $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
+        $expacted_data = $this->getExpectedData($store, $headers, $expected_html_before_send, $settings);
+        $this->assertEquals($expacted_data, $data);
     }
 }

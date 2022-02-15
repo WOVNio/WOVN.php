@@ -50,6 +50,9 @@ class HtmlConverter
         if ($this->store->settings['insert_hreflangs']) {
             $converted_html = $this->insertHreflangTags($converted_html);
         }
+        if ($this->store->settings['translate_canonical_tag']) {
+            $converted_html = $this->translateCanonicalTag($converted_html);
+        }
         if ($this->isNoindexLang($this->headers->requestLang())) {
             $converted_html = $this->insertNoindex($converted_html);
         }
@@ -245,9 +248,6 @@ class HtmlConverter
      */
     private function insertHreflangTags($html)
     {
-        if (!$this->store->settings['insert_hreflangs']) {
-            return;
-        }
         if (isset($this->store->settings['supported_langs'])) {
             if (is_array($this->store->settings['supported_langs'])) {
                 $lang_codes = $this->store->settings['supported_langs'];
@@ -276,10 +276,43 @@ class HtmlConverter
         return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
     }
 
+    private function translateCanonicalTag($html)
+    {
+        if ($this->isNoindexLang($this->headers->requestLang())) {
+            return $html;
+        }
+
+        $canonical_tag_regexes = array(
+            "/(<link[^>]*rel=\"canonical\"[^>]*href=\")([^\"]*)(\"[^>]*>)/",
+            "/(<link[^>]*href=\")([^\"]*)(\"[^>]*rel=\"canonical\"[^>]*>)/"
+        );
+
+        $matched_regex_index = -1;
+        foreach ($canonical_tag_regexes as $index => $canonical_tag_regex) {
+            preg_match($canonical_tag_regex, $html, $matches);
+            if (count($matches) == 4) {
+                $matched_regex_index = $index;
+                break;
+            }
+        }
+        if ($matched_regex_index == -1) {
+            return $html;
+        }
+        $canonical_tag_regex = $canonical_tag_regexes[$matched_regex_index];
+        $original_canonical_url = $matches[2];
+        $translated_canonical_url = $this->convertUrlToLanguage($original_canonical_url, $this->headers->requestLang());
+        $replacement = '\1' . $translated_canonical_url . '\3';
+        return preg_replace($canonical_tag_regex, $replacement, $html);
+    }
+
     private function buildHrefLang($lang_code)
     {
         $url = $this->headers->urlKeepTrailingSlash;
+        return $this->convertUrlToLanguage($url, $lang_code);
+    }
 
+    private function convertUrlToLanguage($url, $lang_code)
+    {
         if ($this->store->hasDefaultLangAlias()) {
             $url = $this->headers->removeLang($url, $this->store->defaultLang());
             $url = Url::addLangCode($url, $this->store, $lang_code, $this->headers);

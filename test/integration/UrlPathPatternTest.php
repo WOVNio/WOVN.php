@@ -189,7 +189,7 @@ class UrlPathPatternTest extends TestCase
         $this->assertEquals($not_found_page, TestUtils::fetchURL('http://localhost/no.html')->body);
     }
 
-    public function testPathPatternWhenHtmlSwapperDoesnotReturnResponse()
+    public function testPathPatternWhenHtmlSwapperDoesNotReturnResponse()
     {
         $langs = array('en', 'ja', 'en-US', 'zh-Hant-HK');
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");

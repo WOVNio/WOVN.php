@@ -193,6 +193,7 @@ EXPECTED;
             'disable_api_request_for_default_lang' => 'true',
             'supported_langs' => array('ja', 'fr', 'bg', 'en'),
             'api_url' => 'http://localhost',
+            'translate_canonical_tag' => true
         );
         $options = array_merge($defaultOptions, $options);
 

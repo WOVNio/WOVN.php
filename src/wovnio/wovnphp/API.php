@@ -47,7 +47,7 @@ class API
         }
         $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
 
-        $timeout = $store->settings['api_timeout'];
+        $timeout = $headers->isSearchEngineBot() ? $store->settings['api_timeout_search_engine_bots'] : $store->settings['api_timeout'];
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
@@ -57,7 +57,8 @@ class API
             'lang_param_name' => $store->settings['lang_param_name'],
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
-            'body' => $converted_html
+            'body' => $converted_html,
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
         );
 
         if (count($store->settings['custom_lang_aliases']) > 0) {
