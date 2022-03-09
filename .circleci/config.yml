@@ -28,8 +28,10 @@ commands:
           path: .phpunit/
 
 jobs:
-  build:
-    <<: *defaults
+  lint:
+    working_directory: ~/project
+    docker:
+      - image: circleci/php:7.4-apache
     steps:
       - run:
           name: Display Composer Version
@@ -48,7 +50,7 @@ jobs:
   test_php80:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:8.0-apache
@@ -57,7 +59,7 @@ jobs:
   test_php74:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.4-apache
@@ -66,7 +68,7 @@ jobs:
   test_php73:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
@@ -75,7 +77,7 @@ jobs:
   test_php72:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
@@ -84,7 +86,7 @@ jobs:
   test_php71:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
@@ -93,7 +95,7 @@ jobs:
   test_php70:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
@@ -102,7 +104,7 @@ jobs:
   test_php56:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
@@ -111,7 +113,7 @@ jobs:
   test_php55:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
@@ -120,7 +122,7 @@ jobs:
   test_php54:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
@@ -129,7 +131,7 @@ jobs:
   test_php53:
     <<: *defaults
     requires:
-      - build
+      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
@@ -140,7 +142,7 @@ workflows:
   version: 2
   build:
     jobs:
-      - build
+      - lint
       - test_php80
       - test_php74
       - test_php73
