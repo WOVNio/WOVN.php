@@ -121,16 +121,22 @@ class APITest extends TestCase
 
     public function testTranslationURLWithSearchEngineBot()
     {
-        $timeFunction = function() { return 25000000; };
+        $timeFunction = function () {
+            return 25000000;
+        };
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', array(), array('HTTP_USER_AGENT' => 'Googlebot/'));
         $body = '<html></html>';
         $request_options = new RequestOptions(array(), false);
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options, '1970-10-17T08:20:00.000z');
 
         $this->assertEquals($expected_api_url, API::url($store, $headers, $body, $request_options, $timeFunction));
-        $timeFunctionFiveMinutesLater = function() { return 25000300; };
+        $timeFunctionFiveMinutesLater = function () {
+            return 25000300;
+        };
         $this->assertEquals($expected_api_url, API::url($store, $headers, $body, $request_options, $timeFunctionFiveMinutesLater));
-        $timeFunctionTwentyMinutesLater = function() { return 25001200; };
+        $timeFunctionTwentyMinutesLater = function () {
+            return 25001200;
+        };
         $expected_api_url_twenty_minutes_later = $this->getExpectedApiUrl($store, $headers, $body, $request_options, '1970-10-17T08:40:00.000z');
         $this->assertEquals($expected_api_url_twenty_minutes_later, API::url($store, $headers, $body, $request_options, $timeFunctionTwentyMinutesLater));
     }

@@ -369,6 +369,6 @@ class Headers
 
     public function getUserAgent()
     {
-       return $this->env['HTTP_USER_AGENT'] ?: '';
+        return $this->env['HTTP_USER_AGENT'] ?: '';
     }
 }

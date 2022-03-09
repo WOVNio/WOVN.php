@@ -155,7 +155,7 @@ class Utils
 
     public static function getTimeFunction()
     {
-        return function() {
+        return function () {
             return time();
         };
     }
