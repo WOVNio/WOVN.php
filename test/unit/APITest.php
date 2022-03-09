@@ -47,7 +47,7 @@ class APITest extends TestCase
         return $mock;
     }
 
-    private function getExpectedApiUrl($store, $headers, $content, $request_options)
+    private function getExpectedApiUrl($store, $headers, $content, $request_options, $timestamp = null)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
@@ -56,7 +56,9 @@ class APITest extends TestCase
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
         $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
-        if ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
+        if ($timestamp) {
+            $cache_key_string = $cache_key_string . "&timestamp=" . $timestamp;
+        } elseif ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
             $cache_key_string = $cache_key_string . "&timestamp=" . time();
         }
         $cache_key = rawurlencode($cache_key_string);
@@ -90,7 +92,8 @@ class APITest extends TestCase
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body,
             'insert_hreflangs' => json_encode($store->settings['insert_hreflangs']),
-            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
+            'user_agent' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.152 Safari/537.36'
         );
 
         return array_merge($data, $extra);
@@ -103,7 +106,7 @@ class APITest extends TestCase
         $request_options = new RequestOptions(array(), false);
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
 
-        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
+        $this->assertTrue(API::url($store, $headers, $body, $request_options, Utils::getTimeFunction()) === $expected_api_url);
     }
 
     public function testTranslationURLWithCacheInvalidation()
@@ -113,7 +116,23 @@ class APITest extends TestCase
         $request_options = new RequestOptions(array('wovnCacheDisable' => ''), true);
         $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
 
-        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
+        $this->assertTrue(API::url($store, $headers, $body, $request_options, Utils::getTimeFunction()) === $expected_api_url);
+    }
+
+    public function testTranslationURLWithSearchEngineBot()
+    {
+        $timeFunction = function() { return 25000000; };
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request', array(), array('HTTP_USER_AGENT' => 'Googlebot/'));
+        $body = '<html></html>';
+        $request_options = new RequestOptions(array(), false);
+        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options, '1970-10-17T08:20:00.000z');
+
+        $this->assertEquals($expected_api_url, API::url($store, $headers, $body, $request_options, $timeFunction));
+        $timeFunctionFiveMinutesLater = function() { return 25000300; };
+        $this->assertEquals($expected_api_url, API::url($store, $headers, $body, $request_options, $timeFunctionFiveMinutesLater));
+        $timeFunctionTwentyMinutesLater = function() { return 25001200; };
+        $expected_api_url_twenty_minutes_later = $this->getExpectedApiUrl($store, $headers, $body, $request_options, '1970-10-17T08:40:00.000z');
+        $this->assertEquals($expected_api_url_twenty_minutes_later, API::url($store, $headers, $body, $request_options, $timeFunctionTwentyMinutesLater));
     }
 
     public function testTranslate()

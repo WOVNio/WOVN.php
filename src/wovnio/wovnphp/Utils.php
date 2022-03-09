@@ -147,6 +147,19 @@ class Utils
         }
         return false;
     }
+
+    public static function roundDownTime($time, $unit)
+    {
+        return $time - ($time % $unit);
+    }
+
+    public static function getTimeFunction()
+    {
+        return function() {
+            return time();
+        };
+    }
+
     /*
      * Return path component of $uri
      */

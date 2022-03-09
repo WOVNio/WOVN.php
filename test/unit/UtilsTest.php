@@ -167,4 +167,13 @@ XML;
         $this->assertEquals(true, Utils::isAmp($uncommented_amp_symbol));
         $this->assertEquals(true, Utils::isAmp($uncommented_amp_with_multiline_comment));
     }
+
+    public function testRoundDownTime()
+    {
+        $this->assertEquals(0, Utils::roundDownTime(0, 10));
+        $this->assertEquals(10, Utils::roundDownTime(10, 10));
+        $this->assertEquals(10, Utils::roundDownTime(16, 10));
+        $this->assertEquals(30, Utils::roundDownTime(30, 15));
+        $this->assertEquals(100, Utils::roundDownTime(100, 20));
+    }
 }

@@ -366,4 +366,9 @@ class Headers
         }
         return false;
     }
+
+    public function getUserAgent()
+    {
+       return $this->env['HTTP_USER_AGENT'] ?: '';
+    }
 }
