@@ -28,10 +28,8 @@ commands:
           path: .phpunit/
 
 jobs:
-  lint:
-    working_directory: ~/project
-    docker:
-      - image: circleci/php:7.4-apache
+  build:
+    <<: *defaults
     steps:
       - run:
           name: Display Composer Version
@@ -49,8 +47,6 @@ jobs:
       - run: ./vendor/bin/phpcs
   test_php80:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:8.0-apache
@@ -58,8 +54,6 @@ jobs:
       - store-steps
   test_php74:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.4-apache
@@ -67,8 +61,6 @@ jobs:
       - store-steps
   test_php73:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.3-apache
@@ -76,8 +68,6 @@ jobs:
       - store-steps
   test_php72:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.2-apache
@@ -85,8 +75,6 @@ jobs:
       - store-steps
   test_php71:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.1-apache
@@ -94,8 +82,6 @@ jobs:
       - store-steps
   test_php70:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:7.0-apache
@@ -103,8 +89,6 @@ jobs:
       - store-steps
   test_php56:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.6-apache
@@ -112,8 +96,6 @@ jobs:
       - store-steps
   test_php55:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh php:5.5-apache
@@ -121,8 +103,6 @@ jobs:
       - store-steps
   test_php54:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.4
@@ -130,8 +110,6 @@ jobs:
       - store-steps
   test_php53:
     <<: *defaults
-    requires:
-      - lint
     steps:
       - common-steps
       - run: scripts/run_phpunit_tests.sh vectorface/php5.3
@@ -142,14 +120,34 @@ workflows:
   version: 2
   build:
     jobs:
-      - lint
-      - test_php80
-      - test_php74
-      - test_php73
-      - test_php72
-      - test_php71
-      - test_php70
-      - test_php56
-      - test_php55
-      - test_php54
-      - test_php53
+      - build
+      - test_php80:
+          requires:
+            - build
+      - test_php74:
+          requires:
+            - build
+      - test_php73:
+          requires:
+            - build
+      - test_php72:
+          requires:
+            - build
+      - test_php71:
+          requires:
+            - build
+      - test_php70:
+          requires:
+            - build
+      - test_php56:
+          requires:
+            - build
+      - test_php55:
+          requires:
+            - build
+      - test_php54:
+          requires:
+            - build
+      - test_php53:
+          requires:
+            - build
