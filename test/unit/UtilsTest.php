@@ -176,4 +176,11 @@ XML;
         $this->assertEquals(30, Utils::roundDownTime(30, 15));
         $this->assertEquals(100, Utils::roundDownTime(100, 20));
     }
+
+    public function testGetTimeFunction()
+    {
+        $currentTime = time();
+        $timeFunctionTime = Utils::getTimeFunction()();
+        $this->assertEqualsWithDelta($currentTime, $timeFunctionTime, 2.0);
+    }
 }
