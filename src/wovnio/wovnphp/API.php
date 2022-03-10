@@ -4,13 +4,15 @@ namespace Wovnio\Wovnphp;
 require_once DIRNAME(__FILE__) . '../../utils/request_handlers/RequestHandlerFactory.php';
 require_once 'custom_domain/CustomDomainLangUrlHandler.php';
 
+use DateTime;
+use DateTimeZone;
 use \Wovnio\Wovnphp\Logger;
 use \Wovnio\Html\HtmlConverter;
 use \Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 
 class API
 {
-    public static function url($store, $headers, $original_content, $request_options)
+    public static function url($store, $headers, $original_content, $request_options, $timeFunction)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
@@ -19,9 +21,13 @@ class API
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
         $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
+
         if ($request_options->getCacheDisableMode() || $request_options->getDebugMode()) {
             $cache_key_string = $cache_key_string . "&timestamp=" . time();
+        } elseif ($headers->isSearchEngineBot()) {
+            $cache_key_string = $cache_key_string . "&timestamp=" . self::getSearchEngineBotTimeStamp($timeFunction);
         }
+
         $cache_key = rawurlencode($cache_key_string);
 
         return $store->settings['api_url'] . '/v0/translation?cache_key=' . $cache_key;
@@ -29,7 +35,7 @@ class API
 
     public static function translate($store, $headers, $original_content, $request_options)
     {
-        $api_url = self::url($store, $headers, $original_content, $request_options);
+        $api_url = self::url($store, $headers, $original_content, $request_options, Utils::getTimeFunction());
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
         $default_lang = $store->settings['default_lang'];
@@ -58,7 +64,8 @@ class API
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_html,
-            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
+            'user_agent' => $headers->getUserAgent()
         );
 
         if (count($store->settings['custom_lang_aliases']) > 0) {
@@ -135,5 +142,15 @@ class API
     private static function makeAPICall($store, $headers)
     {
         return $headers->requestLang() != $store->settings['default_lang'] || !$store->settings['disable_api_request_for_default_lang'];
+    }
+
+    private static function getSearchEngineBotTimeStamp($timeFunction)
+    {
+        $twenty_minutes = 20 * 60;
+        $cache_time = Utils::roundDownTime($timeFunction(), $twenty_minutes);
+        $datetime = new DateTime();
+        $datetime->setTimezone(new DateTimeZone('UTC'));
+        $datetime->setTimestamp($cache_time);
+        return $datetime->format('Y-m-d\TH:i:s') . '.000z';
     }
 }
