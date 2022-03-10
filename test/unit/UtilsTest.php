@@ -180,7 +180,8 @@ XML;
     public function testGetTimeFunction()
     {
         $currentTime = time();
-        $timeFunctionTime = Utils::getTimeFunction()();
+        $timeFunction = Utils::getTimeFunction();
+        $timeFunctionTime = $timeFunction();
         $this->assertEqualsWithDelta($currentTime, $timeFunctionTime, 2.0);
     }
 }
