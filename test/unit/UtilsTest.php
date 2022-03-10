@@ -181,7 +181,7 @@ XML;
     {
         $currentTime = time();
         $timeFunction = Utils::getTimeFunction();
-        $timeFunctionTime = $timeFunction();
+        $timeFunctionTime = call_user_func($timeFunction);
         $this->assertEqualsWithDelta($currentTime, $timeFunctionTime, 2.0);
     }
 }
