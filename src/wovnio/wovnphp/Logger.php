@@ -37,7 +37,8 @@ class Logger
     public function __construct($token, $quiet = true, $prefix = 'WOVN.php')
     {
         $this->uniqueId = $token . $this->getReasonableCurrentTime();
-        date_default_timezone_set('UTC');
+        // Suppress DateTime warnings
+        @date_default_timezone_set(@date_default_timezone_get());
         $this->prefix = $prefix;
         $this->quiet = $quiet;
         $this->destinationType = self::PHP_SYSTEM_LOGGER;

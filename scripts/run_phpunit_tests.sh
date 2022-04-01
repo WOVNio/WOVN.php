@@ -62,7 +62,7 @@ docker exec ${APACHE_CONTAINER_ID} \
 # Run unit test
 if [[ "${DOCKER_IMAGE}" =~ ^php:7.*$ ]]; then
     docker exec ${APACHE_CONTAINER_ID} \
-        /bin/bash -c "cd ${WORK_DIR}; set -e; phpdbg -qrr vendor/bin/phpunit --log-junit ${UNITTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${UNITTEST_REPORT_DIR}/coverage-report"
+        /bin/bash -c "cd ${WORK_DIR}; set -e; vendor/bin/phpunit --log-junit ${UNITTEST_REPORT_DIR}/results.xml -d memory_limit=1024M --coverage-html ${UNITTEST_REPORT_DIR}/coverage-report"
 else
     docker exec ${APACHE_CONTAINER_ID} \
         /bin/bash -c "cd ${WORK_DIR}; set -e; vendor/bin/phpunit --log-junit ${UNITTEST_REPORT_DIR}/results.xml"
