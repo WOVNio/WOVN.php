@@ -4,6 +4,7 @@ namespace Wovnio\Utils\RequestHandlers;
 require_once 'AbstractRequestHandler.php';
 
 use Wovnio\Utils\RequestHandlers\AbstractRequestHandler;
+use Wovnio\Wovnphp\Logger;
 
 class FileGetContentsRequestHandler extends AbstractRequestHandler
 {
@@ -36,11 +37,15 @@ class FileGetContentsRequestHandler extends AbstractRequestHandler
         list($response, $response_headers) = $this->fileGetContents($url, $http_context);
 
         if ($response === false) {
-            preg_match('{HTTP\/\S*\s(\d{3})}', $response_headers[0], $match);
+            $error_type = '';
+            if ($last_error = error_get_last()) {
+                $error_type = $last_error['type'];
+                Logger::get()->error($last_error['message']);
+            }
 
-            $http_error_code = $match[1];
+            $error_in_response = $response_headers[0];
 
-            return array(null, $response_headers, "[fgc] Request failed ($http_error_code)");
+            return array(null, $response_headers, "[fgc] Request failed ($error_type - $error_in_response)");
         }
 
         foreach ($response_headers as $c => $h) {
