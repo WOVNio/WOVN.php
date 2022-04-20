@@ -82,7 +82,7 @@ class Store
             'custom_lang_aliases' => array(),
             'use_proxy' => false,
             'override_content_length' => false,
-            'disable_api_request_for_default_lang' => false,
+            'disable_api_request_for_default_lang' => true,
             'compress_api_requests' => true,
             'ignore_paths' => array(),
             'ignore_regex' => array(),

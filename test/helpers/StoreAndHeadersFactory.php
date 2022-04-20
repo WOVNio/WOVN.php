@@ -35,7 +35,8 @@ class StoreAndHeadersFactory
             'url_pattern_name' => 'query',
             'lang_param_name' => 'wovn',
             'project_token' => '123456',
-            'translate_canonical_tag' => true
+            'translate_canonical_tag' => true,
+            'disable_api_request_for_default_lang' => false
         );
 
         return array_merge($defaultOptions, $options);
