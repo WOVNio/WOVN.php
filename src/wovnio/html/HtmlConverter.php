@@ -77,6 +77,10 @@ class HtmlConverter
         }
         $converted_html = $html;
 
+        if (strpos($converted_html, 'wovn-ignore') === false) {
+            return $converted_html;
+        }
+
         $dom = SimpleHtmlDom::str_get_html($converted_html, $encoding, false, false, $encoding, false);
         if ($dom) {
             $this->replaceDom($dom, $this->marker);
