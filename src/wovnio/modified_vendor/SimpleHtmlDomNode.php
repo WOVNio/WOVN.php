@@ -47,6 +47,12 @@ class SimpleHtmlDomNode {
     // clean up memory due to php5 circular references memory leak...
     function clear()
     {
+        if (defined('PHP_VERSION_ID')) {
+            if (PHP_VERSION_ID > 60000) {
+                return;
+            }
+        }
+
         $this->dom = null;
         $this->parent = null;
         $this->node_begin = null;
