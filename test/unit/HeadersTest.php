@@ -380,6 +380,7 @@ class HeadersTest extends TestCase
         };
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testCanProcessResponse__CustomDomainPattern__AlwaysProcessed()
     {
         $custom_domain_langs = array(
