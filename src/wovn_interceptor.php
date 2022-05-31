@@ -68,6 +68,10 @@ if (!Utils::isIgnoredPath($uri, $store)) {
         }
         $headers->responseOut();
 
+        if (!$headers->canProcessResponse()) {
+            return $buffer;
+        }
+
         if (empty($buffer) || !Utils::isHtml($buffer)) {
             return $buffer;
         }

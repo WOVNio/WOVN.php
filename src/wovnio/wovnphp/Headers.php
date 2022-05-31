@@ -321,6 +321,22 @@ class Headers
         }
     }
 
+    public function canProcessResponse() {
+        # To process a response means to add snippet/hreflangs and translate
+
+        $urlLanguage = $this->urlLanguage();
+        $urlLanguageIsEmpty = !$urlLanguage || strlen($urlLanguage)==0;
+
+        if ($urlLanguageIsEmpty && $this->store->hasDefaultLangAlias()) {
+            # If the default lang alias is /japanese
+            # /japanese/page.php is the source lang page and should be processed
+            # /en/page.php is the translated version of /japanese/page.php and should be processed
+            # /page.php is a different page that should not be processed
+            return false;
+        }
+        return true;
+    }
+
     public function getDocumentURI()
     {
         $url = $this->env['REQUEST_URI'];
