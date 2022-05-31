@@ -327,7 +327,7 @@ class Headers
 
         // query pattern doesn't affect which source page is requested
         // custom domain pattern isn't affected by lang aliases
-        $defaultLangAliasHasLimitedScope = $this->store->settings['url_pattern_name'] == 'path' 
+        $defaultLangAliasHasLimitedScope = $this->store->settings['url_pattern_name'] == 'path'
                                         || $this->store->settings['url_pattern_name'] == 'subdomain';
         if ($defaultLangAliasHasLimitedScope) {
             $urlLanguage = $this->urlLanguage();

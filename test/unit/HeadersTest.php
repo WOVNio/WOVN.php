@@ -279,6 +279,7 @@ class HeadersTest extends TestCase
         };
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testCanProcessResponse__PathPattern()
     {
         $langAliases = array('en' => 'english', 'ja' => 'japanese');
@@ -312,6 +313,7 @@ class HeadersTest extends TestCase
         };
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testCanProcessResponse__SubdomainPattern()
     {
         $langAliases = array('en' => 'english', 'ja' => 'japanese');
@@ -346,6 +348,7 @@ class HeadersTest extends TestCase
         };
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testCanProcessResponse__QueryPattern__AlwaysProcessed()
     {
         $langAliases = array('en' => 'english', 'ja' => 'japanese');
