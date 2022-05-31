@@ -279,6 +279,134 @@ class HeadersTest extends TestCase
         };
     }
 
+    public function testCanProcessResponse__PathPattern()
+    {
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            // Without lang aliases
+            array('/japanese/page.php', 'en', true, null),
+            array('/english/page.php', 'en', true, null),
+            array('/ja/page.php', 'ja', false, null),
+            array('/page.php', 'en', true, null),
+            array('/other_page/', 'en', true, null),
+            // With lang aliases
+            array('/japanese/page.php', 'ja', true, $langAliases),
+            array('/english/page.php', 'en', true, $langAliases),
+            array('/ja/page.php', '', false, $langAliases),
+            array('/page.php', '', false, $langAliases),
+            array('/other_page/', '', false, $langAliases),
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $settings = array(
+                'default_lang' => 'en',
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'path'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    public function testCanProcessResponse__SubdomainPattern()
+    {
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            // Without lang aliases
+            array('https://english.my-site.com/index.html', 'en', false, null),
+            array('https://japanese.my-site.com/index.html', 'ja', false, null),
+            array('https://en.my-site.com/index.html', '', true, null),
+            array('https://ja.my-site.com/index.html', '', true, null),
+            array('https://my-site.com/index.html', '', true, null),
+            // With lang aliases
+            array('https://english.my-site.com/index.html', 'en', true, $langAliases),
+            array('https://japanese.my-site.com/index.html', 'ja', true, $langAliases),
+            array('https://en.my-site.com/index.html', '', false, $langAliases),
+            array('https://ja.my-site.com/index.html', '', false, $langAliases),
+            array('https://my-site.com/index.html', '', false, $langAliases),
+
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $settings = array(
+                'default_lang' => 'en',
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'subdomain'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    public function testCanProcessResponse__QueryPattern__AlwaysProcessed()
+    {
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            // Without lang aliases
+            array('/page.php?wovn=english', 'en', true, null),
+            array('/page.php?wovn=', 'en', true, null),
+            array('/page.php?', 'en', true, null),
+            array('/page.php?wovn=japanese', 'ja', true, null),
+            // With lang aliases
+            array('/page.php?wovn=english', 'en', true, $langAliases),
+            array('/page.php?wovn=', 'en', true, $langAliases),
+            array('/page.php?', 'en', true, $langAliases),
+            array('/page.php?wovn=japanese', 'ja', true, $langAliases),
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $settings = array(
+                'default_lang' => 'en',
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'query'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    public function testCanProcessResponse__CustomDomainPattern__AlwaysProcessed()
+    {
+        $custom_domain_langs = array(
+            'en' => array('url' => 'my-site.com'),
+            'ja' => array('url' => 'my-site.com/ja')
+        );
+        $settings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => $custom_domain_langs
+        );
+
+        $settings = array(
+            'default_lang' => 'en',
+            'url_pattern_name' => 'custom_domain'
+        );
+        $testCases = array(
+            array('https://my-site.com/page.php', 'en', true),
+            array('https://my-site.com/ja/page.php', 'ja', true),
+            array('https://my-site.com/other/page.php', 'en', true),
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse) = $case;
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
     public function testUrlLanguageWithPathPattern()
     {
         $settings = array('url_pattern_name' => 'path');

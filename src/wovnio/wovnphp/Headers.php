@@ -321,18 +321,27 @@ class Headers
         }
     }
 
-    public function canProcessResponse() {
+    public function canProcessResponse()
+    {
         # To process a response means to add snippet/hreflangs and translate
 
-        $urlLanguage = $this->urlLanguage();
-        $urlLanguageIsEmpty = !$urlLanguage || strlen($urlLanguage)==0;
+        // query pattern doesn't affect which source page is requested
+        // custom domain pattern isn't affected by lang aliases
+        $defaultLangAliasHasLimitedScope = $this->store->settings['url_pattern_name'] == 'path' 
+                                        || $this->store->settings['url_pattern_name'] == 'subdomain';
+        if ($defaultLangAliasHasLimitedScope) {
+            $urlLanguage = $this->urlLanguage();
+            $urlLanguageIsEmpty = !$urlLanguage || strlen($urlLanguage)==0;
+    
+            if ($urlLanguageIsEmpty && $this->store->hasDefaultLangAlias()) {
+                # If the default lang alias is /japanese
+                # /japanese/page.php is the source lang page and should be processed
+                # /en/page.php is the translated version of /japanese/page.php and should be processed
+                # /page.php is a different page that should not be processed
 
-        if ($urlLanguageIsEmpty && $this->store->hasDefaultLangAlias()) {
-            # If the default lang alias is /japanese
-            # /japanese/page.php is the source lang page and should be processed
-            # /en/page.php is the translated version of /japanese/page.php and should be processed
-            # /page.php is a different page that should not be processed
-            return false;
+                # This also applies for subdomain and `japanese.site.com` (processed) vs `site.com` (not processed)
+                return false;
+            }
         }
         return true;
     }
