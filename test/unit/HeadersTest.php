@@ -296,7 +296,7 @@ class HeadersTest extends TestCase
             array('/english/page.php', 'en', true, $langAliases),
             array('/ja/page.php', '', false, $langAliases),
             array('/page.php', '', false, $langAliases),
-            array('/other_page/', '', false, $langAliases),
+            array('/other_page/', '', false, $langAliases)
         );
 
         foreach ($testCases as $case) {
@@ -330,8 +330,7 @@ class HeadersTest extends TestCase
             array('https://japanese.my-site.com/index.html', 'ja', true, $langAliases),
             array('https://en.my-site.com/index.html', '', false, $langAliases),
             array('https://ja.my-site.com/index.html', '', false, $langAliases),
-            array('https://my-site.com/index.html', '', false, $langAliases),
-
+            array('https://my-site.com/index.html', '', false, $langAliases)
         );
 
         foreach ($testCases as $case) {
@@ -363,7 +362,7 @@ class HeadersTest extends TestCase
             array('/page.php?wovn=english', 'en', true, $langAliases),
             array('/page.php?wovn=', 'en', true, $langAliases),
             array('/page.php?', 'en', true, $langAliases),
-            array('/page.php?wovn=japanese', 'ja', true, $langAliases),
+            array('/page.php?wovn=japanese', 'ja', true, $langAliases)
         );
 
         foreach ($testCases as $case) {
