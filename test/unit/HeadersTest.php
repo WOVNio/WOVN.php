@@ -286,11 +286,11 @@ class HeadersTest extends TestCase
 
         $testCases = array(
             // Without lang aliases
-            array('/japanese/page.php', 'en', true, null),
-            array('/english/page.php', 'en', true, null),
-            array('/ja/page.php', 'ja', false, null),
-            array('/page.php', 'en', true, null),
-            array('/other_page/', 'en', true, null),
+            array('/japanese/page.php', 'en', true, array()),
+            array('/english/page.php', 'en', true, array()),
+            array('/ja/page.php', 'ja', false, array()),
+            array('/page.php', 'en', true, array()),
+            array('/other_page/', 'en', true, array()),
             // With lang aliases
             array('/japanese/page.php', 'ja', true, $langAliases),
             array('/english/page.php', 'en', true, $langAliases),
@@ -320,11 +320,11 @@ class HeadersTest extends TestCase
 
         $testCases = array(
             // Without lang aliases
-            array('https://english.my-site.com/index.html', 'en', false, null),
-            array('https://japanese.my-site.com/index.html', 'ja', false, null),
-            array('https://en.my-site.com/index.html', '', true, null),
-            array('https://ja.my-site.com/index.html', '', true, null),
-            array('https://my-site.com/index.html', '', true, null),
+            array('https://english.my-site.com/index.html', 'en', false, array()),
+            array('https://japanese.my-site.com/index.html', 'ja', false, array()),
+            array('https://en.my-site.com/index.html', '', true, array()),
+            array('https://ja.my-site.com/index.html', '', true, array()),
+            array('https://my-site.com/index.html', '', true, array()),
             // With lang aliases
             array('https://english.my-site.com/index.html', 'en', true, $langAliases),
             array('https://japanese.my-site.com/index.html', 'ja', true, $langAliases),
@@ -355,10 +355,10 @@ class HeadersTest extends TestCase
 
         $testCases = array(
             // Without lang aliases
-            array('/page.php?wovn=english', 'en', true, null),
-            array('/page.php?wovn=', 'en', true, null),
-            array('/page.php?', 'en', true, null),
-            array('/page.php?wovn=japanese', 'ja', true, null),
+            array('/page.php?wovn=english', 'en', true, array()),
+            array('/page.php?wovn=', 'en', true, array()),
+            array('/page.php?', 'en', true, array()),
+            array('/page.php?wovn=japanese', 'ja', true, array()),
             // With lang aliases
             array('/page.php?wovn=english', 'en', true, $langAliases),
             array('/page.php?wovn=', 'en', true, $langAliases),
