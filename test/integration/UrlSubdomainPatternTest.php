@@ -226,8 +226,10 @@ class UrlSubdomainPatternTest extends TestCase
             'zh-Hant-HK' => 'custom-zh-hant-hk'
         );
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        $originalHtml = '<html><head></head><body>test</body></html>';
+        TestUtils::writeFile("{$this->docRoot}/index.html", $originalHtml);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'ja',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array_keys($langs),
             'custom_lang_aliases' => $langs
@@ -247,7 +249,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://testsite.com/index.html')->body);
+        $this->assertEquals($originalHtml, TestUtils::fetchURL('http://testsite.com/index.html')->body);
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://custom-en.testsite.com/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-ja.testsite.com/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-en-us.testsite.com/index.html')->body);
