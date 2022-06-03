@@ -7,8 +7,8 @@
 <body>
 <h1>Website Title (EN)</h1>
 <div>
-    <p>/page.php</p>
-    <p>This is a sample sentence.</p>
+    <p>/japanese/page.php</p>
+    <p>JA alias page</p>
 </div>
 </body>
 </html>
