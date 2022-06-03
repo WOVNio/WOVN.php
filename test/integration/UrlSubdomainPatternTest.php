@@ -57,6 +57,7 @@ class UrlSubdomainPatternTest extends TestCase
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
@@ -87,6 +88,7 @@ class UrlSubdomainPatternTest extends TestCase
             '<html><head></head><body>test</body></html>';
         TestUtils::writeFile("{$this->docRoot}/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
@@ -115,6 +117,7 @@ class UrlSubdomainPatternTest extends TestCase
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
@@ -146,6 +149,7 @@ class UrlSubdomainPatternTest extends TestCase
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.php", $content);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array('en', 'ja', 'en-US', 'zh-Hant-HK')
         ));
@@ -173,6 +177,7 @@ class UrlSubdomainPatternTest extends TestCase
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/404.html", '<html><head></head><body>Page Not Found</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array('en', 'ja')
         ));
@@ -197,6 +202,7 @@ class UrlSubdomainPatternTest extends TestCase
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => $langs,
             'api_url' => 'http://localhost/not_exist_html_swapper_url/'
@@ -226,8 +232,10 @@ class UrlSubdomainPatternTest extends TestCase
             'zh-Hant-HK' => 'custom-zh-hant-hk'
         );
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
-        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
+        $originalHtml = '<html><head></head><body>test</body></html>';
+        TestUtils::writeFile("{$this->docRoot}/index.html", $originalHtml);
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => array_keys($langs),
             'custom_lang_aliases' => $langs
@@ -247,7 +255,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<body>test</body>'.
         '</html>';
 
-        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://testsite.com/index.html')->body);
+        $this->assertEquals($originalHtml, TestUtils::fetchURL('http://testsite.com/index.html')->body);
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://custom-en.testsite.com/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-ja.testsite.com/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://custom-en-us.testsite.com/index.html')->body);
@@ -262,6 +270,7 @@ class UrlSubdomainPatternTest extends TestCase
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>sub</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => $langs,
             'ignore_paths' => array('/sub')
@@ -289,6 +298,7 @@ class UrlSubdomainPatternTest extends TestCase
         mkdir("{$this->docRoot}/sub");
         TestUtils::writeFile("{$this->docRoot}/sub/index.html", '<html><head></head><body>sub</body></html>');
         TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'default_lang' => 'en',
             'url_pattern_name' => 'subdomain',
             'supported_langs' => $langs,
             'ignore_regex' => array('/sub\/.*/')

@@ -51,10 +51,10 @@ class Headers
 
         $this->host = $this->originalHost;
         if ($store->settings['url_pattern_name'] === 'subdomain') {
-            $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host, $this->requestLang()));
+            $intermediateHost = explode('//', $this->removeLang($this->protocol . '://' . $this->host));
             $this->host = $intermediateHost[1];
         } elseif ($store->settings['url_pattern_name'] === 'custom_domain') {
-            $this->host = $this->removeLang($this->host, $this->requestLang());
+            $this->host = $this->removeLang($this->host);
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_REQUEST_URI'])) {
             $clientRequestUri = $env['HTTP_X_FORWARDED_REQUEST_URI'];
@@ -65,10 +65,10 @@ class Headers
         $this->pathname = $exploded[0];
         $this->originalPath = $this->pathname;
         if ($store->settings['url_pattern_name'] === 'path' || $store->settings['url_pattern_name'] === 'custom_domain') {
-            $this->pathname = $this->removeLang($exploded[0], $this->requestLang());
+            $this->pathname = $this->removeLang($exploded[0]);
         }
         $this->query = (!isset($exploded[1])) ? '' : $exploded[1];
-        $this->query = $this->removeLang($this->query, $this->requestLang());
+        $this->query = $this->removeLang($this->query);
         $urlQuery = strlen($this->query) > 0 ? '?' . $this->query : '';
 
         $this->pathnameKeepTrailingSlash = $this->pathname;
@@ -313,7 +313,7 @@ class Headers
 
         $lang_code = $this->store->convertToCustomLangCode($lang);
         $default_lang = $this->store->settings['default_lang'];
-        if ($this->store->hasDefaultLangAlias()) {
+        if ($lang_code && $this->store->hasDefaultLangAlias()) {
             $no_lang_uri = Url::removeLangCode($uri, $lang_code, $this->store, $this);
             return Url::addLangCode($no_lang_uri, $this->store, $default_lang, $this);
         } else {
@@ -321,11 +321,36 @@ class Headers
         }
     }
 
+    public function canProcessResponse()
+    {
+        # To process a response means to add snippet/hreflangs and translate
+
+        // query pattern doesn't affect which source page is requested
+        // custom domain pattern isn't affected by lang aliases
+        $defaultLangAliasHasLimitedScope = $this->store->settings['url_pattern_name'] == 'path'
+                                        || $this->store->settings['url_pattern_name'] == 'subdomain';
+        if ($defaultLangAliasHasLimitedScope) {
+            $urlLanguage = $this->urlLanguage();
+            $urlLanguageIsEmpty = !$urlLanguage || strlen($urlLanguage)==0;
+    
+            if ($urlLanguageIsEmpty && $this->store->hasDefaultLangAlias()) {
+                # If the default lang alias is /japanese
+                # /japanese/page.php is the source lang page and should be processed
+                # /en/page.php is the translated version of /japanese/page.php and should be processed
+                # /page.php is a different page that should not be processed
+
+                # This also applies for subdomain and `japanese.site.com` (processed) vs `site.com` (not processed)
+                return false;
+            }
+        }
+        return true;
+    }
+
     public function getDocumentURI()
     {
         $url = $this->env['REQUEST_URI'];
 
-        return $this->removeLang($url, $this->requestLang());
+        return $this->removeLang($url);
     }
 
     public function computeRedirectUrl()

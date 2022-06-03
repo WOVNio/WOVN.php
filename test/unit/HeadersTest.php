@@ -1,6 +1,7 @@
 <?php
 namespace Wovnio\Wovnphp\Tests\Unit;
 
+require_once 'test/helpers/EnvFactory.php';
 require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/HeadersMock.php';
 
@@ -10,6 +11,7 @@ require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Url.php';
 require_once 'src/wovnio/wovnphp/CookieLang.php';
 
+use Wovnio\Test\Helpers\EnvFactory;
 use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\CookieLang;
@@ -276,6 +278,149 @@ class HeadersTest extends TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
 
             $this->assertEquals($afterRemoveUrl, $headers->removeLang($beforeRemoveUrl, $removeLang));
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testCanProcessResponse__PathPattern()
+    {
+        $defaultLang = 'en';
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            // Without lang aliases
+            array('https://site.com/japanese/page.php', '', $defaultLang, true, array()),
+            array('https://site.com/english/page.php', '', $defaultLang, true, array()),
+            array('https://site.com/ja/page.php', 'ja', 'ja', true, array()),
+            array('https://site.com/en/page.php', 'en', 'en', true, array()),
+            array('https://site.com/page.php', '', $defaultLang, true, array()),
+            // With lang aliases
+            array('https://site.com/japanese/page.php', 'ja', 'ja', true, $langAliases),
+            array('https://site.com/english/page.php', 'en', 'en', true, $langAliases),
+            array('https://site.com/ja/page.php', 'ja', 'ja', true, $langAliases), // TODO: We should only handle the alias
+            array('https://site.com/en/page.php', 'en', 'en', true, $langAliases), // TODO: We should only handle the alias
+            array('https://site.com/page.php', '', $defaultLang, false, $langAliases),
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedRequestLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $env = EnvFactory::makeEnvFromUrl($requestUrl);
+            $settings = array(
+                'default_lang' => $defaultLang,
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'path'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedRequestLang, $headers->requestLang());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testCanProcessResponse__SubdomainPattern()
+    {
+        $defaultLang = 'en';
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            //  host, expected urlLang, requestLang, canProcessResponse, customLangAliases
+            // Without lang aliases
+            array('https://english.my-site.com/index.html', '', $defaultLang, true, array()),
+            array('https://japanese.my-site.com/index.html', '', $defaultLang, true, array()),
+            array('https://en.my-site.com/index.html', 'en', 'en', true, array()),
+            array('https://ja.my-site.com/index.html', 'ja', 'ja', true, array()),
+            array('https://my-site.com/index.html', '', $defaultLang, true, array()),
+            // With lang aliases
+            array('https://english.my-site.com/index.html', 'en', 'en', true, $langAliases),
+            array('https://japanese.my-site.com/index.html', 'ja', 'ja', true, $langAliases),
+            array('https://en.my-site.com/index.html', 'en', 'en', true, $langAliases), // TODO: We should only handle the alias
+            array('https://ja.my-site.com/index.html', 'ja', 'ja', true, $langAliases), // TODO: We should only handle the alias
+            array('https://my-site.com/index.html', '', $defaultLang, false, $langAliases)
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedRequestLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $env = EnvFactory::makeEnvFromUrl($requestUrl);
+
+            $settings = array(
+                'default_lang' => $defaultLang,
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'subdomain'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedRequestLang, $headers->requestLang());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testCanProcessResponse__QueryPattern__AlwaysProcessed()
+    {
+        $langAliases = array('en' => 'english', 'ja' => 'japanese');
+
+        $testCases = array(
+            // Without lang aliases
+            array('https://site.com/page.php?wovn=english', '', true, array()),
+            array('https://site.com/page.php?wovn=en', 'en', true, array()),
+            array('https://site.com/page.php?wovn=', '', true, array()),
+            array('https://site.com/page.php?', '', true, array()),
+            array('https://site.com/page.php?wovn=japanese', '', true, array()),
+            array('https://site.com/page.php?wovn=ja', 'ja', true, array()),
+            // With lang aliases
+            array('https://site.com/page.php?wovn=english', 'en', true, $langAliases),
+            array('https://site.com/page.php?wovn=en', 'en', true, array()), // TODO: We should only handle the alias
+            array('https://site.com/page.php?wovn=', '', true, $langAliases),
+            array('https://site.com/page.php?', '', true, $langAliases),
+            array('https://site.com/page.php?wovn=japanese', 'ja', true, $langAliases),
+            array('https://site.com/page.php?wovn=ja', 'ja', true, array()),  // TODO: We should only handle the alias
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse, $testLangAliases) = $case;
+            $env = EnvFactory::makeEnvFromUrl($requestUrl);
+
+            $settings = array(
+                'default_lang' => 'en',
+                'custom_lang_aliases' => $testLangAliases,
+                'url_pattern_name' => 'query'
+            );
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testCanProcessResponse__CustomDomainPattern__AlwaysProcessed()
+    {
+        $custom_domain_langs = array(
+            'en' => array('url' => 'my-site.com'),
+            'ja' => array('url' => 'my-site.com/ja')
+        );
+        
+        $settings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => $custom_domain_langs
+        );
+
+        $testCases = array(
+            array('https://my-site.com/page.php', 'en', true),
+            array('https://my-site.com/ja/page.php', 'ja', true),
+            array('https://my-site.com/other/page.php', 'en', true),
+        );
+
+        foreach ($testCases as $case) {
+            list($requestUrl, $expectedUrlLang, $expectedCanProcessResponse) = $case;
+            $env = EnvFactory::makeEnvFromUrl($requestUrl);
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+            $this->assertEquals($expectedUrlLang, $headers->urlLanguage());
+            $this->assertEquals($expectedCanProcessResponse, $headers->canProcessResponse());
         };
     }
 
