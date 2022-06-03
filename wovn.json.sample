@@ -7,8 +7,5 @@
         "fr",
         "en"
     ],
-    "custom_lang_aliases": {
-        "ja": "japanese"
-    },
     "encoding": "UTF-8"
 }
