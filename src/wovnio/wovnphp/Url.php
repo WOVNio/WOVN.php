@@ -299,6 +299,28 @@ class Url
         return preg_match('/^\//', $uri);
     }
 
+    // parameters are not assumed to be absolute URLs
+    // Fills missing components using request headers
+    public static function isSamePathAndHost($a, $b, $headers) {
+        if (!isAbsoluteUri($a)) {
+            $a = $headers->protocol . '://' . $headers->originalHost . $a;
+        }
+
+        if (!isAbsoluteUri($b)) {
+            $b = $headers->protocol . '://' . $headers->originalHost . $b;
+        }
+
+        $parsed_url_a = parse_url($a);
+        $parsed_url_b = parse_url($b);
+
+        if ($parsed_url_a && $parsed_url_b) {
+            return $parsed_url_a['host'] == $parsed_url_b['host']
+                && $parsed_url_a['path'] == $parsed_url_b['path'];
+        }
+
+        return false;
+    }
+
     private static function makeSegmentsFromAbsoluteUrl($absoluteUrl)
     {
         preg_match(
