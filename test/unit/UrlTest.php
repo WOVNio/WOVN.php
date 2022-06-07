@@ -8,6 +8,7 @@ require_once 'src/wovnio/wovnphp/Store.php';
 require_once 'src/wovnio/wovnphp/Headers.php';
 require_once 'src/wovnio/wovnphp/Lang.php';
 
+use Wovnio\Test\Helpers\EnvFactory;
 use Wovnio\test\Helpers\StoreAndHeadersFactory;
 use Wovnio\Test\Helpers\TestUtils;
 
@@ -1409,5 +1410,26 @@ class UrlTest extends TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $additional_env);
             $this->assertEquals($expected, Url::shouldIgnoreBySitePrefixPath($uri, $store->settings));
         }
+    }
+
+    public function testIsSameHostAndPath()
+    {
+        $requestUrl = "https://site.com/page.php";
+        $env = EnvFactory::makeEnvFromUrl($requestUrl);
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', array(), $env);
+
+        $this->assertEquals(false, Url::isSameHostAndPath("/a", "/b", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("/path", "/path", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("/path?a=b", "/path?a=b", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("/path?a=b", "/path?c=d", $headers));
+
+        $this->assertEquals(true, Url::isSameHostAndPath("relative_path", "relative_path", $headers));
+
+        $this->assertEquals(true, Url::isSameHostAndPath("https://site.com", "https://site.com", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("https://site.com/", "https://site.com/", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("https://site.com/path", "https://site.com/path", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("https://site.com/path?a=b", "https://site.com/path?a=b", $headers));
+        $this->assertEquals(true, Url::isSameHostAndPath("https://site.com/path?a=b", "https://site.com/path?c=d", $headers));
+        $this->assertEquals(false, Url::isSameHostAndPath("https://site.com/path", "https://site.com/path2", $headers));
     }
 }

@@ -1212,6 +1212,286 @@ class HeadersTest extends TestCase
         $this->assertEquals('Location: /index.php?wovn=fr', $receivedHeaders[0]);
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testResponseOut__ServerRedirectsToExternalSite__DoesNotModify()
+    {
+        $commonSettings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'de', 'fr'),
+        );
+
+        $pathSettings = array(
+            'url_pattern_name' => 'path'
+        );
+        $pathTestCases = array(
+            array('requestUrl' => 'https://site.com/de/page.php', 'responseRedirectUrl' => 'https://external-site.com/', 'expectedRedirectUrl' => 'https://external-site.com/'),
+        );
+
+        $querySettings = array(
+            'url_pattern_name' => 'query'
+        );
+        $queryTestCases = array(
+            array('requestUrl' => 'https://site.com/page.php?wovn=de', 'responseRedirectUrl' => 'https://external-site.com/', 'expectedRedirectUrl' => 'https://external-site.com/'),
+        );
+
+        $subdomainSettings = array(
+            'url_pattern_name' => 'subdomain'
+        );
+        $subdomainTestCases = array(
+            array('requestUrl' => 'https://de.site.com/page.php', 'responseRedirectUrl' => 'https://external-site.com/', 'expectedRedirectUrl' => 'https://external-site.com/'),
+        );
+
+        $customDomainSettings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'en' => array('url' => 'site.com/global'),
+                'fr' => array('url' => 'site.com/french'),
+                'de' => array('url' => 'site.com/german')
+            )
+        );
+        $customDomainTestCases = array(
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => 'https://external-site.com/', 'expectedRedirectUrl' => 'https://external-site.com/'),
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => 'https://external-site.com/', 'expectedRedirectUrl' => 'https://external-site.com/'),
+        );
+
+        $testGroups = array(
+            array($pathSettings, $pathTestCases),
+            array($querySettings, $queryTestCases),
+            array($subdomainSettings, $subdomainTestCases),
+            array($customDomainSettings, $customDomainTestCases)
+        );
+
+        foreach ($testGroups as $testGroup) {
+            list($testSettings, $testCases) = $testGroup;
+
+            foreach ($testCases as $testCase) {
+                $requestUrl = $testCase['requestUrl'];
+                $responseRedirectUrl = $testCase['responseRedirectUrl'];
+                $expectedRedirectUrl = $testCase['expectedRedirectUrl'];
+
+                \Wovnio\Wovnphp\mockHeadersSent(false);
+                \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
+                    'Location' => $responseRedirectUrl
+                ));
+                \Wovnio\Wovnphp\mockHeader();
+
+                $env = EnvFactory::makeEnvFromUrl($requestUrl);
+
+                $settings = array_merge($commonSettings, $testSettings);
+                list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+                $headers->responseOut();
+                $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+
+                $this->assertEquals(1, count($receivedHeaders));
+                $this->assertEquals("Location: $expectedRedirectUrl", $receivedHeaders[0]);
+            }
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testResponseOut__ServerRedirectsToAnotherPage__AddsRequestLangCode()
+    {
+        $commonSettings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'de', 'fr'),
+        );
+
+        // TODO: This behavior probably isn't correct but this is the current behavior
+        // We assume the Location header never contains any wovn lang codes, so for path, query we will add double lang codes
+        $pathSettings = array(
+            'url_pattern_name' => 'path'
+        );
+        $pathTestCases = array(
+            array('requestUrl' => 'https://site.com/de/page.php', 'responseRedirectUrl' => '/page2.php', 'expectedRedirectUrl' => '/de/page2.php'),
+        );
+
+        $querySettings = array(
+            'url_pattern_name' => 'query'
+        );
+        $queryTestCases = array(
+            array('requestUrl' => 'https://site.com/page.php?wovn=de', 'responseRedirectUrl' => '/page2.php', 'expectedRedirectUrl' => '/page2.php?wovn=de'),
+        );
+
+        $subdomainSettings = array(
+            'url_pattern_name' => 'subdomain'
+        );
+        // Subdomain and custom domain do accept the new lang code though.
+        // It's more about how addLangCode is implemented for the url pattern, if it tries to replace existing lang codes or not.
+        $subdomainTestCases = array(
+            array('requestUrl' => 'https://de.site.com/page.php', 'responseRedirectUrl' => '/page2.php', 'expectedRedirectUrl' => 'https://de.site.com/page2.php'),
+        );
+
+        $customDomainSettings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'en' => array('url' => 'site.com/global'),
+                'fr' => array('url' => 'site.com/french'),
+                'de' => array('url' => 'site.com/german')
+            )
+        );
+        $customDomainTestCases = array(
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => '/page2.php', 'expectedRedirectUrl' => '/page2.php'), // This is outside of the custom domain scope, so no lang added
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => '/global/page2.php', 'expectedRedirectUrl' => '/french/page2.php'),
+        );
+        
+        $customDomainWithSourceSettings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'en' => array('url' => 'site.com/global/'),
+                'fr' => array('url' => 'site.com/french/', 'source' => 'site.com/french/'),
+                'de' => array('url' => 'site.com/german/', 'source' => 'site.com/german/')
+            )
+        );
+        $customDomainWithSourceTestCases = array(
+            array('requestUrl' => 'https://site.com/global/page.php', 'responseRedirectUrl' => '/other_page.php', 'expectedRedirectUrl' => '/other_page.php'), // This is outside of the custom domain scope, so no lang added
+            array('requestUrl' => 'https://site.com/global/page.php', 'responseRedirectUrl' => '/global/other_page.php', 'expectedRedirectUrl' => '/global/other_page.php'),
+            array('requestUrl' => 'https://site.com/global/page.php', 'responseRedirectUrl' => '/french/other_page.php', 'expectedRedirectUrl' => '/global/other_page.php'),
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => '/global/other_page.php', 'expectedRedirectUrl' => '/french/other_page.php'),
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => '/french/other_page.php', 'expectedRedirectUrl' => '/french/other_page.php')
+        );
+
+        $testGroups = array(
+            array($pathSettings, $pathTestCases),
+            array($querySettings, $queryTestCases),
+            array($subdomainSettings, $subdomainTestCases),
+            array($customDomainSettings, $customDomainTestCases),
+            array($customDomainWithSourceSettings, $customDomainWithSourceTestCases)
+        );
+
+        foreach ($testGroups as $testGroup) {
+            list($testSettings, $testCases) = $testGroup;
+
+            foreach ($testCases as $testCase) {
+                $requestUrl = $testCase['requestUrl'];
+                $responseRedirectUrl = $testCase['responseRedirectUrl'];
+                $expectedRedirectUrl = $testCase['expectedRedirectUrl'];
+
+                \Wovnio\Wovnphp\mockHeadersSent(false);
+                \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
+                    'Location' => $responseRedirectUrl
+                ));
+                \Wovnio\Wovnphp\mockHeader();
+
+                $env = EnvFactory::makeEnvFromUrl($requestUrl);
+
+                $settings = array_merge($commonSettings, $testSettings);
+                list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+                $headers->responseOut();
+                $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+
+                if ($expectedRedirectUrl) {
+                    $this->assertEquals(1, count($receivedHeaders));
+                    $this->assertEquals("Location: $expectedRedirectUrl", $receivedHeaders[0]);
+                } else {
+                    $this->assertEquals(0, count($receivedHeaders));
+                }
+            }
+        };
+    }
+
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    public function testResponseOut__ServerRedirectsToSameUrlWithWovnLang__DoesNotCreateLoops()
+    {
+        $commonSettings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'de', 'fr'),
+        );
+
+        // TODO: This behavior probably isn't correct but this is the current behavior
+        // We assume the Location header never contains any wovn lang codes, so for path, query we will add double lang codes
+        $pathSettings = array(
+            'url_pattern_name' => 'path'
+        );
+        $pathTestCases = array(
+            array('requestUrl' => 'https://site.com/de/page.php', 'responseRedirectUrl' => '/fr/page.php', 'expectedRedirectUrl' => '/de/fr/page.php'),
+        );
+
+        $querySettings = array(
+            'url_pattern_name' => 'query'
+        );
+        $queryTestCases = array(
+            array('requestUrl' => 'https://site.com/page.php?wovn=de', 'responseRedirectUrl' => '/page.php?wovn=fr', 'expectedRedirectUrl' => null),
+        );
+
+        $subdomainSettings = array(
+            'url_pattern_name' => 'subdomain'
+        );
+        // Subdomain and custom domain do accept the new lang code though.
+        // It's more about how addLangCode is implemented for the url pattern, if it tries to replace existing lang codes or not.
+        $subdomainTestCases = array(
+            array('requestUrl' => 'https://de.site.com/page.php', 'responseRedirectUrl' => 'https://fr.site.com/page.php', 'expectedRedirectUrl' => 'https://fr.site.com/page.php'),
+        );
+
+        $customDomainSettings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'en' => array('url' => 'site.com/global'),
+                'fr' => array('url' => 'site.com/french'),
+                'de' => array('url' => 'site.com/german')
+            )
+        );
+        $customDomainTestCases = array(
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => 'https://site.com/global/page.php', 'expectedRedirectUrl' => null),
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => 'https://site.com/german/page.php', 'expectedRedirectUrl' => null),
+        );
+        
+        $customDomainWithSourceSettings = array(
+            'url_pattern_name' => 'custom_domain',
+            'custom_domain_langs' => array(
+                'en' => array('url' => 'site.com/global/'),
+                'fr' => array('url' => 'site.com/french/', 'source' => 'site.com/french/'),
+                'de' => array('url' => 'site.com/german/', 'source' => 'site.com/german/')
+            )
+        );
+        $customDomainWithSourceTestCases = array(
+            array('requestUrl' => 'https://site.com/global/page.php', 'responseRedirectUrl' => 'https://site.com/global/other_page.php', 'expectedRedirectUrl' => 'https://site.com/global/other_page.php'),
+            // Redirect from target lang source file, to global source file
+            array('requestUrl' => 'https://site.com/french/page.php', 'responseRedirectUrl' => 'https://site.com/global/page.php', 'expectedRedirectUrl' => null),
+            array('requestUrl' => 'https://site.com/german/page.php', 'responseRedirectUrl' => 'https://site.com/global/page.php', 'expectedRedirectUrl' => null),
+        );
+
+        $testGroups = array(
+            array($pathSettings, $pathTestCases),
+            array($querySettings, $queryTestCases),
+            array($subdomainSettings, $subdomainTestCases),
+            array($customDomainSettings, $customDomainTestCases),
+            array($customDomainWithSourceSettings, $customDomainWithSourceTestCases)
+        );
+
+        foreach ($testGroups as $testGroup) {
+            list($testSettings, $testCases) = $testGroup;
+
+            foreach ($testCases as $testCase) {
+                $requestUrl = $testCase['requestUrl'];
+                $responseRedirectUrl = $testCase['responseRedirectUrl'];
+                $expectedRedirectUrl = $testCase['expectedRedirectUrl'];
+
+                \Wovnio\Wovnphp\mockHeadersSent(false);
+                \Wovnio\Wovnphp\mockApacheResponseHeaders(true, array(
+                    'Location' => $responseRedirectUrl
+                ));
+                \Wovnio\Wovnphp\mockHeader();
+
+                $env = EnvFactory::makeEnvFromUrl($requestUrl);
+
+                $settings = array_merge($commonSettings, $testSettings);
+                list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+                $headers->responseOut();
+                $receivedHeaders = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+
+                if ($expectedRedirectUrl) {
+                    $this->assertEquals(1, count($receivedHeaders));
+                    $this->assertEquals("Location: $expectedRedirectUrl", $receivedHeaders[0]);
+                } else {
+                    $this->assertEquals(0, count($receivedHeaders));
+                }
+            }
+        };
+    }
+
     public function testGetDocumentURIWithQueryPattern()
     {
         $settings = array(

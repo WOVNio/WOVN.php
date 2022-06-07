@@ -286,7 +286,7 @@ class Headers
         // Two languages can be using different files on the customer side, and they may use redirects.
         // e.g. customer redirect's /french/page.php -> /global/page.php. WOVN modifies it back to /french/page.php
         // For other URL patterns, we translate the redirect to keep the same lang code but in this case it creates a loop
-        if ($newLocation && !Url::isSameHostAndPath($originalUrl, $newLocation)) {
+        if ($newLocation && !Url::isSameHostAndPath($this->originalUrl, $newLocation, $this)) {
             header($locationHeader . ': ' . $newLocation);
         }
     }
