@@ -48,14 +48,19 @@ class APITest extends TestCase
         return $mock;
     }
 
-    private function getExpectedApiUrl($store, $headers, $original_html, $request_options)
+    private function convertHtmlToSendTranslationAPI($original_html, $store, $headers)
+    {
+        $converter = new HtmlConverter('UTF-8', '123456', $store, $headers);
+        $converted_html = $converter->convertToAppropriateBodyForApi($original_html);
+        $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
+        return $converted_html;
+    }
+
+    private function getExpectedApiUrl($store, $headers, $converted_html, $request_options)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
         $lang = $headers->requestLang();
-        $converter = new HtmlConverter('UTF-8', '123456', $store, $headers);
-        $converted_html = $converter->convertToAppropriateBodyForApi($original_html);
-        $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
         $body_hash = md5($converted_html);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
@@ -103,21 +108,27 @@ class APITest extends TestCase
     public function testTranslationURL()
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
-        $body = '<html></html>';
+        $original_html = '<html></html>';
+        $mock = $this->mockTranslationApi(null);
         $request_options = new RequestOptions(array(), false);
-        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
-        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
     }
 
     public function testTranslationURLWithCacheInvalidation()
     {
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('japanese_path_request');
-        $body = '<html></html>';
+        $original_html = '<html></html>';
+        $mock = $this->mockTranslationApi(null);
         $request_options = new RequestOptions(array('wovnCacheDisable' => ''), true);
-        $expected_api_url = $this->getExpectedApiUrl($store, $headers, $body, $request_options);
+        $result = API::translate($store, $headers, $original_html, $request_options);
 
-        $this->assertTrue(API::url($store, $headers, $body, $request_options) === $expected_api_url);
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
     }
 
     public function testTranslate()
@@ -136,7 +147,8 @@ class APITest extends TestCase
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
         $this->assertEquals('POST', $method);
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -157,7 +169,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('debug_mode' => 'true')), $data);
@@ -178,7 +191,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_html_before_send = '<html lang="en"><head>'.
         '<meta name="robots" content="noindex">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async>'.
@@ -203,7 +217,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers, '{&quot;ja&quot;:&quot;ja-test&quot;}');
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('custom_lang_aliases' => '{"ja":"ja-test"}')), $data, "should contain snippet which include extra options");
@@ -224,7 +239,8 @@ class APITest extends TestCase
         $this->assertEquals('<html><head></head><body><h1 wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1 wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data, "should replace and replace back ignored contents");
@@ -244,7 +260,8 @@ class APITest extends TestCase
         $this->assertEquals('<html><head></head><body><h1 data-wovn-ignore>en</h1>Bonjour</body></html>', $result);
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1 data-wovn-ignore><!-- __wovn-backend-ignored-key-0 --></h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data, "should replace and replace back ignored contents");
@@ -263,7 +280,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content<script><!-- __wovn-backend-ignored-key-0 --></script></head><body><h1>en</h1>hello</body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -287,7 +305,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = '<html lang="en">' .
         '<head>' . $expected_head_content . '<script type="application/ld+json">{ "text": "Hello" }</script></head>' .
@@ -313,7 +332,11 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+
+        $converter = new HtmlConverter('UTF-8', '123456', $store, $headers);
+        $converted_html = $converter->insertSnippetAndLangTags($original_html, true);
+
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = '<html lang="en">' .
         '<head>' . $expected_head_content . '<script>console.log("test");</script></head>' .
@@ -334,7 +357,9 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
@@ -436,7 +461,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=dir1/dir2" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, $settings), $data);
@@ -456,7 +482,8 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $original_html, $request_options), $url);
+        $converted_html = $this->convertHtmlToSendTranslationAPI($original_html, $store, $headers);
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $converted_html, $request_options), $url);
         $expected_head_content = '<link rel="alternate" hreflang="en" href="http://my-site.com/"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>';
         $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
         $expacted_data = $this->getExpectedData($store, $headers, $expected_html_before_send, $settings);
