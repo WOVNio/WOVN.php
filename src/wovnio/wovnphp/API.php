@@ -28,8 +28,7 @@ class API
     }
 
     public static function translate($store, $headers, $original_content, $request_options)
-    {
-        $api_url = self::url($store, $headers, $original_content, $request_options);
+    {   
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
         $default_lang = $store->settings['default_lang'];
@@ -85,6 +84,7 @@ class API
             if ($request_handler === null) {
                 return $marker->revert($converted_html);
             }
+            $api_url = self::url($store, $headers, $converted_html, $request_options);
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
 
             $requestUUID = 'NO_UUID';
