@@ -25,6 +25,7 @@ use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 use Wovnio\Wovnphp\API;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\RequestOptions;
+use Wovnio\Html\HtmlConverter;
 use Wovnio\Utils\RequestHandlers\RequestHandlerFactory;
 use PHPUnit\Framework\TestCase;
 
@@ -47,12 +48,15 @@ class APITest extends TestCase
         return $mock;
     }
 
-    private function getExpectedApiUrl($store, $headers, $content, $request_options)
+    private function getExpectedApiUrl($store, $headers, $original_html, $request_options)
     {
         $token = $store->settings['project_token'];
         $path = $headers->pathnameKeepTrailingSlash;
         $lang = $headers->requestLang();
-        $body_hash = md5($content);
+        $converter = new HtmlConverter('UTF-8', '123456', $store, $headers);
+        $converted_html = $converter->convertToAppropriateBodyForApi($original_html);
+        $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
+        $body_hash = md5($converted_html);
         ksort($store->settings);
         $settings_hash = md5(serialize($store->settings));
         $cache_key_string = "(token=$token&settings_hash=$settings_hash&body_hash=$body_hash&path=$path&lang=$lang)";
