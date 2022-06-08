@@ -2,7 +2,6 @@ DOCKER_COMPOSE_YML = docker/apache.yml
 # DOCKER_COMPOSE_YML = docker/nginx.yml
 # DOCKER_COMPOSE_YML = docker/wp_apache.yml
 DOCKER_IMAGE = php:7.4-apache
-CIRCLECI_JOB = test_php80
 
 .PHONY: build stop start clean dev_setup test test_debug lint_with_docker test_unit_with_docker test_integration_with_docker test_with_circleci
 
