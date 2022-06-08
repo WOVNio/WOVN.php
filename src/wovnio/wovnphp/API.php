@@ -28,7 +28,7 @@ class API
     }
 
     public static function translate($store, $headers, $original_content, $request_options)
-    {   
+    {
         $encoding = $store->settings['encoding'];
         $token = $store->settings['project_token'];
         $default_lang = $store->settings['default_lang'];
