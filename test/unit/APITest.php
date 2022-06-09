@@ -48,14 +48,6 @@ class APITest extends TestCase
         return $mock;
     }
 
-    private function convertHtmlToSendTranslationAPI($original_html, $store, $headers)
-    {
-        $converter = new HtmlConverter('UTF-8', '123456', $store, $headers);
-        $converted_html = $converter->convertToAppropriateBodyForApi($original_html);
-        $converted_html = $converter->insertSnippetAndLangTags($converted_html, true);
-        return $converted_html;
-    }
-
     private function getExpectedApiUrl($store, $headers, $converted_html, $request_options)
     {
         $token = $store->settings['project_token'];
