@@ -1298,7 +1298,7 @@ class HeadersTest extends TestCase
         );
 
         // TODO: This behavior probably isn't correct but this is the current behavior
-        // We assume the Location header never contains any wovn lang codes, so for path, query we will add double lang codes
+        // We assume the Location header never contains any wovn lang codes, so for path we will add double lang codes
         $pathSettings = array(
             'url_pattern_name' => 'path'
         );
@@ -1400,7 +1400,7 @@ class HeadersTest extends TestCase
         );
 
         // TODO: This behavior probably isn't correct but this is the current behavior
-        // We assume the Location header never contains any wovn lang codes, so for path, query we will add double lang codes
+        // We assume the Location header never contains any wovn lang codes, so for path we will add double lang codes
         $pathSettings = array(
             'url_pattern_name' => 'path'
         );
