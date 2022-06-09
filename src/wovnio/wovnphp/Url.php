@@ -301,7 +301,7 @@ class Url
 
     // parameters are not assumed to be absolute URLs
     // Fills missing components using request headers
-    public static function isSameHostAndPath($a, $b, $headers) 
+    public static function isSameHostAndPath($a, $b, $headers)
     {
         // This doesn't have to be a perfect conversion of a URL,
         // we just need to make them parsable so we can compare
