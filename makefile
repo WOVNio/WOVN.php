@@ -29,11 +29,13 @@ start_test:
 lint_with_docker:
 	docker exec -it -w /opt/project apache /bin/bash -c "vendor/bin/phpcs"
 
+# Run `start_test` before
 test_unit_with_docker:
-	docker exec -it -w /opt/project apache /bin/bash -c "vendor/bin/phpunit"
+	./scripts/run_phpunit_tests.sh ${DOCKER_IMAGE}
 
+# Run `start_test` before
 test_integration_with_docker:
-	docker exec -it -w /opt/project apache /bin/bash -c "vendor/bin/phpunit --configuration phpunit_integration.xml"
+	./scripts/run_integration_tests.sh ${DOCKER_IMAGE}
 
 test_with_circleci:
 	circleci local execute --job $(CIRCLECI_JOB)
