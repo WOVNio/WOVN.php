@@ -299,6 +299,34 @@ class Url
         return preg_match('/^\//', $uri);
     }
 
+    // parameters are not assumed to be absolute URLs
+    // Fills missing components using request headers
+    public static function isSameHostAndPath($a, $b, $headers)
+    {
+        // This doesn't have to be a perfect conversion of a URL,
+        // we just need to make them parsable so we can compare
+        if (!Url::isAbsoluteUri($a)) {
+            $a = $headers->protocol . '://' . $headers->originalHost . $a;
+        }
+
+        if (!Url::isAbsoluteUri($b)) {
+            $b = $headers->protocol . '://' . $headers->originalHost . $b;
+        }
+
+        $parsed_url_a = parse_url($a);
+        $parsed_url_b = parse_url($b);
+
+        if ($parsed_url_a && $parsed_url_b) {
+            $path_a = isset($parsed_url_a['path']) ? $parsed_url_a['path'] : '';
+            $path_b = isset($parsed_url_b['path']) ? $parsed_url_b['path'] : '';
+
+            return $parsed_url_a['host'] == $parsed_url_b['host']
+                && $path_a == $path_b;
+        }
+
+        return false;
+    }
+
     private static function makeSegmentsFromAbsoluteUrl($absoluteUrl)
     {
         preg_match(

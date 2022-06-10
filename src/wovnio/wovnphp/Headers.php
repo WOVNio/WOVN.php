@@ -10,6 +10,7 @@ class Headers
     public $protocol;
     public $originalHost;
     public $originalPath;
+    public $originalUrl;
     public $host;
     public $pathname;
     public $url;
@@ -64,6 +65,9 @@ class Headers
         $exploded = explode('?', $clientRequestUri);
         $this->pathname = $exploded[0];
         $this->originalPath = $this->pathname;
+
+        $this->originalUrl = $this->protocol . '://' . $this->originalHost . $this->originalPath;
+
         if ($store->settings['url_pattern_name'] === 'path' || $store->settings['url_pattern_name'] === 'custom_domain') {
             $this->pathname = $this->removeLang($exploded[0]);
         }
@@ -132,6 +136,7 @@ class Headers
             } else {
                 $rp = '/' . $this->store->settings['url_pattern_reg'] . '/';
                 preg_match($rp, $full_url, $match);
+
                 if (isset($match['lang'])) {
                     $lang_identifier = $match['lang'];
                     $lang_code = Lang::formatLangCode($lang_identifier, $this->store);
@@ -277,7 +282,11 @@ class Headers
             $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
         }
 
-        if ($newLocation) {
+        // When using custom domain + source pattern, it is possible for the customer to redirect to a different language source file.
+        // Two languages can be using different files on the customer side, and they may use redirects.
+        // e.g. customer redirect's /french/page.php -> /global/page.php. WOVN modifies it back to /french/page.php
+        // For other URL patterns, we translate the redirect to keep the same lang code but in this case it creates a loop
+        if ($newLocation && !Url::isSameHostAndPath($this->originalUrl, $newLocation, $this)) {
             header($locationHeader . ': ' . $newLocation);
         }
     }

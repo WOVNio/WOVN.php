@@ -12,6 +12,11 @@ class EnvFactory
             'HTTP_SCHEME' => $parsed_url['scheme'],
             'HTTP_HOST' => $parsed_url['host'],
         );
+
+        if ($parsed_url['scheme'] === 'https') {
+            $env['HTTPS'] = 'on';
+        }
+
         if (array_key_exists('query', $parsed_url)) {
             $env['QUERY_STRING'] = $parsed_url['query'];
             $path_and_query .= '?' . $parsed_url['query'];
