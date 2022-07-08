@@ -23,10 +23,6 @@ services:
       - ./public:/var/www/html
 
       - ./php.ini:/usr/local/etc/php/conf.d/php.ini
-      
-      - ../wovn.json.sample:/var/www/html/wovn.json
-      - ../wovn.ini.sample:/var/www/html/wovn.ini
-      - ../wovn_index_sample.php:/var/www/html/wovn_index.php
     networks:
       - backend-network
 networks:
