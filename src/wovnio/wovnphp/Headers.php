@@ -289,7 +289,7 @@ class Headers
         // For other URL patterns, we translate the redirect to keep the same lang code but in this case it creates a loop
         if ($newLocation && !Url::isSameHostAndPath($this->originalUrl, $newLocation, $this)) {
             header($locationHeader . ': ' . $newLocation);
-        } else {
+        } else if ($newLocation) {
             Logger::get()->info("Ignoring redirect, new location is equivalent to original request.");
         }
     }
