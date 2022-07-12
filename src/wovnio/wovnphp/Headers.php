@@ -280,6 +280,7 @@ class Headers
 
         if ($redirectLocation) {
             $newLocation = Url::addLangCode($redirectLocation, $this->store, $urlLanguage, $this);
+            Logger::get()->info("Translating redirect location from '$redirectionLocation' to '$newLocation'.");
         }
 
         // When using custom domain + source pattern, it is possible for the customer to redirect to a different language source file.
@@ -288,6 +289,8 @@ class Headers
         // For other URL patterns, we translate the redirect to keep the same lang code but in this case it creates a loop
         if ($newLocation && !Url::isSameHostAndPath($this->originalUrl, $newLocation, $this)) {
             header($locationHeader . ': ' . $newLocation);
+        } else {
+            Logger::get()->info("Ignoring redirect, new location is equivalent to original request.");
         }
     }
 

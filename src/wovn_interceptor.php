@@ -45,9 +45,11 @@ $_ENV['WOVN_TARGET_LANG'] = $headers->requestLang();
 
 Logger::get()->info('WOVN.php version ' . WOVN_PHP_VERSION . ' has received a request for '
     . $_SERVER['REQUEST_URI'] . ' in ' . $_ENV['WOVN_TARGET_LANG'] . '.');
-Logger::get()->info('Request received. ' . json_encode($_SERVER));
+Logger::get()->info('Request received. Original request variables: ' . json_encode($_SERVER));
 
 $headers->requestOut();
+
+Logger::get()->info('Request variables after rewriting: ' . json_encode($_SERVER));
 
 $uri = $headers->getDocumentURI();
 if (!Utils::isIgnoredPath($uri, $store)) {

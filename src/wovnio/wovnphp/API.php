@@ -85,6 +85,9 @@ class API
                 return $marker->revert($converted_html);
             }
             $api_url = self::url($store, $headers, $converted_html, $request_options);
+
+            Logger::get()->info("Sending API request");
+
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
 
             $requestUUID = 'NO_UUID';
