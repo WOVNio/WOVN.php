@@ -59,6 +59,7 @@ class FileGetContentsRequestHandler extends AbstractRequestHandler
 
     public function fileGetContents($url, $http_context)
     {
+        $http_response_header = array();
         $response = @file_get_contents($url, false, $http_context);
         return array($response, $http_response_header);
     }
