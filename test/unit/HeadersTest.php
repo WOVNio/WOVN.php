@@ -1626,4 +1626,26 @@ class HeadersTest extends TestCase
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'en');
         $this->assertEquals(true, $headers->shouldRedirect());
     }
+
+    public function testIsSearchEngineBot_NoUserAgent_False()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path'
+        );
+        $env = array( 'REQUEST_URI' => '/fr/requested');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('no_user_agent', $settings, $env);
+
+        $this->assertEquals(false, $headers->isSearchEngineBot());
+    }
+
+    public function testIsSearchEngineBot_SearchEngineUserAgent_True()
+    {
+        $settings = array(
+            'url_pattern_name' => 'path'
+        );
+        $env = array( 'REQUEST_URI' => '/fr/requested', 'HTTP_USER_AGENT' => 'Googlebot/1.0');
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals(true, $headers->isSearchEngineBot());
+    }
 }
