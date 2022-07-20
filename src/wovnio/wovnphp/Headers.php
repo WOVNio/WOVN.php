@@ -394,7 +394,7 @@ class Headers
             'Yahoo'
         );
         foreach ($bots as $bot) {
-            if (strpos($this->env['HTTP_USER_AGENT'], $bot) !== false) {
+            if (isset($this->env['HTTP_USER_AGENT']) && strpos($this->env['HTTP_USER_AGENT'], $bot) !== false) {
                 return true;
             }
         }
