@@ -97,6 +97,7 @@ class UtilsTest extends TestCase
         $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
 
         $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
+        $this->assertEquals(true, Utils::isHtml("<!DOCTYPE html><html lang=\"ja\"><head></head><body>contains unicode \0020</body></html>"));
         $this->assertEquals(true, Utils::isHtml('<?php require_once(\'{$this->docRoot}/WOVN.php/src/wovn_interceptor.php\'); ?><html><head></head><body>test</body></html>'));
         $this->assertEquals(false, Utils::isHtml('this is json'));
     }

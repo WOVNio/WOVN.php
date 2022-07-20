@@ -51,9 +51,9 @@ class Utils
                 return true;
             } elseif (preg_match('/text/', strtolower($contentType))) {
                 return $buffer != strip_tags($buffer);
-            } else {
-                return false;
             }
+            // finfo can still return octet-stream even if it is really HTML but contains certain characters
+            // So we should still fallback to a buffer check
         }
         return $buffer != strip_tags($buffer);
     }
