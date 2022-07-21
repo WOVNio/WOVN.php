@@ -1627,6 +1627,7 @@ class HeadersTest extends TestCase
         $this->assertEquals(true, $headers->shouldRedirect());
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testIsSearchEngineBot_NoUserAgent_False()
     {
         $settings = array(
@@ -1638,6 +1639,7 @@ class HeadersTest extends TestCase
         $this->assertEquals(false, $headers->isSearchEngineBot());
     }
 
+    // phpcs:ignore PSR1.Methods.CamelCapsMethodName.NotCamelCaps
     public function testIsSearchEngineBot_SearchEngineUserAgent_True()
     {
         $settings = array(
