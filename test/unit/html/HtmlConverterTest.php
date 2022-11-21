@@ -849,6 +849,15 @@ class HtmlConverterTest extends TestCase
                 '</body></html>',
             ),
             array(
+                'with ignored title',
+
+                '<html><head><title wovn-ignore>hello</title></head><body><a>hello</a></body></html>',
+
+                '<html><head><title wovn-ignore>__wovn-backend-ignored-key-0</title></head><body><a>hello</a></body></html>',
+
+                '<html><head><title wovn-ignore>hello</title></head><body><a>hello</a></body></html>',
+            ),
+            array(
                 'with script',
 
                 '<html><head>'.
@@ -972,14 +981,15 @@ class HtmlConverterTest extends TestCase
 
     public function testConvertToAppropriateBodyForApiWithMultipleWovnIgnore()
     {
-        $html = '<html><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
+        $html = '<html><head><title wovn-ignore>hello</title></head><body><a wovn-ignore>hello</a>ignore<div wovn-ignore>world</div></body></html>';
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
         list($translated_html, $marker) = $this->executeConvert($converter, $html, 'UTF-8', '_removeWovnIgnore');
         $keys = $marker->keys();
 
-        $this->assertEquals(2, count($keys));
-        $this->assertEquals("<html><body><a wovn-ignore>$keys[0]</a>ignore<div wovn-ignore>$keys[1]</div></body></html>", $translated_html);
+        $this->assertEquals(3, count($keys));
+        $this->assertEquals('__wovn-backend-ignored-key-0', $keys[0]);
+        $this->assertEquals("<html><head><title wovn-ignore>$keys[0]</title></head><body><a wovn-ignore>$keys[1]</a>ignore<div wovn-ignore>$keys[2]</div></body></html>", $translated_html);
     }
 
     public function testConvertToAppropriateBodyForApiWithForm()

@@ -357,7 +357,11 @@ class HtmlConverter
             return;
         }
 
-        $key = $marker->addCommentValue($originalText);
+        if ($element->tag == 'title') {
+            $key = $marker->addValue($originalText);
+        } else {
+            $key = $marker->addCommentValue($originalText);
+        }
         $element->innertext = $key;
     }
 

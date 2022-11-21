@@ -36,7 +36,10 @@ make clean
 
 ### Debug by XDebug
 #### XDebug configuration for VSCode
-You can use the following setting for `launch.json`.  
+Install `PHP Debug` extension from your Extensions menu in VSCode.  
+Make it possible to load `zend_extension` in `docker/php.ini`.  
+
+You can use the following setting for `.vscode/launch.json`.  
 After start debugging, you can break by break points.  
 ```
 {
@@ -65,7 +68,7 @@ After start debugging, you can break by break points.
 ```
 
 #### Debug by XDebug
-Start `Listen for XDebug` from `Run` menu in VSCode.  
+Start `Listen for XDebug` from `Run and Debug` menu in VSCode.  
 You can set break point.  
 
 If you have a trouble, Check `zend_extension` in `docker/php.ini`.  
