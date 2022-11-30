@@ -14,6 +14,9 @@ test/integration/test/integration/wovn_index_sample_workspace
 !/docker/nginx/*
 !/docker/HOWTO.md
 !/docker/php.ini
+!/docker/public/.htaccess
+!/docker/public/wovn.ini
+!/docker/public/wovn.json
 !/docker/public/testdir/*
 !/docker/public/testpage.html
 !/docker/public/testpage-redirect-origin.php
