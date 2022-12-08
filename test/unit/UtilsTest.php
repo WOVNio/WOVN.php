@@ -102,10 +102,10 @@ class UtilsTest extends TestCase
         $this->assertEquals(false, Utils::isHtml('this is json')); // text/plain
         $xml = '<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//www.jackall.co.jp/saltwater/wp-content/plugins/wordpress-seo/css/main-sitemap.xsl"?>'.
                '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.
-	           '<sitemap>'.
-		       '<loc>https://www.jackall.co.jp/saltwater/page-sitemap.xml</loc>'.
-		       '<lastmod>2022-12-05T10:34:10+00:00</lastmod>'.
-	           '</sitemap>';
+               '<sitemap>'.
+               '<loc>https://www.jackall.co.jp/saltwater/page-sitemap.xml</loc>'.
+               '<lastmod>2022-12-05T10:34:10+00:00</lastmod>'.
+               '</sitemap>';
         $this->assertEquals(false, ContentType::isHtml($xml)); // text/xml
     }
 
