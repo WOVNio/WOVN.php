@@ -21,10 +21,22 @@ dev_setup:
 	composer install
 
 test:
+	make convert
 	vendor/bin/phpunit
+	make revert
+
+convert:
+	./scripts/convert.sh php:8.0-apache-buster
+
+revert:
+	./scripts/revert.sh php:8.0-apache-buster
 
 start_test:
 	env DOCKER_IMAGE=${DOCKER_IMAGE} docker-compose -f docker/test.yml up
+
+lint:
+	vendor/bin/phpcs src
+	vendor/bin/phpcs test
 
 lint_with_docker:
 	docker exec -it -w /opt/project apache /bin/bash -c "vendor/bin/phpcs"

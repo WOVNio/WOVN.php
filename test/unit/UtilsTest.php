@@ -106,7 +106,7 @@ class UtilsTest extends TestCase
                '<loc>https://www.jackall.co.jp/saltwater/page-sitemap.xml</loc>'.
                '<lastmod>2022-12-05T10:34:10+00:00</lastmod>'.
                '</sitemap>';
-        $this->assertEquals(false, ContentType::isHtml($xml)); // text/xml
+        $this->assertEquals(false, Utils::isHtml($xml)); // text/xml
     }
 
     public function testIsAmp()
