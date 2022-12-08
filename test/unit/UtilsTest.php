@@ -94,12 +94,19 @@ class UtilsTest extends TestCase
 
     public function testIsHtml()
     {
-        $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >'));
+        $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>')); // text/html
+        $this->assertEquals(true, Utils::isHtml("<!DOCTYPE html><html lang=\"ja\"><head></head><body>contains unicode \0020</body></html>")); // application/octet-stream
+        $this->assertEquals(true, Utils::isHtml('<?php require_once(\'{$this->docRoot}/WOVN.php/src/wovn_interceptor.php\'); ?><html><head></head><body>test</body></html>')); // text/x-php
 
-        $this->assertEquals(true, Utils::isHtml('<html><head></head><body><p>this is html</p></body></html>'));
-        $this->assertEquals(true, Utils::isHtml("<!DOCTYPE html><html lang=\"ja\"><head></head><body>contains unicode \0020</body></html>"));
-        $this->assertEquals(true, Utils::isHtml('<?php require_once(\'{$this->docRoot}/WOVN.php/src/wovn_interceptor.php\'); ?><html><head></head><body>test</body></html>'));
-        $this->assertEquals(false, Utils::isHtml('this is json'));
+        $this->assertEquals(false, Utils::isHtml('this is not html, even tho it contains < and >')); // text/plain
+        $this->assertEquals(false, Utils::isHtml('this is json')); // text/plain
+        $xml = '<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type="text/xsl" href="//www.jackall.co.jp/saltwater/wp-content/plugins/wordpress-seo/css/main-sitemap.xsl"?>'.
+               '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'.
+	           '<sitemap>'.
+		       '<loc>https://www.jackall.co.jp/saltwater/page-sitemap.xml</loc>'.
+		       '<lastmod>2022-12-05T10:34:10+00:00</lastmod>'.
+	           '</sitemap>';
+        $this->assertEquals(false, ContentType::isHtml($xml)); // text/xml
     }
 
     public function testIsAmp()
