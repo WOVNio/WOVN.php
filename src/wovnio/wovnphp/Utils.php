@@ -49,6 +49,8 @@ class Utils
         if ($contentType) {
             if (preg_match('/html|php/', strtolower($contentType))) {
                 return true;
+            } elseif (preg_match('/xml/', strtolower($contentType))) {
+                return false;
             } elseif (preg_match('/text/', strtolower($contentType))) {
                 return $buffer != strip_tags($buffer);
             }
