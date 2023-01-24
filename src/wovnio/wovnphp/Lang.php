@@ -62,7 +62,7 @@ class Lang
         'pt-PT' => array('name' => 'Português (Portugal)', 'code' => 'pt-PT', 'en' => 'Portuguese (Portugal)'),
         'ru' => array('name' => 'Русский', 'code' => 'ru', 'en' => 'Russian'),
         'es' => array('name' => 'Español', 'code' => 'es', 'en' => 'Spanish'),
-        'es-RA' => array('name' => 'Español (Argentina)', 'code' => 'es-RA', 'en' => 'Spanish (Argentina)'),
+        'es-AR' => array('name' => 'Español (Argentina)', 'code' => 'es-AR', 'en' => 'Spanish (Argentina)'),
         'es-CL' => array('name' => 'Español (Chile)', 'code' => 'es-CL', 'en' => 'Spanish (Chile)'),
         'es-CO' => array('name' => 'Español (Colombia)', 'code' => 'es-CO', 'en' => 'Spanish (Colombia)'),
         'es-CR' => array('name' => 'Español (Costa Rica)', 'code' => 'es-CR', 'en' => 'Spanish (Costa Rica)'),
