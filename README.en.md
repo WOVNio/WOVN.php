@@ -619,9 +619,9 @@ disable_api_request_for_default_lang = 1
 #### `use_proxy`
 
 This parameter tells WOVN.php whether or not your content is served through a
-proxy. By default, this setting is set to `0` (false). If your content is served
+proxy. By default, this setting is set to `1` (true). If your content is served
 through a proxy, WOVN.php needs to know it when gathering information based on
-requested URL. In that case, you should set `use_proxy` to `1` (true).
+requested URL.
 
 `wovn.ini`
 

@@ -80,7 +80,7 @@ class Store
             'encoding' => null,
             'supported_langs' => array('en', 'ja'),
             'custom_lang_aliases' => array(),
-            'use_proxy' => false,
+            'use_proxy' => true,
             'override_content_length' => false,
             'disable_api_request_for_default_lang' => true,
             'compress_api_requests' => true,
