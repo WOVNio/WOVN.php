@@ -5,7 +5,7 @@ require_once(__DIR__ . '/../../wovn_helper.php');
 
 // https://httpd.apache.org/docs/2.4/howto/ssi.html
 // Server-side Include (SSI) is an Apache feature that allows adding limited dynamic content to HTML pages.
-// For example, 
+// For example,
 //   - including other files <!--#include virtual="/footer.html" -->
 //   - adding the current date <!--#echo var="DATE_LOCAL" -->
 // Normally, this is done by Apache itself. But because we want to translate this extra content, we need to
