@@ -31,9 +31,9 @@ class SSIWovnIndexSampleTest extends TestCase
         copy('../../../src/wovnio/wovnphp/SSI.php', 'WOVN.php/src/wovnio/wovnphp/SSI.php');
 
         exec('cp -r ../../../src WOVN.php/src');
-        exec('sed -e s/^\ \ \ \ ' . $inclusionCode .'$/\ \ \ \ #\ ' . $inclusionCode . '/ ' . $sampleIndexFile . ' > ' . $indexFile . '.tmp');
-        exec('sed -e s/^\ \ \ \ #\ ' . $ssiInclusionCode . '$/\ \ \ \ ' . $ssiInclusionCode . '/ ' . $indexFile . '.tmp' . ' > ' . $indexFile);
-        unlink($indexFile . '.tmp');
+
+        // Turn on SSI
+        exec('sed -e s/$wovn_use_ssi = false;/$wovn_use_ssi = true;/ ' . $sampleIndexFile . ' > ' . $indexFile);
 
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
     }
