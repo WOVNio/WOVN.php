@@ -33,7 +33,7 @@ class SSIWovnIndexSampleTest extends TestCase
         exec('cp -r ../../../src WOVN.php/src');
 
         // Turn on SSI
-        exec('sed -e s/$wovn_use_ssi = false;/$wovn_use_ssi = true;/ ' . $sampleIndexFile . ' > ' . $indexFile);
+        exec("sed -e 's/wovn_use_ssi = false;/wovn_use_ssi = true;/' $sampleIndexFile > $indexFile");
 
         $_SERVER['SERVER_PROTOCOL'] = 'HTTP/1.1';
     }

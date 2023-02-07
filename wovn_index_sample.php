@@ -32,12 +32,8 @@ if (!$wovn_included) {
     $wovn_paths_404 = array(dirname(__FILE__) . "/404.html");
 
     $wovn_included_404 = false;
-
     if ($wovn_use_ssi) {
         $wovn_included_404 = wovn_helper_include_by_paths_with_ssi($wovn_paths_404);
-        if (!$wovn_included_404) {
-            echo "Page Not Found";
-        }
     } else {
         $wovn_file_to_include = wovn_helper_get_first_file_path($wovn_paths_404);
         if ($wovn_file_to_include) {
@@ -45,5 +41,9 @@ if (!$wovn_included) {
             include($wovn_file_to_include);
             $wovn_included_404 = true;
         }
+    }
+
+    if (!$wovn_included_404) {
+        echo "Page Not Found";
     }
 }
