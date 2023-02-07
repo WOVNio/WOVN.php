@@ -19,6 +19,7 @@ test/integration/test/integration/wovn_index_sample_workspace
 !/docker/public/wovn.json
 !/docker/public/testdir/*
 !/docker/public/testpage.html
+!/docker/public/ssi_*.html
 !/docker/public/testpage-redirect-origin.php
 !/docker/public/index.html
 !/docker/apache.yml
