@@ -3,6 +3,14 @@ namespace Wovnio\Wovnphp;
 
 require_once(__DIR__ . '/../../wovn_helper.php');
 
+// https://httpd.apache.org/docs/2.4/howto/ssi.html
+// Server-side Include (SSI) is an Apache feature that allows adding limited dynamic content to HTML pages.
+// For example,
+//   - including other files <!--#include virtual="/footer.html" -->
+//   - adding the current date <!--#echo var="DATE_LOCAL" -->
+// Normally, this is done by Apache itself. But because we want to translate this extra content, we need to
+// "manually" perform the SSI ourselves e.g. fetching the included files HTML and concatting it.
+// Note that we have only implemented the "include" part of SSI. There are other functions of SSI like date insertion that we have not implemented.
 class SSI
 {
     public static function readFile($includePath, $rootDir = null)

@@ -7,7 +7,7 @@ use Wovnio\Wovnphp\SSI;
 // static websites using WOVN.php.
 // phpcs:disable Squiz.NamingConventions.ValidFunctionName.NotCamelCaps
 
-function reduce_slashes($path)
+function wovn_reduce_slashes($path)
 {
     # Reduces a sequence of slashes to a single slash
     # e.g. '///./////.///' -> '/././'
@@ -22,12 +22,12 @@ function reduce_slashes($path)
     return $path;
 }
 
-function remove_dots_from_path($path)
+function wovn_remove_dots_from_path($path)
 {
     # Removes '/./ in paths and resolves '/../' in paths
     # From https://tomnomnom.com/posts/realish-paths-without-realpath
     # See also http://php.net/manual/en/function.realpath.php#84012
-    $path = reduce_slashes($path);
+    $path = wovn_reduce_slashes($path);
 
     $path_parts = explode('/', $path);
     $tmp_out = array();
@@ -60,9 +60,9 @@ function wovn_helper_default_index_files()
 
 function wovn_helper_detect_paths($local_dir, $path_of_url)
 {
-    $base_dir = realpath(remove_dots_from_path($local_dir));
+    $base_dir = realpath(wovn_remove_dots_from_path($local_dir));
     $request_path = $base_dir . '/' . $path_of_url;
-    $local_path = realpath(remove_dots_from_path($request_path));
+    $local_path = realpath(wovn_remove_dots_from_path($request_path));
     $inside_base_dir = $local_path && strpos($local_path, $base_dir) === 0;
     $local_path = $inside_base_dir ? $local_path : false;
 
@@ -80,16 +80,13 @@ function wovn_helper_detect_paths($local_dir, $path_of_url)
     }
 }
 
-function wovn_helper_include_by_paths($paths)
+function wovn_helper_get_first_file_path($paths)
 {
     foreach ($paths as $path) {
         if (is_file($path)) {
-            chdir(dirname($path));
-            include($path);
-            return true;
+            return $path;
         }
     }
-    return false;
 }
 
 function wovn_helper_include_by_paths_with_ssi($paths)
