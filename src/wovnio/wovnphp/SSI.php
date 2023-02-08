@@ -21,7 +21,7 @@ class SSI
         return self::readFileRecursive($includePath, $rootDir, $limit, $_GET);
     }
 
-    private static function readFileRecursive($includePath, $rootDir, &$limit, $includeUrlQueryParams)
+    public static function readFileRecursive($includePath, $rootDir, &$limit, $includeUrlQueryParams)
     {
         $ssiIncludeRegexp = '/<!--#include\s+virtual="(.+?)"\s*-->/';
         $includeDir = dirname($includePath);
