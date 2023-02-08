@@ -44,7 +44,7 @@ class SSI
             $code = preg_replace_callback($ssiIncludeRegexp, function ($match) use ($rootDir, $includeDir, $limit, $fixSSIPath) {
                 $pathAndQueryString = explode('?', $match[1]);
                 $ssiPath = $pathAndQueryString[0];
-                $queryString = $pathAndQueryString[1];
+                $queryString = isset($pathAndQueryString[1]) ? $pathAndQueryString[1] : '';
 
                 // the URL in the SSI include should not inherit the query parameters from the original request. They are a separate "request".
                 $queryParams = array();

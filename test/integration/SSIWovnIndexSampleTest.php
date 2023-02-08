@@ -73,6 +73,7 @@ class SSIWovnIndexSampleTest extends TestCase
 <?php echo "ssi\n"; ?>
 <!--#include virtual="include.php?foo=1&bar=2" -->
 <!--#include virtual="include.php?foo=3" -->
+<!--#include virtual="include.php" -->
 <?php echo "root query=foo:" . $_GET['foo'] . " bar:" . $_GET['bar']; ?>
 CONTENT;
         $this->touch('ssi.php', $ssi_php);
@@ -86,6 +87,7 @@ CONTENT;
 ssi
 Included SSI query=foo:1 bar:2
 Included SSI query=foo:3 bar:
+Included SSI query=foo: bar:
 root query=foo:reqFoo bar:reqBar
 CONTENT;
         $actual_content = $this->runWovnIndex('/ssi.php?foo=reqFoo&bar=reqBar');
