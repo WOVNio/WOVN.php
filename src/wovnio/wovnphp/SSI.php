@@ -80,8 +80,6 @@ class SSI
         $copyOfQuery = $_GET;
         $_GET = $queryParams;
 
-        $query_str = http_build_query($queryParams);
-
         include $includePath;
 
         $_GET = $copyOfQuery;
