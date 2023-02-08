@@ -88,7 +88,7 @@ Included SSI query=foo:1 bar:2
 Included SSI query=foo:3 bar:
 root query=foo:reqFoo bar:reqBar
 CONTENT;
-$actual_content = $this->runWovnIndex('/ssi.php?foo=reqFoo&bar=reqBar');
+        $actual_content = $this->runWovnIndex('/ssi.php?foo=reqFoo&bar=reqBar');
 
         $this->assertEquals($expected_content, $actual_content);
     }
