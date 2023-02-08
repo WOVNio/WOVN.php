@@ -83,7 +83,6 @@ class SSI
         include $includePath;
 
         $_GET = $copyOfQuery;
-        $query_str_post = http_build_query($_GET);
 
         return ob_get_clean();
     }
