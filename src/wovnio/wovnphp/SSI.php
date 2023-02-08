@@ -13,7 +13,7 @@ require_once(__DIR__ . '/../../wovn_helper.php');
 // Note that we have only implemented the "include" part of SSI. There are other functions of SSI like date insertion that we have not implemented.
 class SSI
 {
-    // This is reading the "top level" page e.g. the original request. 
+    // This is reading the "top level" page e.g. the original request.
     public static function readFile($includePath, $rootDir = null)
     {
         $rootDir = $rootDir ? $rootDir : dirname(dirname(dirname(dirname(__DIR__))));
