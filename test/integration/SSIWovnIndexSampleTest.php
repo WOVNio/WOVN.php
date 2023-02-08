@@ -79,7 +79,7 @@ CONTENT;
         $this->touch('ssi.php', $ssi_php);
 
         $included_php = <<<'CONTENT'
-<?php $foo=$_GET['foo']; $bar=$_GET['bar']; echo "Included SSI query=foo:$foo bar:$bar"; ?>
+<?php $foo=isset($_GET['foo']) ? $_GET['foo'] : ''; $bar=isset($_GET['bar']) ? $_GET['bar'] : ''; echo "Included SSI query=foo:$foo bar:$bar"; ?>
 CONTENT;
         $this->touch('include.php', $included_php);
 
@@ -106,7 +106,6 @@ CONTENT;
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['SERVER_NAME'] = 'wovn.php';
         $_SERVER['REQUEST_URI'] = $request_uri;
-        $_SERVER['QUERY_STRING'] = $parsed_url['query'];
         $_GET = $queryParams;
         
         ob_start();
