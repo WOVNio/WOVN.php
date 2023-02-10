@@ -67,12 +67,47 @@ class SSIWovnIndexSampleTest extends TestCase
         $this->assertEquals('ssi include This is nested.html', $this->runWovnIndex('/ssi.html'));
     }
 
+    public function testWithSSIIncludeWithQueryParams()
+    {
+        $ssi_php = <<<'CONTENT'
+<?php echo "ssi\n"; ?>
+<!--#include virtual="include.php?foo=1&bar=2" -->
+<!--#include virtual="include.php?foo=3" -->
+<!--#include virtual="include.php" -->
+<?php echo "root query=foo:" . $_GET['foo'] . " bar:" . $_GET['bar']; ?>
+CONTENT;
+        $this->touch('ssi.php', $ssi_php);
+
+        $included_php = <<<'CONTENT'
+<?php $foo=isset($_GET['foo']) ? $_GET['foo'] : ''; $bar=isset($_GET['bar']) ? $_GET['bar'] : ''; echo "Included SSI query=foo:$foo bar:$bar"; ?>
+CONTENT;
+        $this->touch('include.php', $included_php);
+
+        $expected_content = <<<'CONTENT'
+ssi
+Included SSI query=foo:1 bar:2
+Included SSI query=foo:3 bar:
+Included SSI query=foo: bar:
+root query=foo:reqFoo bar:reqBar
+CONTENT;
+        $actual_content = $this->runWovnIndex('/ssi.php?foo=reqFoo&bar=reqBar');
+
+        $this->assertEquals($expected_content, $actual_content);
+    }
+
     private function runWovnIndex($request_uri)
     {
+        $parsed_url = parse_url($request_uri);
+        $queryParams = array();
+        if (isset($parsed_url['query'])) {
+            parse_str($parsed_url['query'], $queryParams);
+        }
+
         $_SERVER['HTTP_HOST'] = 'localhost';
         $_SERVER['SERVER_NAME'] = 'wovn.php';
         $_SERVER['REQUEST_URI'] = $request_uri;
-        $_SERVER['QUERY_STRING'] = '';
+        $_GET = $queryParams;
+        
         ob_start();
         include('wovn_index.php');
         return ob_get_clean();
