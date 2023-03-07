@@ -384,4 +384,29 @@ class UrlQueryPatternTest extends TestCase
         $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
         $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=ja')->body);
     }
+
+    public function testQueryPatternWithNoHreflangLangs()
+    {
+        $langs = array('en', 'ja');
+        copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
+        TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>root</body></html>');
+        TestUtils::setWovnIni("{$this->docRoot}/wovn.ini", array(
+            'url_pattern_name' => 'query',
+            'supported_langs' => $langs,
+            'no_hreflang_langs' => array('en')
+        ));
+
+        $content_without_html_swapper = '<html lang="en">'.
+        '<head>'.
+        '<link rel="alternate" hreflang="ja" href="http://localhost/index.html?wovn=ja">'.
+        '<script src="//j.wovn.io/1" '.
+        'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
+        'data-wovnio-info="version=WOVN.php_VERSION" '.
+        'async></script>'.
+        '</head>'.
+        '<body>root</body>'.
+        '</html>';
+        $this->assertEquals($content_without_html_swapper, TestUtils::fetchURL('http://localhost/index.html')->body);
+        $this->assertEquals('<html><head></head><body>html-swapper-mock</body></html>', TestUtils::fetchURL('http://localhost/index.html?wovn=ja')->body);
+    }
 }
