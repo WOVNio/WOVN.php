@@ -288,7 +288,7 @@ NOT SUPPORTED
 #### `custom_domain_langs`
 
 This parameter is valid and required, when `url_pattern_name` is `custom_domain`.
-Set `custom_domain_langs` for all languagesed declared in `supported_langs` and original language.
+Set `custom_domain_langs` for all languages declared in `supported_langs`.
 
 `wovn.ini`
 
@@ -333,6 +333,7 @@ and should be used for performance optimization.
 | [ignore_regex](#ignore_regex)                                                 | all                       | Setting regex expressions on paths that should be excluded from translation |
 | [ignore_class](#ignore_class)                                                 | all                       | Setting the HTML classes that should be excluded from translation           |
 | [no_index_langs](#no_index_langs)                                             | all                       | Setting languages that should not be included in SEO optimization tags      |
+| [no_hreflang_langs](#no_hreflang_langs)                                       | all                       | Setting languages that should not be included in SEO optimization tags      |
 | [encoding](#encoding)                                                         | all                       | Setting HTML content encoding                                               |
 | [api_timeout](#api_timeout)                                                   | all                       | Setting timeout for translation requests                                    |
 | [api_timeout_search_engine_bots](#api_timeout_search_engine_bots)             | all                       | Setting timeout for translation requests for search engine bots             |
@@ -498,7 +499,7 @@ ignore_class[] = no-translate
 #### `no_index_langs`
 
 This parameter tells WOVN.php which languages's HTML should be set `noindex`
-to avoid index by web crawler.
+to avoid index by web crawler. It also prevents `hreflang` tags from being emitted (see [no_hreflang_langs](#no_hreflang_langs)).
 
 For instance, if you want to avoid index for English pages, add `en` as below.
 `<meta name="robots" content="noindex">` tag will be inserted inside `head` tag
@@ -515,6 +516,28 @@ no_index_langs[] = en
 ```json
 {
   "no_index_langs": ["en"]
+}
+```
+
+#### `no_hreflang_langs`
+
+This parameter tells WOVN.php which languages should not have `hreflang` tags emitted (used for SEO).
+
+```html
+<link rel="alternate" hreflang="en" href="https://my-website.com/en/">
+```
+
+`wovn.ini`
+
+```ini
+no_hreflang_langs[] = en
+```
+
+`wovn.json`
+
+```json
+{
+  "no_hreflang_langs": ["en"]
 }
 ```
 

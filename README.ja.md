@@ -348,6 +348,7 @@ NOT SUPPORTED
 | [ignore_regex](#ignore_regex)        | all                            | ライブラリ適用対象外URLを正規表現で設定 |
 | [ignore_class](#ignore_class)        | all                            | ライブラリ翻訳対象外とするHTMLのclassを設定 |
 | [no_index_langs](#no_index_langs)    | all                            | SEO対策のタグ適用をしない言語を設定    |
+| [no_hreflang_langs](#no_hreflang_langs)    | all                            | SEO対策のタグ適用をしない言語を設定    |
 | [encoding](#encoding)                | all                            | HTMLの文字エンコーディングを指定       |
 | [api_timeout](#api_timeout)          | all                            | ライブラリの翻訳処理にかかる上限時間を設定 |
 | [disable_api_request_for_default_lang](#disable_api_request_for_default_lang)| all | 元言語アクセス時の翻訳サーバーへのアクセスの要否を設定 |
@@ -502,6 +503,27 @@ ignore_class[] = no-translate
 ```
 
 #### `no_index_langs`
+
+このパラメータは、ウェブクローラーによるインデックスを避けるために、どの言語のHTMLを `noindex` に設定すべきかをWOVN.phpに指示します。
+
+例えば、英語ページのインデックスを避けたい場合は、以下のように `en` を追加します。
+`<meta name="robots" content="noindex">` タグは英語ページの場合、`head` タグの中に挿入されます。
+
+`wovn.ini`
+
+```ini
+no_index_langs[] = en
+```
+
+`wovn.json`
+
+```json
+{
+  "no_index_langs": ["en"]
+}
+```
+
+#### `no_hreflang_langs`
 
 このパラメータは、ウェブクローラーによるインデックスを避けるために、どの言語のHTMLを `noindex` に設定すべきかをWOVN.phpに指示します。
 
