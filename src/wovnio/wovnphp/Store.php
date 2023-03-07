@@ -211,7 +211,8 @@ class Store
         return $this->settings;
     }
 
-    private function convertLangListToOriginalCodes($langListSetting) {
+    private function convertLangListToOriginalCodes($langListSetting)
+    {
         foreach ($langListSetting as $index => $langCode) {
             $langListSetting[$index] = $this->convertToOriginalCode($langCode);
         }
