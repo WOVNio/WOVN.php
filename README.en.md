@@ -332,8 +332,8 @@ and should be used for performance optimization.
 | [ignore_paths](#ignore_paths)                                                 | all                       | Setting paths that should be excluded from translation                      |
 | [ignore_regex](#ignore_regex)                                                 | all                       | Setting regex expressions on paths that should be excluded from translation |
 | [ignore_class](#ignore_class)                                                 | all                       | Setting the HTML classes that should be excluded from translation           |
-| [no_index_langs](#no_index_langs)                                             | all                       | Prevents search indexing, specified languages will not be included in SEO optimization tags |
-| [no_hreflang_langs](#no_hreflang_langs)                                       | all                       | Specified languages will not be included in SEO optimization tags           |
+| [no_index_langs](#no_index_langs)                                             | all                       | Prevents search indexing, specified languages will not be embedded in SEO optimization tags |
+| [no_hreflang_langs](#no_hreflang_langs)                                       | all                       | Specified languages will not be embedded in SEO optimization tags           |
 | [encoding](#encoding)                                                         | all                       | Setting HTML content encoding                                               |
 | [api_timeout](#api_timeout)                                                   | all                       | Setting timeout for translation requests                                    |
 | [api_timeout_search_engine_bots](#api_timeout_search_engine_bots)             | all                       | Setting timeout for translation requests for search engine bots             |
