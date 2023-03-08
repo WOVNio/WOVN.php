@@ -332,8 +332,8 @@ and should be used for performance optimization.
 | [ignore_paths](#ignore_paths)                                                 | all                       | Setting paths that should be excluded from translation                      |
 | [ignore_regex](#ignore_regex)                                                 | all                       | Setting regex expressions on paths that should be excluded from translation |
 | [ignore_class](#ignore_class)                                                 | all                       | Setting the HTML classes that should be excluded from translation           |
-| [no_index_langs](#no_index_langs)                                             | all                       | Setting languages that should not be included in SEO optimization tags      |
-| [no_hreflang_langs](#no_hreflang_langs)                                       | all                       | Setting languages that should not be included in SEO optimization tags      |
+| [no_index_langs](#no_index_langs)                                             | all                       | Prevents search indexing, specified languages will not be included in SEO optimization tags |
+| [no_hreflang_langs](#no_hreflang_langs)                                       | all                       | Specified languages will not be included in SEO optimization tags           |
 | [encoding](#encoding)                                                         | all                       | Setting HTML content encoding                                               |
 | [api_timeout](#api_timeout)                                                   | all                       | Setting timeout for translation requests                                    |
 | [api_timeout_search_engine_bots](#api_timeout_search_engine_bots)             | all                       | Setting timeout for translation requests for search engine bots             |
@@ -496,28 +496,6 @@ ignore_class[] = no-translate
 }
 ```
 
-#### `no_index_langs`
-
-This parameter tells WOVN.php which languages's HTML should be set `noindex`
-to avoid index by web crawler. It also prevents `hreflang` tags from being emitted (see [no_hreflang_langs](#no_hreflang_langs)).
-
-For instance, if you want to avoid index for English pages, add `en` as below.
-`<meta name="robots" content="noindex">` tag will be inserted inside `head` tag
-for English pages.
-
-`wovn.ini`
-
-```ini
-no_index_langs[] = en
-```
-
-`wovn.json`
-
-```json
-{
-  "no_index_langs": ["en"]
-}
-```
 
 #### `no_hreflang_langs`
 
@@ -538,6 +516,29 @@ no_hreflang_langs[] = en
 ```json
 {
   "no_hreflang_langs": ["en"]
+}
+```
+
+#### `no_index_langs`
+
+This parameter tells WOVN.php which languages's HTML should be set `noindex`
+to avoid index by web crawler. It also prevents `hreflang` tags from being emitted (see [no_hreflang_langs](#no_hreflang_langs)).
+
+For instance, if you want to avoid index for English pages, add `en` as below.
+`<meta name="robots" content="noindex">` tag will be inserted inside `head` tag
+for English pages.
+
+`wovn.ini`
+
+```ini
+no_index_langs[] = en
+```
+
+`wovn.json`
+
+```json
+{
+  "no_index_langs": ["en"]
 }
 ```
 
