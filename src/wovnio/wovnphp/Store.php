@@ -153,13 +153,13 @@ class Store
             $this->settings['custom_lang_aliases'] = array();
         } else {
             if (isset($this->settings['supported_langs'])) {
-                $this->convertLangListToOriginalCodes($this->settings['supported_langs']);
+                $this->settings['supported_langs'] = $this->convertLangListToOriginalCodes($this->settings['supported_langs']);
             }
             if (isset($this->settings['no_index_langs'])) {
-                $this->convertLangListToOriginalCodes($this->settings['no_index_langs']);
+                $this->settings['no_index_langs'] = $this->convertLangListToOriginalCodes($this->settings['no_index_langs']);
             }
             if (isset($this->settings['no_hreflang_langs'])) {
-                $this->convertLangListToOriginalCodes($this->settings['no_hreflang_langs']);
+                $this->settings['no_hreflang_langs'] = $this->convertLangListToOriginalCodes($this->settings['no_hreflang_langs']);
             }
         }
 
@@ -211,11 +211,12 @@ class Store
         return $this->settings;
     }
 
-    private function convertLangListToOriginalCodes(&$langListSetting)
+    private function convertLangListToOriginalCodes($langListArray)
     {
-        foreach ($langListSetting as $index => $langCode) {
-            $langListSetting[$index] = $this->convertToOriginalCode($langCode);
+        foreach ($langListArray as $index => $langCode) {
+            $langListArray[$index] = $this->convertToOriginalCode($langCode);
         }
+        return $langListArray
     }
 
     public function convertToCustomLangCode($lang_code)
