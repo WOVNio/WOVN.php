@@ -499,7 +499,7 @@ ignore_class[] = no-translate
 
 #### `no_hreflang_langs`
 
-This parameter tells WOVN.php which languages should not have `hreflang` tags emitted (used for SEO).
+This parameter tells WOVN.php which languages should not have `hreflang` tags embedded (used for SEO).
 
 ```html
 <link rel="alternate" hreflang="en" href="https://my-website.com/en/">
@@ -522,7 +522,7 @@ no_hreflang_langs[] = en
 #### `no_index_langs`
 
 This parameter tells WOVN.php which languages's HTML should be set `noindex`
-to avoid index by web crawler. It also prevents `hreflang` tags from being emitted (see [no_hreflang_langs](#no_hreflang_langs)).
+to avoid index by web crawler. It also prevents `hreflang` tags from being embedded (see [no_hreflang_langs](#no_hreflang_langs)).
 
 For instance, if you want to avoid index for English pages, add `en` as below.
 `<meta name="robots" content="noindex">` tag will be inserted inside `head` tag

@@ -504,23 +504,16 @@ ignore_class[] = no-translate
 
 #### `no_hreflang_langs`
 
-このパラメータは、ウェブクローラーによるインデックスを避けるために、どの言語のHTMLを `noindex` に設定すべきかをWOVN.phpに指示します。
+SEO最適化タグの埋め込みをしない言語を設定
 
-例えば、英語ページのインデックスを避けたい場合は、以下のように `en` を追加します。
-`<meta name="robots" content="noindex">` タグは英語ページの場合、`head` タグの中に挿入されます。
+```html
+<link rel="alternate" hreflang="en" href="https://my-website.com/en/">
+```
 
 `wovn.ini`
 
 ```ini
-no_index_langs[] = en
-```
-
-`wovn.json`
-
-```json
-{
-  "no_index_langs": ["en"]
-}
+no_hreflang_langs[] = en
 ```
 
 #### `no_index_langs`
