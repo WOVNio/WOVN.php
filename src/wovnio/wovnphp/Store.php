@@ -216,7 +216,7 @@ class Store
         foreach ($langListArray as $index => $langCode) {
             $langListArray[$index] = $this->convertToOriginalCode($langCode);
         }
-        return $langListArray
+        return $langListArray;
     }
 
     public function convertToCustomLangCode($lang_code)
