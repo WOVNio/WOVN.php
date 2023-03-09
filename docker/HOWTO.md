@@ -130,3 +130,7 @@ Don't forget to configure the followings.
 
 ### Change directory of WordPress files
 You can change WordPress files directory with `working_dir: /var/www/html/anywhere` in `wp_apache.yml`.
+
+## Local equalizer/API setup
+1. Change `widget_url` to your local equalizer URL e.g. `https://j.dev-wovn.io/1`
+2. Change `api_url` to your local HTML swapper URL e.g. `http://host.docker.internal:3001`

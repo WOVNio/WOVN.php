@@ -164,6 +164,11 @@ class HtmlConverter
         return in_array($lang, $this->store->settings['no_index_langs']);
     }
 
+    private function isNoHreflangLang($lang)
+    {
+        return in_array($lang, $this->store->settings['no_hreflang_langs']);
+    }
+
     private function insertHtmlLangAttribute($html, $lang_code)
     {
         if (preg_match('/<html\s?.*?>/', $html, $matches)) {
@@ -264,7 +269,7 @@ class HtmlConverter
 
         $hreflangTags = array();
         foreach ($lang_codes as $lang_code) {
-            if ($this->isNoindexLang($lang_code)) {
+            if ($this->isNoindexLang($lang_code) || $this->isNoHreflangLang($lang_code)) {
                 continue;
             }
             $href = $this->buildHrefLang($lang_code);

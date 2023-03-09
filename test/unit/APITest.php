@@ -195,6 +195,32 @@ class APITest extends TestCase
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('no_index_langs' => json_encode(array('en')))), $data, "should contain extra setting");
     }
 
+    public function testTranslateWithNoHreflangLangs()
+    {
+        $settings = array('no_hreflang_langs' => array('en'));
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $responsed_html = '<html><head></head><body><h1>response from html-swapper</h1></body></html>';
+        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
+        $expected_html_before_send = '<html lang="en">'.
+        '<head>'.
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script>'.
+        '</head>'.
+        '<body><h1>en</h1>'.
+        '</body></html>';
+        $response = json_encode(array("body" => $responsed_html));
+        $mock = $this->mockTranslationApi($response);
+        $request_options = new RequestOptions(array(), false);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
+
+        $this->assertEquals(1, count($mock->arguments));
+        list($method, $url, $data, $timeout) = $mock->arguments[0];
+        $this->assertEquals($this->getExpectedApiUrl($store, $headers, $expected_html_before_send, $request_options), $url);
+        $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send, array('no_hreflang_langs' => json_encode(array('en')))), $data, "should contain extra setting");
+    }
+
     public function testTranslateWithCustomLangAliases()
     {
         $settings = array('custom_lang_aliases' => array('ja' => 'ja-test'));

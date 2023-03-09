@@ -1417,6 +1417,27 @@ bye
         $this->assertEquals($expected_html_text, $translated_html);
     }
 
+    public function testInsertHreflangWithNoHreflangLangs()
+    {
+        libxml_use_internal_errors(true);
+        $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+        $settings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'zh-CHT', 'zh-CHS'),
+            'custom_lang_aliases' => array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct'),
+            'url_pattern_name' => 'path',
+            'lang_param_name' => 'wovn',
+            'no_hreflang_langs' => array('en')
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
+
+        $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_nohreflang_langs.html');
+
+        $this->assertEquals($expected_html_text, $translated_html);
+    }
+
     public function testInsertHreflangWithMultiNoindexLangs()
     {
         libxml_use_internal_errors(true);
@@ -1434,6 +1455,26 @@ bye
         $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
         $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_multi_noindex_langs.html');
+        $this->assertEquals($expected_html_text, $translated_html);
+    }
+
+    public function testInsertHreflangWithMultiNoHreflangLangs()
+    {
+        libxml_use_internal_errors(true);
+        $html = file_get_contents('test/fixtures/basic_html/insert_hreflang_default_lang_alias.html');
+        $settings = array(
+            'default_lang' => 'en',
+            'supported_langs' => array('en', 'zh-CHT', 'zh-CHS'),
+            'custom_lang_aliases' => array('en' => 'en', 'zh-CHS' => 'cs', 'zh-CHT' => 'ct'),
+            'url_pattern_name' => 'path',
+            'lang_param_name' => 'wovn',
+            'no_hreflang_langs' => array('en', 'cs', 'fr')
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($html, false);
+
+        $expected_html_text = file_get_contents('test/fixtures/basic_html/insert_hreflang_expected_multi_nohreflang_langs.html');
         $this->assertEquals($expected_html_text, $translated_html);
     }
 

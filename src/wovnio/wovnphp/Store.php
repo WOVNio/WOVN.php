@@ -88,6 +88,7 @@ class Store
             'ignore_regex' => array(),
             'ignore_class' => array(),
             'no_index_langs' => array(),
+            'no_hreflang_langs' => array(),
             'insert_hreflangs' => true,
             'translate_canonical_tag' => true,
             'site_prefix_path' => null,
@@ -152,10 +153,13 @@ class Store
             $this->settings['custom_lang_aliases'] = array();
         } else {
             if (isset($this->settings['supported_langs'])) {
-                $this->ensureValidSupportedLanguages();
+                $this->settings['supported_langs'] = $this->convertLangListToOriginalCodes($this->settings['supported_langs']);
             }
             if (isset($this->settings['no_index_langs'])) {
-                $this->ensureValidNoIndexLangs();
+                $this->settings['no_index_langs'] = $this->convertLangListToOriginalCodes($this->settings['no_index_langs']);
+            }
+            if (isset($this->settings['no_hreflang_langs'])) {
+                $this->settings['no_hreflang_langs'] = $this->convertLangListToOriginalCodes($this->settings['no_hreflang_langs']);
             }
         }
 
@@ -207,18 +211,12 @@ class Store
         return $this->settings;
     }
 
-    private function ensureValidSupportedLanguages()
+    private function convertLangListToOriginalCodes($langListArray)
     {
-        foreach ($this->settings['supported_langs'] as $index => $langCode) {
-            $this->settings['supported_langs'][$index] = $this->convertToOriginalCode($langCode);
+        foreach ($langListArray as $index => $langCode) {
+            $langListArray[$index] = $this->convertToOriginalCode($langCode);
         }
-    }
-
-    private function ensureValidNoIndexLangs()
-    {
-        foreach ($this->settings['no_index_langs'] as $index => $langCode) {
-            $this->settings['no_index_langs'][$index] = $this->convertToOriginalCode($langCode);
-        }
+        return $langListArray;
     }
 
     public function convertToCustomLangCode($lang_code)
