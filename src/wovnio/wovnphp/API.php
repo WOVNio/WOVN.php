@@ -50,6 +50,7 @@ class API
         $computedUrl = self::getUriRepresentation($headers->urlKeepTrailingSlash, $store, $headers->requestLang());
         $data = array(
             'url' => $computedUrl,  // rewrite URL to use source lang's "virtual" url.
+            'browser_url' => $headers->originalUrl,
             'token' => $token,
             'lang_code' => $headers->requestLang(),
             'url_pattern' => $store->settings['url_pattern_name'],
