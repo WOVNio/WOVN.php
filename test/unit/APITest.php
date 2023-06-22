@@ -83,6 +83,7 @@ class APITest extends TestCase
     {
         $data = array(
             'url' => $headers->urlKeepTrailingSlash,
+            'browser_url' => $headers->originalUrl,
             'token' => $store->settings['project_token'],
             'lang_code' => $headers->requestLang(),
             'url_pattern' => $store->settings['url_pattern_name'],
