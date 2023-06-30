@@ -1120,10 +1120,10 @@ bye
         $expected_converted_html = '<html><body><head></head>';
         $expected_reverted_html = '<html><body><head></head>';
 
-        for ($i = 1; $i <= 50; $i++) {
-            $original_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"{$i}\">";
+        for ($i = 0; $i < 50; $i++) {
+            $original_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"text-{$i}\">";
             $expected_converted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"__wovn-backend-ignored-key-{$i}\">";
-            $expected_reverted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"{$i}\">";
+            $expected_reverted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"text-{$i}\">";
         }
 
         $original_html .= '</body></html>';
