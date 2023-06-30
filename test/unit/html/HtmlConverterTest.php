@@ -1116,25 +1116,26 @@ bye
 
     public function testConvertToAppropriateBodyForApiWithFormHavingMultipleInputs()
     {
-        $original_html = '<html><body><head></head><form>';
-        $expected_converted_html = '<html><body><head></head><form>;';
-        $expected_reverted_html = '<html><body><head></head><form>';
+        $original_html = '<html><body><head></head>';
+        $expected_converted_html = '<html><body><head></head>';
+        $expected_reverted_html = '<html><body><head></head>';
 
         for ($i = 1; $i <= 50; $i++) {
             $original_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"{$i}\">";
-            $expected_converted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"{$i}\">";
+            $expected_converted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"__wovn-backend-ignored-key-{$i}\">";
             $expected_reverted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"{$i}\">";
         }
 
-        $original_html .= '</form></body></html>';
-        $expected_converted_html .= '</form></body></html>;';
-        $expected_reverted_html .= '</form></body></html>';
+        $original_html .= '</body></html>';
+        $expected_converted_html .= '</body></html>';
+        $expected_reverted_html .= '</body></html>';
 
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
         $converted_html = $converter->convertToAppropriateBodyForApi($original_html, false);
 
-        $this->assertEquals($expected_converted_html, $converted_html, $message);
-        $this->assertEquals($expected_reverted_html, $converter->revertMarkers($converted_html), $message);
+        $this->assertEquals($expected_converted_html, $converted_html);
+        $this->assertEquals($expected_reverted_html, $converter->revertMarkers($converted_html));
     }
 
     public function testInsertHreflangWithCustomLangCodes()
