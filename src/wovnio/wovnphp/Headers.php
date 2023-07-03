@@ -37,7 +37,7 @@ class Headers
         $this->cookieLang = $cookieLang;
         if ($store->settings['use_proxy'] && isset($env['HTTP_CLOUDFRONT_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_CLOUDFRONT_FORWARDED_PROTO'];
-        } else if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
+        } elseif ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_PROTO'])) {
             $this->protocol = $env['HTTP_X_FORWARDED_PROTO'];
         } else {
             if (isset($env['HTTPS']) && !empty($env['HTTPS']) && $env['HTTPS'] !== 'off') {

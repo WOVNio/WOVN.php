@@ -62,7 +62,7 @@ class HeadersTest extends TestCase
         $settings = array('use_proxy' => 1);
         $env = array(
             'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
-            'HTTP_X_FORWARDED_PROTO' => 'http',  
+            'HTTP_X_FORWARDED_PROTO' => 'http',
             'HTTP_CLOUDFRONT_FORWARDED_PROTO' => 'https'
         );
         list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
