@@ -57,6 +57,21 @@ class HeadersTest extends TestCase
         $this->assertEquals('http', $headers->protocol);
     }
 
+    public function testHeadersWithUseProxyTrueAndCloudFrontProto()
+    {
+        $settings = array('use_proxy' => 1);
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => 'ja.wovn.io',
+            'HTTP_X_FORWARDED_PROTO' => 'http',
+            'HTTP_CLOUDFRONT_FORWARDED_PROTO' => 'https'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('ja.wovn.io', $headers->originalHost);
+        $this->assertEquals('ja.wovn.io', $headers->host);
+        $this->assertEquals('https', $headers->protocol);
+    }
+
     public function testHeadersWithUseProxyTrueButNoForwardedInfo()
     {
         $settings = array('use_proxy' => 1);
