@@ -884,6 +884,15 @@ class HtmlConverterTest extends TestCase
 
                 '<html><head></head><body><input type="hidden"></body></html>',
             ),
+            array(
+                '<input> with 0 value',
+
+                '<html><head></head><body><input type="hidden" value="0"></body></html>',
+
+                '<html><head></head><body><input type="hidden" value="__wovn-backend-ignored-key-0"></body></html>',
+
+                '<html><head></head><body><input type="hidden" value="0"></body></html>',
+            ),
         );
         $settings = array(
             'supported_langs' => array('en', 'vi'),
