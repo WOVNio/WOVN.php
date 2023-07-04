@@ -1114,6 +1114,27 @@ bye
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testConvertToAppropriateBodyForApiWithFormHavingMultipleInputs()
+    {
+        $original_html = '<html><body><head></head>';
+        $expected_converted_html = '<html><body><head></head>';
+
+        for ($i = 0; $i < 50; $i++) {
+            $original_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"text-{$i}\">";
+            $expected_converted_html .= "<input type=\"hidden\" name=\"field_{$i}\" value=\"__wovn-backend-ignored-key-{$i}\">";
+        }
+
+        $original_html .= '</body></html>';
+        $expected_converted_html .= '</body></html>';
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $converted_html = $converter->convertToAppropriateBodyForApi($original_html, false);
+
+        $this->assertEquals($expected_converted_html, $converted_html);
+        $this->assertEquals($original_html, $converter->revertMarkers($converted_html));
+    }
+
     public function testInsertHreflangWithCustomLangCodes()
     {
         libxml_use_internal_errors(true);
