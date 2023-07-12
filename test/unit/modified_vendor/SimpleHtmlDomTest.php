@@ -22,6 +22,7 @@ class SimpleHtmlDomTest extends TestCase
             ' data-dummy-5=\'\''.
             ' data-dummy-6'.
             ' data-dummy-7="0"'.
+            ' data-dummy-8="false"'.
             '></div>'.
             '</body></html>';
         $dom = SimpleHtmlDom::str_get_html($html, 'UTF-8', false, false, 'UTF-8', false);
@@ -35,7 +36,8 @@ class SimpleHtmlDomTest extends TestCase
         $this->assertEquals('', $nodes[0]->getAttribute('data-dummy-5'));
         $this->assertEquals(true, $nodes[0]->getAttribute('data-dummy-6'));
         $this->assertEquals('0', $nodes[0]->getAttribute('data-dummy-7'));
-        $this->assertEquals(false, $nodes[0]->getAttribute('data-dummy-8'));
+        $this->assertEquals('false', $nodes[0]->getAttribute('data-dummy-8'));
+        $this->assertEquals(false, $nodes[0]->getAttribute('data-dummy-9'));
     }
 
     public function testSetAttribute()

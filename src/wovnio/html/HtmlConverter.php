@@ -415,7 +415,7 @@ class HtmlConverter
 
         if (strtolower($node->tag) === 'input' && strtolower($node->getAttribute('type')) == 'hidden') {
             $originalText = $node->getAttribute('value');
-            if (strlen($originalText) < 1 || strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
+            if ($originalText === false || strpos($originalText, HtmlReplaceMarker::$keyPrefix) !== false) {
                 return;
             }
 
