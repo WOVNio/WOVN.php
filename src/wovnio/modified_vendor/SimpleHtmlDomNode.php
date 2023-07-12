@@ -286,7 +286,7 @@ class SimpleHtmlDomNode {
     {
         $val = $this->get_attr_val($this->attribute, $name);
 
-        if ($val) {
+        if ($val !== false) {
             return $this->convert_text($val);
         }
 
