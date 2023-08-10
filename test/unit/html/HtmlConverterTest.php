@@ -893,6 +893,15 @@ class HtmlConverterTest extends TestCase
 
                 '<html><head></head><body><input type="hidden" value="0"></body></html>',
             ),
+            array(
+                'meta refresh tag - should have url translated',
+
+                '<html><head><meta http-equiv="refresh" content="0;url="/redirect"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="refresh" content="0;url="/redirect"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="refresh" content="0;url="/redirect"></head><body></body></html>',
+            ),
         );
         $settings = array(
             'supported_langs' => array('en', 'vi'),

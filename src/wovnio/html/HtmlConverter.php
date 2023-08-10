@@ -114,6 +114,10 @@ class HtmlConverter
             } elseif (strtolower($node->tag) == "body") {
                 $body = $node;
             }
+            
+            if ($node->tag === 'meta') {
+                $self->_translateMetaTagLink($node);
+            }
             $self->_removeWovnIgnore($node, $marker);
             $self->_removeCustomIgnoreClass($node, $marker);
             $self->_removeForm($node, $marker);
@@ -136,6 +140,19 @@ class HtmlConverter
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+    }
+
+    private function _translateMetaTagLink($meta_node)
+    {
+        $httpEquiv = $meta_node->getAttribute('http-equiv');
+        $metaContent = $meta_node->getAttribute('content')
+        $splitMetaContent = preg_split('/;url=/', $metaContent, null, PREG_SPLIT_NO_EMPTY);
+        if (count($splitMetaContent) === 2) {
+            $url = $splitMetaContent[1];
+            $translatedUrl = Url::addLangCode($url, $this->store, $this->headers->requestLang(), $this->headers);
+            $newMetaContent = $splitMetaContent[0] . ';url=' . $translatedUrl;
+            $meta_node->setAttribute('content', $newMetaContent);
+        }
     }
 
     private function removeSnippet($html)
