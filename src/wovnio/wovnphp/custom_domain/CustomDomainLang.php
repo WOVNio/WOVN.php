@@ -13,7 +13,7 @@ class CustomDomainLang
     public function __construct($host, $path, $lang, $source = null)
     {
         $this->host = $host;
-        $this->path = substr($path, -1) === '/' ? $path : $path . '/';
+        $this->path = substr((string)$path, -1) === '/' ? $path : $path . '/';
         $this->lang = $lang;
         $this->source = $source ? new CustomDomainLangSource($source, $lang) : null;
     }

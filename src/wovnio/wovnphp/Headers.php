@@ -13,7 +13,9 @@ class Headers
     public $originalUrl;
     public $host;
     public $pathname;
+    public $pathnameKeepTrailingSlash;
     public $url;
+    public $urlKeepTrailingSlash;
     public $query;
 
     private $env;

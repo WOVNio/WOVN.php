@@ -145,7 +145,7 @@ class HtmlConverter
     private function _translateMetaTagLink($meta_node)
     {
         $httpEquiv = $meta_node->getAttribute('http-equiv');
-        $metaContent = $meta_node->getAttribute('content')
+        $metaContent = $meta_node->getAttribute('content');
         $splitMetaContent = preg_split('/;url=/', $metaContent, null, PREG_SPLIT_NO_EMPTY);
         if (count($splitMetaContent) === 2) {
             $url = $splitMetaContent[1];
