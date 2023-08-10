@@ -378,7 +378,7 @@ class HtmlConverter
      * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
      * Use `_` prefix to imply `private`
      */
-    private function _translateMetaTagLink($meta_node)
+    public function _translateMetaTagLink($meta_node)
     {
         $httpEquiv = $meta_node->getAttribute('http-equiv');
         $metaContent = $meta_node->getAttribute('content');
@@ -389,7 +389,7 @@ class HtmlConverter
                 $refreshTime= $splitMetaContent[0];
                 $separator = $splitMetaContent[1]; // url=
                 $url = $splitMetaContent[2];
-                
+
                 $translatedUrl = Url::addLangCode($url, $this->store, $this->headers->requestLang(), $this->headers);
                 $newMetaContent = $refreshTime . ";$separator=" . $translatedUrl;
                 $meta_node->setAttribute('content', $newMetaContent);
