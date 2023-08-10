@@ -384,11 +384,14 @@ class HtmlConverter
         $metaContent = $meta_node->getAttribute('content');
 
         if ($httpEquiv === 'refresh') {
-            $splitMetaContent = preg_split('/;url=/', $metaContent, null, PREG_SPLIT_NO_EMPTY);
-            if (count($splitMetaContent) === 2) {
-                $url = $splitMetaContent[1];
+            $splitMetaContent = preg_split('/;(\s*url)=/i', $metaContent, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+            if (count($splitMetaContent) === 3) {
+                $refreshTime= $splitMetaContent[0];
+                $separator = $splitMetaContent[1]; // url=
+                $url = $splitMetaContent[2];
+                
                 $translatedUrl = Url::addLangCode($url, $this->store, $this->headers->requestLang(), $this->headers);
-                $newMetaContent = $splitMetaContent[0] . ';url=' . $translatedUrl;
+                $newMetaContent = $refreshTime . ";$separator=" . $translatedUrl;
                 $meta_node->setAttribute('content', $newMetaContent);
             }
         }

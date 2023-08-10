@@ -896,11 +896,20 @@ class HtmlConverterTest extends TestCase
             array(
                 'meta http-equiv refresh tag - internal url - should have url translated',
 
-                '<html><head><meta http-equiv="refresh" content="0;url=/redirect"></head><body></body></html>',
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/redirect">'.
+                '<meta http-equiv="refresh" content="0; URL=/redirect">'.
+                '</head><body></body></html>',
 
-                '<html><head><meta http-equiv="refresh" content="0;url=/vi/redirect"></head><body></body></html>',
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
+                '</head><body></body></html>',
 
-                '<html><head><meta http-equiv="refresh" content="0;url=/vi/redirect"></head><body></body></html>',
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
+                '</head><body></body></html>',
             ),
             array(
                 'meta http-equiv refresh tag - external url - does nothing',
