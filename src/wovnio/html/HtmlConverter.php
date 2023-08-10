@@ -116,7 +116,7 @@ class HtmlConverter
             }
             
             if ($node->tag === 'meta') {
-                $self->_translateMetaTagLink($node);
+                $self->translateMetaTagLink($node);
             }
             $self->_removeWovnIgnore($node, $marker);
             $self->_removeCustomIgnoreClass($node, $marker);
@@ -142,7 +142,7 @@ class HtmlConverter
         return $this->insertAfterTag($parent_tags, $html, $snippet_code);
     }
 
-    private function _translateMetaTagLink($meta_node)
+    private function translateMetaTagLink($meta_node)
     {
         $httpEquiv = $meta_node->getAttribute('http-equiv');
         $metaContent = $meta_node->getAttribute('content');
