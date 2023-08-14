@@ -898,16 +898,22 @@ class HtmlConverterTest extends TestCase
 
                 '<html><head>'.
                 '<meta http-equiv="refresh" content="0;url=/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/redirect"\'>'.
                 '<meta http-equiv="refresh" content="0; URL=/redirect">'.
                 '</head><body></body></html>',
 
                 '<html><head>'.
                 '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/vi/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/vi/redirect"\'>'.
                 '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
                 '</head><body></body></html>',
 
                 '<html><head>'.
                 '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/vi/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/vi/redirect"\'>'.
                 '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
                 '</head><body></body></html>',
             ),
