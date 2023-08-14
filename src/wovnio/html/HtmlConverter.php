@@ -114,6 +114,10 @@ class HtmlConverter
             } elseif (strtolower($node->tag) == "body") {
                 $body = $node;
             }
+            
+            if ($node->tag === 'meta') {
+                $self->_translateMetaTagLink($node);
+            }
             $self->_removeWovnIgnore($node, $marker);
             $self->_removeCustomIgnoreClass($node, $marker);
             $self->_removeForm($node, $marker);
@@ -373,6 +377,29 @@ class HtmlConverter
     /**
      * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
      * Use `_` prefix to imply `private`
+     */
+    public function _translateMetaTagLink($meta_node)
+    {
+        $httpEquiv = $meta_node->getAttribute('http-equiv');
+        $metaContent = $meta_node->getAttribute('content');
+
+        if ($httpEquiv === 'refresh') {
+            $splitMetaContent = preg_match('/(.*;\s*url=[\'"]?)([^\s\'"]+)([\'"]?)/i', $metaContent, $matches);
+            if (count($matches) !== 0) {
+                $startStr = $matches[1];
+                $url = $matches[2];
+                $endStr = $matches[3];
+
+                $translatedUrl = Url::addLangCode($url, $this->store, $this->headers->requestLang(), $this->headers);
+                $newMetaContent = $startStr . $translatedUrl . $endStr;
+                $meta_node->setAttribute('content', $newMetaContent);
+            }
+        }
+    }
+
+    /**
+     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
+     * Use `_` prefix to imply `private`
      *
      * @param SimpleHtmlDomNode $node
      * @param HtmlReplaceMarker $marker
@@ -384,6 +411,10 @@ class HtmlConverter
         }
     }
 
+    /**
+     * Note: Because php5.3 doesn't allow calling private method inside anonymous function,
+     * Use `_` prefix to imply `private`
+     */
     public function _removeCustomIgnoreClass($node, $marker)
     {
         $class_attr = $node->getAttribute('class');

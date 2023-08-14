@@ -893,15 +893,62 @@ class HtmlConverterTest extends TestCase
 
                 '<html><head></head><body><input type="hidden" value="0"></body></html>',
             ),
+            array(
+                'meta http-equiv refresh tag - internal url - should have url translated',
+
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/redirect"\'>'.
+                '<meta http-equiv="refresh" content="0; URL=/redirect">'.
+                '</head><body></body></html>',
+
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/vi/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/vi/redirect"\'>'.
+                '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
+                '</head><body></body></html>',
+
+                '<html><head>'.
+                '<meta http-equiv="refresh" content="0;url=/vi/redirect">'.
+                '<meta http-equiv="refresh" content="0;url=\'/vi/redirect\'">'.
+                '<meta http-equiv="refresh" content=\'0;url="/vi/redirect"\'>'.
+                '<meta http-equiv="refresh" content="0; URL=/vi/redirect">'.
+                '</head><body></body></html>',
+            ),
+            array(
+                'meta http-equiv refresh tag - external url - does nothing',
+
+                '<html><head><meta http-equiv="refresh" content="0;url=https://external.com/redirect"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="refresh" content="0;url=https://external.com/redirect"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="refresh" content="0;url=https://external.com/redirect"></head><body></body></html>',
+            ),
+            array(
+                'meta http-equiv non-refresh tag - does nothing',
+
+                '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body></body></html>',
+
+                '<html><head><meta http-equiv="content-type" content="text/html; charset=utf-8"></head><body></body></html>',
+            )
         );
         $settings = array(
             'supported_langs' => array('en', 'vi'),
             'lang_param_name' => 'wovn',
+            'url_pattern_name' => 'path',
             'ignore_class' => array('ignore-class')
         );
+        $envs = array(
+            'REQUEST_URI' => '/vi/news/'
+        );
+
         foreach ($html_cases as $case) {
             list($message, $original_html, $expected_converted_html, $expected_reverted_html) = $case;
-            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $envs);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
             $converted_html = $converter->convertToAppropriateBodyForApi($original_html, false);
 
