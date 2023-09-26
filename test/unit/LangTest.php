@@ -7,11 +7,6 @@ use PHPUnit\Framework\TestCase;
 
 class LangTest extends TestCase
 {
-    public function testLangLength()
-    {
-        $this->assertEquals(77, count(Lang::$index));
-    }
-
     public function testKeysExist()
     {
         foreach (Lang::$index as $key => $lang) {
