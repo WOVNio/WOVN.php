@@ -348,6 +348,8 @@ and should be used for performance optimization.
 | [compress_api_requests](#compress_api_requests)                               | all                       | Enable gzip compression for outbound requests to translation API            |
 | [logging](#logging)                                                           | all                       | Enable and configure error logging                                          |
 | [translate_canonical_tag](#translate_canonical_tag)                           | all                       | Enable the translation of canonical tag URL                                 |
+| [outbound_proxy_host](#outbound_proxy_host--outbound_proxy_port)               | all                       | HTTP proxy host used to connect to WOVN API 
+| [outbound_proxy_port](#outbound_proxy_host--outbound_proxy_port)               | all                       | HTTP proxy port used to connect to WOVN API
 
 #### `lang_param_name`
 This parameter is only valid for when `url_pattern_name = query`.
@@ -908,6 +910,26 @@ Example:
 
 ```ini
 translate_canonical_tag = true
+```
+
+#### `outbound_proxy_host / outbound_proxy_port`
+Configures if WOVN.php should make connections to our API using a HTTP proxy.
+`outbound_proxy_host` should be set to the proxy's host. `outbound_proxy_port` should be set to the proxy's port number.
+
+`wovn.json`
+
+```json
+{
+  "outbound_proxy_host": "site.com",
+  "outbound_proxy_port": "8080",
+}
+```
+
+`wovn.ini`
+
+```ini
+outbound_proxy_host = site.com
+outbound_proxy_port = 8080
 ```
 
 ## 4. Environment Variable
