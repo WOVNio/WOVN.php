@@ -191,9 +191,7 @@ class StoreTest extends TestCase
         if (file_exists($file_config)) {
             unlink($file_config);
         }
-        $data = implode("\n", array(
-            'outbound_proxy_host = "site.com"'
-        ));
+        $data = implode("\n", array());
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
@@ -212,7 +210,7 @@ class StoreTest extends TestCase
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
-        $this->assertEquals('site.com'), $store->outboundProxy());
+        $this->assertEquals('site.com', $store->outboundProxy());
     }
 
     public function testOutboundProxyHostPortDefined()
@@ -228,7 +226,7 @@ class StoreTest extends TestCase
         file_put_contents($file_config, $data);
         $store = Store::createFromFile($file_config);
         unlink($file_config);
-        $this->assertEquals('site.com:8080'), $store->outboundProxy());
+        $this->assertEquals('site.com:8080', $store->outboundProxy());
     }
 
     public function testNoHreflangLangs()
