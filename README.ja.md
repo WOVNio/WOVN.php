@@ -735,7 +735,7 @@ insert_hreflangs = 1
 ```
 
 #### `outbound_proxy_host / outbound_proxy_port`
-Configures if WOVN.php should make connections to our API using a proxy server.
+Configures if WOVN.php should connect to our API using a proxy server.
 `outbound_proxy_host` should be set to the proxy server host. `outbound_proxy_port` should be set to the proxy server port number.
 
 `wovn.json`
