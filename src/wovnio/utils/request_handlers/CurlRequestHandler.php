@@ -38,7 +38,7 @@ class CurlRequestHandler extends AbstractRequestHandler
         // So, it is better to disable 'Expect: 100-continue'.
         array_push($request_headers, 'Expect:');
 
-        curl_setopt_array($curl_session, array(
+        $curlOptions = array(
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_TIMEOUT => $timeout,
             // adds header to accept GZIP encoding and handles decoding response
@@ -47,7 +47,14 @@ class CurlRequestHandler extends AbstractRequestHandler
             CURLOPT_POSTFIELDS => $data,
             CURLOPT_HEADER => true,
             CURLOPT_HTTPHEADER => $request_headers
-        ));
+        );
+
+        $proxy = $this->store->outboundProxy();
+        if ($proxy) {
+            $curlOptions['CURLOPT_PROXY'] = $proxy;
+        }
+
+        curl_setopt_array($curl_session, $curlOptions);
 
         $response = curl_exec($curl_session);
         $header_size = curl_getinfo($curl_session, CURLINFO_HEADER_SIZE);
