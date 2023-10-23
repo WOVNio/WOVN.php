@@ -185,6 +185,52 @@ class StoreTest extends TestCase
         $this->assertEquals(array('en', 'fr'), $store->settings['no_index_langs']);
     }
 
+    public function testOutboundProxyNoSettingDefined()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'outbound_proxy_host = "site.com"'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals(null, $store->outboundProxy());
+    }
+
+    public function testOutboundProxyOnlyHost()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'outbound_proxy_host = "site.com"'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals('site.com'), $store->outboundProxy());
+    }
+
+    public function testOutboundProxyHostPortDefined()
+    {
+        $file_config = dirname(__FILE__) . '/test_config.ini';
+        if (file_exists($file_config)) {
+            unlink($file_config);
+        }
+        $data = implode("\n", array(
+            'outbound_proxy_host = "site.com"',
+            'outbound_proxy_port = "8080"'
+        ));
+        file_put_contents($file_config, $data);
+        $store = Store::createFromFile($file_config);
+        unlink($file_config);
+        $this->assertEquals('site.com:8080'), $store->outboundProxy());
+    }
+
     public function testNoHreflangLangs()
     {
         $file_config = dirname(__FILE__) . '/test_config.ini';
