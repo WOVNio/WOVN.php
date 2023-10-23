@@ -51,7 +51,7 @@ class CurlRequestHandler extends AbstractRequestHandler
 
         $proxy = $this->store->outboundProxy();
         if ($proxy) {
-            $curlOptions['CURLOPT_PROXY'] = $proxy;
+            $curlOptions[CURLOPT_PROXY] = $proxy;
         }
 
         curl_setopt_array($curl_session, $curlOptions);
