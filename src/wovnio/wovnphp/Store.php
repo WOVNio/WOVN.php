@@ -267,7 +267,7 @@ class Store
 
     public function outboundProxy()
     {
-        $result = null
+        $result = null;
 
         if (isset($this->settings['outbound_proxy_host'])) {
             $result = $this->settings['outbound_proxy_host'];
