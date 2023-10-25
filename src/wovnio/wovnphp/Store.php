@@ -94,6 +94,10 @@ class Store
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
 
+            // HTTP proxy used for outbound WOVN requests
+            'outbound_proxy_host' => null,
+            'outbound_proxy_port' => null,
+
             // Set to true to check if intercepted file is an AMP file.
             // Because WOVN.php interception is explicit, in most cases AMP files
             // are not intercepted, so this option is false by default -- always
@@ -259,5 +263,19 @@ class Store
     public function compressApiRequests()
     {
         return $this->settings['compress_api_requests'];
+    }
+
+    public function outboundProxyHost()
+    {
+        return isset($this->settings['outbound_proxy_host'])
+            ? $this->settings['outbound_proxy_host']
+            : null;
+    }
+
+    public function outboundProxyPort()
+    {
+        return isset($this->settings['outbound_proxy_port'])
+            ? $this->settings['outbound_proxy_port']
+            : null;
     }
 }

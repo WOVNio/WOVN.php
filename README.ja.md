@@ -358,7 +358,8 @@ NOT SUPPORTED
 | [site_prefix_path](#site_prefix_path)| path                           | 言語コードの挿入位置を変更            |
 | [custom_domain_langs](#custom_domain_langs)| custom_domain            | サポートされている言語のドメインとパスを定義 |
 | [insert_hreflangs](#custom_domain_langs)| all                         | hreflang属性を持つlinkタグの挿入要否を設定 |
-
+| [outbound_proxy_host](#outbound_proxy_host--outbound_proxy_port)               | all                       | WOVN APIへの接続に使用するHTTPプロキシサーバのホスト | 
+| [outbound_proxy_port](#outbound_proxy_host--outbound_proxy_port)               | all                       | WOVN APIへの接続に使用するHTTPプロキシサーバのポート |
 
 #### `lang_param_name`
 
@@ -731,6 +732,26 @@ insert_hreflangs = 1
 {
   "insert_hreflangs": true
 }
+```
+
+#### `outbound_proxy_host / outbound_proxy_port`
+WOVN.phpがプロキシサーバーを使用してAPIに接続するかどうかを設定します。
+`outbound_proxy_host` にはプロキシサーバのホストを設定します。 `outbound_proxy_port` にはプロキシサーバのポート番号を指定します。
+
+`wovn.json`
+
+```json
+{
+  "outbound_proxy_host": "site.com",
+  "outbound_proxy_port": "8080",
+}
+```
+
+`wovn.ini`
+
+```ini
+outbound_proxy_host = site.com
+outbound_proxy_port = 8080
 ```
 
 ## 4. 環境変数
