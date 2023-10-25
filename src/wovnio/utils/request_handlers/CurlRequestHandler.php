@@ -49,9 +49,13 @@ class CurlRequestHandler extends AbstractRequestHandler
             CURLOPT_HTTPHEADER => $request_headers
         );
 
-        $proxy = $this->store->outboundProxy();
-        if ($proxy) {
-            $curlOptions[CURLOPT_PROXY] = $proxy;
+        $proxyHost = $this->store->outboundProxyHost();
+        if ($proxyHost) {
+            $curlOptions[CURLOPT_PROXY] = $proxyHost;
+        }
+        $proxyPort = $this->store->outboundProxyPort();
+        if ($proxyPort) {
+            $curlOptions[CURLOPT_PROXYPORT] = $proxyPort;
         }
 
         curl_setopt_array($curl_session, $curlOptions);

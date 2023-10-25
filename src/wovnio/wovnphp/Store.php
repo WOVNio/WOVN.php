@@ -265,18 +265,17 @@ class Store
         return $this->settings['compress_api_requests'];
     }
 
-    public function outboundProxy()
+    public function outboundProxyHost()
     {
-        $result = null;
+        return isset($this->settings['outbound_proxy_host'])
+            ? $this->settings['outbound_proxy_host']
+            : null;
+    }
 
-        if (isset($this->settings['outbound_proxy_host'])) {
-            $result = $this->settings['outbound_proxy_host'];
-        }
-        if (isset($this->settings['outbound_proxy_port'])) {
-            $port = $this->settings['outbound_proxy_port'];
-            $result .= ":$port";
-        }
-
-        return $result;
+    public function outboundProxyPort()
+    {
+        return isset($this->settings['outbound_proxy_port'])
+            ? $this->settings['outbound_proxy_port']
+            : null;
     }
 }
