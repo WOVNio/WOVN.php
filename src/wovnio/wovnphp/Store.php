@@ -93,6 +93,7 @@ class Store
             'translate_canonical_tag' => true,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
+            'preserve_relative_urls' => false,
 
             // HTTP proxy used for outbound WOVN requests
             'outbound_proxy_host' => null,
@@ -208,6 +209,10 @@ class Store
 
         if (!is_bool($this->settings['translate_canonical_tag'])) {
             $this->settings['translate_canonical_tag'] = !!$this->settings['translate_canonical_tag'];
+        }
+
+        if (!is_bool($this->settings['preserve_relative_urls'])) {
+            $this->settings['preserve_relative_urls'] = !!$this->settings['preserve_relative_urls'];
         }
 
         $this->configLoaded = true;
