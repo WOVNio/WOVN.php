@@ -92,7 +92,8 @@ class APITest extends TestCase
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_body,
             'insert_hreflangs' => json_encode($store->settings['insert_hreflangs']),
-            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
+            'preserve_relative_urls' => $store->settings['preserve_relative_urls']
         );
 
         return array_merge($data, $extra);
@@ -372,7 +373,7 @@ class APITest extends TestCase
 
         $this->assertEquals(1, count($mock->arguments));
         list($method, $url, $data, $timeout) = $mock->arguments[0];
-        
+
         $this->assertEquals($this->getExpectedApiUrl($store, $headers, $expected_html_before_send, $request_options), $url);
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
         $this->assertEquals($expected_html_before_send, $result, "should return contents with fallback");

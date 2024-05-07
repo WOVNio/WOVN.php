@@ -76,6 +76,9 @@ class API
         if (isset($store->settings['insert_hreflangs'])) {
             $data['insert_hreflangs'] = json_encode($store->settings['insert_hreflangs']);
         }
+        if (isset($store->settings['preserve_relative_urls'])) {
+            $data['preserve_relative_urls'] = $store->settings['preserve_relative_urls'];
+        }
         if ($store->getCustomDomainLangs()) {
             $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
         }
