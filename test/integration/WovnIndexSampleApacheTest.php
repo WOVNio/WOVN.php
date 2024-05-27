@@ -202,9 +202,9 @@ EXPECTED;
             if (is_array($value)) {
                 foreach ($value as $key => $v) {
                     if (is_string($key)) {
-                        $contents[] = "${name}[$key] = $v";
+                        $contents[] = "{$name}[$key] = $v";
                     } else {
-                        $contents[] = "${name}[] = $v";
+                        $contents[] = "{$name}[] = $v";
                     }
                 }
             } else {
