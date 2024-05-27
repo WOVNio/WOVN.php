@@ -24,10 +24,10 @@ docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "php --version"
 
 if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
     # Convert test to support PHP8 syntax
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name '*.php' -print0 | xargs -0 sed -i -r 's/function setUp\(\)/function setUp(): void/g'"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name '*.php' -print0 | xargs -0 sed -i -r 's/function setUpBeforeClass\(\)/function setUpBeforeClass(): void/g'"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name '*.php' -print0 | xargs -0 sed -i -r 's/function tearDown\(\)/function tearDown(): void/g'"
-    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name '*.php' -print0 | xargs -0 sed -i -r 's/function tearDownAfterClass\(\)/function tearDownAfterClass(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function setUp()/function setUp(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function setUpBeforeClass()/function setUpBeforeClass(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function tearDown()/function tearDown(): void/g'"
+    docker exec ${APACHE_CONTAINER_ID} /bin/bash -c "find ${WORK_DIR}/test -type f -name \"*.php\" -print0 | xargs -0 sed -i 's/function tearDownAfterClass()/function tearDownAfterClass(): void/g'"
 fi
 
 # Set up modules
