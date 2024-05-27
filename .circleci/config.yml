@@ -20,6 +20,7 @@ commands:
           at: ~/project
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker25
   store-steps:
     steps:
       - store_test_results:
