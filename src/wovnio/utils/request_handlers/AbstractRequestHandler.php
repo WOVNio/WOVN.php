@@ -5,6 +5,8 @@ use \Wovnio\Wovnphp\Logger;
 
 abstract class AbstractRequestHandler
 {
+    protected $store;
+
     abstract protected function post($url, $request_headers, $query, $timeout);
 
     public static function available()

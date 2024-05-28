@@ -14,6 +14,9 @@ use PHPUnit\Framework\TestCase;
 
 class CookieLangTest extends TestCase
 {
+    private $sourceDir;
+    private $docRoot;
+
     protected function setUp()
     {
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');

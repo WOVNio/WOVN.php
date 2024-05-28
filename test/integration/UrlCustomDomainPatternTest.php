@@ -9,6 +9,8 @@ use PHPUnit\Framework\TestCase;
 class UrlCustomDomainPatternTest extends TestCase
 {
     private static $orgHostFile;
+    private $sourceDir;
+    private $docRoot;
 
     public static function setUpBeforeClass()
     {

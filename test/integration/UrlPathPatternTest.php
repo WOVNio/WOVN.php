@@ -7,6 +7,9 @@ use PHPUnit\Framework\TestCase;
 
 class UrlPathPatternTest extends TestCase
 {
+    private $sourceDir;
+    private $docRoot;
+
     protected function setUp()
     {
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');

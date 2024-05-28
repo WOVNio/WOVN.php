@@ -5,6 +5,10 @@ use PHPUnit\Framework\TestCase;
 
 class SSIWovnIndexSampleTest extends TestCase
 {
+    private $baseDir;
+    private $workspace;
+    private $paths;
+
     protected function setUp()
     {
         $this->baseDir = getcwd();
@@ -107,7 +111,7 @@ CONTENT;
         $_SERVER['SERVER_NAME'] = 'wovn.php';
         $_SERVER['REQUEST_URI'] = $request_uri;
         $_GET = $queryParams;
-        
+
         ob_start();
         include('wovn_index.php');
         return ob_get_clean();
