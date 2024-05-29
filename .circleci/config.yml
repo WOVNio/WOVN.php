@@ -20,6 +20,7 @@ commands:
           at: ~/project
       - setup_remote_docker:
           docker_layer_caching: true
+          version: docker25
   store-steps:
     steps:
       - store_test_results:
@@ -45,6 +46,27 @@ jobs:
           paths:
             - ./vendor
       - run: ./vendor/bin/phpcs
+  test_php83:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:8.3-apache
+      - run: scripts/run_integration_tests.sh php:8.3-apache
+      - store-steps
+  test_php82:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:8.2-apache
+      - run: scripts/run_integration_tests.sh php:8.2-apache
+      - store-steps
+  test_php81:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:8.1-apache
+      - run: scripts/run_integration_tests.sh php:8.1-apache
+      - store-steps
   test_php80:
     <<: *defaults
     steps:
@@ -121,6 +143,9 @@ workflows:
   build:
     jobs:
       - build
+      - test_php83
+      - test_php82
+      - test_php81
       - test_php80
       - test_php74
       - test_php73

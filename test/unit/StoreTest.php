@@ -28,8 +28,6 @@ class StoreTest extends TestCase
         $mockObject = $builder->getMock();
         if (method_exists($this, 'registerMockObject')) {
             $this->registerMockObject($mockObject);
-        } else {
-            $this->mockObjects[] = $mockObject;
         }
         return $mockObject;
     }

@@ -10,6 +10,10 @@ use PHPUnit\Framework\TestCase;
 
 class WovnIndexSampleTest extends TestCase
 {
+    private $baseDir;
+    private $workspace;
+    private $paths;
+
     protected function setUp()
     {
         $this->baseDir = getcwd();

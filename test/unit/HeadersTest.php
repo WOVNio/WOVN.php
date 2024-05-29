@@ -546,7 +546,7 @@ class HeadersTest extends TestCase
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
 
             $this->assertEquals('custom_domain', $store->settings['url_pattern_name']);
-            $this->assertEquals($expectedLangCode, $headers->urlLanguage(), "env -> [" . json_encode($env) . "] | lang -> [${expectedLangCode}]");
+            $this->assertEquals($expectedLangCode, $headers->urlLanguage(), "env -> [" . json_encode($env) . "] | lang -> [{$expectedLangCode}]");
         };
     }
 

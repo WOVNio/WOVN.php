@@ -8,6 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class WovnIndexSampleApacheTest extends TestCase
 {
+    private $sourceDir;
+    private $docRoot;
+
     protected function setUp()
     {
         $this->sourceDir  = realpath(dirname(__FILE__) . '/../..');
@@ -202,9 +205,9 @@ EXPECTED;
             if (is_array($value)) {
                 foreach ($value as $key => $v) {
                     if (is_string($key)) {
-                        $contents[] = "${name}[$key] = $v";
+                        $contents[] = "{$name}[$key] = $v";
                     } else {
-                        $contents[] = "${name}[] = $v";
+                        $contents[] = "{$name}[] = $v";
                     }
                 }
             } else {
