@@ -100,6 +100,6 @@ class CookieLangTest extends TestCase
         $result = TestUtils::fetchURL('http://localhost/ja/index.html', null, array('wovn_selected_lang' => 'en'));
 
         self::assertEquals(302, $result->statusCode);
-        self::assertEquals('http://localhost/index.html', $result->sensibleHeaders['Location']);
+        self::assertEquals('http://localhost/en/index.html', $result->sensibleHeaders['Location']);
     }
 }
