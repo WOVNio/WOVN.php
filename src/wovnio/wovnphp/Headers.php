@@ -382,7 +382,7 @@ class Headers
         $requestLang = $this->requestLang();
         $cookieLang = $this->cookieLang->getCookieLang();
 
-        return $cookieLang && ($requestLang !== $cookieLang) && ($requestLang === $this->store->defaultLang());
+        return $cookieLang && ($requestLang !== $cookieLang);
     }
 
     public function isSearchEngineBot()

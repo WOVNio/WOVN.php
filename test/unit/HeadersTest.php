@@ -1603,7 +1603,7 @@ class HeadersTest extends TestCase
     public function testRequestToTargetLangWithTargetCookieQueryPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStoreQueryPattern('ja', 'fr');
-        $this->assertEquals(false, $headers->shouldRedirect());
+        $this->assertEquals(true, $headers->shouldRedirect());
     }
 
     public function testRequestToSameLangWithCookieQueryPatternShouldNotRedirect()
@@ -1627,7 +1627,7 @@ class HeadersTest extends TestCase
     public function testRequestToTargetLangWithTargetCookiePathPatternShouldNotRedirect()
     {
         list($store, $headers) = $this->getHeaderStorePathPattern('ja', 'fr');
-        $this->assertEquals(false, $headers->shouldRedirect());
+        $this->assertEquals(true, $headers->shouldRedirect());
     }
 
     public function testRequestToSameLangWithCookiePathPatternShouldNotRedirect()

@@ -71,7 +71,7 @@ class CookieLangTest extends TestCase
         self::assertEquals('http://localhost/ja/index.html', $result->sensibleHeaders['Location']);
     }
 
-    public function testRequestToTargetLangWithCookieShouldNotRedirect()
+    public function testRequestToTargetLangWithCookieShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -83,10 +83,11 @@ class CookieLangTest extends TestCase
         ));
         $result = TestUtils::fetchURL('http://localhost/zh-Hant-HK/index.html', null, array('wovn_selected_lang' => 'ja'));
 
-        self::assertEquals(200, $result->statusCode);
+        self::assertEquals(302, $result->statusCode);
+        self::assertEquals('http://localhost/ja/index.html', $result->sensibleHeaders['Location']);
     }
 
-    public function testRequestToTargetLangWithDefaultCookieShouldNotRedirect()
+    public function testRequestToTargetLangWithDefaultCookieShouldRedirect()
     {
         copy("{$this->sourceDir}/wovn_index_sample.php", "{$this->docRoot}/wovn_index.php");
         TestUtils::writeFile("{$this->docRoot}/index.html", '<html><head></head><body>test</body></html>');
@@ -98,6 +99,7 @@ class CookieLangTest extends TestCase
         ));
         $result = TestUtils::fetchURL('http://localhost/ja/index.html', null, array('wovn_selected_lang' => 'en'));
 
-        self::assertEquals(200, $result->statusCode);
+        self::assertEquals(302, $result->statusCode);
+        self::assertEquals('http://localhost/en/index.html', $result->sensibleHeaders['Location']);
     }
 }
