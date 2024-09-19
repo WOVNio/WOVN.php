@@ -58,7 +58,8 @@ class API
             'product' => WOVN_PHP_NAME,
             'version' => WOVN_PHP_VERSION,
             'body' => $converted_html,
-            'translate_canonical_tag' => $store->settings['translate_canonical_tag']
+            'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
+            'page_status_code' => http_response_code()
         );
 
         if (count($store->settings['custom_lang_aliases']) > 0) {
