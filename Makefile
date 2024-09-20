@@ -36,11 +36,11 @@ phpunit:
 # `convert` and `revert` are used to support difference of PHP syntax in test files.
 .PHONY: convert
 convert:
-	./scripts/convert.sh ${DOCKER_IMAGE}
+	./scripts/convert.sh
 
 .PHONY: revert
 revert:
-	./scripts/revert.sh ${DOCKER_IMAGE}
+	./scripts/revert.sh
 
 .PHONY: start_test
 start_test:

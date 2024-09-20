@@ -94,8 +94,12 @@ class APITest extends TestCase
             'insert_hreflangs' => json_encode($store->settings['insert_hreflangs']),
             'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
             'preserve_relative_urls' => $store->settings['preserve_relative_urls'],
-            'page_status_code' => false
         );
+        if (phpversion() >= '5.4') {
+            // Should be int like 200 or 404, but from cli it will be false
+            $data['page_status_code'] = false;
+        }
+
 
         return array_merge($data, $extra);
     }

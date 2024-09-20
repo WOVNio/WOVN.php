@@ -3,7 +3,7 @@
 set -ex
 
 CURRENT_DIR=$(cd $(dirname $0); pwd)
-DOCKER_IMAGE=${1:-php:8.0-apache-buster}
+DOCKER_IMAGE=$DOCKER_IMAGE
 TEST_DIR="${CURRENT_DIR}/../test"
 
 if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-9]|8\.[0-9]).*$ ]]; then
