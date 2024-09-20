@@ -10,7 +10,6 @@ services:
     volumes:
       - ../:/var/www/html/WOVN.php
       - ./public:/var/www/html
-
       - ./apache/log:/var/log/apache2
       - ./apache/apache2.conf:/etc/apache2/sites-enabled/apache2.conf
       - ./php.ini:/usr/local/etc/php/php.ini
