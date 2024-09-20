@@ -93,7 +93,8 @@ class APITest extends TestCase
             'body' => $converted_body,
             'insert_hreflangs' => json_encode($store->settings['insert_hreflangs']),
             'translate_canonical_tag' => $store->settings['translate_canonical_tag'],
-            'preserve_relative_urls' => $store->settings['preserve_relative_urls']
+            'preserve_relative_urls' => $store->settings['preserve_relative_urls'],
+            'page_status_code' => false
         );
 
         return array_merge($data, $extra);
