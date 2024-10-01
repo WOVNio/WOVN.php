@@ -82,6 +82,9 @@ class API
         if ($store->getCustomDomainLangs()) {
             $data['custom_domain_langs'] = json_encode($store->getCustomDomainLangs()->toHtmlSwapperHash());
         }
+        if (function_exists('http_response_code')) {
+            $data['page_status_code'] = http_response_code();
+        }
         if ($request_options->getDebugMode()) {
             $data['debug_mode'] = 'true';
         }
