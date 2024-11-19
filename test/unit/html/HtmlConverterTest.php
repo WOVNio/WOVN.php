@@ -196,6 +196,96 @@ class HtmlConverterTest extends TestCase
         }
     }
 
+    public function testInsertSnippetAndLangTagsWithHreflangXDefaultLang() {
+        $html_cases = array(
+            array (
+                'has setting and html has none - is generated',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                'en'
+            ),
+            array (
+                'has setting and html has existing - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                'en'
+            ),
+            array (
+                'no setting and html has existing - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                null
+            )
+        );
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'lang_param_name' => 'wovn'
+        );
+        foreach ($html_cases as $case) {
+            list($message, $original_html, $expected_html, $x_default_setting) = $case;
+            $settings['hreflang_x_default_lang'] = $x_default_setting;
+
+            list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+            $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+            $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+            $this->assertEquals($expected_html, $translated_html, $message);
+        }
+    }
+
     public function testTranslateCanonicalTagWithTranslateCanonicalTagFalse()
     {
         $html_cases = array(
