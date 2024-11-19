@@ -196,7 +196,8 @@ class HtmlConverterTest extends TestCase
         }
     }
 
-    public function testInsertSnippetAndLangTagsWithHreflangXDefaultLang() {
+    public function testInsertSnippetAndLangTagsWithHreflangXDefaultLang()
+    {
         $html_cases = array(
             array (
                 'has setting and html has none - is generated',
