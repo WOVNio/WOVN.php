@@ -281,8 +281,13 @@ class HtmlConverter
         }
 
         if (isset($this->store->settings['hreflang_x_default_lang'])) {
-            $href = $this->buildHrefLang($this->store->settings['hreflang_x_default_lang']);
-            array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '">');
+            $x_default_hreflang_regex = "/<link [^>]*hreflang=[\"']?(x-default)[\"']?(\s[^>]*)?\>/iU";
+            $has_existing_x_default_hreflang = preg_match($x_default_hreflang_regex, $html);
+
+            if (!$has_existing_x_default_hreflang) {
+                $href = $this->buildHrefLang($this->store->settings['hreflang_x_default_lang']);
+                array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '">');
+            }
         }
 
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
