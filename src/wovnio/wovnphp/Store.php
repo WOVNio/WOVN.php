@@ -90,6 +90,7 @@ class Store
             'no_index_langs' => array(),
             'no_hreflang_langs' => array(),
             'insert_hreflangs' => true,
+            'hreflang_x_default_lang' => null,
             'translate_canonical_tag' => true,
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
@@ -205,6 +206,10 @@ class Store
 
         if (!is_bool($this->settings['insert_hreflangs'])) {
             $this->settings['insert_hreflangs'] = !!$this->settings['insert_hreflangs'];
+        }
+
+        if (isset($this->settings['hreflang_x_default_lang'])) {
+            $this->settings['hreflang_x_default_lang'] = Lang::getCode($this->settings['hreflang_x_default_lang']);
         }
 
         if (!is_bool($this->settings['translate_canonical_tag'])) {

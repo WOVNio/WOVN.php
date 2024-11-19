@@ -114,7 +114,7 @@ class HtmlConverter
             } elseif (strtolower($node->tag) == "body") {
                 $body = $node;
             }
-            
+
             if ($node->tag === 'meta') {
                 $self->_translateMetaTagLink($node);
             }
@@ -278,6 +278,11 @@ class HtmlConverter
             }
             $href = $this->buildHrefLang($lang_code);
             array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
+        }
+
+        if (isset($this->store->settings['hreflang_x_default_lang'])) {
+            $href = $this->buildHrefLang($this->store->settings['hreflang_x_default_lang']);
+            array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '">');
         }
 
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
