@@ -760,7 +760,7 @@ outbound_proxy_port = 8080
 
 設定する言語コードは`supported_langs`に設定した言語コードでなければなりません。設定が無効の場合、タグは挿入されません。
 
-`hreflang=x-default`属性を持つlinkタグが存在する場合、この設定は無効化されます。
+`hreflang=x-default`属性を持つlinkタグが存在する場合、この設定は無効となります。
 
 ```html
 <link rel="alternate" hreflang="x-default" href="https://my-website.com/">
