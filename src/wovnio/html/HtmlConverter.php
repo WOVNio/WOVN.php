@@ -281,7 +281,7 @@ class HtmlConverter
         }
 
         if (isset($this->store->settings['hreflang_x_default_lang'])) {
-            $x_default_hreflang_regex = "/<link [^>]*hreflang=[\"']?(x-default)[\"']?(\s[^>]*)?\>/iU";
+            $x_default_hreflang_regex = "/<link[^>]*hreflang=[\"']?x-default[\"']?[^>]*>/iU";
             $has_existing_x_default_hreflang = preg_match($x_default_hreflang_regex, $html);
 
             if (!$has_existing_x_default_hreflang) {
