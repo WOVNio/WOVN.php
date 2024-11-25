@@ -360,6 +360,7 @@ NOT SUPPORTED
 | [insert_hreflangs](#custom_domain_langs)| all                         | hreflang属性を持つlinkタグの挿入要否を設定 |
 | [outbound_proxy_host](#outbound_proxy_host--outbound_proxy_port)               | all                       | WOVN APIへの接続に使用するHTTPプロキシサーバのホスト | 
 | [outbound_proxy_port](#outbound_proxy_host--outbound_proxy_port)               | all                       | WOVN APIへの接続に使用するHTTPプロキシサーバのポート |
+| [hreflang_x_default_lang](#hreflang_x_default_lang)                            | all                       |「x-default hreflang」に使用する言語を設定 |
 
 #### `lang_param_name`
 
@@ -752,6 +753,31 @@ WOVN.phpがプロキシサーバーを使用してAPIに接続するかどうか
 ```ini
 outbound_proxy_host = site.com
 outbound_proxy_port = 8080
+```
+
+#### `hreflang_x_default_lang`
+このパラメータは`hreflang=x-default`属性を持つlinkタグを生成するための言語コードを設定します。
+
+設定する言語コードは`supported_langs`に設定した言語コードでなければなりません。設定が無効の場合、タグは挿入されません。
+
+`hreflang=x-default`属性を持つlinkタグが存在する場合、この設定は無効となります。
+
+```html
+<link rel="alternate" hreflang="x-default" href="https://my-website.com/">
+```
+
+`wovn.json`
+
+```json
+{
+  "hreflang_x_default_lang": "ja"
+}
+```
+
+`wovn.ini`
+
+```ini
+hreflang_x_default_lang = ja
 ```
 
 ## 4. 環境変数

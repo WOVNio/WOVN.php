@@ -348,8 +348,9 @@ and should be used for performance optimization.
 | [compress_api_requests](#compress_api_requests)                               | all                       | Enable gzip compression for outbound requests to translation API            |
 | [logging](#logging)                                                           | all                       | Enable and configure error logging                                          |
 | [translate_canonical_tag](#translate_canonical_tag)                           | all                       | Enable the translation of canonical tag URL                                 |
-| [outbound_proxy_host](#outbound_proxy_host--outbound_proxy_port)               | all                       | HTTP proxy server host used to connect to WOVN API 
-| [outbound_proxy_port](#outbound_proxy_host--outbound_proxy_port)               | all                       | HTTP proxy server port used to connect to WOVN API
+| [outbound_proxy_host](#outbound_proxy_host--outbound_proxy_port)              | all                       | HTTP proxy server host used to connect to WOVN API                          |
+| [outbound_proxy_port](#outbound_proxy_host--outbound_proxy_port)              | all                       | HTTP proxy server port used to connect to WOVN API                          |
+| [hreflang_x_default_lang](#hreflang_x_default_lang)                           | all                       | Setting language used for "x-default hreflang"                         |
 
 #### `lang_param_name`
 This parameter is only valid for when `url_pattern_name = query`.
@@ -930,6 +931,31 @@ Configures if WOVN.php should connect to our API using a proxy server.
 ```ini
 outbound_proxy_host = site.com
 outbound_proxy_port = 8080
+```
+
+#### `hreflang_x_default_lang`
+Configures the language code used to generate link tag with `hreflang="x-default"` attribute.
+
+The language code used must be in `supported_langs`. If the language code is invalid, link tag will not be inserted.
+
+If a link tag with `hreflang="x-default"` attribute exists, this setting does nothing.
+
+```html
+<link rel="alternate" hreflang="x-default" href="https://my-website.com/">
+```
+
+`wovn.json`
+
+```json
+{
+  "hreflang_x_default_lang": "ja"
+}
+```
+
+`wovn.ini`
+
+```ini
+hreflang_x_default_lang = ja
 ```
 
 ## 4. Environment Variable
