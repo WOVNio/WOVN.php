@@ -200,7 +200,7 @@ class HtmlConverterTest extends TestCase
     {
         $html_cases = array(
             array (
-                'has setting and html has none - is generated',
+                'has x-default setting and html has none - is generated',
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
@@ -220,7 +220,7 @@ class HtmlConverterTest extends TestCase
                 'en'
             ),
             array (
-                'has setting and html has existing - is not modified',
+                'has x-default setting and html has existing - is not modified',
 
                 '<html>' .
                 '<head>' .
@@ -247,7 +247,7 @@ class HtmlConverterTest extends TestCase
                 'en'
             ),
             array (
-                'no setting and html has existing - is not modified',
+                'no x-default setting and html has existing - is not modified',
 
                 '<html>' .
                 '<head>' .
