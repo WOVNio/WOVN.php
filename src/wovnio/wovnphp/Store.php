@@ -270,6 +270,15 @@ class Store
         return $this->customDomainLangs;
     }
 
+    public function getHreflangXDefaultLangOrDefault()
+    {
+        if (isset($this->settings['hreflang_x_default_lang'])) {
+            return $this->settings['hreflang_x_default_lang'];
+        } else {
+            return $this->defaultLang();
+        }
+    }
+
     public function compressApiRequests()
     {
         return $this->settings['compress_api_requests'];
