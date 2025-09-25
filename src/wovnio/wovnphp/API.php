@@ -89,6 +89,7 @@ class API
             $data['debug_mode'] = 'true';
         }
         if (isset($store->settings['hreflang_x_default_lang'])) {
+            // should not use fallback, so html swapper can calculate the default lang from js_data
             $data['hreflang_x_default_lang'] = $store->settings['hreflang_x_default_lang'];
         }
 
