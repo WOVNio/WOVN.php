@@ -280,14 +280,13 @@ class HtmlConverter
             array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
         }
 
-        if (isset($this->store->settings['hreflang_x_default_lang'])) {
-            $x_default_hreflang_regex = "/<link[^>]*hreflang=[\"']?x-default[\"']?[^>]*>/iU";
-            $has_existing_x_default_hreflang = preg_match($x_default_hreflang_regex, $html);
+        $xDefaultLang = $this->store->getHreflangXDefaultLangOrDefault();
+        $x_default_hreflang_regex = "/<link[^>]*hreflang=[\"']?x-default[\"']?[^>]*>/iU";
+        $has_existing_x_default_hreflang = preg_match($x_default_hreflang_regex, $html);
 
-            if (!$has_existing_x_default_hreflang) {
-                $href = $this->buildHrefLang($this->store->settings['hreflang_x_default_lang']);
-                array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '">');
-            }
+        if (!$has_existing_x_default_hreflang) {
+            $href = $this->buildHrefLang($xDefaultLang);
+            array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '" data-wovn="true">');
         }
 
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");

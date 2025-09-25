@@ -88,6 +88,9 @@ class API
         if ($request_options->getDebugMode()) {
             $data['debug_mode'] = 'true';
         }
+        if (isset($store->settings['hreflang_x_default_lang'])) {
+            $data['hreflang_x_default_lang'] = $store->settings['hreflang_x_default_lang'];
+        }
 
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
