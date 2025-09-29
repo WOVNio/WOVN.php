@@ -155,6 +155,14 @@ class Store
             $this->settings['encoding'] = null;
         }
 
+        if (isset($this->settings['supported_langs'])) {
+            if (!is_array($this->settings['supported_langs'])) {
+                $this->settings['supported_langs'] = array($this->settings['supported_langs']);
+            }
+        } else {
+            $this->settings['supported_langs'] = array();
+        }
+
         if (!is_array($this->settings['custom_lang_aliases'])) {
             $this->settings['custom_lang_aliases'] = array();
         } else {
