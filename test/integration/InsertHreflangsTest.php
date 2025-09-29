@@ -56,6 +56,7 @@ class InsertHreflangsTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.

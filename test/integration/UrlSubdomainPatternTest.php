@@ -70,6 +70,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
@@ -101,6 +102,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.testsite.com/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
@@ -130,6 +132,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.testsite.com/sub/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/sub/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
@@ -162,6 +165,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.testsite.com/sub/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/sub/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>test</body>'.
@@ -188,6 +192,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -214,6 +219,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -249,6 +255,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://custom-ja.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://custom-en-us.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://custom-zh-hant-hk.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://custom-en.testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases={&quot;en&quot;:&quot;custom-en&quot;,&quot;ja&quot;:&quot;custom-ja&quot;,&quot;en-US&quot;:&quot;custom-en-us&quot;,&quot;zh-Hant-HK&quot;:&quot;custom-zh-hant-hk&quot;}&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -282,6 +289,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>root</body>'.
@@ -310,6 +318,7 @@ class UrlSubdomainPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://testsite.com/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://ja.testsite.com/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=subdomain&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>'.
         '</head>'.
         '<body>root</body>'.

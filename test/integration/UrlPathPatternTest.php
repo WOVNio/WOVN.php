@@ -48,6 +48,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -84,6 +85,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -116,6 +118,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/sub/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/sub/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/sub/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/sub/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -152,6 +155,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/sub/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/sub/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/sub/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/sub/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -182,6 +186,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/no.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/no.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/no.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/no.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -209,6 +214,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/en-US/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/zh-Hant-HK/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=ja&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -240,6 +246,7 @@ class UrlPathPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://localhost/custom_ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://localhost/custom_en_US/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://localhost/custom_zh_Hant_HK/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;ja&quot;:&quot;custom_ja&quot;,&quot;en-US&quot;:&quot;custom_en_US&quot;,&quot;zh-Hant-HK&quot;:&quot;custom_zh_Hant_HK&quot;}&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -269,6 +276,7 @@ class UrlPathPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
         '<link rel="alternate" hreflang="en" href="http://localhost/custom_en/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/custom_en/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -316,6 +324,7 @@ class UrlPathPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/sub/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/sub/ja/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/sub/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;sitePrefixPath=sub" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -349,6 +358,7 @@ class UrlPathPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.
@@ -380,6 +390,7 @@ class UrlPathPatternTest extends TestCase
         '<head>'.
         '<link rel="alternate" hreflang="en" href="http://localhost/index.html">'.
         '<link rel="alternate" hreflang="ja" href="http://localhost/ja/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://localhost/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1" '.
         'data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" '.
         'data-wovnio-info="version=WOVN.php_VERSION" '.

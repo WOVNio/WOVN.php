@@ -81,6 +81,7 @@ class UrlCustomDomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.com/zh/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -132,6 +133,7 @@ class UrlCustomDomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.com/zh/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -180,6 +182,7 @@ class UrlCustomDomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.html">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.html">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.com/zh/sub/index.html">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/sub/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -225,6 +228,7 @@ class UrlCustomDomainPatternTest extends TestCase
             '<link rel="alternate" hreflang="en" href="http://testsite.com/en/index.html">'.
             '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.html">'.
             '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/index.html">'.
+            '<link rel="alternate" hreflang="x-default" href="http://testsite.com/en/index.html" data-wovn="true">'.
             '<script src="//j.wovn.io/1"'.
             ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
             ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -277,6 +281,7 @@ class UrlCustomDomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/sub/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/sub/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.com/zh/sub/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/sub/index.php" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -326,6 +331,7 @@ class UrlCustomDomainPatternTest extends TestCase
         '<link rel="alternate" hreflang="ja" href="http://testsite.com/ja/index.php">'.
         '<link rel="alternate" hreflang="en-US" href="http://en-us.testsite.com/index.php">'.
         '<link rel="alternate" hreflang="zh-Hant-HK" href="http://zh-hant-hk.com/zh/index.php">'.
+        '<link rel="alternate" hreflang="x-default" href="http://testsite.com/index.html" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=TOKEN&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs=' . $encodedCustomDomainLangsString . '"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
