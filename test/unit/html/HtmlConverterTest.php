@@ -221,7 +221,56 @@ class HtmlConverterTest extends TestCase
                 '</body>' .
                 '</html>',
 
-                'en'
+                array('hreflang_x_default_lang' => 'en'),
+            ),
+            array (
+                'has x-default setting but is no_index_langs - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<meta name="robots" content="noindex">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'en', 'no_index_langs' => array('en'))
+            ),
+            array (
+                'has x-default setting but is no_hreflangs_lang - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'en', 'no_hreflang_langs' => array('en'))
             ),
             array (
                 'has x-default setting and html has existing - is not modified',
@@ -248,7 +297,7 @@ class HtmlConverterTest extends TestCase
                 '</body>' .
                 '</html>',
 
-                'en'
+                array('hreflang_x_default_lang' => 'en')
             ),
             array (
                 'no x-default setting and html has existing - is not modified',
@@ -275,16 +324,16 @@ class HtmlConverterTest extends TestCase
                 '</body>' .
                 '</html>',
 
-                null
+                array()
             )
         );
-        $settings = array(
+        $default_settings = array(
             'supported_langs' => array('en', 'vi', 'de'),
             'lang_param_name' => 'wovn'
         );
         foreach ($html_cases as $case) {
-            list($message, $original_html, $expected_html, $x_default_setting) = $case;
-            $settings['hreflang_x_default_lang'] = $x_default_setting;
+            list($message, $original_html, $expected_html, $extra_settings) = $case;
+            $settings = array_merge($default_settings, $extra_settings);
 
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
