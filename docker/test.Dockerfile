@@ -9,6 +9,11 @@ RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(5\.[3-6]|7\.0).*$ ]]; then \
     echo "deb http://archive.debian.org/debian-security stretch/updates main" >> "/etc/apt/sources.list"; \
 fi'
 
+RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-2]).*$ ]]; then \
+    echo "deb http://archive.debian.org/debian/ buster main" > "/etc/apt/sources.list"; \
+    echo "deb http://archive.debian.org/debian-security buster/updates main" >> "/etc/apt/sources.list"; \
+fi'
+
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
