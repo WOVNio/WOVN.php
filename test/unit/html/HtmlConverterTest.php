@@ -204,7 +204,7 @@ class HtmlConverterTest extends TestCase
     {
         $html_cases = array(
             array (
-                'has x-default setting and html has none - is generated',
+                'no x-default - no config - is generated using default lang',
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
@@ -221,10 +221,30 @@ class HtmlConverterTest extends TestCase
                 '</body>' .
                 '</html>',
 
-                array('hreflang_x_default_lang' => 'en'),
+                array('hreflang_x_default_lang' => ''),
             ),
             array (
-                'has x-default setting but is no_index_langs - is not modified',
+                'no x-default - has config - is generated using specified lang',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=vi" data-wovn="true">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'vi'),
+            ),
+            array (
+                'no x-default - has config but is no_index_langs - is not modified',
 
                 '<html>' .
                 '<head>' .
@@ -249,7 +269,7 @@ class HtmlConverterTest extends TestCase
                 array('hreflang_x_default_lang' => 'en', 'no_index_langs' => array('en'))
             ),
             array (
-                'has x-default setting but is no_hreflangs_lang - is not modified',
+                'no x-default - has config but is no_hreflangs_lang - is not modified',
 
                 '<html>' .
                 '<head>' .
@@ -273,7 +293,7 @@ class HtmlConverterTest extends TestCase
                 array('hreflang_x_default_lang' => 'en', 'no_hreflang_langs' => array('en'))
             ),
             array (
-                'has x-default setting and html has existing - is not modified',
+                'has existing x-default - has config - is not modified',
 
                 '<html>' .
                 '<head>' .
@@ -300,7 +320,7 @@ class HtmlConverterTest extends TestCase
                 array('hreflang_x_default_lang' => 'en')
             ),
             array (
-                'no x-default setting and html has existing - is not modified',
+                'has existing x-default - no config - is not modified',
 
                 '<html>' .
                 '<head>' .
