@@ -257,16 +257,7 @@ class HtmlConverter
      */
     private function insertHreflangTags($html)
     {
-        if (isset($this->store->settings['supported_langs'])) {
-            if (is_array($this->store->settings['supported_langs'])) {
-                $lang_codes = $this->store->settings['supported_langs'];
-            } else {
-                $lang_codes = array($this->store->settings['supported_langs']);
-            }
-        } else {
-            $lang_codes = array();
-        }
-
+        $lang_codes = $this->store->settings['supported_langs'];
         $lang_codes_with_pipe = implode('|', $lang_codes);
         $hreflang_regex = "/<link [^>]*hreflang=[\"']?($lang_codes_with_pipe)[\"']?(\s[^>]*)?\>/iU";
         $html = $this->removeTagFromHtmlByRegex($html, $hreflang_regex);
@@ -280,19 +271,23 @@ class HtmlConverter
             array_push($hreflangTags, '<link rel="alternate" hreflang="' . Lang::iso6391Normalization($lang_code) . '" href="' . $href . '">');
         }
 
-        if (isset($this->store->settings['hreflang_x_default_lang'])) {
-            $x_default_hreflang_regex = "/<link[^>]*hreflang=[\"']?x-default[\"']?[^>]*>/iU";
-            $has_existing_x_default_hreflang = preg_match($x_default_hreflang_regex, $html);
+        $xDefaultLang = $this->store->getHreflangXDefaultLangOrDefault();
+        $is_acceptable_x_default_lang = !$this->isNoindexLang($xDefaultLang) && !$this->isNoHreflangLang($xDefaultLang);
 
-            if (!$has_existing_x_default_hreflang) {
-                $href = $this->buildHrefLang($this->store->settings['hreflang_x_default_lang']);
-                array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '">');
-            }
+        if ($is_acceptable_x_default_lang && !$this->htmlContainsXDefaultHreflang($html)) {
+            $href = $this->buildHrefLang($xDefaultLang);
+            array_push($hreflangTags, '<link rel="alternate" hreflang="x-default" href="' . $href . '" data-wovn="true">');
         }
 
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
         return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
+    }
+
+    private function htmlContainsXDefaultHreflang($html)
+    {
+        $x_default_hreflang_regex = "/<link[^>]*hreflang=[\"']?x-default[\"']?[^>]*>/iU";
+        return preg_match($x_default_hreflang_regex, $html) === 1;
     }
 
     private function translateCanonicalTag($html)

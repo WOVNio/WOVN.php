@@ -155,6 +155,14 @@ class Store
             $this->settings['encoding'] = null;
         }
 
+        if (isset($this->settings['supported_langs'])) {
+            if (!is_array($this->settings['supported_langs'])) {
+                $this->settings['supported_langs'] = array($this->settings['supported_langs']);
+            }
+        } else {
+            $this->settings['supported_langs'] = array();
+        }
+
         if (!is_array($this->settings['custom_lang_aliases'])) {
             $this->settings['custom_lang_aliases'] = array();
         } else {
@@ -268,6 +276,15 @@ class Store
     public function getCustomDomainLangs()
     {
         return $this->customDomainLangs;
+    }
+
+    public function getHreflangXDefaultLangOrDefault()
+    {
+        if (isset($this->settings['hreflang_x_default_lang'])) {
+            return $this->settings['hreflang_x_default_lang'];
+        } else {
+            return $this->defaultLang();
+        }
     }
 
     public function compressApiRequests()

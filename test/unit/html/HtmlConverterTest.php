@@ -48,6 +48,7 @@ class HtmlConverterTest extends TestCase
                 '<head>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '</head>' .
                 '<body>' .
@@ -64,6 +65,7 @@ class HtmlConverterTest extends TestCase
                 '<body>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<a>hello</a>' .
                 '</body>' .
@@ -77,6 +79,7 @@ class HtmlConverterTest extends TestCase
                 '<html lang="en">' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<a>hello</a>' .
                 '</html>'
@@ -96,6 +99,7 @@ class HtmlConverterTest extends TestCase
                 '<body>' .
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="alternate" hreflang="fr" href="http://my-site.com/?wovn=fr" existing-hreflang-not-supported>' .
                 '<a>hello</a>' .
@@ -127,7 +131,7 @@ class HtmlConverterTest extends TestCase
         '</head><body></body></html>';
 
         $expected_html = '<html lang="en"><head>' .
-        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"><link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
         '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
         '<script src="https://example.com"></script>' .
         '</head><body></body></html>';
@@ -200,7 +204,7 @@ class HtmlConverterTest extends TestCase
     {
         $html_cases = array(
             array (
-                'has x-default setting and html has none - is generated',
+                'no x-default - no config - is generated using default lang',
 
                 '<html><head></head><body><a>hello</a></body></html>',
 
@@ -209,7 +213,7 @@ class HtmlConverterTest extends TestCase
                 '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
-                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '</head>' .
                 '<body>' .
@@ -217,14 +221,83 @@ class HtmlConverterTest extends TestCase
                 '</body>' .
                 '</html>',
 
-                'en'
+                array('hreflang_x_default_lang' => ''),
             ),
             array (
-                'has x-default setting and html has existing - is not modified',
+                'no x-default - has config - is generated using specified lang',
+
+                '<html><head></head><body><a>hello</a></body></html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=vi" data-wovn="true">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'vi'),
+            ),
+            array (
+                'no x-default - has config but is no_index_langs - is not modified',
 
                 '<html>' .
                 '<head>' .
-                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<meta name="robots" content="noindex">' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'en', 'no_index_langs' => array('en'))
+            ),
+            array (
+                'no x-default - has config but is no_hreflangs_lang - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                '<html lang="en">' .
+                '<head>' .
+                '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
+                '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
+                '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+                '</head>' .
+                '<body>' .
+                '<a>hello</a>' .
+                '</body>' .
+                '</html>',
+
+                array('hreflang_x_default_lang' => 'en', 'no_hreflang_langs' => array('en'))
+            ),
+            array (
+                'has existing x-default - has config - is not modified',
+
+                '<html>' .
+                '<head>' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en&customer=true">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .
@@ -237,21 +310,21 @@ class HtmlConverterTest extends TestCase
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
-                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en&customer=true">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .
                 '</body>' .
                 '</html>',
 
-                'en'
+                array('hreflang_x_default_lang' => 'en')
             ),
             array (
-                'no x-default setting and html has existing - is not modified',
+                'has existing x-default - no config - is not modified',
 
                 '<html>' .
                 '<head>' .
-                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en&customer=true">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .
@@ -264,23 +337,23 @@ class HtmlConverterTest extends TestCase
                 '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">' .
                 '<link rel="alternate" hreflang="de" href="http://my-site.com/?wovn=de">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
-                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en">' .
+                '<link rel="alternate" hreflang="x-default" href="http://my-site.com/?wovn=en&customer=true">' .
                 '</head>' .
                 '<body>' .
                 '<a>hello</a>' .
                 '</body>' .
                 '</html>',
 
-                null
+                array()
             )
         );
-        $settings = array(
+        $default_settings = array(
             'supported_langs' => array('en', 'vi', 'de'),
             'lang_param_name' => 'wovn'
         );
         foreach ($html_cases as $case) {
-            list($message, $original_html, $expected_html, $x_default_setting) = $case;
-            $settings['hreflang_x_default_lang'] = $x_default_setting;
+            list($message, $original_html, $expected_html, $extra_settings) = $case;
+            $settings = array_merge($default_settings, $extra_settings);
 
             list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
             $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
@@ -360,7 +433,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" href="http://my-site.com/vi/news/">' .
                 '</head>' .
@@ -376,7 +449,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" href="http://my-site.com/vi/news/?page=3">' .
                 '</head>' .
@@ -392,7 +465,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" wovn="no" href="http://my-site.com/vi/news/">' .
                 '</head>' .
@@ -408,7 +481,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" first="no" href="http://my-site.com/vi/news/" second="yes">' .
                 '</head>' .
@@ -424,7 +497,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link first="no" href="http://my-site.com/vi/news/" rel="canonical" second="yes">' .
                 '</head>' .
@@ -440,7 +513,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" wovn="no" href="http://some-other-site.com/news/">' .
                 '</head>' .
@@ -456,7 +529,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" wovn="no" href="http://my-sites.com/news/">' .
                 '</head>' .
@@ -472,7 +545,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=vi&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical">' .
                 '</head>' .
@@ -510,7 +583,7 @@ class HtmlConverterTest extends TestCase
 
                 '<html lang="en">' .
                 '<head>' .
-                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/">' .
+                '<link rel="alternate" hreflang="en" href="http://my-site.com/news/"><link rel="alternate" hreflang="vi" href="http://my-site.com/vi/news/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/news/" data-wovn="true">' .
                 '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
                 '<link rel="canonical" href="http://my-site.com/news/">' .
                 '</head>' .
@@ -552,7 +625,7 @@ class HtmlConverterTest extends TestCase
         $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
         $translated_html = $converter->insertSnippetAndLangTags($html, false);
 
-        $expected_html = "<html lang=\"en\"><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
+        $expected_html = "<html lang=\"en\"><body><link rel=\"alternate\" hreflang=\"fr\" href=\"http://my-site.com/fr/\"><link rel=\"alternate\" hreflang=\"x-default\" href=\"http://my-site.com/custom_en/\" data-wovn=\"true\"><script src=\"//j.wovn.io/1\" data-wovnio=\"key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=path&amp;langCodeAliases={&quot;en&quot;:&quot;custom_en&quot;}&amp;langParamName=wovn\" data-wovnio-info=\"version=WOVN.php_VERSION\" async></script><a>hello</a></body></html>";
         $this->assertEquals($expected_html, $translated_html);
     }
 
@@ -571,7 +644,7 @@ class HtmlConverterTest extends TestCase
 
         $expected_html = '<html lang="en">'.
         '<body>'.
-        '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/">'.
+        '<link rel="alternate" hreflang="fr" href="http://testsite.com/fr/"><link rel="alternate" hreflang="x-default" href="http://testsite.com/" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=custom_domain&amp;langCodeAliases=[]&amp;langParamName=wovn&amp;customDomainLangs={&quot;testsite.com&quot;:&quot;en&quot;,&quot;testsite.com\/fr&quot;:&quot;fr&quot;}"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
@@ -597,6 +670,7 @@ class HtmlConverterTest extends TestCase
         '<body>'.
         '<link rel="alternate" hreflang="en" href="http://my-site.com/">'.
         '<link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi">'.
+        '<link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">'.
         '<script src="//j.wovn.io/1"'.
         ' data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn"'.
         ' data-wovnio-info="version=WOVN.php_VERSION"'.
