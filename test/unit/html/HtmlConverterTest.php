@@ -147,6 +147,54 @@ class HtmlConverterTest extends TestCase
         $this->assertEquals($expected_html, $translated_html);
     }
 
+    public function testInsertSnippetAndLangTagsWithSnippetPositionFirstChild()
+    {
+        $original_html = '<html><head>' .
+        '<script>console.log(\'hello\')</script>' .
+        '</head><body></body></html>';
+
+        $expected_html = '<html lang="en"><head>' .
+        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"><link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+        '<script>console.log(\'hello\')</script>' .
+        '</head><body></body></html>';
+
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'snippet_position' => 'first_child',
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
+    public function testInsertSnippetAndLangTagsWithSnippetPositionLastChild()
+    {
+        $original_html = '<html><head>' .
+        '<script>console.log(\'hello\')</script>' .
+        '</head><body></body></html>';
+
+        $expected_html = '<html lang="en"><head>' .
+        '<link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="vi" href="http://my-site.com/?wovn=vi"><link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true">' .
+        '<script>console.log(\'hello\')</script>' .
+        '<script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" async></script>' .
+        '</head><body></body></html>';
+
+        $settings = array(
+            'supported_langs' => array('en', 'vi'),
+            'snippet_position' => 'last_child',
+            'lang_param_name' => 'wovn'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings);
+        $converter = new HtmlConverter('UTF-8', $store->settings['project_token'], $store, $headers);
+        $translated_html = $converter->insertSnippetAndLangTags($original_html, false);
+
+        $this->assertEquals($expected_html, $translated_html);
+    }
+
     public function testInsertSnippetAndLangTagsWithInsertHreflangsFalse()
     {
         $html_cases = array(
