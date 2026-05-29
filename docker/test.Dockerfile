@@ -17,6 +17,7 @@ fi'
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
-RUN apt-get -y --force-yes install git unzip
+RUN apt-get -y --force-yes install git unzip ca-certificates openssl
+RUN update-ca-certificates --fresh
 
 WORKDIR /var/www/html
