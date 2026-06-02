@@ -95,6 +95,7 @@ class Store
             'site_prefix_path' => null,
             'custom_domain_langs' => array(),
             'preserve_relative_urls' => false,
+            'snippet_position' => 'first_child',
 
             // HTTP proxy used for outbound WOVN requests
             'outbound_proxy_host' => null,

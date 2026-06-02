@@ -137,9 +137,14 @@ class HtmlConverter
     {
         $html = $this->removeSnippet($html);
         $snippet_code = $this->buildSnippetCode($add_fallback_mark);
-        $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
-        return $this->insertAfterTag($parent_tags, $html, $snippet_code);
+        if ($this->store->settings['snippet_position'] === 'first_child') {
+            $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
+            return $this->insertAsFirstChild($parent_tags, $html, $snippet_code);
+        } else {
+            $parent_tags = array("(<\/head>)", "(<\/body>)", "(<\/html>)");
+            return $this->insertAsLastChild($parent_tags, $html, $snippet_code);
+        }
     }
 
     private function removeSnippet($html)
@@ -160,7 +165,7 @@ class HtmlConverter
     {
         $noindexMetaTag = '<meta name="robots" content="noindex">';
         $parent_tags = array("(<head\s?.*?>)");
-        return $this->insertAfterTag($parent_tags, $html, $noindexMetaTag);
+        return $this->insertAsFirstChild($parent_tags, $html, $noindexMetaTag);
     }
 
     private function isNoindexLang($lang)
@@ -187,13 +192,27 @@ class HtmlConverter
         return $html;
     }
 
-    private function insertAfterTag($tag_names, $html, $insert_str)
+    private function insertAsFirstChild($parent_tag_names, $html, $insert_str)
     {
-        foreach ($tag_names as $tag_name) {
-            if (preg_match($tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
+        foreach ($parent_tag_names as $parent_tag_name) {
+            if (preg_match($parent_tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
+                // <head foo> -> <head foo>$SNIPPET
                 return substr_replace($html, $insert_str, $matches[0][1] + strlen($matches[0][0]), 0);
             }
         }
+        return $html;
+    }
+
+    private function insertAsLastChild($parent_tag_names, $html, $insert_str)
+    {
+        foreach ($parent_tag_names as $parent_tag_name) {
+            if (preg_match($parent_tag_name, $html, $matches, PREG_OFFSET_CAPTURE)) {
+                // </head> -> $SNIPPET</head>
+                return substr_replace($html, $insert_str, $matches[0][1], 0);
+            }
+        }
+
+        return $html;
     }
 
     private function removeTagFromHtmlByRegex($html, $regex)
@@ -281,7 +300,7 @@ class HtmlConverter
 
         $parent_tags = array("(<head\s?.*?>)", "(<body\s?.*?>)", "(<html\s?.*?>)");
 
-        return $this->insertAfterTag($parent_tags, $html, implode('', $hreflangTags));
+        return $this->insertAsFirstChild($parent_tags, $html, implode('', $hreflangTags));
     }
 
     private function htmlContainsXDefaultHreflang($html)
