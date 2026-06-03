@@ -1665,4 +1665,82 @@ class HeadersTest extends TestCase
 
         $this->assertEquals(true, $headers->isSearchEngineBot());
     }
+
+    public function testMultiValueXForwardedHostUsesFirstValue()
+    {
+        $settings = array('use_proxy' => 1, 'url_pattern_name' => 'path');
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => 'www.example.com, www.example.com',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'REQUEST_URI' => '/en/page'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('www.example.com', $headers->originalHost);
+        $this->assertEquals('www.example.com', $headers->host);
+        $this->assertEquals('https://www.example.com/page', $headers->urlKeepTrailingSlash);
+    }
+
+    public function testMultiValueXForwardedHostWithSpaces()
+    {
+        $settings = array('use_proxy' => 1, 'url_pattern_name' => 'path');
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => '  www.example.com , proxy.internal ',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'REQUEST_URI' => '/en/page'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('www.example.com', $headers->originalHost);
+    }
+
+    public function testSingleValueXForwardedHostUnchanged()
+    {
+        $settings = array('use_proxy' => 1, 'url_pattern_name' => 'path');
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => 'www.example.com',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'REQUEST_URI' => '/en/page'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('www.example.com', $headers->originalHost);
+        $this->assertEquals('www.example.com', $headers->host);
+    }
+
+    public function testMultiValueXForwardedHostWithSubdomainPattern()
+    {
+        $settings = array(
+            'use_proxy' => 1,
+            'url_pattern_name' => 'subdomain',
+            'supported_langs' => array('en', 'ja')
+        );
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => 'ja.example.com, proxy1.internal',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'REQUEST_URI' => '/page'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('ja.example.com', $headers->originalHost);
+        $this->assertEquals('example.com', $headers->host);
+        $this->assertEquals('ja', $headers->urlLanguage());
+    }
+
+    public function testMultiValueXForwardedHostUrlLanguageWithPath()
+    {
+        $settings = array(
+            'use_proxy' => 1,
+            'url_pattern_name' => 'path',
+            'supported_langs' => array('en', 'ja')
+        );
+        $env = array(
+            'HTTP_X_FORWARDED_HOST' => 'www.example.com, www.example.com',
+            'HTTP_X_FORWARDED_PROTO' => 'https',
+            'HTTP_X_FORWARDED_REQUEST_URI' => '/ja/page'
+        );
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default', $settings, $env);
+
+        $this->assertEquals('ja', $headers->urlLanguage());
+    }
 }

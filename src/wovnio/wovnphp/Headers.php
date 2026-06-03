@@ -49,7 +49,7 @@ class Headers
             }
         }
         if ($store->settings['use_proxy'] && isset($env['HTTP_X_FORWARDED_HOST'])) {
-            $this->originalHost = $env['HTTP_X_FORWARDED_HOST'];
+            $this->originalHost = self::getFirstValueFromHeader($env['HTTP_X_FORWARDED_HOST']);
         } else {
             $this->originalHost = $env['HTTP_HOST'];
         }
@@ -118,7 +118,7 @@ class Headers
     {
         if ($this->urlLang === null) {
             if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-                $server_name = $this->env['HTTP_X_FORWARDED_HOST'];
+                $server_name = self::getFirstValueFromHeader($this->env['HTTP_X_FORWARDED_HOST']);
             } else {
                 $server_name = $this->env['HTTP_HOST'];
             }
@@ -223,7 +223,7 @@ class Headers
     private function removeLangFromHost()
     {
         if ($this->store->settings['use_proxy'] && isset($this->env['HTTP_X_FORWARDED_HOST'])) {
-            $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang($this->env['HTTP_X_FORWARDED_HOST']);
+            $this->env['HTTP_X_FORWARDED_HOST'] = $this->removeLang(self::getFirstValueFromHeader($this->env['HTTP_X_FORWARDED_HOST']));
         }
         $this->env['HTTP_HOST'] = $this->removeLang($this->env['HTTP_HOST']);
         $this->env['SERVER_NAME'] = $this->removeLang($this->env['SERVER_NAME']);
@@ -403,5 +403,17 @@ class Headers
             }
         }
         return false;
+    }
+
+    // X-Forwarded-Host can contain multiple comma-separated values when
+    // the request passes through more than one proxy (RFC 7230 §3.2.2).
+    // We only need the original (leftmost) host.
+    private static function getFirstValueFromHeader($value)
+    {
+        $commaPos = strpos($value, ',');
+        if ($commaPos !== false) {
+            return trim(substr($value, 0, $commaPos));
+        }
+        return $value;
     }
 }
