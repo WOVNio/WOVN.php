@@ -96,7 +96,7 @@ class API
         try {
             $request_handler = RequestHandlerFactory::getBestAvailableRequestHandler($store);
             if ($request_handler === null) {
-                return $marker->revert($converted_html);
+                return $converter->revertMarkers($converted_html);
             }
             $api_url = self::url($store, $headers, $converted_html, $request_options);
             list($response, $headers, $error) = $request_handler->sendRequest('POST', $api_url, $data, $timeout);
