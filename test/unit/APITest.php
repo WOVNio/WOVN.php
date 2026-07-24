@@ -3,6 +3,9 @@ namespace Wovnio\Wovnphp\Tests\Unit;
 
 require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/RequestHandlerMock.php';
+require_once 'test/helpers/CurlMock.php';
+require_once 'test/helpers/FileGetContentsMock.php';
+require_once 'test/helpers/RecordingLogger.php';
 
 require_once 'src/wovnio/wovnphp/API.php';
 require_once 'src/wovnio/wovnphp/Utils.php';
@@ -23,6 +26,8 @@ require_once 'src/wovnio/modified_vendor/SimpleHtmlDom.php';
 use Wovnio\Test\Helpers\StoreAndHeadersFactory;
 
 use Wovnio\Wovnphp\API;
+use Wovnio\Wovnphp\Logger;
+use Wovnio\Wovnphp\RecordingLogger;
 use Wovnio\Wovnphp\Utils;
 use Wovnio\Wovnphp\RequestOptions;
 use Wovnio\Html\HtmlConverter;
@@ -397,6 +402,40 @@ class APITest extends TestCase
         $this->assertEquals(1, count($mock->arguments));
         $expected_result = '<html lang="en"><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
         $this->assertEquals($expected_result, $result, "should return contents with fallback");
+    }
+
+    public function testTranslateWhenNoRequestHandlerIsAvailable()
+    {
+        // Force RequestHandlerFactory to return null by making both cURL and
+        // file_get_contents (allow_url_fopen) unavailable. This exercises the
+        // `$request_handler === null` branch of API::translate, which must
+        // fall back to the snippet-inserted content without raising an error.
+        \Wovnio\Utils\RequestHandlers\mockCurl(false, array(), array());
+        \Wovnio\Utils\RequestHandlers\mockFileGetContents(false);
+        RequestHandlerFactory::setInstance(null);
+
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $request_options = new RequestOptions(array(), false);
+
+        // Store construction resets the global logger, so install the recording
+        // logger after the store is built.
+        $default_logger = Logger::get();
+        $logger = new RecordingLogger();
+        Logger::set($logger);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
+
+        \Wovnio\Utils\RequestHandlers\restoreCurl();
+        \Wovnio\Utils\RequestHandlers\restoreFileGetContents();
+        Logger::set($default_logger);
+
+        $expected_result = '<html lang="en"><head><link rel="alternate" hreflang="en" href="http://my-site.com/"><link rel="alternate" hreflang="x-default" href="http://my-site.com/" data-wovn="true"><script src="//j.wovn.io/1" data-wovnio="key=123456&amp;backend=true&amp;currentLang=en&amp;defaultLang=en&amp;urlPattern=query&amp;langCodeAliases=[]&amp;langParamName=wovn" data-wovnio-info="version=WOVN.php_VERSION" data-wovnio-type="fallback_snippet" async></script></head><body><h1>en</h1></body></html>';
+        $this->assertEquals($expected_result, $result, 'should return snippet-inserted fallback content when no request handler is available');
+        // The no-handler branch must return directly. Before the fix it called
+        // an undefined `$marker`, whose error was swallowed by the surrounding
+        // catch block and logged as a failure.
+        $this->assertEquals(array(), $logger->errors, 'should not log any error in the no-handler fallback path');
     }
 
     public function testTranslateWithSearchEngineBot()
