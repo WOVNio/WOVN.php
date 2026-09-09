@@ -14,6 +14,14 @@ RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[1-2]).*$ ]]; then \
     echo "deb http://archive.debian.org/debian-security buster/updates main" >> "/etc/apt/sources.list"; \
 fi'
 
+# Debian 11 (bullseye) reached LTS EOL on 2026-08-31, so the bullseye-security
+# Release file on deb.debian.org is expired and apt-get update fails. Only
+# "bullseye main" is served by archive.debian.org; there is no archived
+# bullseye-security suite, so it is dropped rather than redirected.
+RUN bash -c 'if [[ "${DOCKER_IMAGE}" =~ ^.*php:?(7\.[3-4]|8\.0).*$ ]]; then \
+    echo "deb http://archive.debian.org/debian/ bullseye main" > "/etc/apt/sources.list"; \
+fi'
+
 RUN apt-get autoclean
 RUN apt-get clean all
 RUN apt-get update -qq
