@@ -1818,7 +1818,10 @@ bye
         $marker = new HtmlReplaceMarker();
 
         $method = new \ReflectionMethod($converter, $name);
-        $method->setAccessible(true);
+        // setAccessible() has no effect since PHP 8.1 and is deprecated since PHP 8.5.
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         $dom->iterateAll(function ($node) use ($method, $converter, $marker) {
             $method->invoke($converter, $node, $marker);
@@ -1836,7 +1839,10 @@ bye
         $marker = new HtmlReplaceMarker();
 
         $method = new \ReflectionMethod($converter, 'removeBackendWovnIgnoreComment');
-        $method->setAccessible(true);
+        // setAccessible() has no effect since PHP 8.1 and is deprecated since PHP 8.5.
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
         $converted_html = $method->invoke($converter, $html, $marker);
 
         return array($converted_html, $marker);
