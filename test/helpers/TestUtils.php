@@ -61,6 +61,9 @@ class TestUtils
 
         $http_context = stream_context_create($contextOptions);
 
+        // Assigning this before the request suppresses the PHP 8.5 deprecation of
+        // the predefined locally scoped $http_response_header.
+        $http_response_header = array();
         $return->body = @file_get_contents($url, false, $http_context);
         $response_headers = $http_response_header;
 
@@ -95,7 +98,10 @@ class TestUtils
     {
         $reflection = new \ReflectionClass(get_class($object));
         $method = $reflection->getMethod($methodName);
-        $method->setAccessible(true);
+        // setAccessible() has no effect since PHP 8.1 and is deprecated since PHP 8.5.
+        if (PHP_VERSION_ID < 80100) {
+            $method->setAccessible(true);
+        }
 
         return $method->invokeArgs($object, $parameters);
     }

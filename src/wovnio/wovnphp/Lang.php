@@ -170,6 +170,11 @@ class Lang
      */
     public static function iso6391Normalization($lang_code)
     {
+        // PHP 8.5 deprecates using null as an array offset.
+        if ($lang_code === null) {
+            return null;
+        }
+
         if (isset(LANG::$index[$lang_code])) {
             $code = array('zh-CHT', 'zh-CHS');
             $iso6391 = array('zh-Hant', 'zh-Hans');

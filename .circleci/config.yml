@@ -46,6 +46,13 @@ jobs:
           paths:
             - ./vendor
       - run: ./vendor/bin/phpcs
+  test_php85:
+    <<: *defaults
+    steps:
+      - common-steps
+      - run: scripts/run_phpunit_tests.sh php:8.5-apache
+      - run: scripts/run_integration_tests.sh php:8.5-apache
+      - store-steps
   test_php84:
     <<: *defaults
     steps:
@@ -150,6 +157,7 @@ workflows:
   build:
     jobs:
       - build
+      - test_php85
       - test_php84
       - test_php83
       - test_php82

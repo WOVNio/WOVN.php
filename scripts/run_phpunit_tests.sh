@@ -56,8 +56,9 @@ else
 fi
 
 # Check syntax
+# exclude composer-setup.php vendored third-party Composer installer(it triggers PHP 8.5 deprecation notices)
 docker exec ${APACHE_CONTAINER_ID} \
-    /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" ! -path "*/vendor/*" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
+    /bin/bash -c 'a=$(find /opt/project -type f -name "*.php" ! -path "*/vendor/*" ! -path "*/scripts/composer-setup.php" -print0 | xargs -0 -n 1 -P 8 php -l | grep -v "No syntax errors" | wc -l) && exit $a'
 
 # Run unit test
 if [[ "${DOCKER_IMAGE}" =~ ^php:7.*$ ]]; then

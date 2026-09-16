@@ -68,14 +68,18 @@ class CurlRequestHandler extends AbstractRequestHandler
             $curl_error_code = curl_errno($curl_session);
             $http_error_code = curl_getinfo($curl_session, CURLINFO_HTTP_CODE);
 
-            curl_close($curl_session);
+            if (PHP_VERSION_ID < 80000) {
+                curl_close($curl_session);
+            }
 
             return array(null, $headers, "[cURL] Request failed ($curl_error_code-$http_error_code).");
         }
 
         $response_body = substr($response, $header_size);
 
-        curl_close($curl_session);
+        if (PHP_VERSION_ID < 80000) {
+            curl_close($curl_session);
+        }
 
         return array($response_body, $parsedHeaders, null);
     }
