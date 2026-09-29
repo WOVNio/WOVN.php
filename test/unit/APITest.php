@@ -5,6 +5,7 @@ require_once 'test/helpers/StoreAndHeadersFactory.php';
 require_once 'test/helpers/RequestHandlerMock.php';
 require_once 'test/helpers/CurlMock.php';
 require_once 'test/helpers/FileGetContentsMock.php';
+require_once 'test/helpers/HeadersMock.php';
 require_once 'test/helpers/RecordingLogger.php';
 
 require_once 'src/wovnio/wovnphp/API.php';
@@ -387,6 +388,36 @@ class APITest extends TestCase
         $this->assertEquals($this->getExpectedApiUrl($store, $headers, $expected_html_before_send, $request_options), $url);
         $this->assertEquals($this->getExpectedData($store, $headers, $expected_html_before_send), $data);
         $this->assertEquals($expected_html_before_send, $result, "should return contents with fallback");
+    }
+
+    public function testTranslateWithCurlHttpErrorSetsErrorHeaderAndReturnsOriginalContent()
+    {
+        list($store, $headers) = StoreAndHeadersFactory::fromFixture('default');
+
+        $original_html = '<html><head></head><body><h1>en</h1></body></html>';
+        $expected_head_content = $this->getExpectedHtmlHeadContent($store, $headers);
+        $expected_html_before_send = "<html lang=\"en\"><head>$expected_head_content</head><body><h1>en</h1></body></html>";
+        $request_options = new RequestOptions(array(), false);
+
+        RequestHandlerFactory::setInstance(new \Wovnio\Utils\RequestHandlers\CurlRequestHandler($store));
+        \Wovnio\Utils\RequestHandlers\mockCurlExec("HTTP/1.1 429 Too Many Requests\r\n\r\nToo Many Requests", 429);
+        \Wovnio\Wovnphp\mockHeader();
+
+        $default_logger = Logger::get();
+        $logger = new RecordingLogger();
+
+        Logger::set($logger);
+
+        $result = API::translate($store, $headers, $original_html, $request_options);
+        $sent_headers = \Wovnio\Wovnphp\getHeadersReceivedByHeaderMock();
+
+        \Wovnio\Utils\RequestHandlers\restoreCurlExec();
+        \Wovnio\Wovnphp\restoreHeader();
+        Logger::set($default_logger);
+
+        $this->assertEquals($expected_html_before_send, $result, 'should return original content on HTTP error');
+        $this->assertEquals(array('X-Wovn-Error: [cURL] Request failed (0-429).'), $sent_headers);
+        $this->assertEquals(array('API call error: [cURL] Request failed (0-429)..'), $logger->errors, 'should log the error once');
     }
 
     public function testTranslateWithEmptyResponse()
